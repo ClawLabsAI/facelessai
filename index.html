@@ -2932,53 +2932,50 @@ function loadKeys() {
 }
 
 function diagStorage() {
-  const el = document.getElementById('diag-result');
-  if (!el) return;
-  el.style.display = 'block';
-
   const lines = [];
-  // Test 1: can we write?
+
+  // Test 1: write/read
   try {
     localStorage.setItem('fai_diag', 'test123');
     const r = localStorage.getItem('fai_diag');
     localStorage.removeItem('fai_diag');
-    if (r === 'test123') {
-      lines.push({ ok: true, msg: '✅ localStorage disponible y funcionando' });
-    } else {
-      lines.push({ ok: false, msg: '❌ localStorage escribe pero no lee correctamente' });
-    }
+    lines.push(r === 'test123'
+      ? '✅ localStorage OK — puede guardar y leer'
+      : '❌ localStorage escribe pero no lee');
   } catch(e) {
-    lines.push({ ok: false, msg: '❌ localStorage bloqueado: ' + e.message });
+    lines.push('❌ localStorage BLOQUEADO: ' + e.message);
   }
 
-  // Test 2: what keys are saved?
-  const keyNames = ['anthropic', 'openai', 'pexels', 'elevenlabs'];
-  keyNames.forEach(k => {
+  // Test 2: saved keys
+  ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
     try {
       const v = localStorage.getItem('fai_key_' + k);
-      if (v) {
-        lines.push({ ok: true, msg: '🔑 ' + k + ': guardada (' + v.slice(0,8) + '••••, ' + v.length + ' chars)' });
-      } else {
-        lines.push({ ok: null, msg: '⭕ ' + k + ': no guardada' });
-      }
+      lines.push(v
+        ? '🔑 ' + k + ': GUARDADA (' + v.slice(0,10) + '••• ' + v.length + ' chars)'
+        : '⭕ ' + k + ': no guardada');
     } catch(e) {
-      lines.push({ ok: false, msg: '❌ ' + k + ': error leyendo — ' + e.message });
+      lines.push('❌ ' + k + ': error — ' + e.message);
     }
   });
 
-  // Test 3: memory state
-  keyNames.forEach(k => {
-    if (KEYS[k]) {
-      lines.push({ ok: true, msg: '💾 ' + k + ' en memoria: sí (' + KEYS[k].slice(0,8) + '••••)' });
-    }
+  // Test 3: memory
+  ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
+    if (KEYS[k]) lines.push('💾 ' + k + ' en memoria: ' + KEYS[k].slice(0,10) + '•••');
   });
 
-  el.innerHTML = lines.map(l => {
-    const color = l.ok === true ? '#00e87a' : l.ok === false ? '#f87171' : '#94a3b8';
-    return `<div style="color:${color};padding:2px 0">${l.msg}</div>`;
-  }).join('');
-  el.style.background = '#111827';
-  el.style.border = '1px solid #1e2d44';
+  // Show in the div AND as alert so it's impossible to miss
+  const el = document.getElementById('diag-result');
+  if (el) {
+    el.style.cssText = 'display:block;background:#111827;border:1px solid #1e2d44;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;font-family:monospace;line-height:2';
+    el.innerHTML = lines.map(l => {
+      const color = l.startsWith('✅') || l.startsWith('🔑') || l.startsWith('💾') ? '#00e87a'
+                  : l.startsWith('❌') ? '#f87171' : '#94a3b8';
+      return '<div style="color:' + color + '">' + l + '</div>';
+    }).join('');
+  }
+
+  // Always show as alert too
+  alert('DIAGNÓSTICO LOCALSTORAGE:\n\n' + lines.join('\n'));
 }
 
 function clearAllKeys() {

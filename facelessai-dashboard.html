@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FacelessAI — Content Engine v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#060910;--bg1:#0b0f18;--bg2:#111827;--bg3:#1a2236;
+  --border:#1e2d44;--border2:#253550;
+  --green:#00e87a;--gdim:#00e87a1a;--gsoft:#00e87a44;
+  --blue:#38bdf8;--bdim:#38bdf81a;
+  --amber:#fbbf24;--adim:#fbbf241a;
+  --red:#f87171;--rdim:#f871711a;
+  --purple:#a78bfa;--pdim:#a78bfa1a;
+  --pink:#f472b6;--pkdim:#f472b61a;
+  --teal:#2dd4bf;--tdim:#2dd4bf1a;
+  --text1:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+  --mono:'Space Mono',monospace;
+  --sans:'Outfit',sans-serif;
+  --r:8px;--rl:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;display:flex;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:224px;min-height:100vh;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto;}
+.logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);}
+.logo-mark{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green);}
+.logo-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);}
+.nav{padding:8px 6px;flex:1;}
+.nsl{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:7px 10px 3px;font-family:var(--mono);}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:13px;transition:all .15s;margin-bottom:1px;border:1px solid transparent;user-select:none;}
+.ni:hover{background:var(--bg3);color:var(--text1);}
+.ni.active{background:var(--gdim);color:var(--green);border-color:var(--gsoft);}
+.ni svg{width:14px;height:14px;opacity:.7;flex-shrink:0;}
+.ni.active svg{opacity:1;}
+.nb{margin-left:auto;font-size:10px;padding:2px 6px;border-radius:99px;font-family:var(--mono);}
+.nbg{background:var(--gsoft);color:var(--green);}
+.nba{background:var(--adim);color:var(--amber);}
+.nbr{background:var(--rdim);color:var(--red);}
+.nbb{background:var(--bdim);color:var(--blue);}
+.sidebar-footer{padding:10px 8px;border-top:1px solid var(--border);}
+.user-pill{display:flex;align-items:center;gap:8px;padding:7px;border-radius:var(--r);cursor:pointer;}
+.user-pill:hover{background:var(--bg3);}
+.av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
+
+/* ── MAIN ── */
+.main{margin-left:224px;flex:1;display:flex;flex-direction:column;}
+.topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
+.budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
+.bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.content{padding:20px;flex:1;}
+.view{display:none;}.view.active{display:block;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:var(--sans);}
+.btn-p{background:var(--green);color:var(--bg0);}.btn-p:hover{background:#00ff88;}
+.btn-g{background:transparent;color:var(--text2);border:1px solid var(--border2);}.btn-g:hover{background:var(--bg3);color:var(--text1);}
+.btn-b{background:var(--bdim);color:var(--blue);border:1px solid #38bdf822;}
+.btn-a{background:var(--adim);color:var(--amber);border:1px solid #fbbf2422;}
+.btn-r{background:var(--rdim);color:var(--red);border:1px solid #f8717122;}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn-w{width:100%;justify-content:center;}
+
+/* ── LAYOUT ── */
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:18px;}
+.card-d{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;}
+.g12{display:grid;grid-template-columns:1fr 2fr;gap:14px;}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sh h2{font-size:15px;font-weight:700;}
+.stl{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);font-family:var(--mono);margin-bottom:10px;}
+
+/* ── STATS ── */
+.sc{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px;}
+.sc-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);}
+.sc-val{font-size:24px;font-weight:700;font-family:var(--mono);margin:3px 0;}
+.du{color:var(--green);font-size:12px;}.dd{color:var(--red);font-size:12px;}
+
+/* ── TAGS ── */
+.tag{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:99px;font-family:var(--mono);}
+.tg{background:var(--gdim);color:var(--green);border:1px solid var(--gsoft);}
+.tb{background:var(--bdim);color:var(--blue);border:1px solid #38bdf822;}
+.ta{background:var(--adim);color:var(--amber);border:1px solid #fbbf2422;}
+.tr{background:var(--rdim);color:var(--red);border:1px solid #f8717122;}
+.tp{background:var(--pdim);color:var(--purple);border:1px solid #a78bfa22;}
+.tpk{background:var(--pkdim);color:var(--pink);border:1px solid #f472b622;}
+.tt{background:var(--tdim);color:var(--teal);border:1px solid #2dd4bf22;}
+
+/* ── INPUTS ── */
+.inp{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text1);padding:8px 12px;font-size:13px;font-family:var(--sans);width:100%;transition:border-color .15s;}
+.inp:focus{outline:none;border-color:var(--green);}
+.inp-lg{padding:11px 14px;font-size:14px;border-radius:var(--rl);}
+.lbl{font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;display:block;}
+.sel{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text1);padding:7px 10px;font-size:13px;font-family:var(--sans);width:100%;cursor:pointer;appearance:none;}
+
+/* ── TOGGLE ── */
+.tgl{position:relative;width:40px;height:22px;flex-shrink:0;}
+.tgl input{opacity:0;position:absolute;width:0;height:0;}
+.tgl-track{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border2);border-radius:99px;cursor:pointer;transition:.2s;}
+.tgl input:checked+.tgl-track{background:var(--green);border-color:var(--green);}
+.tgl-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:.2s;pointer-events:none;}
+.tgl input:checked~.tgl-thumb{transform:translateX(18px);}
+.tw{display:flex;align-items:center;gap:10px;}
+
+/* ── FLEX UTILS ── */
+.flex{display:flex;}.fic{align-items:center;}.fw{flex-wrap:wrap;}
+.g6{gap:6px;}.g8{gap:8px;}.g10{gap:10px;}.g16{gap:16px;}
+.mt8{margin-top:8px;}.mt12{margin-top:12px;}.mt14{margin-top:14px;}.mt16{margin-top:16px;}.mt20{margin-top:20px;}
+.mb8{margin-bottom:8px;}.mb12{margin-bottom:12px;}.mb14{margin-bottom:14px;}.mb16{margin-bottom:16px;}.mb20{margin-bottom:20px;}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
+
+/* ── ACTIVITY ── */
+.ai{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);}
+.ai:last-child{border-bottom:none;}
+.ad{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+
+/* ── PLATFORM TAGS ── */
+.pt{font-size:10px;padding:2px 7px;border-radius:99px;font-family:var(--mono);font-weight:700;}
+.pt-yt{background:#ff000022;color:#ff4444;border:1px solid #ff000033;}
+.pt-tt{background:#00f2ea22;color:#00d4c4;border:1px solid #00f2ea33;}
+.pt-ig{background:#e1306c22;color:#e1306c;border:1px solid #e1306c33;}
+
+/* ── CHANNEL ROW ── */
+.chrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.chrow:last-child{border-bottom:none;}
+.ch-icon{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.dot-on{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+.dot-off{width:7px;height:7px;border-radius:50%;background:var(--amber);}
+
+/* ── AUTOPILOT ── */
+.ap-card{border-radius:var(--rl);padding:18px 20px;border:1px solid var(--border);display:flex;align-items:center;gap:16px;margin-bottom:16px;transition:all .3s;}
+.ap-on{background:linear-gradient(135deg,#00e87a08,transparent);border-color:var(--gsoft);}
+.ap-off{background:var(--bg2);}
+.ap-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.ap-dot-on{background:var(--green);box-shadow:0 0 10px var(--gsoft);animation:pulse 2s infinite;}
+.ap-dot-off{background:var(--text3);}
+.log-feed{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:12px;font-family:var(--mono);font-size:11.5px;height:188px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+.ll{display:flex;gap:10px;align-items:baseline;}
+.lt{color:var(--text3);flex-shrink:0;font-size:11px;}
+.lok{color:var(--green);}.linf{color:var(--blue);}.lw{color:var(--amber);}.lerr{color:var(--red);}
+.queue-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+
+/* ── TREND CARD ── */
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.tc:hover{border-color:var(--border2);background:var(--bg3);}
+.tc.hot{border-color:#f8717133;}
+.tc.hot::after{content:'🔥 HOT';position:absolute;top:8px;right:8px;font-size:9px;font-family:var(--mono);color:var(--red);background:var(--rdim);padding:2px 6px;border-radius:99px;border:1px solid #f8717133;}
+.spike{display:flex;align-items:flex-end;gap:2px;height:32px;margin:8px 0;}
+.spike-bar{flex:1;border-radius:2px 2px 0 0;min-height:3px;}
+.src-tag{font-size:10px;padding:2px 5px;border-radius:4px;font-family:var(--mono);}
+
+/* ── SCORE RING ── */
+.score-ring{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;margin:0 auto;}
+.score-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.score-val{font-size:32px;font-weight:700;font-family:var(--mono);line-height:1;}
+.score-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);}
+.smetric{margin-bottom:10px;}
+.smetric-h{display:flex;justify-content:space-between;margin-bottom:4px;}
+.smetric-n{font-size:12px;color:var(--text2);}
+.smetric-v{font-size:12px;font-family:var(--mono);font-weight:700;}
+.sbar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.sbar-f{height:100%;border-radius:3px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+
+/* ── NICHE CARDS ── */
+.nc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.nc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac,var(--green));transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+.nc:hover::before,.nc.sel::before{transform:scaleX(1);}
+.nc:hover,.nc.sel{border-color:var(--ac,var(--green));background:var(--bg3);}
+.score-row{display:flex;gap:6px;}
+.si{flex:1;}
+.si-bar{height:4px;background:var(--bg1);border-radius:2px;overflow:hidden;margin-bottom:2px;}
+.si-fill{height:100%;border-radius:2px;}
+.si-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;}
+
+/* ── PIPELINE ── */
+.pipe{display:flex;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:18px;}
+.pipe-step{flex:1;padding:10px 12px;background:var(--bg1);cursor:pointer;transition:all .15s;border-right:1px solid var(--border);user-select:none;}
+.pipe-step:last-child{border-right:none;}
+.pipe-step:hover{background:var(--bg2);}
+.pipe-step.act{background:var(--gdim);border-bottom:2px solid var(--green);}
+.ps-num{font-size:10px;color:var(--text3);font-family:var(--mono);}
+.pipe-step.act .ps-num{color:var(--green);}
+.ps-name{font-size:11px;font-weight:600;color:var(--text2);}
+.pipe-step.act .ps-name{color:var(--green);}
+.ps-cost{font-size:10px;color:var(--text3);font-family:var(--mono);}
+.pc{display:none;}.pc.act{display:block;}
+
+/* ── IDEA CARD ── */
+.idea{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:13px;margin-bottom:9px;cursor:pointer;transition:all .15s;}
+.idea:hover,.idea.sel{border-color:var(--blue);}
+.idea-hook{font-size:14px;font-weight:600;margin-bottom:8px;}
+.ibadge{font-size:10px;padding:2px 8px;border-radius:99px;font-family:var(--mono);font-weight:700;}
+
+/* ── SCRIPT ── */
+.script-bar{display:flex;gap:6px;margin-bottom:11px;align-items:center;flex-wrap:wrap;}
+.sty-btn{padding:5px 11px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--sans);transition:all .15s;}
+.sty-btn:hover{background:var(--bg3);color:var(--text1);}
+.sty-btn.act{background:var(--gdim);color:var(--green);border-color:var(--gsoft);}
+.script-area{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;font-family:var(--mono);font-size:12px;color:var(--text1);line-height:1.9;min-height:210px;white-space:pre-wrap;overflow-y:auto;}
+.sh2{background:var(--adim);border-left:3px solid var(--amber);padding:5px 9px;border-radius:0 4px 4px 0;margin:3px 0;display:block;}
+.sc2{background:var(--bdim);border-left:3px solid var(--blue);padding:5px 9px;border-radius:0 4px 4px 0;margin:3px 0;display:block;}
+.stag{color:var(--green);font-weight:700;}
+
+/* ── VIDEO PREVIEW ── */
+.vprev{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);aspect-ratio:9/16;max-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;position:relative;overflow:hidden;}
+.vprev-bg{position:absolute;inset:0;background:linear-gradient(180deg,#1a2236,#0b1a2e);opacity:.8;}
+.vprev-c{position:relative;z-index:1;text-align:center;}
+.prog-ring{width:48px;height:48px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--green);animation:spin 1s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── PLAT BTNS ── */
+.plat-btn{flex:1;padding:12px;border-radius:var(--rl);border:2px solid var(--border);background:var(--bg2);cursor:pointer;transition:all .15s;text-align:center;font-family:var(--sans);}
+.plat-btn:hover{border-color:var(--border2);}
+.p-yt{border-color:#ff4444;background:#ff000015;}
+.p-tt{border-color:#00d4c4;background:#00f2ea15;}
+.p-ig{border-color:#e1306c;background:#e1306c15;}
+
+/* ── CLONE ── */
+.clone-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center;}
+.cs-val{font-size:20px;font-weight:700;font-family:var(--mono);}
+.cs-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;}
+.hook-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px;margin-bottom:7px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;}
+.hook-card:hover{border-color:var(--blue);color:var(--text1);}
+.hook-score{font-family:var(--mono);font-size:11px;color:var(--green);float:right;}
+
+/* ── TEMPLATES ── */
+.tmpl{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .15s;}
+.tmpl:hover{border-color:var(--amber);}
+
+/* ── VIDEO ROW ── */
+.vrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.vrow:last-child{border-bottom:none;}
+.vthumb{width:44px;height:44px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.clip-chip{display:inline-flex;align-items:center;font-size:11px;padding:3px 8px;border-radius:99px;font-family:var(--mono);background:var(--bdim);color:var(--blue);border:1px solid #38bdf822;cursor:pointer;margin:2px;}
+
+/* ── AFFIL ── */
+.aff-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;overflow:hidden;cursor:pointer;transition:all .15s;}
+.aff-card:hover{border-color:var(--border2);}
+.aff-card::after{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;}
+.aff-revolut::after{background:var(--blue);}
+.aff-amazon::after{background:var(--amber);}
+.aff-broker::after{background:var(--green);}
+.aff-courses::after{background:var(--purple);}
+.prog-bar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:7px;}
+.prog-fill{height:100%;border-radius:3px;}
+
+/* ── MONEY ── */
+.money-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;overflow:hidden;}
+.money-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.m-ads::after{background:var(--green);}
+.m-aff::after{background:var(--amber);}
+.m-cost::after{background:var(--red);}
+.m-net::after{background:var(--blue);}
+.proj-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:7px;}
+.proj-fill{height:100%;border-radius:3px;background:var(--green);}
+.ch-bar-bg{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.ch-bar-f{height:100%;border-radius:3px;}
+
+/* ── MODE CARDS ── */
+.mode-c{background:var(--bg2);border:2px solid var(--border);border-radius:var(--rl);padding:16px;cursor:pointer;transition:all .2s;text-align:center;}
+.mode-c:hover{border-color:var(--border2);}
+.mode-c.m-std{border-color:var(--green);background:var(--gdim);}
+.mode-c.m-kids{border-color:var(--pink);background:var(--pkdim);}
+.mode-c.m-edu{border-color:var(--teal);background:var(--tdim);}
+
+/* ── MINI TABLE ── */
+.mtable{width:100%;border-collapse:collapse;}
+.mtable td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;}
+.mtable tr:last-child td{border-bottom:none;}
+.models-tbl{width:100%;border-collapse:collapse;}
+.models-tbl th{text-align:left;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);font-family:var(--mono);border-bottom:1px solid var(--border);}
+.models-tbl td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);vertical-align:middle;}
+.models-tbl tr:hover td{background:var(--bg2);}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:22px;width:460px;max-width:95vw;max-height:92vh;overflow-y:auto;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg1);border:1px solid var(--gsoft);border-radius:var(--rl);padding:11px 16px;font-size:13px;z-index:1000;display:none;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:sup .25s ease;}
+.toast.show{display:flex;}
+@keyframes sup{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg0);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
+    <div class="logo-sub">Content Engine v3</div>
+  </div>
+  <nav class="nav">
+    <div class="nsl">Principal</div>
+    <div class="ni active" data-view="dashboard">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard
+    </div>
+    <div class="ni" data-view="channels">
+      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><circle cx="8" cy="11" r="2.5"/></svg>Canales<span class="nb nbg">3</span>
+    </div>
+    <div class="nsl" style="margin-top:6px">— 3 · AutoPilot</div>
+    <div class="ni" data-view="autopilot">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>AutoPilot<span class="nb nbg" id="ap-nav-badge">ON</span>
+    </div>
+    <div class="nsl" style="margin-top:6px">— 8 · Tendencias</div>
+    <div class="ni" data-view="trends">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="1 12 5 7 9 9 13 3 15 3"/><circle cx="13" cy="3" r="1.5" fill="currentColor" stroke="none"/></svg>Tendencias<span class="nb nbr">5🔥</span>
+    </div>
+    <div class="nsl" style="margin-top:6px">— 2 · Score + Pipeline</div>
+    <div class="ni" data-view="score">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><path d="M8 4v4l3 3"/></svg>Score IA
+    </div>
+    <div class="ni" data-view="pipeline">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><line x1="5" y1="3" x2="5" y2="13"/><line x1="11" y1="3" x2="11" y2="13"/></svg>Pipeline
+    </div>
+    <div class="nsl" style="margin-top:6px">— 4 · URL→Vídeo</div>
+    <div class="ni" data-view="url2video">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3H3a2 2 0 00-2 2v6a2 2 0 002 2h3M10 3h3a2 2 0 012 2v6a2 2 0 01-2 2h-3M5 8h6"/></svg>URL → Vídeo<span class="nb nbb">NEW</span>
+    </div>
+    <div class="nsl" style="margin-top:6px">— 1 · Clonar canal</div>
+    <div class="ni" data-view="clone">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="10" height="11" rx="2"/><path d="M5 4V3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2h-1"/></svg>Clonar canal
+    </div>
+    <div class="nsl" style="margin-top:6px">— 5 · Afiliación</div>
+    <div class="ni" data-view="affiliation">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="1" x2="8" y2="15"/><path d="M11 4H6.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H5"/></svg>Afiliación<span class="nb nbg">+$284</span>
+    </div>
+    <div class="nsl" style="margin-top:6px">— 9 · Reutilizar</div>
+    <div class="ni" data-view="reuse">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8a7 7 0 0014 0M15 8a7 7 0 00-14 0"/><polyline points="12 5 15 8 12 11"/><polyline points="4 5 1 8 4 11"/></svg>Reutilizar<span class="nb nba">43 clips</span>
+    </div>
+    <div class="nsl" style="margin-top:6px">— 10 · Monetización</div>
+    <div class="ni" data-view="monetization">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 7h14M5 11h2M9 11h2"/></svg>Monetización<span class="nb nbg">$1.2K</span>
+    </div>
+    <div class="nsl" style="margin-top:6px">Config</div>
+    <div class="ni" data-view="models">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="10" rx="2"/><line x1="5" y1="14" x2="11" y2="14"/><line x1="8" y1="11" x2="8" y2="14"/></svg>Modelos IA
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="av">JD</div>
+      <div><div style="font-size:12.5px;font-weight:500">Juan Diego</div><div style="font-size:10px;color:var(--green);font-family:var(--mono)">PRO · $2.47 mes</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="font-size:15px;font-weight:600" id="page-title">Dashboard</div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+      <div class="budget-pill">
+        <div class="bdot"></div>
+        <span style="color:var(--text2)">Hoy:</span>
+        <span style="font-weight:700">$0.08</span>
+        <span style="color:var(--text3)">/ $2 límite</span>
+      </div>
+      <button class="btn btn-g btn-sm" onclick="openModal()">+ Canal</button>
+      <button class="btn btn-p btn-sm" onclick="nav('pipeline')">▶ Generar</button>
+    </div>
+  </div>
+  <div class="content">
+<!-- ════════════════ DASHBOARD ════════════════ -->
+<div class="view active" id="view-dashboard">
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Vídeos / mes</div><div class="sc-val">127</div><span class="du">↑ 23% vs anterior</span></div>
+    <div class="sc"><div class="sc-label">Coste IA total</div><div class="sc-val" style="color:var(--green)">$2.47</div><span class="du">↓ 64% ahorro</span></div>
+    <div class="sc"><div class="sc-label">Views totales</div><div class="sc-val">4.8M</div><span class="du">↑ 112%</span></div>
+    <div class="sc"><div class="sc-label">Ingresos estimados</div><div class="sc-val" style="color:var(--amber)">$1,174</div><span class="du">↑ 89%</span></div>
+  </div>
+
+  <!-- AutoPilot quick status -->
+  <div class="card mb12" style="background:linear-gradient(135deg,#00e87a07,transparent);border-color:var(--gsoft);padding:13px 18px">
+    <div class="flex fic g16">
+      <div class="ap-dot ap-dot-on"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--green);font-family:var(--mono)">AUTOPILOT ACTIVO</div>
+        <div style="font-size:12px;color:var(--text3)">3 vídeos/día · límite $2/día · próximo en 4h 12m · score mínimo: 72</div>
+      </div>
+      <span class="tag tg">2 en cola</span>
+      <button class="btn btn-g btn-sm" onclick="nav('autopilot')">Configurar →</button>
+    </div>
+  </div>
+
+  <!-- Trend alert -->
+  <div class="mb14" style="background:var(--rdim);border:1px solid #f8717133;border-radius:var(--rl);padding:12px 16px">
+    <div class="flex fic g12">
+      <span style="font-size:18px">🔥</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">"Despidos en IA" — tendencia +620% · ventana de 18h</div>
+        <div style="font-size:12px;color:var(--text3)">Detectado: YT Shorts + TikTok + Google Trends · pico máximo</div>
+      </div>
+      <button class="btn btn-p btn-sm" onclick="nav('url2video')" style="flex-shrink:0">Crear ahora →</button>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="sh"><h2>Canales activos</h2><button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos →</button></div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--bdim);color:var(--blue)">💰</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">FinanceFacts ES</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS</div></div>
+        <div class="dot-on"></div><span style="font-size:12px;font-family:var(--mono);color:var(--green)">48K hoy</span>
+      </div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--pdim);color:var(--purple)">🧠</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">MindHacks Daily</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">MOTIVACIÓN</div></div>
+        <div class="dot-on"></div><span style="font-size:12px;font-family:var(--mono);color:var(--green)">31K hoy</span>
+      </div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--adim);color:var(--amber)">🌍</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">CurioMundo</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CURIOSIDADES</div></div>
+        <div class="dot-off"></div><span style="font-size:12px;font-family:var(--mono);color:var(--text3)">Pausado</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sh"><h2>Actividad reciente</h2></div>
+      <div class="ai"><div class="ad" style="background:var(--green)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">AutoPilot</strong> publicó "5 errores financieros" — YT+TT+IG</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">2m</span></div>
+      <div class="ai"><div class="ad" style="background:var(--red)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Tendencia</strong> "Despidos IA" +620% — 18h de ventana</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">14m</span></div>
+      <div class="ai"><div class="ad" style="background:var(--blue)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Score IA</strong> rechazó idea (42/100) — $0.02 ahorrado</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">1h</span></div>
+      <div class="ai"><div class="ad" style="background:var(--amber)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Reutilización</strong> generó 4 clips de "Top 10 misterios"</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">3h</span></div>
+      <div class="ai"><div class="ad" style="background:var(--green)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Afiliación</strong> Revolut: +3 registros hoy = +$120</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">5h</span></div>
+    </div>
+  </div>
+</div>
+<!-- ════════════════ CHANNELS ════════════════ -->
+<div class="view" id="view-channels">
+  <div class="sh mb20"><h2 style="font-size:17px">Mis canales</h2><button class="btn btn-p btn-sm" onclick="openModal()">+ Crear canal</button></div>
+  <div class="g3">
+    <div class="card" style="cursor:pointer">
+      <div class="flex fic g10 mb12">
+        <div class="ch-icon" style="background:var(--bdim);color:var(--blue)">💰</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:600">FinanceFacts ES</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS BÁSICAS</div></div>
+        <div class="dot-on"></div>
+      </div>
+      <div class="flex g16 mb12">
+        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">124K</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">SUBS</div></div>
+        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">4.2M</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">VIEWS/MES</div></div>
+        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--amber)">$890</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">EST/MES</div></div>
+      </div>
+      <div class="flex g6"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span><span class="pt pt-ig">Instagram</span></div>
+    </div>
+    <div class="card" style="cursor:pointer">
+      <div class="flex fic g10 mb12">
+        <div class="ch-icon" style="background:var(--pdim);color:var(--purple)">🧠</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:600">MindHacks Daily</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">MOTIVACIÓN / PSICOLOGÍA</div></div>
+        <div class="dot-on"></div>
+      </div>
+      <div class="flex g16 mb12">
+        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">89K</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">SUBS</div></div>
+        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">2.1M</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">VIEWS/MES</div></div>
+        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--amber)">$340</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">EST/MES</div></div>
+      </div>
+      <div class="flex g6"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span></div>
+    </div>
+    <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:150px;cursor:pointer" onclick="openModal()">
+      <div style="text-align:center;color:var(--text3)"><div style="font-size:28px;margin-bottom:6px">+</div><div style="font-size:13px">Añadir canal</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ 3 · AUTOPILOT ════════════════ -->
+<div class="view" id="view-autopilot">
+  <div class="sh mb14"><h2>AutoPilot — Piloto automático</h2><span class="tag tg">Core del negocio</span></div>
+
+  <div class="ap-card ap-on" id="ap-status-card">
+    <div class="ap-dot ap-dot-on" id="ap-dot"></div>
+    <div style="flex:1">
+      <div style="font-size:17px;font-weight:700;color:var(--green);font-family:var(--mono)" id="ap-title-txt">AUTOPILOT ACTIVO</div>
+      <div style="font-size:12px;color:var(--text3)" id="ap-sub-txt">Generando y publicando automáticamente · Próximo vídeo en 4h 12m</div>
+    </div>
+    <label class="tgl" style="width:46px;height:24px">
+      <input type="checkbox" id="ap-toggle" checked onchange="toggleAP(this.checked)">
+      <div class="tgl-track"></div>
+      <div class="tgl-thumb" style="width:16px;height:16px;top:3px;left:3px"></div>
+    </label>
+  </div>
+
+  <div class="g2 mb16">
+    <!-- Config panel -->
+    <div class="card">
+      <div class="stl mb14">Configuración de límites</div>
+
+      <div class="mb14">
+        <label class="lbl">Vídeos por día (por canal)</label>
+        <div class="flex fic g10">
+          <input type="range" min="1" max="10" value="3" id="ap-v-range" oninput="document.getElementById('ap-v-val').textContent=this.value" style="flex:1">
+          <span id="ap-v-val" style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--green);min-width:16px">3</span>
+        </div>
+      </div>
+
+      <div class="mb14">
+        <label class="lbl">Límite de gasto diario ($)</label>
+        <div class="flex fic g10">
+          <input type="range" min="0.5" max="20" value="2" step="0.5" id="ap-c-range" oninput="document.getElementById('ap-c-val').textContent='$'+parseFloat(this.value).toFixed(1)" style="flex:1">
+          <span id="ap-c-val" style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--amber);min-width:34px">$2.0</span>
+        </div>
+      </div>
+
+      <div class="mb14">
+        <label class="lbl">Score mínimo para publicar (Score IA)</label>
+        <div class="flex fic g10">
+          <input type="range" min="50" max="95" value="72" id="ap-s-range" oninput="document.getElementById('ap-s-val').textContent=this.value+'/100'" style="flex:1">
+          <span id="ap-s-val" style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--blue);min-width:52px">72/100</span>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:3px">Ideas con score menor se descartan antes de gastar en generación</div>
+      </div>
+
+      <div class="mb14">
+        <label class="lbl">Horarios de publicación (máximo alcance)</label>
+        <div class="flex g8">
+          <input class="inp" type="time" value="09:00" style="flex:1">
+          <input class="inp" type="time" value="15:00" style="flex:1">
+          <input class="inp" type="time" value="20:00" style="flex:1">
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px">
+        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Pausar si supero límite diario</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Priorizar tendencias detectadas (48h)</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Cross-post automático YT + TikTok + IG</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Insertar links de afiliado automáticamente</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Reutilizar: extraer clips de vídeos >80K views</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Notificación email al publicar</span></div>
+      </div>
+
+      <button class="btn btn-p btn-w" onclick="showToast('✓ AutoPilot configurado y guardado')">Guardar configuración</button>
+    </div>
+
+    <!-- Live log + queue -->
+    <div class="card">
+      <div class="stl mb10">Log en tiempo real</div>
+      <div class="log-feed" id="ap-log">
+        <div class="ll"><span class="lt">20:14:02</span><span class="lok">✓ Publicado "5 errores financieros" → YT + TT + IG</span></div>
+        <div class="ll"><span class="lt">20:14:01</span><span class="linf">→ MP4 exportado · 44.8s · 7.9MB</span></div>
+        <div class="ll"><span class="lt">20:13:58</span><span class="linf">→ Subtítulos Whisper aplicados</span></div>
+        <div class="ll"><span class="lt">20:13:44</span><span class="linf">→ 4 clips Pexels · voz Kokoro · música Pixabay</span></div>
+        <div class="ll"><span class="lt">20:13:32</span><span class="lok">✓ Score: 88/100 — pasa filtro (mín: 72)</span></div>
+        <div class="ll"><span class="lt">20:13:28</span><span class="linf">→ Script Claude Haiku · $0.003 · 1.2s</span></div>
+        <div class="ll"><span class="lt">20:13:25</span><span class="linf">→ Tendencia seleccionada: "ahorro automatizado"</span></div>
+        <div class="ll"><span class="lt">20:13:24</span><span class="lok">✓ AutoPilot ciclo #127 iniciado · FinanceFacts ES</span></div>
+        <div class="ll"><span class="lt">18:00:01</span><span class="lok">✓ Publicado "3 cuentas sin comisiones"</span></div>
+        <div class="ll"><span class="lt">14:32:10</span><span class="lw">⚠ Idea descartada — score 61/100 &lt; mínimo 72</span></div>
+        <div class="ll"><span class="lt">09:30:12</span><span class="linf">→ Afiliado Revolut auto-insertado en descripción</span></div>
+        <div class="ll"><span class="lt">09:00:01</span><span class="lok">✓ Publicado "Inversión desde $10/mes"</span></div>
+        <div class="ll"><span class="lt">09:00:00</span><span class="linf">▶ AutoPilot iniciado · ciclo diario · 3 canales</span></div>
+      </div>
+
+      <div class="stl mt14 mb10">Cola pendiente</div>
+      <div class="queue-item"><span style="font-size:12px;color:var(--text2);flex:1">💰 "Cómo ahorrar sin notarlo" — FinanceFacts ES</span><span class="tag tg">~4h</span></div>
+      <div class="queue-item" style="margin-bottom:0"><span style="font-size:12px;color:var(--text2);flex:1">🧠 "El sesgo de anclaje" — MindHacks Daily</span><span class="tag tb">~8h</span></div>
+
+      <div class="stl mt14 mb10">Estadísticas de hoy</div>
+      <div class="g4" style="gap:8px">
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono)">3</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">PUBLICADOS</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--green)">$0.08</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">GASTO</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--amber)">2</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">DESCARTADAS</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono)">4.2h</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">AHORRADAS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ════════════════ 8 · TENDENCIAS ════════════════ -->
+<div class="view" id="view-trends">
+  <div class="sh mb14">
+    <h2>Detector de tendencias — ventana de 48h</h2>
+    <div class="flex g8">
+      <span class="tag tr">5 críticas ahora</span>
+      <button class="btn btn-g btn-sm" onclick="showToast('✓ Tendencias actualizadas')">↻ Actualizar ahora</button>
+    </div>
+  </div>
+
+  <!-- Critical alert -->
+  <div class="mb14" style="background:var(--rdim);border:1px solid #f8717133;border-radius:var(--rl);padding:13px 16px">
+    <div class="flex fic g12">
+      <span style="font-size:20px">⚡</span>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:600">"Despidos en empresas IA" — pico máximo · 18h de ventana</div>
+        <div style="font-size:12px;color:var(--text3)">YT Shorts +620% · TikTok +910% · Google Trends máx. histórico · Reddit front page</div>
+      </div>
+      <button class="btn btn-p btn-sm" onclick="nav('score')" style="flex-shrink:0">Evaluar score y crear →</button>
+    </div>
+  </div>
+
+  <!-- Sources config -->
+  <div class="card-d mb16" style="padding:12px 16px">
+    <div class="flex fic g16 fw">
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px">Fuentes activas:</span>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">YouTube Shorts</span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">TikTok Explore</span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Google Trends</span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Reddit Rising</span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Twitter/X</span></div>
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto">Actualización cada 6h</span>
+    </div>
+  </div>
+
+  <div class="g3">
+    <!-- Trend 1 -->
+    <div class="tc hot">
+      <div class="flex fic g8 mb8">
+        <span style="font-size:17px">🤖</span>
+        <div><div style="font-size:13px;font-weight:700">Despidos en empresas IA</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">TECNOLOGÍA · TRABAJO</div></div>
+      </div>
+      <div class="spike" id="sp-1"></div>
+      <div class="flex fic g8 mt8">
+        <span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--red)">+620%</span>
+        <div class="flex g4">
+          <span class="src-tag" style="background:var(--rdim);color:var(--red)">YT</span>
+          <span class="src-tag" style="background:#00f2ea22;color:#00d4c4">TT</span>
+          <span class="src-tag" style="background:#ff660022;color:#ff6600">Reddit</span>
+        </div>
+        <span style="font-size:10px;color:var(--red);font-family:var(--mono);margin-left:auto">⏱ 18h</span>
+      </div>
+      <button class="btn btn-p btn-sm btn-w mt8" onclick="setTrendAndNav('Despidos en empresas de IA')">Crear vídeo sobre esto →</button>
+    </div>
+
+    <!-- Trend 2 -->
+    <div class="tc">
+      <div class="flex fic g8 mb8">
+        <span style="font-size:17px">🛒</span>
+        <div><div style="font-size:13px;font-weight:700">Ahorro en supermercado</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS · CONSUMO</div></div>
+      </div>
+      <div class="spike" id="sp-2"></div>
+      <div class="flex fic g8 mt8">
+        <span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--amber)">+340%</span>
+        <div class="flex g4">
+          <span class="src-tag" style="background:var(--adim);color:var(--amber)">GT</span>
+          <span class="src-tag" style="background:#e1306c22;color:#e1306c">IG</span>
+        </div>
+        <span style="font-size:10px;color:var(--amber);font-family:var(--mono);margin-left:auto">⏱ 36h</span>
+      </div>
+      <button class="btn btn-a btn-sm btn-w mt8" onclick="setTrendAndNav('Trucos para ahorrar en el supermercado')">Evaluar y crear →</button>
+    </div>
+
+    <!-- Trend 3 -->
+    <div class="tc">
+      <div class="flex fic g8 mb8">
+        <span style="font-size:17px">🧠</span>
+        <div><div style="font-size:13px;font-weight:700">Psicología del dinero</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS · MINDSET</div></div>
+      </div>
+      <div class="spike" id="sp-3"></div>
+      <div class="flex fic g8 mt8">
+        <span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--blue)">+210%</span>
+        <div class="flex g4">
+          <span class="src-tag" style="background:var(--bdim);color:var(--blue)">YT</span>
+          <span class="src-tag" style="background:#00f2ea22;color:#00d4c4">TT</span>
+        </div>
+        <span style="font-size:10px;color:var(--blue);font-family:var(--mono);margin-left:auto">⏱ 48h</span>
+      </div>
+      <button class="btn btn-b btn-sm btn-w mt8" onclick="setTrendAndNav('Psicología del dinero: por qué tomamos malas decisiones financieras')">Evaluar →</button>
+    </div>
+
+    <!-- Trend 4 -->
+    <div class="tc">
+      <div class="flex fic g8 mb8">
+        <span style="font-size:17px">🐙</span>
+        <div><div style="font-size:13px;font-weight:700">Curiosidades animales</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CURIOSIDADES · VIRAL</div></div>
+      </div>
+      <div class="spike" id="sp-4"></div>
+      <div class="flex fic g8 mt8">
+        <span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--green)">+187%</span>
+        <div class="flex g4">
+          <span class="src-tag" style="background:var(--gdim);color:var(--green)">YT</span>
+          <span class="src-tag" style="background:#00f2ea22;color:#00d4c4">TT</span>
+          <span class="src-tag" style="background:#e1306c22;color:#e1306c">IG</span>
+        </div>
+        <span style="font-size:10px;color:var(--green);font-family:var(--mono);margin-left:auto">⏱ 48h</span>
+      </div>
+      <button class="btn btn-g btn-sm btn-w mt8" onclick="setTrendAndNav('10 curiosidades de animales que te van a flipar')">Evaluar →</button>
+    </div>
+
+    <!-- Trend 5 -->
+    <div class="tc">
+      <div class="flex fic g8 mb8">
+        <span style="font-size:17px">💎</span>
+        <div><div style="font-size:13px;font-weight:700">Hábitos de millonarios</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">MOTIVACIÓN · DINERO</div></div>
+      </div>
+      <div class="spike" id="sp-5"></div>
+      <div class="flex fic g8 mt8">
+        <span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--purple)">+156%</span>
+        <div class="flex g4">
+          <span class="src-tag" style="background:var(--pdim);color:var(--purple)">YT</span>
+          <span class="src-tag" style="background:#ff660022;color:#ff6600">Reddit</span>
+        </div>
+        <span style="font-size:10px;color:var(--purple);font-family:var(--mono);margin-left:auto">⏱ 48h</span>
+      </div>
+      <button class="btn btn-g btn-sm btn-w mt8" onclick="setTrendAndNav('3 hábitos diarios de los millonarios que nadie te cuenta')">Evaluar →</button>
+    </div>
+
+    <!-- Trend 6 -->
+    <div class="tc">
+      <div class="flex fic g8 mb8">
+        <span style="font-size:17px">🏦</span>
+        <div><div style="font-size:13px;font-weight:700">Cuentas sin comisiones</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS · BANCOS</div></div>
+      </div>
+      <div class="spike" id="sp-6"></div>
+      <div class="flex fic g8 mt8">
+        <span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--teal)">+122%</span>
+        <div class="flex g4">
+          <span class="src-tag" style="background:var(--tdim);color:var(--teal)">GT</span>
+          <span class="src-tag" style="background:var(--bdim);color:var(--blue)">YT</span>
+        </div>
+        <span style="font-size:10px;color:var(--teal);font-family:var(--mono);margin-left:auto">⏱ 48h</span>
+      </div>
+      <button class="btn btn-g btn-sm btn-w mt8" onclick="setTrendAndNav('Las mejores cuentas sin comisiones en 2026')">Evaluar →</button>
+    </div>
+  </div>
+</div>
+<!-- ════════════════ 2 · SCORE IA ════════════════ -->
+<div class="view" id="view-score">
+  <div class="sh mb16">
+    <h2>Score predictivo IA — analiza antes de gastar</h2>
+    <span class="tag tg">Coste: $0.00 · modelo local</span>
+  </div>
+
+  <div class="card mb16">
+    <label class="lbl mb8">Introduce tu idea o título a evaluar</label>
+    <div class="flex g10">
+      <input class="inp inp-lg" id="score-input" placeholder="Ej: 5 errores que te cuestan $300 al mes sin saberlo..." style="flex:1">
+      <select class="sel" style="width:180px">
+        <option>FinanceFacts ES</option>
+        <option>MindHacks Daily</option>
+        <option>CurioMundo</option>
+      </select>
+      <button class="btn btn-p" onclick="runScore()">Analizar ahora</button>
+    </div>
+    <div id="score-trend-bar" style="display:none;background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:8px 12px;margin-top:10px;font-size:13px;color:var(--green)">
+      ✓ Idea prefijada desde tendencia detectada — evaluando contexto actual del nicho
+    </div>
+  </div>
+
+  <!-- Results (hidden until run) -->
+  <div id="score-results" style="display:none">
+    <div class="g2">
+      <div class="card" style="text-align:center">
+        <div class="stl mb0">Puntuación global</div>
+        <div style="margin:18px 0 12px">
+          <div class="score-ring">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg3)" stroke-width="8"/>
+              <circle id="score-circle" cx="60" cy="60" r="50" fill="none" stroke="var(--green)" stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="47"/>
+            </svg>
+            <div class="score-val" id="score-number" style="color:var(--green)">85</div>
+            <div class="score-lbl">/ 100</div>
+          </div>
+        </div>
+        <div id="score-verdict" class="mb14"><span class="tag tg" style="font-size:13px">✓ APROBADO — vale la pena generar</span></div>
+        <div style="background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:12px;font-size:13px;text-align:left">
+          <div style="font-weight:600;color:var(--green);margin-bottom:4px">💡 Recomendación IA</div>
+          <div id="score-rec" style="color:var(--text1)">Generar Short de 45s. Hook tipo "error + pérdida de dinero". Publicar martes o jueves 18-20h. Incluir afiliado Revolut en descripción.</div>
+        </div>
+        <div class="flex g8 mt14" style="justify-content:center">
+          <button class="btn btn-p btn-sm" onclick="nav('pipeline')">Ir al pipeline a crear →</button>
+          <button class="btn btn-g btn-sm" onclick="nav('url2video')">Buscar URL de referencia</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stl mb14">Métricas predictivas detalladas</div>
+        <div class="smetric">
+          <div class="smetric-h"><span class="smetric-n">Probabilidad de superar 100K views</span><span class="smetric-v" id="sm-1" style="color:var(--green)">74%</span></div>
+          <div class="sbar"><div class="sbar-f" id="sm-bar-1" style="width:74%;background:var(--green)"></div></div>
+        </div>
+        <div class="smetric">
+          <div class="smetric-h"><span class="smetric-n">CPM estimado del nicho</span><span class="smetric-v" id="sm-2" style="color:var(--amber)">$8.40</span></div>
+          <div class="sbar"><div class="sbar-f" id="sm-bar-2" style="width:84%;background:var(--amber)"></div></div>
+        </div>
+        <div class="smetric">
+          <div class="smetric-h"><span class="smetric-n">Saturación actual en YouTube</span><span class="smetric-v" id="sm-3" style="color:var(--green)">Baja (28%)</span></div>
+          <div class="sbar"><div class="sbar-f" id="sm-bar-3" style="width:28%;background:var(--blue)"></div></div>
+        </div>
+        <div class="smetric">
+          <div class="smetric-h"><span class="smetric-n">Potencial de afiliación directa</span><span class="smetric-v" id="sm-4" style="color:var(--green)">Alto</span></div>
+          <div class="sbar"><div class="sbar-f" id="sm-bar-4" style="width:82%;background:var(--purple)"></div></div>
+        </div>
+        <div class="smetric">
+          <div class="smetric-h"><span class="smetric-n">Retención estimada</span><span class="smetric-v" id="sm-5" style="color:var(--green)">68–74%</span></div>
+          <div class="sbar"><div class="sbar-f" id="sm-bar-5" style="width:71%;background:var(--teal)"></div></div>
+        </div>
+        <div class="smetric">
+          <div class="smetric-h"><span class="smetric-n">Coste total de producción</span><span class="smetric-v" id="sm-6" style="color:var(--green)">$0.027</span></div>
+          <div class="sbar"><div class="sbar-f" id="sm-bar-6" style="width:3%;background:var(--green)"></div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="flex fic">
+          <span style="font-size:13px;color:var(--text2)">ROI estimado si supera 100K views:</span>
+          <span style="font-size:19px;font-weight:700;font-family:var(--mono);color:var(--amber);margin-left:auto">$42 – $120</span>
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">AdSense + comisiones de afiliado estimadas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder -->
+  <div id="score-placeholder" class="card-d" style="text-align:center;padding:48px">
+    <div style="font-size:48px;margin-bottom:14px">🎯</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:8px">Analiza cualquier idea antes de gastar un céntimo</div>
+    <div style="font-size:13px;color:var(--text3);max-width:420px;margin:0 auto">Introduce un título o idea arriba. La IA evaluará su potencial viral, CPM estimado, saturación del nicho y coste de producción. Ideas con score bajo se descartan automáticamente en el AutoPilot.</div>
+  </div>
+</div>
+
+<!-- ════════════════ PIPELINE ════════════════ -->
+<div class="view" id="view-pipeline">
+  <div class="sh mb8">
+    <h2>Pipeline de creación</h2>
+    <div class="flex g8 fic">
+      <span class="tag tb" id="pipe-channel-tag">FinanceFacts ES</span>
+      <span class="tag tg" id="pipe-score-tag" style="display:none">Score: 85/100</span>
+    </div>
+  </div>
+
+  <div class="pipe">
+    <div class="pipe-step act" id="ps-0" onclick="setPStep(0)"><div class="ps-num">01</div><div class="ps-name">Nicho</div><div class="ps-cost">gratis</div></div>
+    <div class="pipe-step" id="ps-1" onclick="setPStep(1)"><div class="ps-num">02</div><div class="ps-name">Ideas</div><div class="ps-cost">$0.001</div></div>
+    <div class="pipe-step" id="ps-2" onclick="setPStep(2)"><div class="ps-num">03</div><div class="ps-name">Score IA</div><div class="ps-cost">gratis</div></div>
+    <div class="pipe-step" id="ps-3" onclick="setPStep(3)"><div class="ps-num">04</div><div class="ps-name">Script</div><div class="ps-cost">$0.004</div></div>
+    <div class="pipe-step" id="ps-4" onclick="setPStep(4)"><div class="ps-num">05</div><div class="ps-name">Vídeo</div><div class="ps-cost">$0.019</div></div>
+    <div class="pipe-step" id="ps-5" onclick="setPStep(5)"><div class="ps-num">06</div><div class="ps-name">Publicar</div><div class="ps-cost">gratis</div></div>
+  </div>
+
+  <!-- Step 0: Nicho -->
+  <div class="pc act" id="p-0">
+    <div class="sh"><h2>Selecciona el nicho</h2><button class="btn btn-g btn-sm" onclick="showToast('Tendencias actualizadas ✓')">↻ Actualizar</button></div>
+    <div class="g3">
+      <div class="nc sel" style="--ac:var(--green)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">💰</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Finanzas básicas</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:92%;background:var(--green)"></div></div><div class="si-lbl">Viral 92</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:30%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 30</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:88%;background:var(--amber)"></div></div><div class="si-lbl">CPM $8.8</div></div></div></div>
+      <div class="nc" style="--ac:var(--purple)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🧠</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Motivación / psicología</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:87%;background:var(--green)"></div></div><div class="si-lbl">Viral 87</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:55%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 55</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:72%;background:var(--amber)"></div></div><div class="si-lbl">CPM $7.2</div></div></div></div>
+      <div class="nc" style="--ac:var(--amber)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🌍</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Curiosidades</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:94%;background:var(--green)"></div></div><div class="si-lbl">Viral 94</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:45%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 45</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:55%;background:var(--amber)"></div></div><div class="si-lbl">CPM $5.5</div></div></div></div>
+      <div class="nc" style="--ac:var(--blue)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🤖</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Tecnología / IA</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:96%;background:var(--green)"></div></div><div class="si-lbl">Viral 96</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:40%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 40</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:95%;background:var(--amber)"></div></div><div class="si-lbl">CPM $9.5</div></div></div></div>
+      <div class="nc" style="--ac:var(--red)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">📖</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Historias / Reddit</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:89%;background:var(--green)"></div></div><div class="si-lbl">Viral 89</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:68%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 68</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:48%;background:var(--amber)"></div></div><div class="si-lbl">CPM $4.8</div></div></div></div>
+      <div class="nc" style="--ac:var(--teal)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">💪</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Salud / bienestar</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:81%;background:var(--green)"></div></div><div class="si-lbl">Viral 81</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:72%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 72</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:62%;background:var(--amber)"></div></div><div class="si-lbl">CPM $6.2</div></div></div></div>
+    </div>
+    <div class="flex mt14" style="justify-content:flex-end"><button class="btn btn-p" onclick="setPStep(1)">Continuar →</button></div>
+  </div>
+
+  <!-- Step 1: Ideas -->
+  <div class="pc" id="p-1">
+    <div class="sh"><h2>Ideas virales generadas</h2><button class="btn btn-g btn-sm" onclick="showToast('8 nuevas ideas · $0.001')">↻ Regenerar</button></div>
+    <div class="idea sel" onclick="selectIdea(this)">
+      <div class="idea-hook">❌ El ERROR que te cuesta $300 al mes sin saberlo (y cómo solucionarlo en 2 min)</div>
+      <div class="flex g6 fw mt8"><span class="ibadge" style="background:var(--bdim);color:var(--blue);border:1px solid #38bdf822">Short 45s</span><span class="ibadge" style="background:var(--gdim);color:var(--green);border:1px solid var(--gsoft)">Viral 96/100</span><span class="ibadge" style="background:var(--adim);color:var(--amber);border:1px solid #fbbf2422">CPM $8.4</span><span style="margin-left:auto;font-size:11px;color:var(--text3);font-family:var(--mono)">Afil. + AdSense</span></div>
+    </div>
+    <div class="idea" onclick="selectIdea(this)">
+      <div class="idea-hook">🤫 Lo que los BANCOS no quieren que sepas sobre tus ahorros</div>
+      <div class="flex g6 fw mt8"><span class="ibadge" style="background:var(--bdim);color:var(--blue);border:1px solid #38bdf822">Reel 60s</span><span class="ibadge" style="background:var(--gdim);color:var(--green);border:1px solid var(--gsoft)">Viral 91/100</span><span class="ibadge" style="background:var(--adim);color:var(--amber);border:1px solid #fbbf2422">CPM $9.1</span></div>
+    </div>
+    <div class="idea" onclick="selectIdea(this)">
+      <div class="idea-hook">📊 Si ganas $2,000/mes, deberías estar haciendo ESTO con tu dinero</div>
+      <div class="flex g6 fw mt8"><span class="ibadge" style="background:var(--bdim);color:var(--blue);border:1px solid #38bdf822">Short 59s</span><span class="ibadge" style="background:var(--gdim);color:var(--green);border:1px solid var(--gsoft)">Viral 88/100</span><span class="ibadge" style="background:var(--adim);color:var(--amber);border:1px solid #fbbf2422">CPM $7.8</span></div>
+    </div>
+    <div class="flex mt14 g8" style="justify-content:flex-end"><button class="btn btn-g btn-sm" onclick="setPStep(0)">← Atrás</button><button class="btn btn-p" onclick="setPStep(2)">Evaluar con Score IA →</button></div>
+  </div>
+
+  <!-- Step 2: Score mini -->
+  <div class="pc" id="p-2">
+    <div class="sh"><h2>Score predictivo</h2><span class="tag tg">$0.00 · gratis</span></div>
+    <div class="g2">
+      <div style="text-align:center">
+        <div class="score-ring" style="margin:16px auto">
+          <svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;top:0;left:0;transform:rotate(-90deg)">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg3)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--green)" stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="38"/>
+          </svg>
+          <div class="score-val" style="color:var(--green)">88</div><div class="score-lbl">/ 100</div>
+        </div>
+        <div class="mb12"><span class="tag tg">✓ APROBADO — generar vídeo</span></div>
+        <div style="font-size:13px;color:var(--text2);background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:10px;text-align:left">Short 45s · Hook "error + dinero" · Publicar martes 18h · Afiliado Revolut</div>
+      </div>
+      <div>
+        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Prob. +100K views</span><span class="smetric-v" style="color:var(--green)">74%</span></div><div class="sbar"><div class="sbar-f" style="width:74%;background:var(--green)"></div></div></div>
+        <div class="smetric"><div class="smetric-h"><span class="smetric-n">CPM estimado</span><span class="smetric-v" style="color:var(--amber)">$8.40</span></div><div class="sbar"><div class="sbar-f" style="width:84%;background:var(--amber)"></div></div></div>
+        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Saturación nicho</span><span class="smetric-v" style="color:var(--green)">Baja 28%</span></div><div class="sbar"><div class="sbar-f" style="width:28%;background:var(--blue)"></div></div></div>
+        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Potencial afiliación</span><span class="smetric-v" style="color:var(--green)">Alto</span></div><div class="sbar"><div class="sbar-f" style="width:82%;background:var(--purple)"></div></div></div>
+        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Coste producción</span><span class="smetric-v" style="color:var(--green)">$0.027</span></div><div class="sbar"><div class="sbar-f" style="width:3%;background:var(--green)"></div></div></div>
+      </div>
+    </div>
+    <div class="flex mt14 g8" style="justify-content:flex-end"><button class="btn btn-g btn-sm" onclick="setPStep(1)">← Atrás</button><button class="btn btn-p" onclick="setPStep(3)">Generar script →</button></div>
+  </div>
+
+  <!-- Step 3: Script -->
+  <div class="pc" id="p-3">
+    <div class="sh"><h2>Generador de script</h2><span class="tag ta">Claude Haiku · $0.003</span></div>
+    <div class="script-bar">
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px">Estilo:</span>
+      <button class="sty-btn act" data-style="shock">Shock / Curiosidad</button>
+      <button class="sty-btn" data-style="edu">Educativo rápido</button>
+      <button class="sty-btn" data-style="story">Storytelling</button>
+      <button class="sty-btn" data-style="lista">Lista / Top</button>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn btn-g btn-sm" onclick="showToast('Script regenerado · $0.003')">↻ Regen.</button>
+        <button class="btn btn-g btn-sm">✏️ Editar</button>
+      </div>
+    </div>
+    <div class="script-area" id="script-content"><span class="sh2">🪝 HOOK (0-3s)
+"¿Sabías que estás perdiendo $300 al mes por UN solo error?"</span>
+
+<span class="stag">// INTERRUPCIÓN (3-8s)</span>
+"La mayoría paga comisiones bancarias que NUNCA revisa."
+
+<span class="stag">// DOLOR (8-20s)</span>
+"Entre $5 y $15 al mes. En 10 años: $1,800 que desaparecen."
+
+<span class="stag">// SOLUCIÓN (20-35s)</span>
+"Revolut, BNEXT, N26 — todas GRATUITAS. Cambio en 7 minutos."
+
+<span class="sc2">📢 CTA (35-45s)
+"Sígueme para más trucos. ¿Cuánto pagas tú? Comenta abajo."</span>
+
+<span class="stag">// HASHTAGS</span>
+#finanzas #ahorrar #dinero #shorts #trucosfinanzas</div>
+    <div class="flex g8 mt12 fic"><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">312 tokens · $0.003 · 1.2s</div><div style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="setPStep(2)">← Atrás</button><button class="btn btn-p" onclick="setPStep(4)">Generar vídeo →</button></div></div>
+  </div>
+
+  <!-- Step 4: Video -->
+  <div class="pc" id="p-4">
+    <div class="sh"><h2>Generación de vídeo</h2><span class="tag ta">Coste estimado: $0.019</span></div>
+    <div style="display:grid;grid-template-columns:1fr 170px;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="card-d" style="padding:12px"><div class="lbl mb6">🎤 Voz TTS</div><select class="sel"><option>Kokoro TTS (local) — GRATIS</option><option>Coqui TTS (local) — GRATIS</option><option>ElevenLabs Turbo</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● GRATIS</div></div>
+        <div class="card-d" style="padding:12px"><div class="lbl mb6">🖼️ Imágenes</div><select class="sel"><option>Pexels API — GRATIS</option><option>Pixabay — GRATIS</option><option>SDXL local</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● GRATIS</div></div>
+        <div class="card-d" style="padding:12px"><div class="lbl mb6">🎵 Música</div><select class="sel"><option>Pixabay Music — GRATIS</option><option>Free Music Archive — GRATIS</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● GRATIS</div></div>
+        <div class="card-d" style="padding:12px"><div class="lbl mb6">✏️ Subtítulos</div><select class="sel"><option>Whisper local — GRATIS</option><option>AssemblyAI</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● Auto-sync</div></div>
+        <div class="card-d" style="padding:12px;grid-column:1/-1"><div class="lbl mb8">⚙️ Efectos</div><div class="flex g12 fw"><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">Zoom dinámico</label><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">Cortes rápidos</label><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">Subtítulos virales</label><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">9:16 vertical</label></div></div>
+      </div>
+      <div>
+        <div class="lbl mb6">PREVIEW</div>
+        <div class="vprev" id="vprev-box">
+          <div class="vprev-bg"></div>
+          <div class="vprev-c">
+            <div class="prog-ring" id="vprev-ring"></div>
+            <div style="font-size:26px" id="vprev-icon">▶</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:7px;font-family:var(--mono)" id="vprev-txt">Sin generar</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:8px;line-height:1.9">~45s · 1080×1920<br>30fps · MP4 · ~8MB</div>
+      </div>
+    </div>
+    <div class="flex g8 mt12" style="justify-content:flex-end"><button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button><button class="btn btn-p" onclick="startVidGen()">▶ Generar ($0.019)</button></div>
+  </div>
+
+  <!-- Step 5: Publish -->
+  <div class="pc" id="p-5">
+    <div class="sh"><h2>Publicación cross-platform</h2><span class="tag tg">Listo</span></div>
+    <div class="flex g10 mb14">
+      <div class="plat-btn p-yt" onclick="this.classList.toggle('p-yt')"><div style="font-size:22px">▶️</div><div style="font-size:12px;font-weight:600;color:#ff4444">YouTube</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Shorts</div></div>
+      <div class="plat-btn p-tt" onclick="this.classList.toggle('p-tt')"><div style="font-size:22px">🎵</div><div style="font-size:12px;font-weight:600;color:#00d4c4">TikTok</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Feed</div></div>
+      <div class="plat-btn p-ig" onclick="this.classList.toggle('p-ig')"><div style="font-size:22px">📷</div><div style="font-size:12px;font-weight:600;color:#e1306c">Instagram</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Reels</div></div>
+    </div>
+    <div class="g2 mb12">
+      <div><label class="lbl">Título optimizado</label><input class="inp" value="❌ El ERROR que te cuesta $300 al mes #shorts"></div>
+      <div><label class="lbl">Programar publicación</label><input type="datetime-local" class="inp" value="2026-03-20T18:00"></div>
+    </div>
+    <div class="card-d mb12" style="padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.8"><span style="color:var(--amber)">⚡ IA recomienda:</span> Martes 18:00 → +43% engagement. YT primero → TikTok +15min → IG +30min para evitar penalización por duplicado.</div>
+    <div class="card-d mb12" style="padding:12px 14px;font-size:13px">
+      <div style="font-weight:600;color:var(--green);margin-bottom:4px">🔗 Afiliados auto-insertados en descripción</div>
+      <div style="color:var(--text2)">Revolut (€40/registro) · DEGIRO (€30/cuenta) · Amazon Associates (3-8%)</div>
+    </div>
+    <div class="flex g8" style="justify-content:flex-end"><button class="btn btn-g btn-sm" onclick="setPStep(4)">← Atrás</button><button class="btn btn-b btn-sm">⬇ Descargar</button><button class="btn btn-p" onclick="publishVideo()">🚀 Publicar ahora</button></div>
+  </div>
+</div>
+<!-- ════════════════ 4 · URL→VIDEO ════════════════ -->
+<div class="view" id="view-url2video">
+  <div class="sh mb14"><h2>URL → Vídeo</h2><span class="tag tb">Convierte cualquier contenido en vídeo en segundos</span></div>
+
+  <div class="card mb14">
+    <label class="lbl mb8">Pega cualquier URL — artículo, Reddit, Wikipedia, tweet, estudio científico, noticia...</label>
+    <div class="flex g10">
+      <input class="inp inp-lg" id="url-input" placeholder="https://..." style="flex:1">
+      <button class="btn btn-p" onclick="analyzeURL()">Analizar URL</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:7px">Compatible con: artículos web · Reddit · Wikipedia · Twitter/X · YouTube (transcripción) · PDFs · blogs · noticias</div>
+  </div>
+
+  <!-- URL Preview (shown after analysis) -->
+  <div id="url-preview" class="card mb14" style="display:block">
+    <div class="stl mb12">Contenido extraído y analizado</div>
+    <div style="display:grid;grid-template-columns:1fr 260px;gap:16px">
+      <div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px" id="url-title">🤖 "Miles de empleados de IA pierden su trabajo mientras las empresas automatizan"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:12px">TECHCRUNCH.COM · hace 2 horas · 1,240 palabras</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px" id="url-summary">Más de 4,200 trabajadores del sector tecnológico han perdido su empleo en Q1 2026, mientras grandes empresas adoptan IA para automatizar tareas de soporte, análisis de datos y desarrollo de software básico. La tendencia se acelera en startups de Series B+.</div>
+        <div class="flex g6 fw">
+          <span class="tag tr">Trending +620%</span>
+          <span class="tag ta">Score predictivo: 91/100</span>
+          <span class="tag tb">Ventana: 18h restantes</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label class="lbl">Canal destino</label><select class="sel"><option>FinanceFacts ES</option><option>MindHacks Daily</option><option>CurioMundo</option></select></div>
+        <div><label class="lbl">Ángulo del vídeo</label>
+          <select class="sel" id="url-angle">
+            <option>Datos impactantes / shock</option>
+            <option>Análisis + solución práctica</option>
+            <option>Top 5 puntos clave</option>
+            <option>Historia narrativa</option>
+            <option>Educativo simplificado</option>
+          </select>
+        </div>
+        <div><label class="lbl">Duración objetivo</label>
+          <select class="sel">
+            <option>30s (máxima retención)</option>
+            <option selected>45s (equilibrado)</option>
+            <option>60s (más contexto)</option>
+          </select>
+        </div>
+        <button class="btn btn-p btn-w" onclick="generateFromURL()">Generar vídeo desde URL →</button>
+        <button class="btn btn-g btn-w btn-sm" onclick="nav('score')">Ver score antes de generar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent processed URLs -->
+  <div class="card-d">
+    <div class="stl mb12">URLs procesadas recientemente</div>
+    <div class="vrow">
+      <div class="vthumb">💰</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">BBC: "La inflación baja al 2.1%"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "¿Qué significa esto para tu bolsillo?" · 45s short · FinanceFacts</div>
+      </div>
+      <span class="tag tg">892K views</span>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🧠</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Reddit r/tifu: "I trusted my bank..."</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "Esta historia te va a FLIPAR" · MindHacks</div>
+      </div>
+      <span class="tag ta">341K views</span>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🌍</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Wikipedia: "Zona hadal del océano"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "10 misterios que la ciencia no explica" · CurioMundo</div>
+      </div>
+      <span class="tag tb">180K views</span>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">📊</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Estudio Harvard: "El sesgo cognitivo del ahorro"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "Por qué no puedes ahorrar (no es tu culpa)" · MindHacks</div>
+      </div>
+      <span class="tag tp">94K views</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ 1 · CLONE ════════════════ -->
+<div class="view" id="view-clone">
+  <div class="sh mb14"><h2>Clonar canal viral</h2><span class="tag tb">Extrae la fórmula de éxito sin copiar contenido</span></div>
+
+  <div class="card mb14">
+    <label class="lbl mb8">URL del canal de YouTube a analizar</label>
+    <div class="flex g10">
+      <input class="inp inp-lg" id="clone-url" placeholder="https://youtube.com/@canal o URL de vídeo..." style="flex:1">
+      <select class="sel" style="width:170px">
+        <option>Últimos 50 vídeos</option>
+        <option selected>Últimos 100 vídeos</option>
+        <option>Todo el canal</option>
+      </select>
+      <button class="btn btn-p" onclick="analyzeChannel()">Analizar canal</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:7px">Analiza títulos, duración, frecuencia, hooks y patrones de los vídeos más virales. No copia contenido, extrae la fórmula.</div>
+  </div>
+
+  <!-- Demo results always shown -->
+  <div style="background:var(--adim);border:1px solid #fbbf2422;border-radius:var(--rl);padding:11px 14px;margin-bottom:14px;font-size:13px">
+    <span style="color:var(--amber);font-weight:600">Analizando:</span> <span>@Graham Stephan — 4.8M subs · 312 vídeos procesados · datos extraídos</span>
+  </div>
+
+  <div class="g4 mb14">
+    <div class="clone-stat"><div class="cs-val">47s</div><div class="cs-lbl">Duración media viral</div></div>
+    <div class="clone-stat"><div class="cs-val">2.1×/sem</div><div class="cs-lbl">Frecuencia publicación</div></div>
+    <div class="clone-stat"><div class="cs-val">18:00h</div><div class="cs-lbl">Hora óptima de publicar</div></div>
+    <div class="clone-stat"><div class="cs-val">$8.7</div><div class="cs-lbl">CPM medio estimado</div></div>
+  </div>
+
+  <div class="g2 mb14">
+    <div class="card">
+      <div class="stl mb12">Top hooks virales adaptados a tu nicho</div>
+      <div class="hook-card">"¿Sabías que el [X%] de la gente comete este error...?"<span class="hook-score">96/100</span></div>
+      <div class="hook-card">"Nadie te enseña esto sobre el dinero..."<span class="hook-score">91/100</span></div>
+      <div class="hook-card">"Si ganas $[X]/mes, estás dejando ir $[Y]..."<span class="hook-score">88/100</span></div>
+      <div class="hook-card">"Este error te cuesta $[X] al año sin saberlo"<span class="hook-score">86/100</span></div>
+      <div class="hook-card">"La verdad sobre [tema] que los bancos ocultan"<span class="hook-score">84/100</span></div>
+      <div class="hook-card">"En [país] la gente más rica hace ESTO cada mañana"<span class="hook-score">81/100</span></div>
+      <button class="btn btn-g btn-sm btn-w mt8">Ver todos los hooks (24 extraídos) →</button>
+    </div>
+
+    <div class="card">
+      <div class="stl mb12">Patrones estructurales de vídeos +500K</div>
+      <table class="mtable">
+        <tr><td style="color:var(--text3)">Estructura ganadora</td><td style="color:var(--text1)">Hook → Dato shock → Solución → CTA</td></tr>
+        <tr><td style="color:var(--text3)">Palabras en título</td><td style="color:var(--text1)">6–9 palabras (óptimo: 7)</td></tr>
+        <tr><td style="color:var(--text3)">Emojis en título</td><td style="color:var(--text1)">1–2 al inicio (❌ 🤫 📊)</td></tr>
+        <tr><td style="color:var(--text3)">Subtítulos</td><td style="color:var(--text1)">Siempre · tamaño grande · colores vivos</td></tr>
+        <tr><td style="color:var(--text3)">Música de fondo</td><td style="color:var(--text1)">Lo-fi / trap suave · vol. 15–20%</td></tr>
+        <tr><td style="color:var(--text3)">CTA más efectivo</td><td style="color:var(--text1)">Pregunta en comentarios</td></tr>
+        <tr><td style="color:var(--text3)">Patrón de interrupción</td><td style="color:var(--text1)">Cada 7–10 segundos</td></tr>
+      </table>
+      <button class="btn btn-p btn-w mt12" onclick="showToast('✓ Perfil de canal aplicado al pipeline')">Aplicar perfil a mi pipeline →</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stl mb12">Temas más rentables del canal (ordenados por views medias)</div>
+    <div class="vrow">
+      <div class="vthumb">💰</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Errores financieros comunes</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">12 vídeos · media 840K views · CPM $9.2 · Afiliados: sí</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🏦</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Cuentas y bancos sin comisiones</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">8 vídeos · media 612K views · CPM $8.8</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">📈</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Inversión para principiantes</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">15 vídeos · media 498K views · CPM $10.1</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🧠</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Psicología del dinero</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">6 vídeos · media 421K views · CPM $9.8</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+  </div>
+</div>
+<!-- ════════════════ 5 · AFILIACIÓN ════════════════ -->
+<div class="view" id="view-affiliation">
+  <div class="sh mb14"><h2>Panel de afiliación</h2><span class="tag tg">$284 este mes · auto-inserción activa</span></div>
+
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Comisiones mes</div><div class="sc-val" style="color:var(--amber)">$284</div><span class="du">↑ 67% vs anterior</span></div>
+    <div class="sc"><div class="sc-label">Clics en links</div><div class="sc-val">4,821</div><span class="du">↑ 43%</span></div>
+    <div class="sc"><div class="sc-label">Conversión media</div><div class="sc-val">5.9%</div><span class="du">↑ 1.2%</span></div>
+    <div class="sc"><div class="sc-label">Top programa</div><div class="sc-val" style="font-size:16px;color:var(--blue)">Revolut</div><span class="du">$120 / mes</span></div>
+  </div>
+
+  <!-- Auto-insertion config -->
+  <div class="card mb16" style="background:linear-gradient(135deg,#fbbf2408,transparent);border-color:#fbbf2433">
+    <div class="sh"><h2>Auto-inserción inteligente en descripciones</h2><span class="tag tg">Activa</span></div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px">El sistema detecta el tema del vídeo y selecciona automáticamente los programas de afiliados más relevantes. Se insertan en la descripción al publicar.</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Insertar afiliado Revolut en vídeos de <strong>cuentas/bancos</strong></span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Insertar afiliado broker en vídeos de <strong>inversión</strong></span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Insertar Amazon Associates en vídeos de <strong>productos</strong></span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Insertar cursos Udemy en vídeos <strong>educativos</strong></span></div>
+    </div>
+  </div>
+
+  <!-- Programs -->
+  <div class="g2 mb16">
+    <div class="aff-card aff-revolut">
+      <div class="flex fic g10 mb10">
+        <span style="font-size:22px">💳</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">Revolut — Cuenta digital</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">€40 POR REGISTRO COMPLETADO</div></div>
+        <span class="tag tb">Activo</span>
+      </div>
+      <div class="flex g16">
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono);color:var(--amber)">$120</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">ESTE MES</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">3</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">REGISTROS</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">8.2%</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CONVERSIÓN</div></div>
+      </div>
+      <div class="prog-bar mt8"><div class="prog-fill" style="width:42%;background:var(--blue)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Objetivo mensual: $280 · 42% conseguido</div>
+    </div>
+
+    <div class="aff-card aff-amazon">
+      <div class="flex fic g10 mb10">
+        <span style="font-size:22px">📦</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">Amazon Associates</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">3–8% POR VENTA REFERIDA</div></div>
+        <span class="tag tg">Activo</span>
+      </div>
+      <div class="flex g16">
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono);color:var(--amber)">$84</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">ESTE MES</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">1,240</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CLICS</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">4.1%</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CONVERSIÓN</div></div>
+      </div>
+      <div class="prog-bar mt8"><div class="prog-fill" style="width:56%;background:var(--amber)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Objetivo mensual: $150 · 56% conseguido</div>
+    </div>
+
+    <div class="aff-card aff-broker">
+      <div class="flex fic g10 mb10">
+        <span style="font-size:22px">📈</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">DEGIRO / Broker</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">€30 POR CUENTA ABIERTA</div></div>
+        <span class="tag tg">Activo</span>
+      </div>
+      <div class="flex g16">
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono);color:var(--amber)">$60</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">ESTE MES</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">2</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CUENTAS</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">3.2%</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CONVERSIÓN</div></div>
+      </div>
+      <div class="prog-bar mt8"><div class="prog-fill" style="width:30%;background:var(--green)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Objetivo mensual: $200 · 30% conseguido</div>
+    </div>
+
+    <div class="aff-card aff-courses">
+      <div class="flex fic g10 mb10">
+        <span style="font-size:22px">🎓</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">Cursos online (Udemy)</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">15% POR VENTA · INSERCIÓN MANUAL</div></div>
+        <span class="tag ta">Manual</span>
+      </div>
+      <div class="flex g16">
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono);color:var(--amber)">$20</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">ESTE MES</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">312</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CLICS</div></div>
+        <div><div style="font-size:19px;font-weight:700;font-family:var(--mono)">2.1%</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CONVERSIÓN</div></div>
+      </div>
+      <div style="background:var(--pdim);border-radius:var(--r);padding:8px 12px;margin-top:10px;font-size:12px;color:var(--purple)">💡 Activar auto-inserción podría +$60/mes según datos del canal</div>
+    </div>
+  </div>
+
+  <button class="btn btn-g btn-sm" onclick="showToast('Abriendo formulario de nuevo programa...')">+ Añadir programa de afiliación</button>
+</div>
+
+<!-- ════════════════ 9 · REUTILIZAR ════════════════ -->
+<div class="view" id="view-reuse">
+  <div class="sh mb14"><h2>Reutilizar contenido</h2><span class="tag tb">Multiplica el output sin multiplicar el coste</span></div>
+
+  <div class="g2 mb14">
+    <div class="card-d" style="padding:14px">
+      <div class="stl mb6">Adaptación cross-platform</div>
+      <div style="font-size:13px;color:var(--text2)">Un vídeo generado se adapta automáticamente para YT, TikTok e IG con ajustes de ritmo, ratio de texto y duración óptima para cada plataforma.</div>
+    </div>
+    <div class="card-d" style="padding:14px">
+      <div class="stl mb6">Extractor de clips virales</div>
+      <div style="font-size:13px;color:var(--text2)">Detecta los fragmentos de mayor retención y los convierte en Shorts independientes. 1 vídeo largo → hasta 6 clips listos para publicar.</div>
+    </div>
+  </div>
+
+  <div class="card mb16">
+    <div class="sh"><h2>Vídeos con potencial de reutilización</h2><button class="btn btn-g btn-sm" onclick="showToast('Analizando retención de todos los vídeos...')">Analizar todos</button></div>
+
+    <div class="vrow">
+      <div class="vthumb">💰</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">"Top 10 errores financieros más comunes" — 8:24 min</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">FinanceFacts ES · 892K views · Retención: 71%</div>
+        <div>
+          <span class="clip-chip">✂ Clip 1: 0:14–1:02</span>
+          <span class="clip-chip">✂ Clip 2: 2:30–3:15</span>
+          <span class="clip-chip">✂ Clip 3: 5:44–6:30</span>
+          <span class="clip-chip">+ 2 más</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 5 clips — coste: $0.00')">Generar 5 clips</button>
+        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok e IG...')">Cross-post</button>
+      </div>
+    </div>
+
+    <div class="vrow">
+      <div class="vthumb">🌍</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">"Los 20 misterios más inexplicables del océano" — 12:10 min</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">CurioMundo · 438K views · Retención: 68%</div>
+        <div>
+          <span class="clip-chip">✂ Clip 1: 0:30–1:10</span>
+          <span class="clip-chip">✂ Clip 2: 4:22–5:00</span>
+          <span class="clip-chip">✂ Clip 3: 8:15–9:00</span>
+          <span class="clip-chip">+ 4 más</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 7 clips — coste: $0.00')">Generar 7 clips</button>
+        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok...')">Cross-post</button>
+      </div>
+    </div>
+
+    <div class="vrow">
+      <div class="vthumb">🧠</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">"Guía completa: cómo invertir desde cero" — 15:44 min</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">MindHacks Daily · 341K views · Retención: 63%</div>
+        <div>
+          <span class="clip-chip">✂ Clip 1: 1:20–2:05</span>
+          <span class="clip-chip">✂ Clip 2: 6:10–7:00</span>
+          <span class="clip-chip">+ 5 más</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 7 clips — coste: $0.00')">Generar 7 clips</button>
+        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok + IG...')">Cross-post</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="g4">
+    <div class="sc"><div class="sc-label">Clips generados (mes)</div><div class="sc-val">43</div><div style="font-size:12px;color:var(--text3)">de 12 vídeos originales</div></div>
+    <div class="sc"><div class="sc-label">Views extra por clips</div><div class="sc-val" style="color:var(--green)">1.2M</div><div style="font-size:12px;color:var(--text3)">coste adicional: $0.00</div></div>
+    <div class="sc"><div class="sc-label">Cross-posts realizados</div><div class="sc-val">89</div><div style="font-size:12px;color:var(--text3)">YT + TT + IG combinado</div></div>
+    <div class="sc"><div class="sc-label">Ratio output/coste</div><div class="sc-val" style="color:var(--amber)">4.6×</div><div style="font-size:12px;color:var(--text3)">vs. generación nueva</div></div>
+  </div>
+</div>
+<!-- ════════════════ 10 · MONETIZACIÓN ════════════════ -->
+<div class="view" id="view-monetization">
+  <div class="sh mb16">
+    <h2>Monetización unificada</h2>
+    <div class="flex g8">
+      <button class="btn btn-g btn-sm">30 días</button>
+      <button class="btn btn-g btn-sm" style="border-color:var(--green);color:var(--green)">3 meses</button>
+      <button class="btn btn-g btn-sm">6 meses</button>
+    </div>
+  </div>
+
+  <!-- Income breakdown -->
+  <div class="g4 mb16">
+    <div class="money-card m-ads"><div class="sc-label">AdSense total</div><div class="sc-val" style="color:var(--green)">$890</div><div style="font-size:12px;color:var(--text3)">↑ 92% vs trimestre anterior</div><div class="proj-bar mt8"><div class="proj-fill" style="width:72%"></div></div></div>
+    <div class="money-card m-aff"><div class="sc-label">Afiliación total</div><div class="sc-val" style="color:var(--amber)">$284</div><div style="font-size:12px;color:var(--text3)">Revolut + Amazon + DEGIRO</div><div class="proj-bar mt8"><div class="proj-fill" style="width:23%;background:var(--amber)"></div></div></div>
+    <div class="money-card m-cost"><div class="sc-label">Coste IA total</div><div class="sc-val" style="color:var(--red)">-$2.47</div><div style="font-size:12px;color:var(--text3)">96.8% bajo vs modo premium</div><div class="proj-bar mt8"><div class="proj-fill" style="width:2%;background:var(--red)"></div></div></div>
+    <div class="money-card m-net"><div class="sc-label">Beneficio neto</div><div class="sc-val" style="color:var(--blue)">$1,172</div><div style="font-size:12px;color:var(--text3)">ROI: 47,449% sobre coste IA</div><div class="proj-bar mt8"><div class="proj-fill" style="width:95%;background:var(--blue)"></div></div></div>
+  </div>
+
+  <div class="g2 mb16">
+    <!-- Proyección 90 días -->
+    <div class="card">
+      <div class="sh"><h2>Proyección a 90 días</h2><span class="tag tb">Basada en curva actual</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+          <div class="flex fic"><div style="font-size:13px;color:var(--text2)">Mes 1 (actual)</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;margin-left:auto">$1,172</div></div>
+          <div class="proj-bar mt8"><div class="proj-fill" style="width:40%"></div></div>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+          <div class="flex fic"><div style="font-size:13px;color:var(--text2)">Mes 2 (proyección)</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green);margin-left:auto">~$1,840</div></div>
+          <div class="proj-bar mt8"><div class="proj-fill" style="width:63%"></div></div>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+          <div class="flex fic"><div style="font-size:13px;color:var(--text2)">Mes 3 (proyección)</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber);margin-left:auto">~$2,900</div></div>
+          <div class="proj-bar mt8"><div class="proj-fill" style="width:99%;background:var(--amber)"></div></div>
+        </div>
+      </div>
+      <div style="background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:11px 13px;margin-top:13px;font-size:13px">
+        <span style="color:var(--green);font-weight:600">💡 IA recomienda:</span> <span style="color:var(--text1)">Escalar FinanceFacts a 4 vídeos/día. Activar CurioMundo con nicho Kids (CPM $14+). Añadir afiliado broker auto-inserción.</span>
+      </div>
+    </div>
+
+    <!-- Por canal -->
+    <div class="card">
+      <div class="sh"><h2>Rendimiento por canal</h2></div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--bdim);color:var(--blue)">💰</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">FinanceFacts ES</div>
+          <div class="ch-bar-bg mt6"><div class="ch-bar-f" style="width:72%;background:var(--green)"></div></div>
+        </div>
+        <div style="text-align:right"><div style="font-family:var(--mono);font-weight:700;color:var(--green)">$890</div><div style="font-size:10px;color:var(--text3)">72% ingresos</div></div>
+      </div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--pdim);color:var(--purple)">🧠</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">MindHacks Daily</div>
+          <div class="ch-bar-bg mt6"><div class="ch-bar-f" style="width:23%;background:var(--amber)"></div></div>
+        </div>
+        <div style="text-align:right"><div style="font-family:var(--mono);font-weight:700;color:var(--amber)">$272</div><div style="font-size:10px;color:var(--text3)">23% ingresos</div></div>
+      </div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--adim);color:var(--amber)">🌍</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">CurioMundo <span style="font-size:10px;color:var(--amber)">(pausado)</span></div>
+          <div class="ch-bar-bg mt6"><div class="ch-bar-f" style="width:8%;background:var(--text3)"></div></div>
+        </div>
+        <div style="text-align:right"><div style="font-family:var(--mono);font-weight:700;color:var(--text3)">$10</div><div style="font-size:10px;color:var(--text3)">5% ingresos</div></div>
+      </div>
+      <div class="divider"></div>
+      <div style="background:var(--adim);border-radius:var(--r);padding:10px 13px;font-size:13px">
+        <span style="color:var(--amber);font-weight:600">Oportunidad:</span> <span style="color:var(--text1)">Reactivar CurioMundo con nicho Kids → CPM $14+ → potencial +$400/mes.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cost breakdown + limits -->
+  <div class="g2">
+    <div class="card">
+      <div class="stl mb12">Desglose de costes IA (mes actual)</div>
+      <table class="mtable">
+        <tr><td style="color:var(--text2)">💡 Ideas (Claude Haiku)</td><td style="text-align:right;font-family:var(--mono)">$0.12</td></tr>
+        <tr><td style="color:var(--text2)">✍️ Scripts (Claude Haiku)</td><td style="text-align:right;font-family:var(--mono)">$0.51</td></tr>
+        <tr><td style="color:var(--text2)">📄 URL parsing (Haiku)</td><td style="text-align:right;font-family:var(--mono)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">🎤 TTS (Kokoro — local)</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">🖼️ Imágenes (Pexels API)</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">🎵 Música (Pixabay)</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">☁️ Almacenamiento (R2 CF)</td><td style="text-align:right;font-family:var(--mono)">$1.84</td></tr>
+        <tr style="border-top:2px solid var(--border2)"><td style="font-weight:700;color:var(--text1)">Total</td><td style="text-align:right;font-family:var(--mono);font-weight:700;color:var(--green)">$2.47</td></tr>
+      </table>
+      <div style="font-size:12px;color:var(--text3);margin-top:10px">Coste en modo premium (GPT-4+ElevenLabs): $84.00 · ahorro: $81.53 (97%)</div>
+    </div>
+
+    <div class="card">
+      <div class="stl mb12">Límites de presupuesto</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <label class="lbl">Límite mensual total ($)</label>
+          <input class="inp" type="number" value="50">
+          <div style="margin-top:5px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px"><span>$2.47 gastado</span><span>4.9%</span></div><div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden"><div style="width:4.9%;height:100%;background:var(--green);border-radius:3px"></div></div></div>
+        </div>
+        <div><label class="lbl">Límite diario AutoPilot ($)</label><input class="inp" type="number" value="2"></div>
+        <div><label class="lbl">Coste máximo por vídeo ($)</label><input class="inp" type="number" value="0.10" step="0.01"></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Pausar AutoPilot al alcanzar límite</span></div>
+        <button class="btn btn-p" style="align-self:flex-end" onclick="showToast('✓ Límites de presupuesto guardados')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ MODELS ════════════════ -->
+<div class="view" id="view-models">
+  <div class="sh mb16"><h2>Configuración de modelos IA</h2><span class="tag tg">$0.027 / vídeo · ahorro 96.8% vs premium</span></div>
+  <div class="flex g8 mb14">
+    <button class="btn btn-g btn-sm" onclick="showToast('Preset \'Todo Gratis\' — $0.00/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span> Todo Gratis</button>
+    <button class="btn btn-g btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="showToast('Preset \'Económico\' aplicado — $0.027/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span> Económico (actual)</button>
+    <button class="btn btn-g btn-sm" style="border-color:var(--blue);color:var(--blue)" onclick="showToast('Preset \'Optimizado\' — $0.14/vídeo, calidad máxima')"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block"></span> Optimizado</button>
+    <button class="btn btn-g btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="showToast('Preset \'Premium\' — $0.84/vídeo con GPT-4+ElevenLabs')"><span style="width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block"></span> Premium</button>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="models-tbl">
+      <thead><tr><th style="width:150px">Etapa</th><th>Modelo activo</th><th>Alternativas</th><th>Coste</th><th>Tier</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--text1);font-weight:600">💡 Ideas</td><td><select class="sel" style="width:auto"><option>Claude Haiku 3.5</option><option>GPT-4o mini</option><option>Llama 3.1 8B (local)</option></select></td><td style="color:var(--text3);font-size:12px">Claude Sonnet, GPT-4o</td><td><span class="tag ta">$0.001</span></td><td><span class="tag ta" style="font-size:10px">ECON.</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">✍️ Script</td><td><select class="sel" style="width:auto"><option selected>Claude Haiku 3.5</option><option>Llama 3.1 8B (local)</option><option>GPT-4o mini</option></select></td><td style="color:var(--text3);font-size:12px">Claude Sonnet, GPT-4o</td><td><span class="tag ta">$0.004</span></td><td><span class="tag ta" style="font-size:10px">ECON.</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">🎯 Score IA</td><td><select class="sel" style="width:auto"><option>Clasificador local (reglas)</option><option>Claude Haiku 3.5</option></select></td><td style="color:var(--text3);font-size:12px">Heurísticas + datos históricos</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">🎤 TTS Voz</td><td><select class="sel" style="width:auto"><option>Kokoro TTS (local)</option><option>Coqui TTS (local)</option><option>ElevenLabs Turbo</option></select></td><td style="color:var(--text3);font-size:12px">ElevenLabs HD, Azure TTS</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">🖼️ Imágenes</td><td><select class="sel" style="width:auto"><option>Pexels / Pixabay API</option><option>SDXL local (gen IA)</option><option>DALL-E 3</option></select></td><td style="color:var(--text3);font-size:12px">Flux Pro, Midjourney</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">📝 Subtítulos</td><td><select class="sel" style="width:auto"><option>Whisper (local)</option><option>AssemblyAI</option></select></td><td style="color:var(--text3);font-size:12px">Deepgram, Rev.ai</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">🔍 Tendencias</td><td><select class="sel" style="width:auto"><option>Scraping + clasificador local</option><option>Gemini Flash 2.0</option></select></td><td style="color:var(--text3);font-size:12px">Perplexity API</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">📄 URL parser</td><td><select class="sel" style="width:auto"><option>Claude Haiku 3.5</option><option>Llama 3.1 8B (local)</option></select></td><td style="color:var(--text3);font-size:12px">GPT-4o mini</td><td><span class="tag ta">$0.022</span></td><td><span class="tag ta" style="font-size:10px">ECON.</span></td></tr>
+        <tr><td style="color:var(--text1);font-weight:600">🔗 Afiliados</td><td><select class="sel" style="width:auto"><option>Reglas basadas en tema (local)</option></select></td><td style="color:var(--text3);font-size:12px">Detección semántica</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card mt14">
+    <div class="stl mb10">Optimización automática de costes</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Caché de outputs — no regenerar si existe (scripts, voces, clips)</span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Batch processing — 10× más barato en APIs con lotes</span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Fallback automático: si modelo local falla → API económica</span></div>
+      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Usar modelos premium solo si Score IA > 90/100</span></div>
+    </div>
+  </div>
+</div>
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODAL: Nuevo Canal -->
+<div class="modal-ov" id="modal-ov" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">Crear nuevo canal</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal faceless en segundos</div>
+    <div style="margin-bottom:13px"><label class="lbl">Nombre del canal</label><input class="inp" placeholder="Ej: TechFacts ES"></div>
+    <div style="margin-bottom:13px"><label class="lbl">Nicho principal</label><select class="sel"><option>Finanzas básicas</option><option>Curiosidades</option><option>Motivación / psicología</option><option>Tecnología / IA</option><option>Salud / bienestar</option><option>Historias / Reddit</option></select></div>
+    <div style="margin-bottom:13px"><label class="lbl">Plataformas</label><div class="flex g12"><label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> YouTube</label><label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> TikTok</label><label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> Instagram</label></div></div>
+    <div style="margin-bottom:13px"><label class="lbl">Modo de operación</label><select class="sel"><option>AutoPilot (genera y publica solo)</option><option>Semiautomático (aprueba manual)</option><option>Manual (control total)</option></select></div>
+    <div class="flex g8 mt16" style="justify-content:flex-end"><button class="btn btn-g btn-sm" onclick="closeModal()">Cancelar</button><button class="btn btn-p btn-sm" onclick="createChannel()">Crear canal →</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span style="color:var(--green);font-size:16px">✓</span>
+  <span id="toast-msg">Acción completada</span>
+</div>
+
+<script>
+// ── NAVIGATION ──
+const VIEWS = ['dashboard','channels','autopilot','trends','score','pipeline','url2video','clone','affiliation','reuse','monetization','models'];
+const TITLES = {
+  dashboard:'Dashboard',channels:'Mis canales',autopilot:'AutoPilot — Piloto automático',
+  trends:'Tendencias — ventana 48h',score:'Score predictivo IA',pipeline:'Pipeline de creación',
+  url2video:'URL → Vídeo',clone:'Clonar canal viral',affiliation:'Panel de afiliación',
+  reuse:'Reutilizar contenido',monetization:'Monetización unificada',models:'Modelos IA'
+};
+
+function nav(id) {
+  VIEWS.forEach(v => {
+    const el = document.getElementById('view-' + v);
+    if (el) el.classList.toggle('active', v === id);
+  });
+  document.querySelectorAll('.ni[data-view]').forEach(el => {
+    el.classList.toggle('active', el.dataset.view === id);
+  });
+  document.getElementById('page-title').textContent = TITLES[id] || id;
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.ni[data-view]').forEach(el => {
+  el.addEventListener('click', () => nav(el.dataset.view));
+});
+
+// ── PIPELINE ──
+function setPStep(n) {
+  for (let i = 0; i < 6; i++) {
+    document.getElementById('ps-' + i)?.classList.toggle('act', i === n);
+    document.getElementById('p-' + i)?.classList.toggle('act', i === n);
+  }
+}
+function selectNiche(el) {
+  document.querySelectorAll('.nc').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function selectIdea(el) {
+  document.querySelectorAll('.idea').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// Script styles
+const scripts = {
+  shock: `<span class="sh2">🪝 HOOK (0-3s)\n"¿Sabías que estás perdiendo $300 al mes por UN solo error?"</span>\n\n<span class="stag">// INTERRUPCIÓN (3-8s)</span>\n"La mayoría paga comisiones bancarias que NUNCA revisa."\n\n<span class="stag">// DOLOR (8-20s)</span>\n"Entre $5 y $15 al mes. En 10 años: $1,800 que desaparecen."\n\n<span class="stag">// SOLUCIÓN (20-35s)</span>\n"Revolut, BNEXT, N26 — todas GRATUITAS. Cambio en 7 minutos."\n\n<span class="sc2">📢 CTA (35-45s)\n"Sígueme para más trucos. ¿Cuánto pagas tú? Comenta abajo."</span>\n\n<span class="stag">// HASHTAGS</span>\n#finanzas #ahorrar #dinero #shorts`,
+  edu: `<span class="sh2">🪝 HOOK (0-3s)\n"Te explico el interés compuesto en 45 segundos."</span>\n\n<span class="stag">// PUNTO 1 (3-15s)</span>\n"El interés compuesto es ganar intereses sobre tus intereses. Einstein lo llamó la 8ª maravilla."\n\n<span class="stag">// PUNTO 2 (15-30s)</span>\n"$100/mes desde los 25, al 7% anual = $263,000 a los 65. Desde los 35: solo $121,000."\n\n<span class="sc2">📢 CTA (30-45s)\nComienza HOY aunque sea con $10. El tiempo es tu mayor activo.</span>`,
+  story: `<span class="sh2">🪝 HOOK (0-3s)\n"Tenía 28 años, $0 ahorrados y $8,000 en deudas."</span>\n\n<span class="stag">// HISTORIA (3-25s)</span>\n"Durante 4 años gasté todo lo que ganaba. Un día hice los números: $400/mes en suscripciones que no usaba."\n\n<span class="stag">// GIRO (25-40s)</span>\n"Cancelé todo. Ahorré esos $400 cada mes. En 18 meses: $7,200. Saldé la deuda. Empecé a invertir."\n\n<span class="sc2">📢 CTA (40-45s)\n¿Cuánto gastas en suscripciones? Cuéntame abajo.</span>`,
+  lista: `<span class="sh2">🪝 HOOK (0-3s)\n"5 gastos que debes eliminar YA para ahorrar dinero."</span>\n\n<span class="stag">// LISTA (3-40s)</span>\n"5: Suscripciones sin usar.\n4: Comer fuera más de 3 veces/semana.\n3: Créditos revolving (30% de interés).\n2: Seguros duplicados.\n1: El coche que sigues pagando."\n\n<span class="sc2">📢 CTA (40-45s)\n¿Cuál eliminaste tú? Sígueme para el próximo top 5.</span>`
+};
+
+document.querySelectorAll('.sty-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.sty-btn').forEach(b => b.classList.remove('act'));
+    this.classList.add('act');
+    const key = this.dataset.style;
+    const area = document.getElementById('script-content');
+    area.style.opacity = '.3';
+    setTimeout(() => { area.innerHTML = scripts[key] || scripts.shock; area.style.opacity = '1'; }, 250);
+  });
+});
+
+// ── AUTOPILOT ──
+function toggleAP(on) {
+  const card = document.getElementById('ap-status-card');
+  const dot = document.getElementById('ap-dot');
+  const title = document.getElementById('ap-title-txt');
+  const sub = document.getElementById('ap-sub-txt');
+  const badge = document.getElementById('ap-nav-badge');
+  card.className = 'ap-card ' + (on ? 'ap-on' : 'ap-off');
+  dot.className = 'ap-dot ' + (on ? 'ap-dot-on' : 'ap-dot-off');
+  title.style.color = on ? 'var(--green)' : 'var(--text3)';
+  title.textContent = on ? 'AUTOPILOT ACTIVO' : 'AUTOPILOT PAUSADO';
+  sub.textContent = on ? 'Generando y publicando automáticamente · Próximo vídeo en 4h 12m' : 'Sistema en pausa — activa para reanudar publicación automática';
+  if (badge) { badge.textContent = on ? 'ON' : 'OFF'; badge.className = 'nb ' + (on ? 'nbg' : 'nba'); }
+  showToast(on ? '✓ AutoPilot activado' : '⏸ AutoPilot pausado');
+}
+
+// ── SCORE ──
+function runScore() {
+  const v = document.getElementById('score-input').value;
+  if (!v.trim()) { showToast('Introduce una idea primero'); return; }
+  document.getElementById('score-placeholder').style.display = 'none';
+  document.getElementById('score-results').style.display = 'block';
+  showToast('✓ Score calculado: 85/100 — APROBADO');
+}
+
+// Trend → Score
+function setTrendAndNav(topic) {
+  document.getElementById('score-input').value = topic;
+  document.getElementById('score-trend-bar').style.display = 'block';
+  document.getElementById('score-placeholder').style.display = 'none';
+  document.getElementById('score-results').style.display = 'block';
+  nav('score');
+  showToast('Tendencia cargada en Score IA ✓');
+}
+
+// ── URL ──
+function analyzeURL() {
+  const url = document.getElementById('url-input').value;
+  if (!url.trim()) { showToast('Introduce una URL primero'); return; }
+  showToast('✓ URL analizada · Contenido extraído · Score predictivo: 91/100');
+}
+function generateFromURL() {
+  showToast('✓ Generando vídeo desde URL — redirigiendo al pipeline...');
+  setTimeout(() => nav('pipeline'), 1200);
+}
+
+// ── CLONE ──
+function analyzeChannel() {
+  const url = document.getElementById('clone-url').value;
+  showToast('Analizando canal... 312 vídeos procesados ✓');
+}
+
+// ── VIDEO GEN ──
+function startVidGen() {
+  const ring = document.getElementById('vprev-ring');
+  const icon = document.getElementById('vprev-icon');
+  const txt = document.getElementById('vprev-txt');
+  ring.style.display = 'block';
+  icon.style.display = 'none';
+  const steps = ['Sintetizando voz Kokoro...', 'Buscando clips Pexels...', 'Montando vídeo FFmpeg...', 'Aplicando subtítulos Whisper...', 'Exportando MP4...', '¡Listo!'];
+  let i = 0;
+  const iv = setInterval(() => {
+    txt.textContent = steps[i++];
+    if (i >= steps.length) {
+      clearInterval(iv);
+      ring.style.display = 'none';
+      icon.style.display = 'block';
+      icon.innerHTML = '✅';
+      txt.innerHTML = '<span style="color:var(--green)">Listo · 44.8s · 7.9MB</span>';
+      showToast('✓ Vídeo generado — coste total: $0.019');
+      setTimeout(() => setPStep(5), 1000);
+    }
+  }, 500);
+}
+
+function publishVideo() {
+  showToast('🚀 Publicando YT Shorts + TikTok + IG · Afiliados insertados · Programado 18:00 ✓');
+}
+
+// ── SPIKE CHARTS ──
+function renderSpikes() {
+  const colors = ['var(--red)', 'var(--amber)', 'var(--blue)', 'var(--green)', 'var(--purple)', 'var(--teal)'];
+  for (let s = 1; s <= 6; s++) {
+    const el = document.getElementById('sp-' + s);
+    if (!el) continue;
+    const h = [8, 12, 9, 15, 11, 22, 19, 30, 28, 45, 38, 50, 46, 55];
+    el.innerHTML = h.map((v, i) =>
+      `<div class="spike-bar" style="height:${v * 0.55}px;background:${colors[s-1]};opacity:${i < 10 ? 0.2 + i * 0.07 : 0.85}"></div>`
+    ).join('');
+  }
+}
+
+// ── MODAL ──
+function openModal() { document.getElementById('modal-ov').classList.add('open'); }
+function closeModal() { document.getElementById('modal-ov').classList.remove('open'); }
+function createChannel() { closeModal(); showToast('✓ Canal creado y configurado con AutoPilot'); }
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3600);
+}
+
+// ── INIT ──
+renderSpikes();
+</script>
+</body>
+</html>

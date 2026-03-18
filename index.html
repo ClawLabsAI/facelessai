@@ -2349,14 +2349,200 @@ function loadKeys() {
 
 function saveKey(name) {
   const inp = document.getElementById('key-' + name);
+  if (!inp) return;
   const val = inp.value.trim();
-  if (!val) { showToast('⚠ Introduce una key válida'); return; }
+
+  // Reject if empty or still showing masked placeholder
+  if (!val || val.includes('••••')) {
+    showInlineStatus('test-' + name, '⚠ Pega tu key completa en el campo', 'var(--amber)');
+    return;
+  }
+
   localStorage.setItem('fai_key_' + name, val);
   KEYS[name] = val;
+
+  // Mask the input immediately after saving
+  inp.value = val.slice(0, 10) + '••••••••••••••••';
+  inp.style.borderColor = 'var(--green)';
+
+  // Update badge
   updateKeyBadge(name, true);
   updateSettingsStatus();
   updateSettingsBadge();
-  showToast('✓ Key de ' + name + ' guardada de forma segura en tu navegador');
+
+  // Show inline success — visible and persistent
+  showInlineStatus('test-' + name,
+    '✓ Key guardada correctamente en tu navegador · Pulsa "Probar" para verificar la conexión',
+    'var(--green)'
+  );
+
+  // Also update save button temporarily
+  const btn = inp.nextElementSibling;
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Guardada';
+    btn.style.background = 'var(--green)';
+    btn.style.color = 'var(--bg0)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 2500);
+  }
+
+  showToast('✓ Key de ' + name + ' guardada — pulsa "Probar" para verificar');
+}
+
+function showInlineStatus(elId, msg, color) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.style.display = 'block';
+  el.style.color = color;
+  el.style.padding = '8px 12px';
+  el.style.background = color === 'var(--green)' ? 'var(--gdim)' : (color === 'var(--red)' ? 'var(--reddim)' : 'var(--adim)');
+  el.style.borderRadius = 'var(--r)';
+  el.style.border = '1px solid ' + color;
+  el.textContent = msg;
+}
+
+async function testKey(name) {
+  const el = document.getElementById('test-' + name);
+  if (!el) return;
+  const key = KEYS[name];
+  if (!key) {
+    showInlineStatus('test-' + name, '⚠ Primero guarda una key válida', 'var(--amber)');
+    return;
+  }
+
+  showInlineStatus('test-' + name, '⏳ Probando conexión...', 'var(--amber)');
+
+  // 15 second timeout
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    if (name === 'anthropic') {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 20,
+          messages: [{ role: 'user', content: 'Responde solo: OK' }]
+        })
+      });
+      clearTimeout(timeout);
+      if (resp.status === 200) {
+        const data = await resp.json();
+        const reply = data?.content?.[0]?.text?.trim() || 'OK';
+        showInlineStatus('test-' + name, '✓ Anthropic conectado · Respuesta: "' + reply + '" · Claude Haiku activo', 'var(--green)');
+      } else if (resp.status === 401) {
+        showInlineStatus('test-' + name, '✕ Key inválida (401) — verifica que la copiaste completa desde console.anthropic.com', 'var(--red)');
+      } else if (resp.status === 403) {
+        showInlineStatus('test-' + name, '✕ Sin permisos (403) — puede que la key no tenga acceso a la API de mensajes', 'var(--red)');
+      } else {
+        const err = await resp.json().catch(() => ({}));
+        showInlineStatus('test-' + name, '✕ Error ' + resp.status + ': ' + (err?.error?.message || 'Error desconocido'), 'var(--red)');
+      }
+    } else if (name === 'pexels') {
+      const resp = await fetch('https://api.pexels.com/v1/search?query=nature&per_page=1', {
+        signal: controller.signal,
+        headers: { Authorization: key }
+      });
+      clearTimeout(timeout);
+      if (resp.ok) {
+        const data = await resp.json();
+        showInlineStatus('test-' + name, '✓ Pexels conectado · ' + (data.total_results || '∞') + ' vídeos disponibles · GRATIS', 'var(--green)');
+      } else {
+        showInlineStatus('test-' + name, '✕ Key inválida (' + resp.status + ') — consíguela gratis en pexels.com/api', 'var(--red)');
+      }
+    } else if (name === 'openai') {
+      const resp = await fetch('https://api.openai.com/v1/models', {
+        signal: controller.signal,
+        headers: { Authorization: 'Bearer ' + key }
+      });
+      clearTimeout(timeout);
+      if (resp.ok) {
+        showInlineStatus('test-' + name, '✓ OpenAI conectado · TTS-1 y TTS-1 HD disponibles', 'var(--green)');
+      } else if (resp.status === 401) {
+        showInlineStatus('test-' + name, '✕ Key inválida (401) — verifica en platform.openai.com/api-keys', 'var(--red)');
+      } else {
+        showInlineStatus('test-' + name, '✕ Error ' + resp.status + ' — verifica tu cuenta OpenAI', 'var(--red)');
+      }
+    } else if (name === 'elevenlabs') {
+      const resp = await fetch('https://api.elevenlabs.io/v1/user', {
+        signal: controller.signal,
+        headers: { 'xi-api-key': key }
+      });
+      clearTimeout(timeout);
+      if (resp.ok) {
+        const data = await resp.json().catch(() => ({}));
+        showInlineStatus('test-' + name, '✓ ElevenLabs conectado · Plan: ' + (data?.subscription?.tier || 'activo'), 'var(--green)');
+      } else {
+        showInlineStatus('test-' + name, '✕ Key inválida (' + resp.status + ') — verifica en elevenlabs.io', 'var(--red)');
+      }
+    }
+  } catch(e) {
+    clearTimeout(timeout);
+    if (e.name === 'AbortError') {
+      showInlineStatus('test-' + name,
+        '⏱ Timeout (15s) — posible bloqueo CORS desde GitHub Pages. La key puede ser válida igualmente. Prueba a generar una idea directamente.',
+        'var(--amber)'
+      );
+    } else if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+      showInlineStatus('test-' + name,
+        '⚠ Error de red — si la key está guardada correctamente, prueba directamente a generar una idea en el Pipeline.',
+        'var(--amber)'
+      );
+    } else {
+      showInlineStatus('test-' + name, '✕ ' + e.message, 'var(--red)');
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CLAUDE API — REAL CALLS
+// ═══════════════════════════════════════════════
+async function callClaude(prompt, model, maxTokens) {
+  if (!KEYS.anthropic) throw new Error('Configura tu Anthropic API key en ⚙️ Configuración');
+  const cfg = TIER_CONFIG[activeTier];
+  const useModel = model || cfg.llmModel;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': KEYS.anthropic,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: useModel,
+        max_tokens: maxTokens || 1024,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    clearTimeout(timeout);
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'Error ' + resp.status);
+    }
+    const data = await resp.json();
+    return data.content[0].text;
+  } catch(e) {
+    clearTimeout(timeout);
+    if (e.name === 'AbortError') throw new Error('Timeout — la petición tardó más de 30s');
+    throw e;
+  }
 }
 
 function updateKeyBadge(name, ok) {
@@ -2436,68 +2622,6 @@ function updateCostEstimate() {
   if (el2) el2.textContent = '$' + monthly.toFixed(2);
   if (el3) el3.textContent = '$' + cfg.costPerVid.toFixed(3);
   if (el4) el4.textContent = cfg.ttsModel + ' · Pexels (gratis) · ' + cfg.llmModel.split('-').slice(0,2).join('-');
-}
-
-// ── TEST KEY ──
-async function testKey(name) {
-  const el = document.getElementById('test-' + name);
-  if (!el) return;
-  el.style.display = 'block';
-  el.style.color = 'var(--amber)';
-  el.textContent = '⏳ Probando conexión...';
-  const key = KEYS[name];
-  if (!key) { el.style.color = 'var(--red)'; el.textContent = '✕ No hay key guardada'; return; }
-  try {
-    if (name === 'anthropic') {
-      const r = await callClaude('Di solo: OK', 'claude-haiku-4-5-20251001', 10);
-      el.style.color = 'var(--green)'; el.textContent = '✓ Conexión OK — respuesta: ' + r.trim();
-    } else if (name === 'pexels') {
-      const r = await fetch('https://api.pexels.com/v1/search?query=nature&per_page=1', { headers: { Authorization: key } });
-      if (r.ok) { el.style.color = 'var(--green)'; el.textContent = '✓ Pexels OK — API activa'; }
-      else throw new Error('Status: ' + r.status);
-    } else if (name === 'openai') {
-      const r = await fetch('https://api.openai.com/v1/models', { headers: { Authorization: 'Bearer ' + key } });
-      if (r.ok) { el.style.color = 'var(--green)'; el.textContent = '✓ OpenAI OK — TTS disponible'; }
-      else throw new Error('Status: ' + r.status);
-    } else if (name === 'elevenlabs') {
-      const r = await fetch('https://api.elevenlabs.io/v1/user', { headers: { 'xi-api-key': key } });
-      if (r.ok) { el.style.color = 'var(--green)'; el.textContent = '✓ ElevenLabs OK'; }
-      else throw new Error('Status: ' + r.status);
-    }
-  } catch(e) {
-    el.style.color = 'var(--red)'; el.textContent = '✕ Error: ' + e.message;
-  }
-}
-
-// ═══════════════════════════════════════════════
-// CLAUDE API — REAL CALLS
-// ═══════════════════════════════════════════════
-async function callClaude(prompt, model, maxTokens) {
-  if (!KEYS.anthropic) throw new Error('Configura tu Anthropic API key en ⚙️ Configuración');
-  const cfg = TIER_CONFIG[activeTier];
-  const useModel = model || cfg.llmModel;
-  // Use a CORS proxy since browsers can't call Anthropic directly
-  const proxyUrl = 'https://api.anthropic.com/v1/messages';
-  const resp = await fetch(proxyUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': KEYS.anthropic,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: useModel,
-      max_tokens: maxTokens || 1024,
-      messages: [{ role: 'user', content: prompt }]
-    })
-  });
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error?.message || 'Error ' + resp.status);
-  }
-  const data = await resp.json();
-  return data.content[0].text;
 }
 
 // ── GENERATE IDEAS (REAL) ──

@@ -2880,14 +2880,7 @@ document.addEventListener('click', e => {
 
 // ── INIT ──
 renderSpikes();
-loadKeys();
-setTier(activeTier);
-updateCostEstimate();
-// Show settings badge if no Anthropic key
-if (!KEYS.anthropic) {
-  const b = document.getElementById('settings-badge');
-  if (b) b.style.display = 'inline';
-}
+// Keys are loaded after all functions are defined (see bottom of script)
 
 // ═══════════════════════════════════════════════
 // REAL API ENGINE
@@ -3231,33 +3224,47 @@ async function callClaude(prompt, model, maxTokens) {
 
 function updateKeyBadge(name, ok) {
   const badge = document.getElementById('badge-' + name);
-  const icon = document.getElementById('status-' + name + '-icon');
-  const text = document.getElementById('status-' + name + '-text');
-  if (!badge) return;
+  const icon  = document.getElementById('status-' + name + '-icon');
+  const text  = document.getElementById('status-' + name + '-text');
+  const inp   = document.getElementById('key-' + name);
+
   if (ok) {
-    badge.textContent = '✓ Activa'; badge.style.background = 'var(--gdim)'; badge.style.color = 'var(--green)'; badge.style.borderColor = 'var(--gsoft)';
+    if (badge) {
+      badge.textContent = '✓ Activa';
+      badge.style.cssText = 'background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
+    }
     if (icon) icon.textContent = '✅';
     if (text) text.textContent = 'Configurada';
-    const inp = document.getElementById('key-' + name);
-    if (inp && KEYS[name]) inp.value = KEYS[name].slice(0,8) + '••••••••••••••••';
+    // Show masked placeholder — never put value in the field
+    if (inp && KEYS[name]) {
+      inp.value = '';
+      inp.placeholder = KEYS[name].slice(0,12) + '•••• (guardada)';
+      inp.style.borderColor = '#00e87a';
+    }
+    // Show green status message
+    setStatus(name, 'ok', '✓ Key activa y lista · Pulsa "Probar" para verificar la conexión');
   } else {
-    badge.textContent = 'Sin clave'; badge.style.background = 'var(--bg3)'; badge.style.color = 'var(--text3)'; badge.style.borderColor = 'var(--border)';
+    if (badge) {
+      badge.textContent = 'Sin clave';
+      badge.style.cssText = 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
+    }
     if (icon) icon.textContent = '⭕';
+    if (text) text.textContent = 'No configurada';
+    if (inp) { inp.placeholder = ''; inp.style.borderColor = ''; }
   }
 }
 
 function updateSettingsStatus() {
   const tag = document.getElementById('settings-status');
   if (!tag) return;
-  const hasAnthrop = !!KEYS.anthropic;
-  const hasOpenai = !!KEYS.openai;
-  const hasPexels = !!KEYS.pexels;
-  if (hasAnthrop && hasOpenai && hasPexels) {
-    tag.textContent = '✓ Configuración completa — tier Económico activo'; tag.className = 'tag tg';
-  } else if (hasAnthrop) {
-    tag.textContent = '⚡ Anthropic activa — ideas y scripts reales'; tag.className = 'tag ta';
+  if (KEYS.anthropic && KEYS.openai && KEYS.pexels) {
+    tag.textContent = '✓ Todo configurado'; tag.className = 'tag tg';
+  } else if (KEYS.anthropic && KEYS.openai) {
+    tag.textContent = '⚡ Anthropic + OpenAI activas'; tag.className = 'tag ta';
+  } else if (KEYS.anthropic) {
+    tag.textContent = '⚡ Anthropic activa'; tag.className = 'tag ta';
   } else {
-    tag.textContent = '⚠ Configura al menos la key de Anthropic'; tag.className = 'tag tr';
+    tag.textContent = '⚠ Sin configurar'; tag.className = 'tag tr3';
   }
 }
 

@@ -377,11 +377,24 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:10px">
       <div style="font-size:15px;font-weight:600" id="page-title">Dashboard</div>
-      <span style="font-size:10px;font-family:var(--mono);color:var(--t3);background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:2px 8px">v3.4</span>
+      <span style="font-size:10px;font-family:var(--mono);color:var(--t3);background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:2px 8px">v3.5</span>
+    </div>
+
+    <!-- LANGUAGE SELECTOR -->
+    <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px;margin-left:12px">
+      <button id="lang-es" onclick="setLang('es')" style="padding:4px 12px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:var(--text1);color:var(--bg0);transition:all .2s">🇪🇸 Español</button>
+      <button id="lang-en" onclick="setLang('en')" style="padding:4px 12px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:transparent;color:var(--text3);transition:all .2s">🇺🇸 English</button>
+      <button id="lang-lat" onclick="setLang('lat')" style="padding:4px 12px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:transparent;color:var(--text3);transition:all .2s">🌎 Latino</button>
+    </div>
+
+    <!-- VOICE GENDER -->
+    <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px">
+      <button id="voice-m" onclick="setVoiceGender('m')" style="padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:var(--text1);color:var(--bg0);transition:all .2s">♂ Hombre</button>
+      <button id="voice-f" onclick="setVoiceGender('f')" style="padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:transparent;color:var(--text3);transition:all .2s">♀ Mujer</button>
     </div>
 
     <!-- MODE SWITCH -->
-    <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px;margin-left:16px">
+    <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px">
       <button id="mode-btn-manual" onclick="setMode('manual')" style="padding:4px 14px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:var(--text1);color:var(--bg0);transition:all .2s">✋ Manual</button>
       <button id="mode-btn-auto" onclick="setMode('auto')" style="padding:4px 14px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:transparent;color:var(--text3);transition:all .2s">🤖 AutoPilot</button>
     </div>
@@ -2145,6 +2158,18 @@ const TIER_CONFIG = {
 let activeTier = 'eco';
 try { activeTier = localStorage.getItem('fai_tier') || 'eco'; } catch(e) {}
 
+// ── LANGUAGE & VOICE CONFIG ──
+const LANG_CONFIG = {
+  es:  { label:'🇪🇸 Español España',  promptLang:'español de España (usa "vosotros", euros €, referencias españolas)', hashtags:'#shorts #españa #viral', currency:'€', bestTime:'Mar/Jue 18:00–20:00h', voices:{ m:'onyx', f:'nova' } },
+  en:  { label:'🇺🇸 English US',       promptLang:'American English (US market, dollars $, American references)',        hashtags:'#shorts #viral #trending #usa', currency:'$', bestTime:'Tue/Thu 6–8 PM EST', voices:{ m:'echo', f:'alloy' } },
+  lat: { label:'🌎 Español Latino',    promptLang:'español latinoamericano neutro (usa "ustedes", dólares $, referencias latinoamericanas)', hashtags:'#shorts #latinoamerica #viral', currency:'$', bestTime:'Mar/Jue 7–9 PM', voices:{ m:'fable', f:'shimmer' } }
+};
+let activeLang   = 'es';
+let activeGender = 'm';
+try { activeLang = localStorage.getItem('fai_lang') || 'es'; activeGender = localStorage.getItem('fai_gender') || 'm'; } catch(e) {}
+function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
+function getVoice()   { return getLangCfg().voices[activeGender]; }
+
 // ── NAVIGATION ──
 const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','templates','clone','reuse','autopilot','models','budget','monetization','settings'];
 const TITLES = {
@@ -2309,6 +2334,41 @@ function setMode(m) {
   }
 }
 
+function setLang(lang) {
+  activeLang = lang;
+  try { localStorage.setItem('fai_lang', lang); } catch(e) {}
+  ['es','en','lat'].forEach(l => {
+    const btn = document.getElementById('lang-' + l);
+    if (!btn) return;
+    btn.style.background = l === lang ? '#e2e8f0' : 'transparent';
+    btn.style.color      = l === lang ? '#060910' : '#475569';
+  });
+  // Auto-update voice selector
+  const voiceSel = document.getElementById('tts-voice');
+  if (voiceSel) voiceSel.value = getVoice();
+  showToast('🌍 ' + getLangCfg().label + ' · Voz: ' + getVoice());
+}
+
+function setVoiceGender(g) {
+  activeGender = g;
+  try { localStorage.setItem('fai_gender', g); } catch(e) {}
+  ['m','f'].forEach(x => {
+    const btn = document.getElementById('voice-' + x);
+    if (!btn) return;
+    btn.style.background = x === g ? '#e2e8f0' : 'transparent';
+    btn.style.color      = x === g ? '#060910' : '#475569';
+  });
+  const voiceSel = document.getElementById('tts-voice');
+  if (voiceSel) voiceSel.value = getVoice();
+  showToast((g === 'm' ? '♂ Voz masculina' : '♀ Voz femenina') + ' · ' + getVoice());
+}
+
+function initLangVoice() {
+  // Restore saved lang/gender on page load
+  setLang(activeLang);
+  setVoiceGender(activeGender);
+}
+
 // ── VIDEO GEN ──
 // ── TTS CONFIG ──
 function updateTTSConfig() {
@@ -2461,7 +2521,7 @@ async function generateTTS(audioOnly) {
 
   try {
     const engine = document.getElementById('tts-engine')?.value || 'openai-tts1';
-    const voice = document.getElementById('tts-voice')?.value || 'nova';
+    const voice = document.getElementById('tts-voice')?.value || getVoice();
     const model = engine === 'openai-tts1hd' ? 'tts-1-hd' : 'tts-1';
 
     addLog('🎤 Sintetizando voz con OpenAI ' + model + '...', 'var(--blue)');
@@ -2919,9 +2979,10 @@ document.addEventListener('click', e => {
 
 // ── INIT ──
 renderSpikes();
-loadKeys();        // loads keys into KEYS{} memory from localStorage
+loadKeys();
 setTier(activeTier);
 updateCostEstimate();
+initLangVoice();
 // Settings display refreshes when user navigates to that view (see nav function)
 
 // ═══════════════════════════════════════════════
@@ -3421,23 +3482,28 @@ async function generateIdeasReal() {
   const btn = document.getElementById('ideas-gen-btn');
   if (!container || !btn) return;
   btn.textContent = '⏳ Generando...'; btn.disabled = true;
-  container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-family:var(--mono)">🤖 Claude está generando ideas reales para ' + selectedNiche + '...</div>';
+  const langCfg = getLangCfg();
+  container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-family:var(--mono)">🤖 Claude generando ideas en ' + langCfg.label + ' para ' + selectedNiche + '...</div>';
 
-  const prompt = `Eres un experto en contenido viral faceless para YouTube Shorts, TikTok e Instagram Reels.
-Genera exactamente 6 ideas de vídeos virales para el nicho: "${selectedNiche}"
-Responde SOLO en JSON válido con este formato exacto:
+  const prompt = `You are an expert in viral faceless content for YouTube Shorts, TikTok and Instagram Reels.
+Generate exactly 6 viral video ideas for the niche: "${selectedNiche}"
+Language: ${langCfg.promptLang}
+Currency symbol: ${langCfg.currency}
+Best publishing time for this market: ${langCfg.bestTime}
+
+Respond ONLY in valid JSON with this exact format:
 [
   {
-    "hook": "título viral con emoji al inicio",
+    "hook": "viral title with emoji at start — written in the correct language/dialect",
     "formato": "Short 45s",
     "viralScore": 88,
-    "cpm": "$8.4",
+    "cpm": "${langCfg.currency}8.4",
     "monetizacion": "AdSense + Afiliación",
     "duracion": "45s",
     "estilo": "Shock"
   }
 ]
-Los hooks deben ser en español, ultra virales, con números o datos concretos cuando sea posible. Solo JSON, sin texto adicional.`;
+Hooks must be ultra viral, with concrete numbers or data when possible. Only JSON, no additional text.`;
 
   try {
     const raw = await callClaude(prompt, null, 1500);
@@ -3496,40 +3562,38 @@ async function generateScriptReal() {
   area.innerHTML = '<span style="color:var(--text3);font-family:var(--mono)">🤖 Claude está escribiendo el script...</span>';
 
   const stylePrompts = {
-    shock: 'estilo shock/curiosidad con dato impactante en el hook',
-    edu: 'estilo educativo rápido y claro, explicando paso a paso',
-    story: 'estilo storytelling narrativo personal y emotivo',
-    lista: 'estilo lista/top con números concretos'
+    shock: 'shock/curiosity style with impactful data in the hook',
+    edu:   'fast educational style, step by step',
+    story: 'narrative storytelling, personal and emotional',
+    lista: 'list/top style with concrete numbers'
   };
 
-  const prompt = `Eres un guionista experto en vídeos virales faceless para YouTube Shorts.
-Escribe un script completo en español para este vídeo:
+  const langCfg = getLangCfg();
+
+  const prompt = `You are an expert scriptwriter for viral faceless videos for YouTube Shorts.
+Write a complete script for this video:
 HOOK/IDEA: "${hookText}"
-NICHO: ${selectedNiche}
-ESTILO: ${stylePrompts[scriptStyle] || stylePrompts.shock}
-DURACIÓN: 45-60 segundos
-FORMATO: vertical 9:16 sin mostrar cara
+NICHE: ${selectedNiche}
+STYLE: ${stylePrompts[scriptStyle] || stylePrompts.shock}
+LANGUAGE: ${langCfg.promptLang}
+HASHTAGS: use tags popular in this market: ${langCfg.hashtags}
+DURATION: 45-60 seconds
+FORMAT: vertical 9:16, no face shown
 
-El script debe incluir:
-1. HOOK (0-3s): primeras palabras ultra impactantes
-2. DESARROLLO (3-35s): contenido de valor con patrón de retención
-3. CTA (35-45s): llamada a la acción clara
-4. HASHTAGS: 6-8 hashtags relevantes
-
-Formatea el script así:
+Structure:
 [HOOK 0-3s]
-texto del hook
+hook text
 
-[DESARROLLO 3-35s]
-texto del desarrollo
+[DEVELOPMENT 3-35s]
+development text
 
 [CTA 35-45s]
-texto del CTA
+CTA text
 
 [HASHTAGS]
 #hashtag1 #hashtag2...
 
-Escríbelo en español natural, optimizado para retención máxima. Solo el script, sin explicaciones adicionales.`;
+Write naturally in the specified language, optimized for maximum retention. Script only, no explanations.`;
 
   try {
     const raw = await callClaude(prompt, null, 1200);

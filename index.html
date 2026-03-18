@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.4 — Content Engine</title>
+<title>FacelessAI v3.5 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -306,7 +306,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.4</div>
+    <div class="logo-sub">Content Engine v3.5</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -670,39 +670,129 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 <!-- ════════════════ CHANNELS ════════════════ -->
 <div class="view" id="view-channels">
-  <div class="sh mb20"><h2 style="font-size:17px">Mis canales</h2><button class="btn btn-p btn-sm" onclick="openModal()">+ Crear canal</button></div>
-  <div class="g3">
-    <div class="card" style="cursor:pointer">
-      <div class="flex fic g10 mb12">
+
+  <!-- HEADER -->
+  <div class="sh mb20">
+    <h2>Mis canales</h2>
+    <div class="flex g8">
+      <button class="btn btn-g btn-sm" onclick="discoverChannels()">🔍 Descubrir con IA</button>
+      <button class="btn btn-p btn-sm" onclick="openModal()">+ Crear canal</button>
+    </div>
+  </div>
+
+  <!-- ACTIVE CHANNELS -->
+  <div class="stl mb12">Canales activos</div>
+  <div class="g3 mb24" id="channels-grid">
+
+    <!-- Channel 1 -->
+    <div class="card" style="cursor:pointer" onclick="selectChannel('FinanceFacts ES','es','m','finanzas')">
+      <div class="flex fic g10 mb10">
         <div class="ch-icon" style="background:var(--bdim);color:var(--blue)">💰</div>
-        <div style="flex:1"><div style="font-size:14px;font-weight:600">FinanceFacts ES</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS BÁSICAS</div></div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600">FinanceFacts ES</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS BÁSICAS</div>
+        </div>
         <div class="dot-on"></div>
       </div>
-      <div class="flex g16 mb12">
+      <!-- Lang + Voice badges -->
+      <div class="flex g6 mb10">
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">🇪🇸 Español</span>
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">♂ onyx</span>
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">Score 91</span>
+      </div>
+      <div class="flex g16 mb10">
         <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">124K</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">SUBS</div></div>
         <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">4.2M</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">VIEWS/MES</div></div>
         <div><div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--amber)">$890</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">EST/MES</div></div>
       </div>
-      <div class="flex g6"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span><span class="pt pt-ig">Instagram</span></div>
+      <div class="flex g6 mb10"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span><span class="pt pt-ig">Instagram</span></div>
+      <button class="btn btn-g btn-sm" style="width:100%;font-size:11px" onclick="event.stopPropagation();selectChannel('FinanceFacts ES','es','m','finanzas')">▶ Trabajar en este canal</button>
     </div>
-    <div class="card" style="cursor:pointer">
-      <div class="flex fic g10 mb12">
+
+    <!-- Channel 2 -->
+    <div class="card" style="cursor:pointer" onclick="selectChannel('MindHacks Daily','en','f','motivacion')">
+      <div class="flex fic g10 mb10">
         <div class="ch-icon" style="background:var(--pdim);color:var(--purple)">🧠</div>
-        <div style="flex:1"><div style="font-size:14px;font-weight:600">MindHacks Daily</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">MOTIVACIÓN / PSICOLOGÍA</div></div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600">MindHacks Daily</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">MOTIVACIÓN / PSICOLOGÍA</div>
+        </div>
         <div class="dot-on"></div>
       </div>
-      <div class="flex g16 mb12">
+      <div class="flex g6 mb10">
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">🇺🇸 English</span>
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">♀ alloy</span>
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">Score 87</span>
+      </div>
+      <div class="flex g16 mb10">
         <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">89K</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">SUBS</div></div>
         <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">2.1M</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">VIEWS/MES</div></div>
         <div><div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--amber)">$340</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">EST/MES</div></div>
       </div>
-      <div class="flex g6"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span></div>
+      <div class="flex g6 mb10"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span></div>
+      <button class="btn btn-g btn-sm" style="width:100%;font-size:11px" onclick="event.stopPropagation();selectChannel('MindHacks Daily','en','f','motivacion')">▶ Trabajar en este canal</button>
     </div>
-    <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:150px;cursor:pointer" onclick="openModal()">
-      <div style="text-align:center;color:var(--text3)"><div style="font-size:28px;margin-bottom:6px">+</div><div style="font-size:13px">Añadir canal</div></div>
+
+    <!-- Add channel card -->
+    <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:180px;cursor:pointer" onclick="openModal()">
+      <div style="text-align:center;color:var(--text3)">
+        <div style="font-size:28px;margin-bottom:6px">+</div>
+        <div style="font-size:13px">Crear nuevo canal</div>
+        <div style="font-size:11px;margin-top:4px;font-family:var(--mono)">o descubrir con IA →</div>
+      </div>
     </div>
   </div>
+
+  <!-- AI CHANNEL DISCOVERY -->
+  <div class="stl mb12">🔍 Descubrir oportunidades de canal con IA</div>
+  <div class="card mb14">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+      <div>
+        <label class="lbl">Idioma objetivo</label>
+        <select class="sel" id="disc-lang">
+          <option value="all">Todos los mercados</option>
+          <option value="es">🇪🇸 Español España</option>
+          <option value="en">🇺🇸 English US</option>
+          <option value="lat">🌎 Español Latino</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Inversión por vídeo</label>
+        <select class="sel" id="disc-budget">
+          <option value="free">$0 — 100% gratis</option>
+          <option value="eco" selected>~$0.01 — Económico</option>
+          <option value="opt">~$0.06 — Optimizado</option>
+          <option value="premium">~$0.25 — Premium</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Objetivo principal</label>
+        <select class="sel" id="disc-goal">
+          <option value="fast">Monetizar rápido</option>
+          <option value="affiliate">Afiliación</option>
+          <option value="audience">Construir audiencia</option>
+          <option value="autopilot">100% AutoPilot</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Nichos a evitar</label>
+        <input class="inp" id="disc-exclude" placeholder="Ej: política, religión..." style="font-size:12px">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="btn btn-p" id="disc-btn" onclick="discoverChannels()">🤖 Analizar mercado y sugerir canales</button>
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono)">~$0.005 · Claude analiza tendencias reales del mercado</span>
+    </div>
+  </div>
+
+  <!-- DISCOVERY RESULTS -->
+  <div id="disc-results" style="display:none">
+    <div class="stl mb12" id="disc-results-title">Oportunidades detectadas</div>
+    <div id="disc-grid" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
+
 </div>
+
 
 <!-- ════════════════ 3 · AUTOPILOT ════════════════ -->
 <div class="view" id="view-autopilot">
@@ -2129,14 +2219,112 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 <!-- MODAL: Nuevo Canal -->
 <div class="modal-ov" id="modal-ov" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <div style="font-size:16px;font-weight:700;margin-bottom:4px">Crear nuevo canal</div>
-    <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal faceless en segundos</div>
-    <div style="margin-bottom:13px"><label class="lbl">Nombre del canal</label><input class="inp" placeholder="Ej: TechFacts ES"></div>
-    <div style="margin-bottom:13px"><label class="lbl">Nicho principal</label><select class="sel"><option>Finanzas básicas</option><option>Curiosidades</option><option>Motivación / psicología</option><option>Tecnología / IA</option><option>Salud / bienestar</option><option>Historias / Reddit</option></select></div>
-    <div style="margin-bottom:13px"><label class="lbl">Plataformas</label><div class="flex g12"><label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> YouTube</label><label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> TikTok</label><label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> Instagram</label></div></div>
-    <div style="margin-bottom:13px"><label class="lbl">Modo de operación</label><select class="sel"><option>AutoPilot (genera y publica solo)</option><option>Semiautomático (aprueba manual)</option><option>Manual (control total)</option></select></div>
-    <div class="flex g8 mt16" style="justify-content:flex-end"><button class="btn btn-g btn-sm" onclick="closeModal()">Cancelar</button><button class="btn btn-p btn-sm" onclick="createChannel()">Crear canal →</button></div>
+  <div class="modal" style="width:520px;max-width:96vw">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">✨ Crear nuevo canal</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal faceless — el idioma y voz definen toda la producción</div>
+
+    <!-- Row 1: Name + Niche -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label class="lbl">Nombre del canal</label>
+        <input class="inp" id="ch-name" placeholder="Ej: FinanceFacts" style="font-size:13px">
+        <div style="font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--mono)" id="ch-name-preview">El sufijo se añade automáticamente</div>
+      </div>
+      <div>
+        <label class="lbl">Nicho principal</label>
+        <select class="sel" id="ch-niche">
+          <option value="finanzas">💰 Finanzas básicas — CPM $8-15</option>
+          <option value="tech">🤖 Tecnología / IA — CPM $9-18</option>
+          <option value="motivacion">🧠 Motivación / Psicología — CPM $6-10</option>
+          <option value="curiosidades">🌍 Curiosidades — CPM $4-7</option>
+          <option value="salud">💪 Salud / Bienestar — CPM $5-9</option>
+          <option value="historias">📖 Historias / Reddit — CPM $3-6</option>
+          <option value="cripto">₿ Cripto / Inversión — CPM $12-22</option>
+          <option value="negocios">🚀 Negocios / Emprendimiento — CPM $10-20</option>
+          <option value="custom">✏️ Personalizado...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 2: Language + Voice -->
+    <div style="margin-bottom:12px">
+      <label class="lbl">Idioma y mercado objetivo</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div class="ch-lang-btn selected" id="chl-es" onclick="selectChLang('es')" style="border:2px solid #00e87a;background:#00e87a15;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+          <div style="font-size:18px">🇪🇸</div>
+          <div style="font-size:12px;font-weight:600;margin-top:4px">Español</div>
+          <div style="font-size:10px;color:#94a3b8;font-family:monospace">España</div>
+        </div>
+        <div class="ch-lang-btn" id="chl-en" onclick="selectChLang('en')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+          <div style="font-size:18px">🇺🇸</div>
+          <div style="font-size:12px;font-weight:600;margin-top:4px">English</div>
+          <div style="font-size:10px;color:#94a3b8;font-family:monospace">US · CPM 3x</div>
+        </div>
+        <div class="ch-lang-btn" id="chl-lat" onclick="selectChLang('lat')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+          <div style="font-size:18px">🌎</div>
+          <div style="font-size:12px;font-weight:600;margin-top:4px">Español</div>
+          <div style="font-size:10px;color:#94a3b8;font-family:monospace">Latinoamérica</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Voice gender -->
+    <div style="margin-bottom:12px">
+      <label class="lbl">Voz del canal <span id="ch-voice-preview" style="color:#00e87a;font-weight:400;font-family:monospace;font-size:10px">→ onyx (masculina, grave)</span></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div id="chv-m" onclick="selectChGender('m')" style="border:2px solid #00e87a;background:#00e87a15;border-radius:8px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:10px">
+          <div style="font-size:22px">♂</div>
+          <div><div style="font-size:13px;font-weight:600">Masculina</div><div style="font-size:10px;color:#94a3b8;font-family:monospace" id="chv-m-voice">onyx</div></div>
+        </div>
+        <div id="chv-f" onclick="selectChGender('f')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:10px">
+          <div style="font-size:22px">♀</div>
+          <div><div style="font-size:13px;font-weight:600">Femenina</div><div style="font-size:10px;color:#94a3b8;font-family:monospace" id="chv-f-voice">nova</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: Platforms -->
+    <div style="margin-bottom:12px">
+      <label class="lbl">Plataformas de publicación</label>
+      <div class="flex g12">
+        <label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" id="ch-yt" checked style="accent-color:#00e87a"> YouTube Shorts</label>
+        <label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" id="ch-tt" checked style="accent-color:#00e87a"> TikTok</label>
+        <label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" id="ch-ig" style="accent-color:#00e87a"> Instagram Reels</label>
+      </div>
+    </div>
+
+    <!-- Row 5: Mode + Frequency -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label class="lbl">Modo de operación</label>
+        <select class="sel" id="ch-mode">
+          <option>🤖 AutoPilot — genera y publica solo</option>
+          <option>✋ Semiautomático — apruebo cada vídeo</option>
+          <option>📋 Manual — control total</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Frecuencia de publicación</label>
+        <select class="sel" id="ch-freq">
+          <option>1 vídeo/día</option>
+          <option>2 vídeos/día</option>
+          <option>3 vídeos/día</option>
+          <option>1 vídeo cada 2 días</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div id="ch-preview-box" style="background:#00e87a08;border:1px solid #00e87a22;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;font-family:monospace;color:#94a3b8">
+      Canal: <span id="ch-prev-name" style="color:#00e87a">FinanceFacts ES</span> · 
+      Nicho: <span id="ch-prev-niche" style="color:#e2e8f0">Finanzas básicas</span> · 
+      Voz: <span id="ch-prev-voice" style="color:#e2e8f0">onyx</span>
+    </div>
+
+    <div class="flex g8" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-p" onclick="createChannel()">✨ Crear canal →</button>
+    </div>
   </div>
 </div>
 
@@ -2746,9 +2934,255 @@ function renderSpikes() {
 }
 
 // ── MODAL ──
-function openModal() { document.getElementById('modal-ov').classList.add('open'); }
+function openModal() { document.getElementById('modal-ov').classList.add('open'); selectChLang('es'); selectChGender('m'); }
 function closeModal() { document.getElementById('modal-ov').classList.remove('open'); }
-function createChannel() { closeModal(); showToast('✓ Canal creado y configurado con AutoPilot'); }
+
+// ── CHANNEL MODAL STATE ──
+let chLang = 'es', chGender = 'm';
+
+function selectChLang(lang) {
+  chLang = lang;
+  ['es','en','lat'].forEach(l => {
+    const el = document.getElementById('chl-' + l);
+    if (!el) return;
+    if (l === lang) { el.style.border = '2px solid #00e87a'; el.style.background = '#00e87a15'; }
+    else { el.style.border = '1px solid #1e2d44'; el.style.background = 'transparent'; }
+  });
+  updateChVoicePreview();
+  updateChPreview();
+}
+
+function selectChGender(g) {
+  chGender = g;
+  ['m','f'].forEach(x => {
+    const el = document.getElementById('chv-' + x);
+    if (!el) return;
+    if (x === g) { el.style.border = '2px solid #00e87a'; el.style.background = '#00e87a15'; }
+    else { el.style.border = '1px solid #1e2d44'; el.style.background = 'transparent'; }
+  });
+  updateChVoicePreview();
+  updateChPreview();
+}
+
+function updateChVoicePreview() {
+  const cfg = LANG_CONFIG[chLang] || LANG_CONFIG.es;
+  const vm = document.getElementById('chv-m-voice');
+  const vf = document.getElementById('chv-f-voice');
+  const vp = document.getElementById('ch-voice-preview');
+  if (vm) vm.textContent = cfg.voices.m;
+  if (vf) vf.textContent = cfg.voices.f;
+  const voice = cfg.voices[chGender];
+  const voiceNames = { alloy:'neutra, clara', echo:'masculina, americana', fable:'narrativa, cálida', onyx:'grave, profunda', nova:'femenina, natural', shimmer:'suave, latina' };
+  if (vp) vp.textContent = '→ ' + voice + ' (' + (voiceNames[voice] || voice) + ')';
+}
+
+function updateChPreview() {
+  const name = document.getElementById('ch-name')?.value || 'MiCanal';
+  const suffixes = { es:'ES', en:'EN', lat:'LAT' };
+  const cfg = LANG_CONFIG[chLang] || LANG_CONFIG.es;
+  const fullName = name + ' ' + suffixes[chLang];
+  const voice = cfg.voices[chGender];
+  const nicheEl = document.getElementById('ch-niche');
+  const niche = nicheEl ? nicheEl.options[nicheEl.selectedIndex]?.text.split('—')[0].trim() : '';
+  const pn = document.getElementById('ch-prev-name');
+  const pni = document.getElementById('ch-prev-niche');
+  const pv = document.getElementById('ch-prev-voice');
+  const preview = document.getElementById('ch-name-preview');
+  if (pn) pn.textContent = fullName;
+  if (pni) pni.textContent = niche;
+  if (pv) pv.textContent = voice;
+  if (preview) preview.textContent = 'Nombre final: ' + fullName;
+}
+
+function createChannel() {
+  const nameEl = document.getElementById('ch-name');
+  const name = nameEl?.value.trim() || 'NuevoCanal';
+  const suffixes = { es:'ES', en:'EN', lat:'LAT' };
+  const fullName = name + ' ' + suffixes[chLang];
+  const cfg = LANG_CONFIG[chLang] || LANG_CONFIG.es;
+  const voice = cfg.voices[chGender];
+  closeModal();
+  showToast('✓ Canal "' + fullName + '" creado · Voz: ' + voice + ' · Listo para producir');
+  // Set active lang/gender to match this channel
+  setLang(chLang);
+  setVoiceGender(chGender);
+}
+
+// ── SELECT CHANNEL (loads lang/gender into topbar) ──
+function selectChannel(name, lang, gender, niche) {
+  setLang(lang);
+  setVoiceGender(gender);
+  if (niche) selectedNiche = niche;
+  showToast('✓ Canal activo: ' + name + ' · ' + LANG_CONFIG[lang]?.label + ' · ' + (gender === 'm' ? '♂' : '♀'));
+  nav('pipeline');
+}
+
+// ── AI CHANNEL DISCOVERY ──
+async function discoverChannels() {
+  if (!KEYS.anthropic) {
+    showToast('⚠ Configura tu Anthropic API key en ⚙️ Configuración');
+    setTimeout(() => nav('settings'), 800);
+    return;
+  }
+  const btn = document.getElementById('disc-btn');
+  const results = document.getElementById('disc-results');
+  const grid = document.getElementById('disc-grid');
+  const title = document.getElementById('disc-results-title');
+  if (btn) { btn.textContent = '⏳ Analizando mercado...'; btn.disabled = true; }
+
+  const lang     = document.getElementById('disc-lang')?.value || 'all';
+  const budget   = document.getElementById('disc-budget')?.value || 'eco';
+  const goal     = document.getElementById('disc-goal')?.value || 'fast';
+  const exclude  = document.getElementById('disc-exclude')?.value || '';
+
+  const langMap  = { all:'all markets (ES, EN, LAT)', es:'Spanish Spain market', en:'English US market', lat:'Latin American Spanish market' };
+  const goalMap  = { fast:'monetize quickly (4500 subs + 3M views threshold)', affiliate:'affiliate marketing revenue', audience:'build large audience first', autopilot:'100% automated, minimal oversight' };
+  const budgetMap = { free:'$0 per video (local AI only)', eco:'~$0.01 per video (Claude Haiku + OpenAI TTS-1)', opt:'~$0.06 per video (Claude Sonnet + TTS-1 HD)', premium:'~$0.25 per video (Claude Opus + ElevenLabs)' };
+
+  const prompt = `You are an expert YouTube Shorts and TikTok channel strategist with deep knowledge of faceless content monetization.
+
+Analyze the current market and suggest 6 high-potential faceless channel opportunities.
+
+Parameters:
+- Target market: ${langMap[lang] || 'all markets'}
+- Budget per video: ${budgetMap[budget]}
+- Main goal: ${goalMap[goal]}
+- Niches to avoid: ${exclude || 'none specified'}
+
+For each channel suggestion, analyze:
+1. Current market saturation in short-form video
+2. CPM rates for advertisers in this niche
+3. Affiliate marketing potential
+4. Time to first monetization
+5. Difficulty to produce with AI tools
+
+Respond ONLY in valid JSON array:
+[
+  {
+    "name": "FinanceHacks US",
+    "emoji": "💰",
+    "niche": "Personal Finance",
+    "lang": "en",
+    "gender": "m",
+    "voice": "echo",
+    "score": 94,
+    "trend": "HOT",
+    "cpmMin": 12,
+    "cpmMax": 18,
+    "saturation": 22,
+    "monthsToMonetize": 3,
+    "revenueMonth3": "$800-1500",
+    "affiliatePotential": "High",
+    "whyItWorks": "Finance shorts in English have 3-4x higher CPM than Spanish. Low saturation in sub-50K channels. Easy to produce with AI scripts.",
+    "references": "@FinanceTips, @MoneyHacks",
+    "contentTypes": "Error revelations, Money tips, Investment basics",
+    "difficulty": "Low",
+    "uniqueAngle": "Focus on mistakes that cost money — high emotional trigger"
+  }
+]
+
+Generate exactly 6 diverse suggestions covering different niches and markets. Only JSON, no additional text.`;
+
+  try {
+    const raw = await callClaude(prompt, null, 2500);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const channels = JSON.parse(clean);
+
+    if (results) results.style.display = 'block';
+    if (title) title.textContent = '🎯 ' + channels.length + ' oportunidades detectadas por Claude';
+    if (grid) grid.innerHTML = channels.map((ch, i) => renderDiscoveredChannel(ch, i)).join('');
+    showToast('✓ ' + channels.length + ' oportunidades de canal analizadas');
+
+  } catch(e) {
+    if (results) results.style.display = 'block';
+    if (grid) grid.innerHTML = '<div style="color:#f87171;padding:16px;font-family:monospace;font-size:13px">✕ Error: ' + e.message + '<br><br><button class="btn btn-g btn-sm" onclick="discoverChannels()">↻ Reintentar</button></div>';
+    showToast('✕ Error: ' + e.message);
+  } finally {
+    if (btn) { btn.textContent = '🤖 Analizar mercado y sugerir canales'; btn.disabled = false; }
+  }
+}
+
+function renderDiscoveredChannel(ch, i) {
+  const trendColors = { HOT:'#f87171', GROWING:'#00e87a', STABLE:'#38bdf8', EMERGING:'#fbbf24' };
+  const trendColor = trendColors[ch.trend] || '#94a3b8';
+  const langFlags = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' };
+  const flag = langFlags[ch.lang] || '🌍';
+  const scoreColor = ch.score >= 85 ? '#00e87a' : ch.score >= 70 ? '#fbbf24' : '#f87171';
+  const satColor = ch.saturation < 35 ? '#00e87a' : ch.saturation < 60 ? '#fbbf24' : '#f87171';
+
+  return `<div style="background:#0b0f18;border:1px solid #1e2d44;border-radius:10px;padding:16px">
+    <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:24px">${ch.emoji}</div>
+        <div>
+          <div style="font-size:15px;font-weight:700">${ch.name}</div>
+          <div style="font-size:11px;color:#94a3b8;font-family:monospace">${ch.niche} · ${flag} · ${ch.gender === 'm' ? '♂' : '♀'} ${ch.voice}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:22px;font-weight:800;font-family:monospace;color:${scoreColor}">${ch.score}</div>
+        <div style="font-size:9px;color:#475569;font-family:monospace">SCORE /100</div>
+        <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${trendColor}20;color:${trendColor};border:1px solid ${trendColor}44;font-family:monospace">${ch.trend}</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+      <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:13px;font-weight:700;font-family:monospace;color:#fbbf24">$${ch.cpmMin}-${ch.cpmMax}</div>
+        <div style="font-size:9px;color:#475569;font-family:monospace">CPM EST.</div>
+      </div>
+      <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:13px;font-weight:700;font-family:monospace;color:${satColor}">${ch.saturation}%</div>
+        <div style="font-size:9px;color:#475569;font-family:monospace">SATURACIÓN</div>
+      </div>
+      <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:13px;font-weight:700;font-family:monospace;color:#38bdf8">${ch.monthsToMonetize}m</div>
+        <div style="font-size:9px;color:#475569;font-family:monospace">MONETIZAR</div>
+      </div>
+      <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:12px;font-weight:700;font-family:monospace;color:#00e87a">${ch.revenueMonth3}</div>
+        <div style="font-size:9px;color:#475569;font-family:monospace">MES 3 EST.</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:#94a3b8;line-height:1.7;margin-bottom:10px;background:#111827;border-radius:6px;padding:10px">
+      <strong style="color:#e2e8f0">💡 Por qué funciona:</strong> ${ch.whyItWorks}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;font-size:11px;color:#94a3b8">
+      <div><strong style="color:#e2e8f0">Tipo de contenido:</strong> ${ch.contentTypes}</div>
+      <div><strong style="color:#e2e8f0">Ángulo único:</strong> ${ch.uniqueAngle}</div>
+      <div><strong style="color:#e2e8f0">Afiliación:</strong> <span style="color:${ch.affiliatePotential === 'High' ? '#00e87a' : '#fbbf24'}">${ch.affiliatePotential}</span></div>
+      <div><strong style="color:#e2e8f0">Dificultad:</strong> <span style="color:${ch.difficulty === 'Low' ? '#00e87a' : '#fbbf24'}">${ch.difficulty}</span></div>
+    </div>
+
+    ${ch.references ? `<div style="font-size:11px;color:#475569;margin-bottom:10px;font-family:monospace">Referencias: ${ch.references}</div>` : ''}
+
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p btn-sm" style="flex:1" onclick="createFromDiscovery('${ch.name}','${ch.lang}','${ch.gender}','${ch.niche}')">✨ Crear este canal</button>
+      <button class="btn btn-g btn-sm" onclick="launchPipelineFromDiscovery('${ch.lang}','${ch.gender}','${ch.niche}')">▶ Ir al pipeline →</button>
+    </div>
+  </div>`;
+}
+
+function createFromDiscovery(name, lang, gender, niche) {
+  const modal = document.getElementById('modal-ov');
+  const nameEl = document.getElementById('ch-name');
+  if (nameEl) nameEl.value = name.replace(/ (ES|EN|LAT)$/, '').trim();
+  openModal();
+  selectChLang(lang);
+  selectChGender(gender);
+  updateChPreview();
+  showToast('Canal pre-configurado — revisa y confirma');
+}
+
+function launchPipelineFromDiscovery(lang, gender, niche) {
+  setLang(lang);
+  setVoiceGender(gender);
+  if (niche) selectedNiche = niche;
+  nav('pipeline');
+  showToast('Pipeline listo · ' + LANG_CONFIG[lang]?.label);
+}
 
 // ── TOAST ──
 let toastTimer;
@@ -2983,6 +3417,13 @@ loadKeys();
 setTier(activeTier);
 updateCostEstimate();
 initLangVoice();
+// Live preview for channel name in modal
+document.addEventListener('input', e => {
+  if (e.target && e.target.id === 'ch-name') updateChPreview();
+});
+document.addEventListener('change', e => {
+  if (e.target && e.target.id === 'ch-niche') updateChPreview();
+});
 // Settings display refreshes when user navigates to that view (see nav function)
 
 // ═══════════════════════════════════════════════

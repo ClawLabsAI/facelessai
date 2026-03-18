@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FacelessAI — Configurar API Keys</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #060910; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; font-size: 14px; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.container { width: 100%; max-width: 560px; }
+h1 { font-size: 20px; color: #00e87a; margin-bottom: 4px; font-family: monospace; }
+.sub { font-size: 12px; color: #475569; margin-bottom: 24px; }
+.card { background: #0b0f18; border: 1px solid #1e2d44; border-radius: 10px; padding: 18px; margin-bottom: 14px; }
+.card-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-family: monospace; }
+.badge-ok { background: #00e87a20; color: #00e87a; border: 1px solid #00e87a44; }
+.badge-no { background: #1a2236; color: #475569; border: 1px solid #1e2d44; }
+label { font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px; font-family: monospace; }
+input { width: 100%; background: #111827; border: 1px solid #1e2d44; border-radius: 6px; color: #e2e8f0; padding: 9px 12px; font-size: 13px; font-family: monospace; margin-bottom: 8px; outline: none; transition: border-color .15s; }
+input:focus { border-color: #00e87a; }
+.row { display: flex; gap: 8px; }
+button { padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; font-family: inherit; }
+.btn-save { background: #00e87a; color: #060910; flex: 1; }
+.btn-save:hover { background: #00ff88; }
+.btn-test { background: transparent; color: #94a3b8; border: 1px solid #253550; padding: 8px 14px; }
+.btn-test:hover { background: #1a2236; color: #e2e8f0; }
+.status { display: none; padding: 9px 12px; border-radius: 6px; font-size: 12px; margin-top: 6px; line-height: 1.5; }
+.status.ok { background: #00e87a15; border: 1px solid #00e87a44; color: #00e87a; display: block; }
+.status.err { background: #f8717115; border: 1px solid #f8717144; color: #f87171; display: block; }
+.status.warn { background: #fbbf2415; border: 1px solid #fbbf2444; color: #fbbf24; display: block; }
+.status.info { background: #38bdf815; border: 1px solid #38bdf844; color: #38bdf8; display: block; }
+.diag-box { background: #111827; border: 1px solid #1e2d44; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px; line-height: 2; margin-top: 8px; display: none; }
+.footer { text-align: center; margin-top: 20px; font-size: 12px; color: #475569; }
+.footer a { color: #38bdf8; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>FacelessAI — API Keys</h1>
+  <div class="sub">Las keys se guardan solo en tu navegador. Nunca salen de tu dispositivo.</div>
+
+  <!-- DIAGNOSTICO -->
+  <div class="card">
+    <div class="card-title">🔍 Diagnóstico del navegador</div>
+    <div class="row" style="margin-bottom:8px">
+      <button class="btn-test" style="flex:1" onclick="runDiag()">Ejecutar diagnóstico</button>
+      <button class="btn-test" onclick="clearAll()" style="color:#f87171;border-color:#f87171">🗑 Borrar todo</button>
+    </div>
+    <div class="diag-box" id="diag"></div>
+    <div id="diag-status" class="status"></div>
+  </div>
+
+  <!-- ANTHROPIC -->
+  <div class="card">
+    <div class="card-title">
+      🤖 Anthropic Claude
+      <span class="badge badge-no" id="badge-anthropic">Sin clave</span>
+    </div>
+    <label>API Key — console.anthropic.com</label>
+    <input type="password" id="key-anthropic" placeholder="sk-ant-api03-...">
+    <div class="row">
+      <button class="btn-save" onclick="save('anthropic')">Guardar</button>
+      <button class="btn-test" onclick="test('anthropic')">Probar conexión</button>
+    </div>
+    <div class="status" id="st-anthropic"></div>
+  </div>
+
+  <!-- OPENAI -->
+  <div class="card">
+    <div class="card-title">
+      🎤 OpenAI TTS
+      <span class="badge badge-no" id="badge-openai">Sin clave</span>
+    </div>
+    <label>API Key — platform.openai.com</label>
+    <input type="password" id="key-openai" placeholder="sk-...">
+    <div class="row">
+      <button class="btn-save" onclick="save('openai')">Guardar</button>
+      <button class="btn-test" onclick="test('openai')">Probar conexión</button>
+    </div>
+    <div class="status" id="st-openai"></div>
+  </div>
+
+  <!-- PEXELS -->
+  <div class="card">
+    <div class="card-title">
+      🎬 Pexels (clips gratis)
+      <span class="badge badge-no" id="badge-pexels">Sin clave</span>
+    </div>
+    <label>API Key — pexels.com/api (GRATIS)</label>
+    <input id="key-pexels" placeholder="Tu Pexels API key...">
+    <div class="row">
+      <button class="btn-save" onclick="save('pexels')">Guardar</button>
+      <button class="btn-test" onclick="test('pexels')">Probar conexión</button>
+    </div>
+    <div class="status" id="st-pexels"></div>
+  </div>
+
+  <!-- ELEVENLABS -->
+  <div class="card">
+    <div class="card-title">
+      🎙️ ElevenLabs (opcional)
+      <span class="badge badge-no" id="badge-elevenlabs">Sin clave</span>
+    </div>
+    <label>API Key — elevenlabs.io</label>
+    <input type="password" id="key-elevenlabs" placeholder="Tu ElevenLabs key...">
+    <div class="row">
+      <button class="btn-save" onclick="save('elevenlabs')">Guardar</button>
+      <button class="btn-test" onclick="test('elevenlabs')">Probar conexión</button>
+    </div>
+    <div class="status" id="st-elevenlabs"></div>
+  </div>
+
+  <div class="footer">
+    Keys guardadas → <a href="index.html">Volver al dashboard →</a>
+  </div>
+</div>
+
+<script>
+// ── STATUS HELPER ──
+function st(name, type, msg) {
+  const el = document.getElementById('st-' + name);
+  if (!el) return;
+  el.className = 'status ' + type;
+  el.textContent = msg;
+}
+
+function setBadge(name, ok) {
+  const el = document.getElementById('badge-' + name);
+  if (!el) return;
+  if (ok) {
+    el.textContent = '✓ Guardada';
+    el.className = 'badge badge-ok';
+  } else {
+    el.textContent = 'Sin clave';
+    el.className = 'badge badge-no';
+  }
+}
+
+// ── LOAD ON START ──
+window.addEventListener('DOMContentLoaded', function() {
+  ['anthropic','openai','pexels','elevenlabs'].forEach(function(k) {
+    try {
+      var v = localStorage.getItem('fai_key_' + k);
+      if (v && v.length > 5) {
+        setBadge(k, true);
+        var inp = document.getElementById('key-' + k);
+        if (inp) inp.placeholder = v.slice(0,12) + '•••••••••••• (guardada)';
+        st(k, 'ok', '✓ Key cargada desde localStorage (' + v.length + ' caracteres)');
+      }
+    } catch(e) {}
+  });
+});
+
+// ── SAVE ──
+function save(name) {
+  var inp = document.getElementById('key-' + name);
+  var val = inp ? inp.value.trim() : '';
+
+  if (!val) {
+    st(name, 'warn', '⚠ El campo está vacío. Pega tu key y pulsa Guardar.');
+    return;
+  }
+
+  try {
+    localStorage.setItem('fai_key_' + name, val);
+    var check = localStorage.getItem('fai_key_' + name);
+    if (check !== val) throw new Error('Verificación fallida — se escribió pero no se puede leer');
+  } catch(e) {
+    st(name, 'err', '❌ Error guardando: ' + e.message + '\n\nPrueba en una ventana normal (no incógnito) de Chrome o Edge.');
+    return;
+  }
+
+  // Success
+  inp.value = '';
+  inp.placeholder = val.slice(0,12) + '•••••••••••• (guardada)';
+  inp.style.borderColor = '#00e87a';
+  setBadge(name, true);
+  st(name, 'ok', '✓ Guardada correctamente en localStorage (' + val.length + ' chars). Pulsa "Probar conexión" para verificar.');
+
+  // Also share with parent dashboard if open
+  try { window.opener && window.opener.location.reload(); } catch(e) {}
+}
+
+// ── TEST ──
+async function test(name) {
+  var key;
+  try { key = localStorage.getItem('fai_key_' + name); } catch(e) {}
+  if (!key) { st(name, 'warn', '⚠ No hay key guardada. Guárdala primero.'); return; }
+
+  st(name, 'info', '⏳ Probando conexión con ' + name + '...');
+
+  var ctrl = new AbortController();
+  var timer = setTimeout(function() { ctrl.abort(); }, 15000);
+
+  try {
+    var r, data;
+    if (name === 'anthropic') {
+      r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST', signal: ctrl.signal,
+        headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 20, messages: [{ role: 'user', content: 'Reply: OK' }] })
+      });
+      clearTimeout(timer);
+      if (r.status === 200) {
+        data = await r.json();
+        st(name, 'ok', '✅ Anthropic OK — Claude respondió: "' + (data.content[0].text.trim()) + '"');
+      } else if (r.status === 401) {
+        st(name, 'err', '❌ Key inválida (401) — cópiala completa desde console.anthropic.com');
+      } else {
+        var e = await r.json().catch(function(){return {};});
+        st(name, 'err', '❌ Error ' + r.status + ': ' + (e.error && e.error.message || 'desconocido'));
+      }
+    } else if (name === 'openai') {
+      r = await fetch('https://api.openai.com/v1/models', { signal: ctrl.signal, headers: { 'Authorization': 'Bearer ' + key } });
+      clearTimeout(timer);
+      if (r.ok) st(name, 'ok', '✅ OpenAI OK — TTS disponible');
+      else if (r.status === 401) st(name, 'err', '❌ Key inválida (401)');
+      else st(name, 'err', '❌ Error ' + r.status);
+    } else if (name === 'pexels') {
+      r = await fetch('https://api.pexels.com/v1/search?query=nature&per_page=1', { signal: ctrl.signal, headers: { 'Authorization': key } });
+      clearTimeout(timer);
+      if (r.ok) {
+        data = await r.json();
+        st(name, 'ok', '✅ Pexels OK — ' + (data.total_results || '∞') + ' clips disponibles (GRATIS)');
+      } else st(name, 'err', '❌ Key inválida (' + r.status + ')');
+    } else if (name === 'elevenlabs') {
+      r = await fetch('https://api.elevenlabs.io/v1/user', { signal: ctrl.signal, headers: { 'xi-api-key': key } });
+      clearTimeout(timer);
+      if (r.ok) st(name, 'ok', '✅ ElevenLabs OK');
+      else st(name, 'err', '❌ Key inválida (' + r.status + ')');
+    }
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') {
+      st(name, 'warn', '⏱ Timeout 15s — posible bloqueo CORS desde GitHub Pages. La key puede ser válida igualmente. El dashboard puede usarla aunque este test falle.');
+    } else {
+      st(name, 'warn', '⚠ Error de red: ' + e.message + '\nLa key puede ser válida. El dashboard la usará igualmente.');
+    }
+  }
+}
+
+// ── DIAGNOSTICO ──
+function runDiag() {
+  var lines = [];
+  var ok = true;
+
+  // Test localStorage
+  try {
+    localStorage.setItem('_t', '1');
+    var r = localStorage.getItem('_t');
+    localStorage.removeItem('_t');
+    if (r === '1') {
+      lines.push({ c: '#00e87a', t: '✅ localStorage funciona correctamente' });
+    } else {
+      lines.push({ c: '#f87171', t: '❌ localStorage falla (escribe pero no lee)' }); ok = false;
+    }
+  } catch(e) {
+    lines.push({ c: '#f87171', t: '❌ localStorage BLOQUEADO: ' + e.message }); ok = false;
+  }
+
+  // Check each key
+  ['anthropic','openai','pexels','elevenlabs'].forEach(function(k) {
+    try {
+      var v = localStorage.getItem('fai_key_' + k);
+      lines.push({ c: v ? '#00e87a' : '#475569', t: (v ? '🔑 ' : '⭕ ') + k + ': ' + (v ? 'GUARDADA (' + v.slice(0,10) + '••• ' + v.length + ' chars)' : 'no guardada') });
+    } catch(e) {
+      lines.push({ c: '#f87171', t: '❌ ' + k + ': error — ' + e.message });
+    }
+  });
+
+  // Render
+  var box = document.getElementById('diag');
+  box.style.display = 'block';
+  box.innerHTML = lines.map(function(l) {
+    return '<div style="color:' + l.c + '">' + l.t + '</div>';
+  }).join('');
+
+  var dst = document.getElementById('diag-status');
+  if (ok) {
+    dst.className = 'status ok';
+    dst.textContent = '✅ localStorage funciona. Si el Guardar no funciona en el dashboard, prueba guardar las keys desde esta página.';
+  } else {
+    dst.className = 'status err';
+    dst.textContent = '❌ localStorage bloqueado. Abre esta página en una ventana normal de Chrome (no incógnito) y prueba de nuevo.';
+  }
+}
+
+// ── CLEAR ALL ──
+function clearAll() {
+  if (!confirm('¿Borrar todas las keys guardadas?')) return;
+  ['anthropic','openai','pexels','elevenlabs'].forEach(function(k) {
+    try { localStorage.removeItem('fai_key_' + k); } catch(e) {}
+    setBadge(k, false);
+    var inp = document.getElementById('key-' + k);
+    if (inp) { inp.value = ''; inp.placeholder = ''; inp.style.borderColor = ''; }
+    var s = document.getElementById('st-' + k);
+    if (s) { s.className = 'status'; s.textContent = ''; }
+  });
+  var dst = document.getElementById('diag-status');
+  dst.className = 'status warn';
+  dst.textContent = 'Todas las keys eliminadas.';
+}
+</script>
+</body>
+</html>

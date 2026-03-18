@@ -2125,6 +2125,17 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 </div>
 
 <script>
+// ── GLOBALS — must be first to avoid ReferenceError anywhere in script ──
+const KEYS = {};
+const TIER_CONFIG = {
+  free:    { llm:'local',  tts:'kokoro', img:'pexels', costPerVid:0,    llmModel:'llama-local',              ttsModel:'Kokoro TTS (local)', label:'🟢 GRATIS' },
+  eco:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.01, llmModel:'claude-haiku-4-5-20251001', ttsModel:'OpenAI TTS-1',       label:'🟡 ECONÓMICO' },
+  opt:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.06, llmModel:'claude-sonnet-4-6',        ttsModel:'OpenAI TTS-1 HD',    label:'🔵 OPTIMIZADO' },
+  premium: { llm:'claude', tts:'11labs', img:'pexels', costPerVid:0.25, llmModel:'claude-opus-4-6',          ttsModel:'ElevenLabs v3',      label:'🔴 PREMIUM' }
+};
+let activeTier = 'eco';
+try { activeTier = localStorage.getItem('fai_tier') || 'eco'; } catch(e) {}
+
 // ── NAVIGATION ──
 const VIEWS = ['dashboard','channels','drafts','autopilot','trends','score','pipeline','url2video','clone','affiliation','reuse','monetization','models','settings'];
 const TITLES = {
@@ -2147,8 +2158,8 @@ function nav(id) {
   document.getElementById('page-title').textContent = TITLES[id] || id;
   window.scrollTo(0, 0);
 
-  // When navigating to settings, always refresh key display from localStorage
-  if (id === 'settings') refreshSettingsDisplay();
+  // Refresh settings display after DOM is visible
+  if (id === 'settings') setTimeout(refreshSettingsDisplay, 50);
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -2896,7 +2907,6 @@ updateCostEstimate();
 // ═══════════════════════════════════════════════
 
 // ── KEY MANAGEMENT ──
-const KEYS = {};
 function loadKeys() {
   try {
     localStorage.setItem('fai_test', '1');
@@ -2919,53 +2929,77 @@ function loadKeys() {
   });
 }
 
-// Called every time user opens Settings — reads live from localStorage and updates UI
 function refreshSettingsDisplay() {
-  ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
-    try {
-      const v = localStorage.getItem('fai_key_' + k);
-      if (v && v.length > 5) {
-        KEYS[k] = v;
-        // Badge
-        const badge = document.getElementById('badge-' + k);
-        if (badge) {
-          badge.textContent = '✓ Activa';
-          badge.style.cssText = 'background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
-        }
-        // Icon + text in status grid
-        const icon = document.getElementById('status-' + k + '-icon');
-        const text = document.getElementById('status-' + k + '-text');
-        if (icon) icon.textContent = '✅';
-        if (text) text.textContent = 'Configurada';
-        // Input placeholder
-        const inp = document.getElementById('key-' + k);
-        if (inp) {
-          inp.value = '';
-          inp.placeholder = v.slice(0, 14) + '•••• (guardada — pega nueva para cambiar)';
-          inp.style.borderColor = '#00e87a';
-        }
-        // Status message
-        setStatus(k, 'ok', '✓ Key guardada · ' + v.length + ' chars · Pulsa "Probar" para verificar');
-      } else {
-        // Not saved
-        const badge = document.getElementById('badge-' + k);
-        if (badge) {
-          badge.textContent = 'Sin clave';
-          badge.style.cssText = 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
-        }
-        const icon = document.getElementById('status-' + k + '-icon');
-        const text = document.getElementById('status-' + k + '-text');
-        if (icon) icon.textContent = '⭕';
-        if (text) text.textContent = 'No configurada';
-        const inp = document.getElementById('key-' + k);
-        if (inp) { inp.placeholder = ''; inp.style.borderColor = ''; }
-        const msg = document.getElementById('status-msg-' + k);
-        if (msg) msg.style.display = 'none';
+  const names = ['anthropic','openai','pexels','elevenlabs'];
+  names.forEach(k => {
+    let v = null;
+    try { v = localStorage.getItem('fai_key_' + k); } catch(e) {}
+
+    if (v && v.length > 5) {
+      KEYS[k] = v;
+
+      // Badge — find it and paint it green no matter what
+      const badge = document.getElementById('badge-' + k);
+      if (badge) {
+        badge.textContent = '✓ Activa';
+        badge.setAttribute('style', 'background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace;display:inline-block');
       }
-    } catch(e) {}
+
+      // Status icons in the grid
+      const icon = document.getElementById('status-' + k + '-icon');
+      const text = document.getElementById('status-' + k + '-text');
+      if (icon) icon.textContent = '✅';
+      if (text) text.textContent = 'Configurada · ' + v.length + ' chars';
+
+      // Input — show masked placeholder
+      const inp = document.getElementById('key-' + k);
+      if (inp) {
+        inp.value = '';
+        inp.placeholder = v.slice(0, 14) + '•••• (guardada)';
+        inp.setAttribute('style', inp.getAttribute('style') + ';border-color:#00e87a');
+      }
+
+      // Status message below the input
+      const msg = document.getElementById('status-msg-' + k);
+      if (msg) {
+        msg.setAttribute('style', 'display:block;background:#00e87a15;border:1px solid #00e87a44;color:#00e87a;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px');
+        msg.textContent = '✓ Key guardada · ' + v.slice(0,12) + '•••• · ' + v.length + ' chars · Pulsa "Probar" para verificar';
+      }
+
+    } else {
+      // Not saved — grey everything out
+      const badge = document.getElementById('badge-' + k);
+      if (badge) {
+        badge.textContent = 'Sin clave';
+        badge.setAttribute('style', 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace;display:inline-block');
+      }
+      const icon = document.getElementById('status-' + k + '-icon');
+      const text = document.getElementById('status-' + k + '-text');
+      if (icon) icon.textContent = '⭕';
+      if (text) text.textContent = 'No configurada';
+      const msg = document.getElementById('status-msg-' + k);
+      if (msg) msg.style.display = 'none';
+    }
   });
+
   updateSettingsStatus();
   updateSettingsBadge();
+
+  // Update settings header tag
+  const tag = document.getElementById('settings-status');
+  if (tag) {
+    const count = names.filter(k => KEYS[k]).length;
+    if (count >= 3) {
+      tag.textContent = '✓ ' + count + '/4 keys configuradas';
+      tag.setAttribute('style', 'background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace');
+    } else if (count > 0) {
+      tag.textContent = count + '/4 keys configuradas';
+      tag.setAttribute('style', 'background:#fbbf2415;color:#fbbf24;border:1px solid #fbbf2444;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace');
+    } else {
+      tag.textContent = 'Sin configurar';
+      tag.setAttribute('style', 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace');
+    }
+  }
 }
 
 function diagStorage() {
@@ -3319,14 +3353,6 @@ function updateSettingsBadge() {
 }
 
 // ── TIER MANAGEMENT ──
-const TIER_CONFIG = {
-  free:    { llm: 'local',   tts: 'kokoro',  img: 'pexels', costPerVid: 0,    llmModel: 'llama-local',            ttsModel: 'Kokoro TTS (local)',       label: '🟢 GRATIS' },
-  eco:     { llm: 'claude',  tts: 'openai',  img: 'pexels', costPerVid: 0.01, llmModel: 'claude-haiku-4-5-20251001', ttsModel: 'OpenAI TTS-1',             label: '🟡 ECONÓMICO' },
-  opt:     { llm: 'claude',  tts: 'openai',  img: 'pexels', costPerVid: 0.06, llmModel: 'claude-sonnet-4-6',      ttsModel: 'OpenAI TTS-1 HD',          label: '🔵 OPTIMIZADO' },
-  premium: { llm: 'claude',  tts: '11labs',  img: 'pexels', costPerVid: 0.25, llmModel: 'claude-opus-4-6',        ttsModel: 'ElevenLabs v3',            label: '🔴 PREMIUM' }
-};
-let activeTier = localStorage.getItem('fai_tier') || 'eco';
-
 function setTier(t) {
   activeTier = t;
   localStorage.setItem('fai_tier', t);

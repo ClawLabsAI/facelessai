@@ -1879,6 +1879,21 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     <span class="tag tg" id="settings-status">Sin configurar</span>
   </div>
 
+  <!-- localStorage warning (shown if blocked) -->
+  <div id="ls-warning" style="display:none;background:#f8717115;border:1px solid #f8717144;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#f87171">
+    ⚠️ <strong>Tu navegador está bloqueando localStorage.</strong> Las keys no se pueden guardar. Prueba: desactivar el modo incógnito, o ir a Configuración del navegador → Privacidad → permitir cookies y datos de sitios.
+  </div>
+
+  <!-- localStorage test button -->
+  <div style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
+    <div style="flex:1;font-size:12px;color:#94a3b8">
+      <strong style="color:#e2e8f0">🔒 Seguridad:</strong> Las keys se guardan solo en tu navegador (localStorage). Nunca salen de tu dispositivo.
+    </div>
+    <button class="btn btn-g btn-sm" onclick="diagStorage()" style="flex-shrink:0">🔍 Diagnóstico</button>
+    <button class="btn btn-g btn-sm" onclick="clearAllKeys()" style="flex-shrink:0;border-color:#f87171;color:#f87171">🗑 Borrar todo</button>
+  </div>
+  <div id="diag-result" style="display:none;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;font-family:var(--mono)"></div>
+
   <!-- API STATUS ROW -->
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px" id="api-status-row">
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center">
@@ -2881,22 +2896,114 @@ if (!KEYS.anthropic) {
 // ── KEY MANAGEMENT ──
 const KEYS = {};
 function loadKeys() {
+  // First check if localStorage works at all
+  try {
+    localStorage.setItem('fai_test', '1');
+    const ok = localStorage.getItem('fai_test') === '1';
+    localStorage.removeItem('fai_test');
+    if (!ok) throw new Error('localStorage read-back failed');
+  } catch(e) {
+    console.warn('localStorage not available:', e);
+    // Show warning in settings if visible
+    setTimeout(() => {
+      const el = document.getElementById('ls-warning');
+      if (el) el.style.display = 'block';
+    }, 500);
+    return;
+  }
+
   ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
-    const v = localStorage.getItem('fai_key_' + k);
-    if (v) {
-      KEYS[k] = v;
-      // Don't touch the input value — leave it blank so user can re-save cleanly
-      // Just update the badge
-      updateKeyBadge(k, true);
-    }
+    try {
+      const v = localStorage.getItem('fai_key_' + k);
+      if (v && v.length > 5) {
+        KEYS[k] = v;
+        updateKeyBadge(k, true);
+        // Show masked placeholder in the input
+        const inp = document.getElementById('key-' + k);
+        if (inp) {
+          inp.placeholder = v.slice(0, 12) + '•••••••••••• (guardada — pega nueva para cambiar)';
+        }
+      }
+    } catch(e) { console.warn('Error loading key', k, e); }
   });
+
   updateSettingsStatus();
   updateSettingsBadge();
 }
 
+function diagStorage() {
+  const el = document.getElementById('diag-result');
+  if (!el) return;
+  el.style.display = 'block';
+
+  const lines = [];
+  // Test 1: can we write?
+  try {
+    localStorage.setItem('fai_diag', 'test123');
+    const r = localStorage.getItem('fai_diag');
+    localStorage.removeItem('fai_diag');
+    if (r === 'test123') {
+      lines.push({ ok: true, msg: '✅ localStorage disponible y funcionando' });
+    } else {
+      lines.push({ ok: false, msg: '❌ localStorage escribe pero no lee correctamente' });
+    }
+  } catch(e) {
+    lines.push({ ok: false, msg: '❌ localStorage bloqueado: ' + e.message });
+  }
+
+  // Test 2: what keys are saved?
+  const keyNames = ['anthropic', 'openai', 'pexels', 'elevenlabs'];
+  keyNames.forEach(k => {
+    try {
+      const v = localStorage.getItem('fai_key_' + k);
+      if (v) {
+        lines.push({ ok: true, msg: '🔑 ' + k + ': guardada (' + v.slice(0,8) + '••••, ' + v.length + ' chars)' });
+      } else {
+        lines.push({ ok: null, msg: '⭕ ' + k + ': no guardada' });
+      }
+    } catch(e) {
+      lines.push({ ok: false, msg: '❌ ' + k + ': error leyendo — ' + e.message });
+    }
+  });
+
+  // Test 3: memory state
+  keyNames.forEach(k => {
+    if (KEYS[k]) {
+      lines.push({ ok: true, msg: '💾 ' + k + ' en memoria: sí (' + KEYS[k].slice(0,8) + '••••)' });
+    }
+  });
+
+  el.innerHTML = lines.map(l => {
+    const color = l.ok === true ? '#00e87a' : l.ok === false ? '#f87171' : '#94a3b8';
+    return `<div style="color:${color};padding:2px 0">${l.msg}</div>`;
+  }).join('');
+  el.style.background = '#111827';
+  el.style.border = '1px solid #1e2d44';
+}
+
+function clearAllKeys() {
+  if (!confirm('¿Borrar todas las API keys guardadas?')) return;
+  ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
+    try { localStorage.removeItem('fai_key_' + k); } catch(e) {}
+    delete KEYS[k];
+    updateKeyBadge(k, false);
+    const inp = document.getElementById('key-' + k);
+    if (inp) { inp.value = ''; inp.placeholder = ''; inp.style.borderColor = ''; }
+    const msg = document.getElementById('status-msg-' + k);
+    if (msg) msg.style.display = 'none';
+  });
+  updateSettingsStatus();
+  updateSettingsBadge();
+  showToast('🗑 Todas las keys eliminadas');
+}
+
 function saveKey(name) {
+  // Always show something — even if it fails
   const inp = document.getElementById('key-' + name);
-  if (!inp) { console.error('No input found for', name); return; }
+  if (!inp) {
+    alert('Error: no se encontró el campo de key para ' + name);
+    return;
+  }
 
   const val = inp.value.trim();
 
@@ -2904,43 +3011,49 @@ function saveKey(name) {
     if (KEYS[name]) {
       setStatus(name, 'info', '✓ Key ya guardada — para cambiarla pega la nueva y pulsa Guardar');
     } else {
-      setStatus(name, 'warn', '⚠ Pega tu API key en el campo y pulsa Guardar');
+      setStatus(name, 'warn', '⚠ El campo está vacío — pega tu key y pulsa Guardar');
     }
     return;
   }
 
-  // Save to memory and localStorage
-  KEYS[name] = val;
-  try { localStorage.setItem('fai_key_' + name, val); } catch(e) {}
+  // Try to save
+  let savedToStorage = false;
+  try {
+    localStorage.setItem('fai_key_' + name, val);
+    const check = localStorage.getItem('fai_key_' + name);
+    savedToStorage = check === val;
+  } catch(e) {
+    setStatus(name, 'err',
+      '❌ Error guardando: ' + e.message +
+      ' — Tu navegador puede tener localStorage bloqueado. Intenta en modo normal (no incógnito).'
+    );
+    return;
+  }
 
-  // Clear input and show masked placeholder
+  if (!savedToStorage) {
+    setStatus(name, 'err', '❌ localStorage no funciona correctamente en este navegador. Pulsa "Diagnóstico" arriba para más info.');
+    return;
+  }
+
+  // Success
+  KEYS[name] = val;
   inp.value = '';
   inp.placeholder = val.slice(0, 12) + '•••••••••••• (guardada)';
   inp.style.borderColor = '#00e87a';
-  inp.style.boxShadow = '0 0 0 2px #00e87a22';
 
-  // Flash save button green
+  // Flash button
   const btn = document.getElementById('save-btn-' + name);
   if (btn) {
-    const orig = btn.textContent;
     btn.textContent = '✓ Guardada';
-    btn.style.cssText += ';background:#00e87a !important;color:#060910 !important;border-color:#00e87a !important';
-    setTimeout(() => {
-      btn.textContent = orig;
-      btn.style.background = '';
-      btn.style.color = '';
-      btn.style.borderColor = '';
-    }, 2500);
+    btn.style.cssText += ';background:#00e87a !important;color:#060910 !important';
+    setTimeout(() => { btn.textContent = 'Guardar'; btn.style.background = ''; btn.style.color = ''; }, 2500);
   }
 
-  // Update badge
   updateKeyBadge(name, true);
   updateSettingsStatus();
   updateSettingsBadge();
-
-  // Show green confirmation below field
-  setStatus(name, 'ok', '✓ Key guardada en tu navegador · Pulsa "Probar" para verificar la conexión');
-  showToast('✓ ' + name.charAt(0).toUpperCase() + name.slice(1) + ' key guardada');
+  setStatus(name, 'ok', '✓ Key guardada en localStorage · Pulsa "Probar" para verificar · Se cargará automáticamente al recargar');
+  showToast('✓ Key de ' + name + ' guardada');
 }
 
 function setStatus(name, type, msg) {

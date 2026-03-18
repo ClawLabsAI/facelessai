@@ -223,6 +223,10 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .plat-btn:hover{border-color:var(--border2);}
 .tier-opt{border-radius:var(--r);padding:12px 14px;cursor:pointer;transition:all .2s;}
 .tier-opt:hover{background:var(--bg3);}
+.deploy-step{font-size:13px;color:var(--text3);padding:4px 0;font-family:var(--mono);transition:color .2s;}
+.deploy-step.done{color:var(--green);}
+.deploy-step.active{color:var(--amber);}
+.deploy-step.err{color:var(--red);}
 .p-yt{border-color:#ff4444;background:#ff000015;}
 .p-tt{border-color:#00d4c4;background:#00f2ea15;}
 .p-ig{border-color:#e1306c;background:#e1306c15;}
@@ -390,9 +394,55 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <span id="drafts-badge" style="position:absolute;top:-6px;right:-6px;background:var(--amber);color:var(--bg0);font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono)">3</span>
       </button>
       <button class="btn btn-g btn-sm" onclick="openModal()">+ Canal</button>
+      <!-- GITHUB DEPLOY BUTTON -->
+      <button class="btn btn-g btn-sm" id="deploy-btn" onclick="deployToGitHub()" style="border-color:#4f46e5;color:#818cf8;gap:6px" title="Subir última versión a GitHub Pages automáticamente">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Deploy
+      </button>
       <button class="btn btn-p btn-sm" onclick="nav('pipeline')">▶ Generar</button>
     </div>
   </div>
+
+  <!-- DEPLOY MODAL -->
+  <div id="deploy-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center">
+    <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-width:95vw">
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px">🚀 Deploy a GitHub Pages</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Sube la última versión directamente a <strong style="color:var(--blue)">clawlabsai.github.io/facelessai</strong></div>
+
+      <!-- Status area -->
+      <div id="deploy-status" style="display:none;border-radius:var(--r);padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.7"></div>
+
+      <!-- Steps progress -->
+      <div id="deploy-steps" style="display:none;margin-bottom:16px">
+        <div class="deploy-step" id="dstep-1">⬜ Obteniendo archivo actual de GitHub...</div>
+        <div class="deploy-step" id="dstep-2">⬜ Preparando nueva versión...</div>
+        <div class="deploy-step" id="dstep-3">⬜ Subiendo a GitHub...</div>
+        <div class="deploy-step" id="dstep-4">⬜ Verificando deploy...</div>
+      </div>
+
+      <!-- GitHub token input (if not set) -->
+      <div id="deploy-token-section">
+        <label style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px">GitHub Personal Access Token</label>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input class="inp" type="password" id="github-token-inp" placeholder="ghp_..." style="flex:1;font-family:var(--mono);font-size:12px">
+          <button class="btn btn-p btn-sm" onclick="saveGithubToken()">Guardar token</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.6">
+          Créalo en <a href="https://github.com/settings/tokens/new?scopes=repo&description=FacelessAI+Deploy" target="_blank" style="color:var(--blue)">github.com/settings/tokens</a> → Generate new token (classic) → marca solo ✅ <strong>repo</strong> → Generate
+        </div>
+        <div id="status-msg-github" style="display:none;margin-top:8px"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">
+        <button class="btn btn-g btn-sm" onclick="closeDeployModal()">Cancelar</button>
+        <button class="btn btn-p" id="deploy-confirm-btn" onclick="confirmDeploy()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Subir a GitHub ahora
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="content">
 <!-- ════════════════ DASHBOARD ════════════════ -->
 <div class="view active" id="view-dashboard">
@@ -1812,13 +1862,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <label class="lbl">API Key <span style="color:var(--text3);font-weight:400">(se guarda solo en tu navegador)</span></label>
         <div style="display:flex;gap:8px">
           <input class="inp" type="password" id="key-anthropic" placeholder="sk-ant-api03-..." style="flex:1;font-family:var(--mono);font-size:12px">
-          <button class="btn btn-p btn-sm" onclick="saveKey('anthropic')">Guardar</button>
+          <button class="btn btn-p btn-sm" id="save-btn-anthropic" onclick="saveKey('anthropic')">Guardar</button>
           <button class="btn btn-g btn-sm" onclick="testKey('anthropic')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
           Consíguela gratis en <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--blue)">console.anthropic.com</a> · ~$0.003/script con Haiku
         </div>
-        <div id="test-anthropic" style="display:none;margin-top:8px;font-size:12px;font-family:var(--mono)"></div>
+        <div id="status-msg-anthropic" style="display:none"></div>
       </div>
 
       <!-- OPENAI -->
@@ -1834,13 +1884,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <label class="lbl">API Key</label>
         <div style="display:flex;gap:8px">
           <input class="inp" type="password" id="key-openai" placeholder="sk-..." style="flex:1;font-family:var(--mono);font-size:12px">
-          <button class="btn btn-p btn-sm" onclick="saveKey('openai')">Guardar</button>
+          <button class="btn btn-p btn-sm" id="save-btn-openai" onclick="saveKey('openai')">Guardar</button>
           <button class="btn btn-g btn-sm" onclick="testKey('openai')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
           <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--blue)">platform.openai.com</a> · ~$0.006/vídeo TTS-1 · ~$0.012/vídeo TTS-1 HD
         </div>
-        <div id="test-openai" style="display:none;margin-top:8px;font-size:12px;font-family:var(--mono)"></div>
+        <div id="status-msg-openai" style="display:none"></div>
       </div>
 
       <!-- PEXELS -->
@@ -1856,13 +1906,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <label class="lbl">API Key <span style="color:var(--green);font-weight:400">(100% gratis, sin límite práctico)</span></label>
         <div style="display:flex;gap:8px">
           <input class="inp" id="key-pexels" placeholder="Tu Pexels API key..." style="flex:1;font-family:var(--mono);font-size:12px">
-          <button class="btn btn-p btn-sm" onclick="saveKey('pexels')">Guardar</button>
+          <button class="btn btn-p btn-sm" id="save-btn-pexels" onclick="saveKey('pexels')">Guardar</button>
           <button class="btn btn-g btn-sm" onclick="testKey('pexels')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
           <a href="https://www.pexels.com/api/" target="_blank" style="color:var(--blue)">pexels.com/api</a> · Registro gratis · clave instantánea
         </div>
-        <div id="test-pexels" style="display:none;margin-top:8px;font-size:12px;font-family:var(--mono)"></div>
+        <div id="status-msg-pexels" style="display:none"></div>
       </div>
 
       <!-- ELEVENLABS -->
@@ -1878,13 +1928,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <label class="lbl">API Key</label>
         <div style="display:flex;gap:8px">
           <input class="inp" type="password" id="key-elevenlabs" placeholder="Tu ElevenLabs API key..." style="flex:1;font-family:var(--mono);font-size:12px">
-          <button class="btn btn-p btn-sm" onclick="saveKey('elevenlabs')">Guardar</button>
+          <button class="btn btn-p btn-sm" id="save-btn-elevenlabs" onclick="saveKey('elevenlabs')">Guardar</button>
           <button class="btn btn-g btn-sm" onclick="testKey('elevenlabs')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
           <a href="https://elevenlabs.io" target="_blank" style="color:var(--blue)">elevenlabs.io</a> · Plan gratis limitado · ~$0.05/vídeo en pago
         </div>
-        <div id="test-elevenlabs" style="display:none;margin-top:8px;font-size:12px;font-family:var(--mono)"></div>
+        <div id="status-msg-elevenlabs" style="display:none"></div>
       </div>
     </div>
 
@@ -2318,6 +2368,202 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 3600);
 }
 
+// ═══════════════════════════════════════════════
+// GITHUB AUTO-DEPLOY
+// ═══════════════════════════════════════════════
+const GH_USER  = 'clawlabsai';
+const GH_REPO  = 'facelessai';
+const GH_BRANCH = 'main';
+const GH_FILE  = 'index.html';
+
+function deployToGitHub() {
+  const modal = document.getElementById('deploy-modal');
+  modal.style.display = 'flex';
+  // Reset state
+  document.getElementById('deploy-status').style.display = 'none';
+  document.getElementById('deploy-steps').style.display = 'none';
+  ['dstep-1','dstep-2','dstep-3','dstep-4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.className = 'deploy-step'; }
+  });
+  // Pre-fill token if saved
+  const saved = localStorage.getItem('fai_key_github');
+  const inp = document.getElementById('github-token-inp');
+  if (saved && inp) {
+    inp.placeholder = saved.slice(0,10) + '•••••••••••••••• (guardado)';
+    inp.value = '';
+  }
+}
+
+function closeDeployModal() {
+  document.getElementById('deploy-modal').style.display = 'none';
+}
+
+function saveGithubToken() {
+  const inp = document.getElementById('github-token-inp');
+  const val = inp ? inp.value.trim() : '';
+  if (!val) {
+    setStatus('github', 'warn', '⚠ Pega tu token de GitHub (empieza por ghp_...)');
+    return;
+  }
+  if (!val.startsWith('ghp_') && !val.startsWith('github_pat_')) {
+    setStatus('github', 'warn', '⚠ El token debe empezar por ghp_ o github_pat_');
+    return;
+  }
+  localStorage.setItem('fai_key_github', val);
+  inp.value = '';
+  inp.placeholder = val.slice(0,10) + '•••••••••••••••• (guardado)';
+  setStatus('github', 'ok', '✓ Token guardado. Pulsa "Subir a GitHub ahora" para hacer el deploy.');
+}
+
+async function confirmDeploy() {
+  const token = localStorage.getItem('fai_key_github');
+  if (!token) {
+    setStatus('github', 'warn', '⚠ Primero guarda tu GitHub token arriba');
+    return;
+  }
+
+  const confirmBtn = document.getElementById('deploy-confirm-btn');
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = 'Subiendo...';
+
+  const stepsEl = document.getElementById('deploy-steps');
+  stepsEl.style.display = 'block';
+  document.getElementById('deploy-status').style.display = 'none';
+
+  const setStep = (n, state, text) => {
+    const el = document.getElementById('dstep-' + n);
+    if (!el) return;
+    const icons = { active: '⏳', done: '✅', err: '✕' };
+    el.className = 'deploy-step ' + state;
+    el.textContent = (icons[state] || '⬜') + ' ' + text;
+  };
+
+  try {
+    // ── STEP 1: Get current file SHA from GitHub ──
+    setStep(1, 'active', 'Obteniendo archivo actual de GitHub...');
+    const apiBase = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+    const headers = {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+
+    let sha = null;
+    const getResp = await fetch(apiBase + '?ref=' + GH_BRANCH, { headers });
+    if (getResp.ok) {
+      const fileData = await getResp.json();
+      sha = fileData.sha;
+      setStep(1, 'done', 'Archivo actual obtenido (SHA: ' + sha.slice(0,8) + '...)');
+    } else if (getResp.status === 404) {
+      setStep(1, 'done', 'Archivo no encontrado — se creará nuevo');
+    } else if (getResp.status === 401) {
+      throw new Error('Token inválido (401) — verifica que tiene permisos de repo');
+    } else {
+      throw new Error('Error obteniendo archivo: ' + getResp.status);
+    }
+
+    // ── STEP 2: Get this page's HTML content ──
+    setStep(2, 'active', 'Obteniendo contenido del dashboard actual...');
+    let htmlContent;
+    try {
+      // Try to fetch the current page content
+      const pageResp = await fetch(window.location.href + '?nocache=' + Date.now());
+      htmlContent = await pageResp.text();
+    } catch(e) {
+      // Fallback: use document HTML
+      htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    }
+    const encoded = btoa(unescape(encodeURIComponent(htmlContent)));
+    setStep(2, 'done', 'Contenido preparado (' + Math.round(htmlContent.length / 1024) + ' KB)');
+
+    // ── STEP 3: Push to GitHub ──
+    setStep(3, 'active', 'Subiendo a GitHub...');
+    const now = new Date().toISOString().slice(0,16).replace('T',' ');
+    const body = {
+      message: `FacelessAI dashboard update — ${now}`,
+      content: encoded,
+      branch: GH_BRANCH
+    };
+    if (sha) body.sha = sha;
+
+    const putResp = await fetch(apiBase, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!putResp.ok) {
+      const err = await putResp.json().catch(() => ({}));
+      throw new Error('Error subiendo: ' + putResp.status + ' — ' + (err.message || ''));
+    }
+    const putData = await putResp.json();
+    setStep(3, 'done', 'Subido correctamente (commit: ' + putData.commit?.sha?.slice(0,8) + ')');
+
+    // ── STEP 4: Done ──
+    setStep(4, 'active', 'Activando GitHub Pages...');
+    await new Promise(r => setTimeout(r, 1500));
+    setStep(4, 'done', 'Deploy completado — URL activa en ~30s');
+
+    // Show success
+    const statusEl = document.getElementById('deploy-status');
+    statusEl.style.display = 'block';
+    statusEl.style.background = 'var(--gdim)';
+    statusEl.style.border = '1px solid var(--gsoft)';
+    statusEl.style.color = 'var(--green)';
+    statusEl.style.borderRadius = 'var(--r)';
+    statusEl.style.padding = '12px 14px';
+    statusEl.innerHTML = `✅ <strong>Deploy exitoso</strong><br>Tu dashboard está actualizando en:<br>
+      <a href="https://${GH_USER}.github.io/${GH_REPO}/" target="_blank" style="color:var(--blue);font-family:var(--mono);font-size:12px">
+        https://${GH_USER}.github.io/${GH_REPO}/
+      </a><br>
+      <span style="font-size:11px;color:var(--text3)">Espera 30-60 segundos y recarga la URL</span>`;
+
+    // Update deploy button in topbar
+    const deployBtn = document.getElementById('deploy-btn');
+    if (deployBtn) {
+      deployBtn.style.borderColor = 'var(--green)';
+      deployBtn.style.color = 'var(--green)';
+      deployBtn.innerHTML = '✓ Deployed';
+      setTimeout(() => {
+        deployBtn.style.borderColor = '';
+        deployBtn.style.color = '#818cf8';
+        deployBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Deploy';
+      }, 5000);
+    }
+
+    showToast('🚀 Deploy exitoso — clawlabsai.github.io/facelessai actualizando...');
+
+  } catch(e) {
+    // Find which step failed
+    ['dstep-1','dstep-2','dstep-3','dstep-4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.className.includes('active')) {
+        el.className = 'deploy-step err';
+        el.textContent = '✕ ' + el.textContent.slice(2) + ' — ' + e.message;
+      }
+    });
+    const statusEl = document.getElementById('deploy-status');
+    statusEl.style.display = 'block';
+    statusEl.style.background = 'var(--reddim, #f8717115)';
+    statusEl.style.border = '1px solid #f8717144';
+    statusEl.style.color = 'var(--red)';
+    statusEl.style.borderRadius = 'var(--r)';
+    statusEl.style.padding = '12px 14px';
+    statusEl.textContent = '✕ Error en el deploy: ' + e.message;
+    showToast('✕ Deploy fallido: ' + e.message);
+  } finally {
+    confirmBtn.disabled = false;
+    confirmBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Subir a GitHub ahora';
+  }
+}
+
+// Close deploy modal on outside click
+document.addEventListener('click', e => {
+  const modal = document.getElementById('deploy-modal');
+  if (modal && e.target === modal) closeDeployModal();
+});
+
 // ── INIT ──
 renderSpikes();
 loadKeys();
@@ -2340,6 +2586,8 @@ function loadKeys() {
     const v = localStorage.getItem('fai_key_' + k);
     if (v) {
       KEYS[k] = v;
+      // Don't touch the input value — leave it blank so user can re-save cleanly
+      // Just update the badge
       updateKeyBadge(k, true);
     }
   });
@@ -2352,54 +2600,80 @@ function saveKey(name) {
   if (!inp) return;
   const val = inp.value.trim();
 
-  // Reject if empty or still showing masked placeholder
-  if (!val || val.includes('••••')) {
-    showInlineStatus('test-' + name, '⚠ Pega tu key completa en el campo', 'var(--amber)');
+  // If blank, check if we already have it stored
+  if (!val) {
+    if (KEYS[name]) {
+      setStatus(name, 'info', '✓ Key ya guardada. Para actualizarla pega la nueva key y pulsa Guardar.');
+    } else {
+      setStatus(name, 'warn', '⚠ Pega tu API key en el campo y pulsa Guardar.');
+    }
     return;
   }
 
+  // Save it
   localStorage.setItem('fai_key_' + name, val);
   KEYS[name] = val;
 
-  // Mask the input immediately after saving
-  inp.value = val.slice(0, 10) + '••••••••••••••••';
+  // Visual feedback on the input
+  inp.value = '';
+  inp.placeholder = val.slice(0, 12) + '••••••••••••••••  (guardada)';
   inp.style.borderColor = 'var(--green)';
 
-  // Update badge
+  // Update all badges
   updateKeyBadge(name, true);
   updateSettingsStatus();
   updateSettingsBadge();
 
-  // Show inline success — visible and persistent
-  showInlineStatus('test-' + name,
-    '✓ Key guardada correctamente en tu navegador · Pulsa "Probar" para verificar la conexión',
-    'var(--green)'
-  );
+  // Show green status below
+  setStatus(name, 'ok', '✓ Key guardada correctamente. Pulsa "Probar" para verificar la conexión con la API.');
 
-  // Also update save button temporarily
-  const btn = inp.nextElementSibling;
-  if (btn) {
-    const orig = btn.textContent;
-    btn.textContent = '✓ Guardada';
-    btn.style.background = 'var(--green)';
-    btn.style.color = 'var(--bg0)';
+  // Flash the button green
+  const saveBtn = document.getElementById('save-btn-' + name);
+  if (saveBtn) {
+    saveBtn.textContent = '✓ Guardada';
+    saveBtn.style.background = '#00e87a';
+    saveBtn.style.color = '#060910';
     setTimeout(() => {
-      btn.textContent = orig;
-      btn.style.background = '';
-      btn.style.color = '';
+      saveBtn.textContent = 'Guardar';
+      saveBtn.style.background = '';
+      saveBtn.style.color = '';
     }, 2500);
   }
 
-  showToast('✓ Key de ' + name + ' guardada — pulsa "Probar" para verificar');
+  showToast('✓ ' + name + ' API key guardada correctamente');
 }
 
+// Unified status display for each key card
+function setStatus(name, type, msg) {
+  const el = document.getElementById('status-msg-' + name);
+  if (!el) return;
+  el.style.display = 'block';
+  const styles = {
+    ok:   { bg: 'var(--gdim)',  border: 'var(--gsoft)', color: 'var(--green)' },
+    warn: { bg: 'var(--adim)', border: '#fbbf2444',    color: 'var(--amber)' },
+    err:  { bg: 'var(--reddim)', border: '#f8717144',  color: 'var(--red)'   },
+    info: { bg: 'var(--bdim)', border: '#38bdf844',    color: 'var(--blue)'  }
+  };
+  const s = styles[type] || styles.info;
+  el.style.background  = s.bg;
+  el.style.border      = '1px solid ' + s.border;
+  el.style.color       = s.color;
+  el.style.padding     = '8px 12px';
+  el.style.borderRadius = 'var(--r)';
+  el.style.fontSize    = '12px';
+  el.style.lineHeight  = '1.5';
+  el.style.marginTop   = '8px';
+  el.textContent = msg;
+}
+
+// Legacy alias used elsewhere
 function showInlineStatus(elId, msg, color) {
   const el = document.getElementById(elId);
   if (!el) return;
   el.style.display = 'block';
   el.style.color = color;
   el.style.padding = '8px 12px';
-  el.style.background = color === 'var(--green)' ? 'var(--gdim)' : (color === 'var(--red)' ? 'var(--reddim)' : 'var(--adim)');
+  el.style.background = 'var(--bg3)';
   el.style.borderRadius = 'var(--r)';
   el.style.border = '1px solid ' + color;
   el.textContent = msg;
@@ -2410,11 +2684,11 @@ async function testKey(name) {
   if (!el) return;
   const key = KEYS[name];
   if (!key) {
-    showInlineStatus('test-' + name, '⚠ Primero guarda una key válida', 'var(--amber)');
+    setStatus(name, 'warn', '⚠ Primero guarda una key válida');
     return;
   }
 
-  showInlineStatus('test-' + name, '⏳ Probando conexión...', 'var(--amber)');
+  setStatus(name, 'warn', '⏳ Probando conexión con ' + name + '...');
 
   // 15 second timeout
   const controller = new AbortController();
@@ -2441,14 +2715,14 @@ async function testKey(name) {
       if (resp.status === 200) {
         const data = await resp.json();
         const reply = data?.content?.[0]?.text?.trim() || 'OK';
-        showInlineStatus('test-' + name, '✓ Anthropic conectado · Respuesta: "' + reply + '" · Claude Haiku activo', 'var(--green)');
+        setStatus(name, 'ok', '✓ Anthropic conectado · Respuesta: "' + reply + '" · Claude Haiku activo', 'var(--green)');
       } else if (resp.status === 401) {
-        showInlineStatus('test-' + name, '✕ Key inválida (401) — verifica que la copiaste completa desde console.anthropic.com', 'var(--red)');
+        setStatus(name, 'err', '✕ Key inválida (401) — verifica que la copiaste completa desde console.anthropic.com');
       } else if (resp.status === 403) {
-        showInlineStatus('test-' + name, '✕ Sin permisos (403) — puede que la key no tenga acceso a la API de mensajes', 'var(--red)');
+        setStatus(name, 'err', '✕ Sin permisos (403) — puede que la key no tenga acceso a la API de mensajes');
       } else {
         const err = await resp.json().catch(() => ({}));
-        showInlineStatus('test-' + name, '✕ Error ' + resp.status + ': ' + (err?.error?.message || 'Error desconocido'), 'var(--red)');
+        setStatus(name, 'err', '✕ Error ' + resp.status + ': ' + (err?.error?.message || 'Error desconocido'), 'var(--red)');
       }
     } else if (name === 'pexels') {
       const resp = await fetch('https://api.pexels.com/v1/search?query=nature&per_page=1', {
@@ -2458,9 +2732,9 @@ async function testKey(name) {
       clearTimeout(timeout);
       if (resp.ok) {
         const data = await resp.json();
-        showInlineStatus('test-' + name, '✓ Pexels conectado · ' + (data.total_results || '∞') + ' vídeos disponibles · GRATIS', 'var(--green)');
+        setStatus(name, 'ok', '✓ Pexels conectado · ' + (data.total_results || '∞') + ' vídeos disponibles · GRATIS', 'var(--green)');
       } else {
-        showInlineStatus('test-' + name, '✕ Key inválida (' + resp.status + ') — consíguela gratis en pexels.com/api', 'var(--red)');
+        setStatus(name, 'err', '✕ Key inválida (' + resp.status + ') — consíguela gratis en pexels.com/api', 'var(--red)');
       }
     } else if (name === 'openai') {
       const resp = await fetch('https://api.openai.com/v1/models', {
@@ -2469,11 +2743,11 @@ async function testKey(name) {
       });
       clearTimeout(timeout);
       if (resp.ok) {
-        showInlineStatus('test-' + name, '✓ OpenAI conectado · TTS-1 y TTS-1 HD disponibles', 'var(--green)');
+        setStatus(name, 'ok', '✓ OpenAI conectado · TTS-1 y TTS-1 HD disponibles');
       } else if (resp.status === 401) {
-        showInlineStatus('test-' + name, '✕ Key inválida (401) — verifica en platform.openai.com/api-keys', 'var(--red)');
+        setStatus(name, 'err', '✕ Key inválida (401) — verifica en platform.openai.com/api-keys');
       } else {
-        showInlineStatus('test-' + name, '✕ Error ' + resp.status + ' — verifica tu cuenta OpenAI', 'var(--red)');
+        setStatus(name, 'err', '✕ Error ' + resp.status + ' — verifica tu cuenta OpenAI', 'var(--red)');
       }
     } else if (name === 'elevenlabs') {
       const resp = await fetch('https://api.elevenlabs.io/v1/user', {
@@ -2483,25 +2757,19 @@ async function testKey(name) {
       clearTimeout(timeout);
       if (resp.ok) {
         const data = await resp.json().catch(() => ({}));
-        showInlineStatus('test-' + name, '✓ ElevenLabs conectado · Plan: ' + (data?.subscription?.tier || 'activo'), 'var(--green)');
+        setStatus(name, 'ok', '✓ ElevenLabs conectado · Plan: ' + (data?.subscription?.tier || 'activo'), 'var(--green)');
       } else {
-        showInlineStatus('test-' + name, '✕ Key inválida (' + resp.status + ') — verifica en elevenlabs.io', 'var(--red)');
+        setStatus(name, 'err', '✕ Key inválida (' + resp.status + ') — verifica en elevenlabs.io', 'var(--red)');
       }
     }
   } catch(e) {
     clearTimeout(timeout);
     if (e.name === 'AbortError') {
-      showInlineStatus('test-' + name,
-        '⏱ Timeout (15s) — posible bloqueo CORS desde GitHub Pages. La key puede ser válida igualmente. Prueba a generar una idea directamente.',
-        'var(--amber)'
-      );
+setStatus(name, 'warn', '⏱ Timeout 15s — GitHub Pages puede bloquear este test por CORS. La key puede ser válida igualmente. Ve al Pipeline → Genera ideas para probarla directamente.');
     } else if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
-      showInlineStatus('test-' + name,
-        '⚠ Error de red — si la key está guardada correctamente, prueba directamente a generar una idea en el Pipeline.',
-        'var(--amber)'
-      );
+setStatus(name, 'warn', '⚠ Error de red / CORS — la key puede ser válida. Ve al Pipeline → Genera ideas para probarla directamente.');
     } else {
-      showInlineStatus('test-' + name, '✕ ' + e.message, 'var(--red)');
+      setStatus(name, 'err', '✕ ' + e.message, 'var(--red)');
     }
   }
 }

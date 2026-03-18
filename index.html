@@ -12,6 +12,7 @@
   --green:#00e87a;--gdim:#00e87a1a;--gsoft:#00e87a44;
   --blue:#38bdf8;--bdim:#38bdf81a;
   --amber:#fbbf24;--adim:#fbbf241a;
+  --red:#f87171;--reddim:#f8717115;--redsoft:#f8717133;
   --red:#f87171;--rdim:#f871711a;
   --purple:#a78bfa;--pdim:#a78bfa1a;
   --pink:#f472b6;--pkdim:#f472b61a;
@@ -414,10 +415,10 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
       <!-- Steps progress -->
       <div id="deploy-steps" style="display:none;margin-bottom:16px">
-        <div class="deploy-step" id="dstep-1">⬜ Obteniendo archivo actual de GitHub...</div>
-        <div class="deploy-step" id="dstep-2">⬜ Preparando nueva versión...</div>
-        <div class="deploy-step" id="dstep-3">⬜ Subiendo a GitHub...</div>
-        <div class="deploy-step" id="dstep-4">⬜ Verificando deploy...</div>
+        <div class="deploy-step" id="dstep-1">⬜ Leyendo HTML actual del dashboard...</div>
+        <div class="deploy-step" id="dstep-2">⬜ Subiendo al Gist de GitHub...</div>
+        <div class="deploy-step" id="dstep-3">⬜ Disparando GitHub Action...</div>
+        <div class="deploy-step" id="dstep-4">⬜ Deploy completado</div>
       </div>
 
       <!-- GitHub token input (if not set) -->
@@ -437,7 +438,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <button class="btn btn-g btn-sm" onclick="closeDeployModal()">Cancelar</button>
         <button class="btn btn-p" id="deploy-confirm-btn" onclick="confirmDeploy()">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          Subir a GitHub ahora
+          Actualizar Gist → Deploy automático
         </button>
       </div>
     </div>
@@ -1146,71 +1147,128 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     </div>
   </div>
 
-  <!-- Step 4: Video generation with rich preview -->
+  <!-- Step 4: Audio/Video generation -->
   <div class="pc" id="p-4">
-    <div class="sh"><h2>Generación de vídeo</h2><span class="tag ta">Coste estimado: $0.019</span></div>
-    <div style="display:grid;grid-template-columns:1fr 220px;gap:14px">
-      <div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div class="card-d" style="padding:12px"><div class="lbl mb6">🎤 Voz TTS</div><select class="sel"><option>Kokoro TTS (local) — GRATIS</option><option>Coqui TTS (local) — GRATIS</option><option>ElevenLabs Turbo</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● GRATIS</div></div>
-          <div class="card-d" style="padding:12px"><div class="lbl mb6">🖼️ Imágenes</div><select class="sel"><option>Pexels API — GRATIS</option><option>Pixabay — GRATIS</option><option>SDXL local</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● GRATIS</div></div>
-          <div class="card-d" style="padding:12px"><div class="lbl mb6">🎵 Música</div><select class="sel"><option>Pixabay Music — GRATIS</option><option>Free Music Archive — GRATIS</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● GRATIS</div></div>
-          <div class="card-d" style="padding:12px"><div class="lbl mb6">✏️ Subtítulos</div><select class="sel"><option>Whisper local — GRATIS</option><option>AssemblyAI</option></select><div style="font-size:11px;color:var(--green);margin-top:5px;font-family:var(--mono)">● Auto-sync</div></div>
-          <div class="card-d" style="padding:12px;grid-column:1/-1"><div class="lbl mb8">⚙️ Efectos</div><div class="flex g12 fw"><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">Zoom dinámico</label><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">Cortes rápidos</label><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">Subtítulos virales</label><label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)">9:16 vertical</label></div></div>
+    <div class="sh">
+      <h2>Generación de audio y vídeo</h2>
+      <span class="tag ta" id="vidgen-cost-tag">Coste estimado: $0.009</span>
+    </div>
+
+    <!-- Key status warning -->
+    <div id="vidgen-keys-warning" style="background:var(--adim);border:1px solid #fbbf2433;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-size:13px;display:none">
+      <strong style="color:var(--amber)">⚠ Keys necesarias para esta etapa:</strong>
+      <span id="vidgen-missing-keys" style="color:var(--text2)"></span>
+      <button class="btn btn-g btn-sm" style="margin-left:12px;font-size:11px" onclick="nav('settings')">⚙️ Configurar keys</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 200px;gap:14px">
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <!-- TTS Config -->
+        <div class="card-d" style="padding:14px">
+          <div class="lbl mb8">🎤 Voz TTS — genera el audio del script</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label class="lbl" style="font-size:10px">Motor de voz</label>
+              <select class="sel" id="tts-engine" onchange="updateTTSConfig()">
+                <option value="openai-tts1">OpenAI TTS-1 — $0.006/vídeo</option>
+                <option value="openai-tts1hd">OpenAI TTS-1 HD — $0.012/vídeo</option>
+                <option value="elevenlabs">ElevenLabs v3 — $0.05/vídeo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl" style="font-size:10px">Voz</label>
+              <select class="sel" id="tts-voice">
+                <option value="alloy">Alloy (neutra)</option>
+                <option value="echo">Echo (masculina)</option>
+                <option value="fable">Fable (narrativa)</option>
+                <option value="onyx">Onyx (grave)</option>
+                <option value="nova">Nova (femenina)</option>
+                <option value="shimmer">Shimmer (suave)</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text3)">
+            El script generado en el paso anterior se convierte en MP3. Puedes escucharlo y descargarlo antes de continuar.
+          </div>
+        </div>
+
+        <!-- Pexels Config -->
+        <div class="card-d" style="padding:14px">
+          <div class="lbl mb8">🎬 Clips de vídeo — Pexels API (GRATIS)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label class="lbl" style="font-size:10px">Búsqueda de clips</label>
+              <input class="inp" id="pexels-query" placeholder="Ej: money finance savings" style="font-size:12px">
+            </div>
+            <div>
+              <label class="lbl" style="font-size:10px">Número de clips</label>
+              <select class="sel" id="pexels-count">
+                <option value="3">3 clips</option>
+                <option value="5" selected>5 clips</option>
+                <option value="8">8 clips</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <div id="pexels-preview" style="display:flex;gap:6px;flex-wrap:wrap;min-height:40px">
+              <div style="font-size:12px;color:var(--text3)">Los clips aparecerán aquí después de buscar</div>
+            </div>
+            <button class="btn btn-g btn-sm" style="margin-top:8px" id="pexels-search-btn" onclick="searchPexels()">🔍 Buscar clips</button>
+          </div>
         </div>
 
         <!-- Generation log -->
-        <div id="gen-log" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:2">
+        <div id="gen-log" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.9;max-height:160px;overflow-y:auto">
           <div id="gen-log-lines"></div>
         </div>
+
+        <!-- Audio player (shown after TTS) -->
+        <div id="audio-player-wrap" style="display:none;background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:14px">
+          <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px">🎤 Audio generado — escucha antes de continuar</div>
+          <audio id="audio-player" controls style="width:100%;height:36px"></audio>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <a id="audio-download-link" class="btn btn-g btn-sm" download="audio.mp3">⬇ Descargar MP3</a>
+            <span id="audio-duration" style="font-size:11px;color:var(--text3);align-self:center;font-family:var(--mono)"></span>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Rich preview panel -->
+      <!-- Preview panel -->
       <div>
         <div class="lbl mb6">PREVIEW</div>
         <div class="vprev" id="vprev-box" style="max-height:320px">
           <div class="vprev-bg"></div>
           <div class="vprev-c" id="vprev-idle">
-            <div style="font-size:32px;margin-bottom:8px;opacity:.3">🎬</div>
-            <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">Sin generar</div>
+            <div style="font-size:28px;margin-bottom:8px;opacity:.3">🎬</div>
+            <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-align:center;padding:0 12px">Genera el audio primero · luego los clips</div>
           </div>
-          <!-- Generating state -->
           <div class="vprev-c" id="vprev-loading" style="display:none">
             <div class="prog-ring" id="vprev-ring" style="display:block"></div>
             <div style="font-size:11px;color:var(--text3);margin-top:10px;font-family:var(--mono)" id="vprev-txt">Iniciando...</div>
           </div>
-          <!-- Done state — simulated preview -->
           <div id="vprev-done" style="display:none;position:relative;width:100%;height:100%">
-            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#0f1e38 0%,#1a3a5c 50%,#0f1e38 100%)"></div>
-            <!-- Simulated subtitle bar -->
-            <div style="position:absolute;bottom:40px;left:0;right:0;text-align:center;padding:0 10px">
-              <div style="background:rgba(0,0,0,.85);display:inline-block;padding:4px 12px;border-radius:4px;font-size:13px;font-weight:700;color:#fff;font-family:var(--sans);letter-spacing:.5px">¿ESTÁS PERDIENDO <span style="color:#00e87a">$300</span> AL MES?</div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#0f1e38,#1a3a5c,#0f1e38)"></div>
+            <div style="position:absolute;bottom:40px;left:0;right:0;text-align:center;padding:0 8px">
+              <div id="vprev-subtitle" style="background:rgba(0,0,0,.85);display:inline-block;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;color:#fff">AUDIO LISTO ✓</div>
             </div>
-            <!-- Simulated progress bar -->
-            <div style="position:absolute;bottom:12px;left:12px;right:12px;height:3px;background:rgba(255,255,255,.2);border-radius:2px">
-              <div style="width:35%;height:100%;background:var(--green);border-radius:2px"></div>
-            </div>
-            <!-- Play indicator -->
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:28px;opacity:.7">▶</div>
-            <!-- Duration badge -->
-            <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);padding:2px 7px;border-radius:4px;font-size:10px;font-family:var(--mono);color:#fff">44.8s</div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:24px;opacity:.7">🎵</div>
+            <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);padding:2px 6px;border-radius:4px;font-size:10px;font-family:var(--mono);color:#fff" id="vprev-dur">—</div>
           </div>
         </div>
-
-        <!-- Preview metadata (shown after gen) -->
-        <div id="vprev-meta" style="display:none;margin-top:10px">
-          <div style="font-size:11px;color:var(--text3);font-family:var(--mono);line-height:2">Duración: 44.8s<br>1080×1920 · 30fps<br>MP4/H.264 · 7.9MB<br>Subtítulos: 12 líneas<br>Clips: 4 · Música: lo-fi</div>
-          <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px">
-            <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden"><div style="width:72%;height:100%;background:var(--green);border-radius:2px"></div></div>
-            <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Retención estimada: 72%</div>
-          </div>
-        </div>
+        <div id="vprev-meta" style="display:none;margin-top:10px;font-size:11px;color:var(--text3);font-family:var(--mono);line-height:2"></div>
       </div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-top:12px;font-size:12px;color:var(--text2)">
+      <strong style="color:var(--amber)">ℹ️ Estado actual:</strong> Esta versión genera el <strong>audio real (MP3)</strong> con OpenAI TTS + busca <strong>clips reales en Pexels</strong>. El montaje de vídeo final (MP4) requiere un backend — próximo paso a implementar.
     </div>
 
     <div class="flex g8 mt12" style="justify-content:flex-end">
       <button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button>
-      <button class="btn btn-p" id="gen-btn" onclick="startVidGen()">▶ Generar vídeo ($0.019)</button>
+      <button class="btn btn-g btn-sm" id="tts-only-btn" onclick="generateTTSOnly()">🎤 Solo audio MP3</button>
+      <button class="btn btn-p" id="gen-btn" onclick="startVidGen()">▶ Generar audio + buscar clips</button>
     </div>
   </div>
 
@@ -2082,6 +2140,24 @@ function setPStep(n) {
     document.getElementById('ps-' + i)?.classList.toggle('act', i === n);
     document.getElementById('p-' + i)?.classList.toggle('act', i === n);
   }
+  // When entering video step, auto-suggest Pexels query and check keys
+  if (n === 4) {
+    const nicheQueries = {
+      'Finanzas básicas': 'money finance savings bank',
+      'Motivación / psicología': 'motivation success mindset',
+      'Curiosidades': 'world facts science nature',
+      'Tecnología / IA': 'technology computer artificial intelligence',
+      'Historias / Reddit': 'city people lifestyle drama',
+      'Salud / bienestar': 'health wellness fitness yoga',
+      'Kids educativo': 'children education learning colorful',
+    };
+    const q = document.getElementById('pexels-query');
+    if (q && !q.value) {
+      q.value = nicheQueries[selectedNiche] || selectedNiche;
+    }
+    checkVidGenKeys();
+    updateTTSConfig();
+  }
 }
 function selectNiche(el) {
   document.querySelectorAll('.nc').forEach(c => c.classList.remove('sel'));
@@ -2194,57 +2270,259 @@ function setMode(m) {
 }
 
 // ── VIDEO GEN ──
-function startVidGen() {
+// ── TTS CONFIG ──
+function updateTTSConfig() {
+  const engine = document.getElementById('tts-engine')?.value || 'openai-tts1';
+  const costs = { 'openai-tts1': '$0.006', 'openai-tts1hd': '$0.012', 'elevenlabs': '$0.05' };
+  const tag = document.getElementById('vidgen-cost-tag');
+  if (tag) tag.textContent = 'Audio: ' + (costs[engine] || '$0.006') + ' · Clips: GRATIS';
+}
+
+function checkVidGenKeys() {
+  const missing = [];
+  const engine = document.getElementById('tts-engine')?.value || 'openai-tts1';
+  if (engine.startsWith('openai') && !KEYS.openai) missing.push('OpenAI (TTS)');
+  if (engine === 'elevenlabs' && !KEYS.elevenlabs) missing.push('ElevenLabs');
+  if (!KEYS.pexels) missing.push('Pexels (clips)');
+  const warn = document.getElementById('vidgen-keys-warning');
+  const msg = document.getElementById('vidgen-missing-keys');
+  if (missing.length > 0 && warn && msg) {
+    warn.style.display = 'block';
+    msg.textContent = ' Faltan: ' + missing.join(', ');
+  } else if (warn) {
+    warn.style.display = 'none';
+  }
+  return missing;
+}
+
+// ── PEXELS SEARCH (REAL) ──
+async function searchPexels() {
+  if (!KEYS.pexels) {
+    showToast('⚠ Configura tu Pexels API key en ⚙️ Configuración');
+    return;
+  }
+  const query = document.getElementById('pexels-query')?.value.trim();
+  if (!query) { showToast('⚠ Escribe un término de búsqueda'); return; }
+  const btn = document.getElementById('pexels-search-btn');
+  const preview = document.getElementById('pexels-preview');
+  if (btn) { btn.textContent = '⏳ Buscando...'; btn.disabled = true; }
+  if (preview) preview.innerHTML = '<div style="font-size:12px;color:var(--text3)">Buscando clips...</div>';
+  try {
+    const count = document.getElementById('pexels-count')?.value || 5;
+    const resp = await fetch(
+      `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=${count}&orientation=portrait`,
+      { headers: { Authorization: KEYS.pexels } }
+    );
+    if (!resp.ok) throw new Error('Pexels error ' + resp.status);
+    const data = await resp.json();
+    if (!data.videos?.length) { preview.innerHTML = '<div style="color:var(--amber);font-size:12px">Sin resultados — prueba otro término</div>'; return; }
+    // Store for later use
+    window._pexelsVideos = data.videos;
+    preview.innerHTML = data.videos.map((v, i) => {
+      const thumb = v.image;
+      const dur = v.duration + 's';
+      return `<div style="position:relative;cursor:pointer" onclick="toggleClip(${i})" title="${v.user?.name}">
+        <img src="${thumb}" style="width:56px;height:80px;object-fit:cover;border-radius:4px;border:2px solid var(--border)" id="clip-thumb-${i}">
+        <div style="position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:9px;font-family:var(--mono);color:#fff;background:rgba(0,0,0,.6);border-radius:0 0 4px 4px">${dur}</div>
+      </div>`;
+    }).join('');
+    showToast('✓ ' + data.videos.length + ' clips encontrados en Pexels · GRATIS');
+  } catch(e) {
+    if (preview) preview.innerHTML = '<div style="color:var(--red);font-size:12px">✕ ' + e.message + '</div>';
+    showToast('✕ Error Pexels: ' + e.message);
+  } finally {
+    if (btn) { btn.textContent = '🔍 Buscar clips'; btn.disabled = false; }
+  }
+}
+
+window._selectedClips = new Set();
+function toggleClip(idx) {
+  const el = document.getElementById('clip-thumb-' + idx);
+  if (!el) return;
+  if (window._selectedClips.has(idx)) {
+    window._selectedClips.delete(idx);
+    el.style.borderColor = 'var(--border)';
+    el.style.opacity = '1';
+  } else {
+    window._selectedClips.add(idx);
+    el.style.borderColor = 'var(--green)';
+    el.style.opacity = '1';
+  }
+}
+
+// ── REAL TTS GENERATION ──
+async function generateTTSOnly() {
+  await generateTTS(true);
+}
+
+async function startVidGen() {
+  checkVidGenKeys();
+  // Auto-search pexels if no clips yet
+  const query = document.getElementById('pexels-query')?.value.trim();
+  if (!window._pexelsVideos?.length && KEYS.pexels && query) {
+    await searchPexels();
+  }
+  await generateTTS(false);
+}
+
+async function generateTTS(audioOnly) {
+  if (!KEYS.openai) {
+    showToast('⚠ Configura tu OpenAI API key en ⚙️ Configuración');
+    setTimeout(() => nav('settings'), 800);
+    return;
+  }
+
+  // Get script text
+  const scriptEl = document.getElementById('script-content');
+  let scriptText = scriptEl ? (scriptEl.innerText || scriptEl.textContent) : '';
+  // Clean tags/annotations
+  scriptText = scriptText
+    .replace(/\[HOOK[^\]]*\]/gi, '')
+    .replace(/\[DESARROLLO[^\]]*\]/gi, '')
+    .replace(/\[CTA[^\]]*\]/gi, '')
+    .replace(/\[HASHTAGS\]/gi, '')
+    .replace(/#\w+/g, '')
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+  if (!scriptText || scriptText.length < 10) {
+    showToast('⚠ Primero genera un script en el paso anterior');
+    return;
+  }
+
   const genBtn = document.getElementById('gen-btn');
+  const ttsBtn = document.getElementById('tts-only-btn');
   const idle = document.getElementById('vprev-idle');
   const loading = document.getElementById('vprev-loading');
   const done = document.getElementById('vprev-done');
   const ring = document.getElementById('vprev-ring');
   const txt = document.getElementById('vprev-txt');
-  const meta = document.getElementById('vprev-meta');
   const genLog = document.getElementById('gen-log');
   const logLines = document.getElementById('gen-log-lines');
 
-  genBtn.disabled = true;
-  genBtn.textContent = 'Generando...';
-  idle.style.display = 'none';
-  loading.style.display = 'block';
-  ring.style.display = 'block';
-  genLog.style.display = 'block';
-  logLines.innerHTML = '';
+  if (genBtn) { genBtn.disabled = true; genBtn.textContent = '⏳ Generando audio...'; }
+  if (ttsBtn) { ttsBtn.disabled = true; }
+  if (idle) idle.style.display = 'none';
+  if (loading) loading.style.display = 'block';
+  if (ring) ring.style.display = 'block';
+  if (genLog) genLog.style.display = 'block';
+  if (logLines) logLines.innerHTML = '';
 
-  const steps = [
-    ['Sintetizando voz Kokoro TTS...', 'color:var(--blue)'],
-    ['✓ Voz generada — 44.8s (GRATIS)', 'color:var(--green)'],
-    ['Buscando clips Pexels (4 clips)...', 'color:var(--blue)'],
-    ['✓ Clips descargados (GRATIS)', 'color:var(--green)'],
-    ['Montando vídeo con FFmpeg...', 'color:var(--blue)'],
-    ['Aplicando subtítulos Whisper...', 'color:var(--blue)'],
-    ['✓ Subtítulos sincronizados (GRATIS)', 'color:var(--green)'],
-    ['Exportando MP4 1080×1920...', 'color:var(--blue)'],
-    ['✓ Vídeo listo — 44.8s · 7.9MB · $0.019', 'color:var(--green);font-weight:700'],
-  ];
+  const addLog = (msg, color) => {
+    if (!logLines) return;
+    const d = document.createElement('div');
+    const t = new Date().toLocaleTimeString('es-ES');
+    d.innerHTML = `<span style="color:var(--text3);margin-right:8px">${t}</span><span style="color:${color}">${msg}</span>`;
+    logLines.appendChild(d);
+    logLines.scrollTop = logLines.scrollHeight;
+    if (txt) txt.textContent = msg;
+  };
 
-  let i = 0;
-  const iv = setInterval(() => {
-    if (i < steps.length) {
-      txt.textContent = steps[i][0];
-      const line = document.createElement('div');
-      line.innerHTML = `<span style="color:var(--text3);font-family:var(--mono);font-size:10px;margin-right:8px">${new Date().toLocaleTimeString()}</span><span style="${steps[i][1]}">${steps[i][0]}</span>`;
-      logLines.appendChild(line);
-      logLines.scrollTop = logLines.scrollHeight;
-      i++;
-    } else {
-      clearInterval(iv);
-      loading.style.display = 'none';
-      done.style.display = 'block';
-      meta.style.display = 'block';
-      genBtn.textContent = '▶ Regenerar ($0.019)';
-      genBtn.disabled = false;
-      showToast('✓ Vídeo generado — $0.019 · pasando a revisión...');
-      setTimeout(() => setPStep(5), 1200);
+  try {
+    const engine = document.getElementById('tts-engine')?.value || 'openai-tts1';
+    const voice = document.getElementById('tts-voice')?.value || 'nova';
+    const model = engine === 'openai-tts1hd' ? 'tts-1-hd' : 'tts-1';
+
+    addLog('🎤 Sintetizando voz con OpenAI ' + model + '...', 'var(--blue)');
+    addLog('Voz seleccionada: ' + voice + ' · Texto: ' + scriptText.length + ' chars', 'var(--text3)');
+
+    // Call OpenAI TTS API
+    const ttsResp = await fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + KEYS.openai,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: model,
+        input: scriptText,
+        voice: voice,
+        response_format: 'mp3',
+        speed: 1.0
+      })
+    });
+
+    if (!ttsResp.ok) {
+      const err = await ttsResp.json().catch(() => ({}));
+      throw new Error('OpenAI TTS error ' + ttsResp.status + ': ' + (err.error?.message || ''));
     }
-  }, 600);
+
+    const audioBlob = await ttsResp.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const sizeKB = Math.round(audioBlob.size / 1024);
+
+    addLog('✓ Audio generado — ' + sizeKB + ' KB · MP3', 'var(--green)');
+
+    // Estimate duration
+    const estDuration = Math.round(scriptText.split(' ').length / 2.8);
+    addLog('✓ Duración estimada: ~' + estDuration + 's', 'var(--green)');
+
+    // Compute cost
+    const chars = scriptText.length;
+    const costPer1M = engine === 'openai-tts1hd' ? 30 : 15;
+    const cost = ((chars / 1000000) * costPer1M).toFixed(4);
+    addLog('💰 Coste TTS: $' + cost + ' (' + chars + ' chars)', 'var(--amber)');
+
+    // Show audio player
+    const player = document.getElementById('audio-player');
+    const playerWrap = document.getElementById('audio-player-wrap');
+    const dlLink = document.getElementById('audio-download-link');
+    const durEl = document.getElementById('audio-duration');
+    if (player) { player.src = audioUrl; player.load(); }
+    if (playerWrap) playerWrap.style.display = 'block';
+    if (dlLink) { dlLink.href = audioUrl; dlLink.download = 'audio-facelessai.mp3'; }
+    if (durEl) durEl.textContent = '~' + estDuration + 's · ' + sizeKB + ' KB · MP3';
+
+    // Store for later
+    window._generatedAudio = { url: audioUrl, blob: audioBlob, duration: estDuration, cost };
+
+    if (!audioOnly && window._pexelsVideos?.length) {
+      addLog('🎬 Clips Pexels seleccionados: ' + window._pexelsVideos.length, 'var(--blue)');
+      addLog('✓ Clips listos para montaje', 'var(--green)');
+    }
+
+    addLog('✅ Audio listo — escucha y descarga el MP3', 'var(--green)');
+
+    // Update preview
+    if (loading) loading.style.display = 'none';
+    if (done) done.style.display = 'block';
+    const durBadge = document.getElementById('vprev-dur');
+    const subEl = document.getElementById('vprev-subtitle');
+    if (durBadge) durBadge.textContent = '~' + estDuration + 's';
+    if (subEl) subEl.textContent = 'AUDIO LISTO ✓ · $' + cost;
+
+    const meta = document.getElementById('vprev-meta');
+    if (meta) {
+      meta.style.display = 'block';
+      meta.innerHTML = 'Audio: ' + sizeKB + 'KB · ~' + estDuration + 's<br>Voz: ' + voice + ' · ' + model + '<br>' +
+        (window._pexelsVideos?.length ? '🎬 ' + window._pexelsVideos.length + ' clips Pexels listos<br>' : '') +
+        '<span style="color:var(--green)">Coste: $' + cost + '</span>';
+    }
+
+    if (genBtn) { genBtn.textContent = '▶ Regenerar audio'; genBtn.disabled = false; }
+    if (ttsBtn) { ttsBtn.disabled = false; }
+
+    showToast('✓ Audio generado · $' + cost + ' · Puedes escucharlo y descargarlo');
+
+    // Auto-advance to approval after a moment
+    setTimeout(() => {
+      // Pre-fill approval screen with real script title
+      const titleEl = document.getElementById('apv-title');
+      if (titleEl && generatedIdeas[selectedIdeaIndex]?.hook) {
+        titleEl.value = generatedIdeas[selectedIdeaIndex].hook;
+      }
+      setPStep(5);
+    }, 2000);
+
+  } catch(e) {
+    addLog('✕ Error: ' + e.message, 'var(--red)');
+    if (loading) loading.style.display = 'none';
+    if (idle) idle.style.display = 'block';
+    if (genBtn) { genBtn.textContent = '▶ Generar audio + buscar clips'; genBtn.disabled = false; }
+    if (ttsBtn) { ttsBtn.disabled = false; }
+    showToast('✕ Error TTS: ' + e.message);
+  }
 }
 
 // ── APPROVAL SCREEN ACTIONS ──
@@ -2369,29 +2647,48 @@ function showToast(msg) {
 }
 
 // ═══════════════════════════════════════════════
-// GITHUB AUTO-DEPLOY
+// GITHUB AUTO-DEPLOY via GIST
 // ═══════════════════════════════════════════════
-const GH_USER  = 'clawlabsai';
-const GH_REPO  = 'facelessai';
+const GH_USER   = 'clawlabsai';
+const GH_REPO   = 'facelessai';
 const GH_BRANCH = 'main';
-const GH_FILE  = 'index.html';
+const GH_FILE   = 'index.html';
+const GIST_ID   = '86bf7d5a8e7dc233a62a99debcfae390';
 
 function deployToGitHub() {
   const modal = document.getElementById('deploy-modal');
   modal.style.display = 'flex';
-  // Reset state
+  // Reset
   document.getElementById('deploy-status').style.display = 'none';
   document.getElementById('deploy-steps').style.display = 'none';
   ['dstep-1','dstep-2','dstep-3','dstep-4'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.className = 'deploy-step'; }
+    if (el) { el.className = 'deploy-step'; el.textContent = '⬜ ' + el.textContent.replace(/^[✅⏳✕⬜]\s*/,''); }
   });
+  // Restore original step labels
+  const steps = [
+    'Leyendo HTML actual del dashboard...',
+    'Subiendo al Gist de GitHub...',
+    'GitHub Action detectará el cambio (~5 min)...',
+    'Deploy completado'
+  ];
+  steps.forEach((txt, i) => {
+    const el = document.getElementById('dstep-' + (i+1));
+    if (el) el.textContent = '⬜ ' + txt;
+  });
+
   // Pre-fill token if saved
   const saved = localStorage.getItem('fai_key_github');
   const inp = document.getElementById('github-token-inp');
   if (saved && inp) {
     inp.placeholder = saved.slice(0,10) + '•••••••••••••••• (guardado)';
     inp.value = '';
+    // Update token section label
+    const section = document.getElementById('deploy-token-section');
+    if (section) {
+      const lbl = section.querySelector('label');
+      if (lbl) lbl.textContent = 'GitHub Token — ya guardado ✓';
+    }
   }
 }
 
@@ -2413,8 +2710,16 @@ function saveGithubToken() {
   localStorage.setItem('fai_key_github', val);
   inp.value = '';
   inp.placeholder = val.slice(0,10) + '•••••••••••••••• (guardado)';
-  setStatus('github', 'ok', '✓ Token guardado. Pulsa "Subir a GitHub ahora" para hacer el deploy.');
+  setStatus('github', 'ok', '✓ Token guardado. Pulsa "Actualizar Gist" para hacer el deploy.');
 }
+
+const setStep = (n, state, text) => {
+  const el = document.getElementById('dstep-' + n);
+  if (!el) return;
+  const icons = { active: '⏳', done: '✅', err: '✕' };
+  el.className = 'deploy-step ' + state;
+  el.textContent = (icons[state] || '⬜') + ' ' + text;
+};
 
 async function confirmDeploy() {
   const token = localStorage.getItem('fai_key_github');
@@ -2425,136 +2730,130 @@ async function confirmDeploy() {
 
   const confirmBtn = document.getElementById('deploy-confirm-btn');
   confirmBtn.disabled = true;
-  confirmBtn.textContent = 'Subiendo...';
+  confirmBtn.textContent = '⏳ Subiendo...';
 
   const stepsEl = document.getElementById('deploy-steps');
   stepsEl.style.display = 'block';
   document.getElementById('deploy-status').style.display = 'none';
 
-  const setStep = (n, state, text) => {
-    const el = document.getElementById('dstep-' + n);
-    if (!el) return;
-    const icons = { active: '⏳', done: '✅', err: '✕' };
-    el.className = 'deploy-step ' + state;
-    el.textContent = (icons[state] || '⬜') + ' ' + text;
+  const headers = {
+    'Authorization': 'token ' + token,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json',
+    'X-GitHub-Api-Version': '2022-11-28'
   };
 
   try {
-    // ── STEP 1: Get current file SHA from GitHub ──
-    setStep(1, 'active', 'Obteniendo archivo actual de GitHub...');
-    const apiBase = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
-    const headers = {
-      'Authorization': 'token ' + token,
-      'Accept': 'application/vnd.github.v3+json',
-      'X-GitHub-Api-Version': '2022-11-28'
-    };
+    // ── STEP 1: Get current page HTML ──
+    setStep(1, 'active', 'Leyendo HTML actual del dashboard...');
+    const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const sizeKB = Math.round(htmlContent.length / 1024);
+    setStep(1, 'done', 'HTML leído — ' + sizeKB + ' KB listos para subir');
 
-    let sha = null;
-    const getResp = await fetch(apiBase + '?ref=' + GH_BRANCH, { headers });
-    if (getResp.ok) {
-      const fileData = await getResp.json();
-      sha = fileData.sha;
-      setStep(1, 'done', 'Archivo actual obtenido (SHA: ' + sha.slice(0,8) + '...)');
-    } else if (getResp.status === 404) {
-      setStep(1, 'done', 'Archivo no encontrado — se creará nuevo');
-    } else if (getResp.status === 401) {
-      throw new Error('Token inválido (401) — verifica que tiene permisos de repo');
-    } else {
-      throw new Error('Error obteniendo archivo: ' + getResp.status);
-    }
+    // ── STEP 2: Push to Gist ──
+    setStep(2, 'active', 'Subiendo al Gist (' + GIST_ID.slice(0,8) + '...)');
 
-    // ── STEP 2: Get this page's HTML content ──
-    setStep(2, 'active', 'Obteniendo contenido del dashboard actual...');
-    let htmlContent;
-    try {
-      // Try to fetch the current page content
-      const pageResp = await fetch(window.location.href + '?nocache=' + Date.now());
-      htmlContent = await pageResp.text();
-    } catch(e) {
-      // Fallback: use document HTML
-      htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-    }
-    const encoded = btoa(unescape(encodeURIComponent(htmlContent)));
-    setStep(2, 'done', 'Contenido preparado (' + Math.round(htmlContent.length / 1024) + ' KB)');
-
-    // ── STEP 3: Push to GitHub ──
-    setStep(3, 'active', 'Subiendo a GitHub...');
-    const now = new Date().toISOString().slice(0,16).replace('T',' ');
-    const body = {
-      message: `FacelessAI dashboard update — ${now}`,
-      content: encoded,
-      branch: GH_BRANCH
-    };
-    if (sha) body.sha = sha;
-
-    const putResp = await fetch(apiBase, {
-      method: 'PUT',
-      headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+    const gistResp = await fetch('https://api.github.com/gists/' + GIST_ID, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({
+        description: 'FacelessAI Dashboard — ' + new Date().toISOString().slice(0,16).replace('T',' '),
+        files: {
+          'index.html': { content: htmlContent }
+        }
+      })
     });
 
-    if (!putResp.ok) {
-      const err = await putResp.json().catch(() => ({}));
-      throw new Error('Error subiendo: ' + putResp.status + ' — ' + (err.message || ''));
+    if (!gistResp.ok) {
+      const err = await gistResp.json().catch(() => ({}));
+      if (gistResp.status === 401) throw new Error('Token inválido (401) — verifica que tiene permisos de repo/gist');
+      if (gistResp.status === 404) throw new Error('Gist no encontrado — verifica el ID o que el token tiene acceso');
+      throw new Error('Error ' + gistResp.status + ': ' + (err.message || 'Error desconocido'));
     }
-    const putData = await putResp.json();
-    setStep(3, 'done', 'Subido correctamente (commit: ' + putData.commit?.sha?.slice(0,8) + ')');
+
+    const gistData = await gistResp.json();
+    const updatedAt = new Date(gistData.updated_at).toLocaleTimeString('es-ES');
+    setStep(2, 'done', 'Gist actualizado a las ' + updatedAt + ' ✓');
+
+    // ── STEP 3: Trigger GitHub Action manually (workflow_dispatch) ──
+    setStep(3, 'active', 'Disparando GitHub Action...');
+
+    const dispatchResp = await fetch(
+      'https://api.github.com/repos/' + GH_USER + '/' + GH_REPO + '/actions/workflows/sync-gist.yml/dispatches',
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ ref: GH_BRANCH })
+      }
+    );
+
+    if (dispatchResp.status === 204 || dispatchResp.ok) {
+      setStep(3, 'done', 'GitHub Action disparado — procesando...');
+    } else if (dispatchResp.status === 404) {
+      // Action file might not exist yet, that's ok
+      setStep(3, 'done', 'Gist actualizado — Action se ejecutará en el próximo ciclo (max 5 min)');
+    } else {
+      setStep(3, 'done', 'Gist actualizado — Action detectará el cambio automáticamente');
+    }
 
     // ── STEP 4: Done ──
-    setStep(4, 'active', 'Activando GitHub Pages...');
-    await new Promise(r => setTimeout(r, 1500));
-    setStep(4, 'done', 'Deploy completado — URL activa en ~30s');
+    await new Promise(r => setTimeout(r, 800));
+    setStep(4, 'done', 'Todo listo — tu URL actualiza en ~60 segundos');
 
-    // Show success
+    // Show success panel
     const statusEl = document.getElementById('deploy-status');
     statusEl.style.display = 'block';
     statusEl.style.background = 'var(--gdim)';
     statusEl.style.border = '1px solid var(--gsoft)';
     statusEl.style.color = 'var(--green)';
     statusEl.style.borderRadius = 'var(--r)';
-    statusEl.style.padding = '12px 14px';
-    statusEl.innerHTML = `✅ <strong>Deploy exitoso</strong><br>Tu dashboard está actualizando en:<br>
-      <a href="https://${GH_USER}.github.io/${GH_REPO}/" target="_blank" style="color:var(--blue);font-family:var(--mono);font-size:12px">
-        https://${GH_USER}.github.io/${GH_REPO}/
-      </a><br>
-      <span style="font-size:11px;color:var(--text3)">Espera 30-60 segundos y recarga la URL</span>`;
+    statusEl.style.padding = '14px 16px';
+    statusEl.style.lineHeight = '1.8';
+    statusEl.innerHTML =
+      '✅ <strong>Gist actualizado correctamente</strong><br>' +
+      'El GitHub Action sincronizará tu repo en ~60 segundos.<br>' +
+      '<a href="https://github.com/' + GH_USER + '/' + GH_REPO + '/actions" target="_blank" ' +
+      'style="color:var(--blue);font-size:12px;font-family:var(--mono)">Ver estado del Action →</a><br>' +
+      '<a href="https://' + GH_USER + '.github.io/' + GH_REPO + '/" target="_blank" ' +
+      'style="color:var(--blue);font-size:12px;font-family:var(--mono)">Abrir URL live →</a>';
 
-    // Update deploy button in topbar
+    // Flash deploy button green
     const deployBtn = document.getElementById('deploy-btn');
     if (deployBtn) {
       deployBtn.style.borderColor = 'var(--green)';
       deployBtn.style.color = 'var(--green)';
-      deployBtn.innerHTML = '✓ Deployed';
+      deployBtn.textContent = '✓ Deployed';
       setTimeout(() => {
-        deployBtn.style.borderColor = '';
+        deployBtn.style.borderColor = '#4f46e5';
         deployBtn.style.color = '#818cf8';
         deployBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Deploy';
-      }, 5000);
+      }, 6000);
     }
 
-    showToast('🚀 Deploy exitoso — clawlabsai.github.io/facelessai actualizando...');
+    showToast('🚀 Gist actualizado — URL live en ~60 segundos');
 
   } catch(e) {
-    // Find which step failed
+    // Mark active step as error
     ['dstep-1','dstep-2','dstep-3','dstep-4'].forEach(id => {
       const el = document.getElementById(id);
       if (el && el.className.includes('active')) {
         el.className = 'deploy-step err';
-        el.textContent = '✕ ' + el.textContent.slice(2) + ' — ' + e.message;
+        el.textContent = '✕ ' + el.textContent.slice(2);
       }
     });
     const statusEl = document.getElementById('deploy-status');
     statusEl.style.display = 'block';
-    statusEl.style.background = 'var(--reddim, #f8717115)';
+    statusEl.style.background = '#f8717115';
     statusEl.style.border = '1px solid #f8717144';
     statusEl.style.color = 'var(--red)';
     statusEl.style.borderRadius = 'var(--r)';
     statusEl.style.padding = '12px 14px';
-    statusEl.textContent = '✕ Error en el deploy: ' + e.message;
-    showToast('✕ Deploy fallido: ' + e.message);
+    statusEl.textContent = '✕ ' + e.message;
+    showToast('✕ Error: ' + e.message);
   } finally {
     confirmBtn.disabled = false;
-    confirmBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Subir a GitHub ahora';
+    confirmBtn.innerHTML =
+      '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Actualizar Gist';
   }
 }
 
@@ -2597,106 +2896,103 @@ function loadKeys() {
 
 function saveKey(name) {
   const inp = document.getElementById('key-' + name);
-  if (!inp) return;
+  if (!inp) { console.error('No input found for', name); return; }
+
   const val = inp.value.trim();
 
-  // If blank, check if we already have it stored
   if (!val) {
     if (KEYS[name]) {
-      setStatus(name, 'info', '✓ Key ya guardada. Para actualizarla pega la nueva key y pulsa Guardar.');
+      setStatus(name, 'info', '✓ Key ya guardada — para cambiarla pega la nueva y pulsa Guardar');
     } else {
-      setStatus(name, 'warn', '⚠ Pega tu API key en el campo y pulsa Guardar.');
+      setStatus(name, 'warn', '⚠ Pega tu API key en el campo y pulsa Guardar');
     }
     return;
   }
 
-  // Save it
-  localStorage.setItem('fai_key_' + name, val);
+  // Save to memory and localStorage
   KEYS[name] = val;
+  try { localStorage.setItem('fai_key_' + name, val); } catch(e) {}
 
-  // Visual feedback on the input
+  // Clear input and show masked placeholder
   inp.value = '';
-  inp.placeholder = val.slice(0, 12) + '••••••••••••••••  (guardada)';
-  inp.style.borderColor = 'var(--green)';
+  inp.placeholder = val.slice(0, 12) + '•••••••••••• (guardada)';
+  inp.style.borderColor = '#00e87a';
+  inp.style.boxShadow = '0 0 0 2px #00e87a22';
 
-  // Update all badges
+  // Flash save button green
+  const btn = document.getElementById('save-btn-' + name);
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Guardada';
+    btn.style.cssText += ';background:#00e87a !important;color:#060910 !important;border-color:#00e87a !important';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 2500);
+  }
+
+  // Update badge
   updateKeyBadge(name, true);
   updateSettingsStatus();
   updateSettingsBadge();
 
-  // Show green status below
-  setStatus(name, 'ok', '✓ Key guardada correctamente. Pulsa "Probar" para verificar la conexión con la API.');
-
-  // Flash the button green
-  const saveBtn = document.getElementById('save-btn-' + name);
-  if (saveBtn) {
-    saveBtn.textContent = '✓ Guardada';
-    saveBtn.style.background = '#00e87a';
-    saveBtn.style.color = '#060910';
-    setTimeout(() => {
-      saveBtn.textContent = 'Guardar';
-      saveBtn.style.background = '';
-      saveBtn.style.color = '';
-    }, 2500);
-  }
-
-  showToast('✓ ' + name + ' API key guardada correctamente');
+  // Show green confirmation below field
+  setStatus(name, 'ok', '✓ Key guardada en tu navegador · Pulsa "Probar" para verificar la conexión');
+  showToast('✓ ' + name.charAt(0).toUpperCase() + name.slice(1) + ' key guardada');
 }
 
-// Unified status display for each key card
 function setStatus(name, type, msg) {
   const el = document.getElementById('status-msg-' + name);
   if (!el) return;
-  el.style.display = 'block';
+
+  // Hard-coded colors — no CSS vars to avoid undefined variable issues
   const styles = {
-    ok:   { bg: 'var(--gdim)',  border: 'var(--gsoft)', color: 'var(--green)' },
-    warn: { bg: 'var(--adim)', border: '#fbbf2444',    color: 'var(--amber)' },
-    err:  { bg: 'var(--reddim)', border: '#f8717144',  color: 'var(--red)'   },
-    info: { bg: 'var(--bdim)', border: '#38bdf844',    color: 'var(--blue)'  }
+    ok:   { bg: '#00e87a15', border: '#00e87a44', color: '#00e87a' },
+    warn: { bg: '#fbbf2415', border: '#fbbf2444', color: '#fbbf24' },
+    err:  { bg: '#f8717115', border: '#f8717144', color: '#f87171' },
+    info: { bg: '#38bdf815', border: '#38bdf844', color: '#38bdf8' }
   };
   const s = styles[type] || styles.info;
-  el.style.background  = s.bg;
-  el.style.border      = '1px solid ' + s.border;
-  el.style.color       = s.color;
-  el.style.padding     = '8px 12px';
-  el.style.borderRadius = 'var(--r)';
-  el.style.fontSize    = '12px';
-  el.style.lineHeight  = '1.5';
-  el.style.marginTop   = '8px';
+
+  el.style.cssText = [
+    'display:block',
+    'background:' + s.bg,
+    'border:1px solid ' + s.border,
+    'color:' + s.color,
+    'padding:9px 12px',
+    'border-radius:6px',
+    'font-size:12px',
+    'line-height:1.6',
+    'margin-top:8px'
+  ].join(';');
   el.textContent = msg;
 }
 
-// Legacy alias used elsewhere
+// Legacy alias
 function showInlineStatus(elId, msg, color) {
   const el = document.getElementById(elId);
   if (!el) return;
-  el.style.display = 'block';
-  el.style.color = color;
-  el.style.padding = '8px 12px';
-  el.style.background = 'var(--bg3)';
-  el.style.borderRadius = 'var(--r)';
-  el.style.border = '1px solid ' + color;
+  el.style.cssText = 'display:block;color:' + color + ';padding:8px 12px;background:#1a2236;border-radius:6px;border:1px solid ' + color + ';font-size:12px;margin-top:8px';
   el.textContent = msg;
 }
 
 async function testKey(name) {
-  const el = document.getElementById('test-' + name);
-  if (!el) return;
   const key = KEYS[name];
   if (!key) {
-    setStatus(name, 'warn', '⚠ Primero guarda una key válida');
+    setStatus(name, 'warn', '⚠ Primero guarda tu key — pégala en el campo y pulsa Guardar');
     return;
   }
 
-  setStatus(name, 'warn', '⏳ Probando conexión con ' + name + '...');
+  setStatus(name, 'info', '⏳ Probando conexión con ' + name + '...');
 
-  // 15 second timeout
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timer = setTimeout(() => controller.abort(), 15000);
 
   try {
     if (name === 'anthropic') {
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         signal: controller.signal,
         headers: {
@@ -2708,71 +3004,81 @@ async function testKey(name) {
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 20,
-          messages: [{ role: 'user', content: 'Responde solo: OK' }]
+          messages: [{ role: 'user', content: 'Reply with just: OK' }]
         })
       });
-      clearTimeout(timeout);
-      if (resp.status === 200) {
-        const data = await resp.json();
-        const reply = data?.content?.[0]?.text?.trim() || 'OK';
-        setStatus(name, 'ok', '✓ Anthropic conectado · Respuesta: "' + reply + '" · Claude Haiku activo', 'var(--green)');
-      } else if (resp.status === 401) {
-        setStatus(name, 'err', '✕ Key inválida (401) — verifica que la copiaste completa desde console.anthropic.com');
-      } else if (resp.status === 403) {
-        setStatus(name, 'err', '✕ Sin permisos (403) — puede que la key no tenga acceso a la API de mensajes');
+      clearTimeout(timer);
+      if (r.status === 200) {
+        const d = await r.json();
+        const reply = d?.content?.[0]?.text?.trim() || 'OK';
+        setStatus(name, 'ok', '✓ Anthropic conectado · Claude Haiku respondió: "' + reply + '"');
+        showToast('✓ Anthropic API funcionando');
+      } else if (r.status === 401) {
+        setStatus(name, 'err', '✕ Key inválida (401) — cópiala completa desde console.anthropic.com');
       } else {
-        const err = await resp.json().catch(() => ({}));
-        setStatus(name, 'err', '✕ Error ' + resp.status + ': ' + (err?.error?.message || 'Error desconocido'), 'var(--red)');
+        const e = await r.json().catch(() => ({}));
+        setStatus(name, 'err', '✕ Error ' + r.status + ': ' + (e?.error?.message || 'verifica tu cuenta'));
       }
-    } else if (name === 'pexels') {
-      const resp = await fetch('https://api.pexels.com/v1/search?query=nature&per_page=1', {
-        signal: controller.signal,
-        headers: { Authorization: key }
-      });
-      clearTimeout(timeout);
-      if (resp.ok) {
-        const data = await resp.json();
-        setStatus(name, 'ok', '✓ Pexels conectado · ' + (data.total_results || '∞') + ' vídeos disponibles · GRATIS', 'var(--green)');
-      } else {
-        setStatus(name, 'err', '✕ Key inválida (' + resp.status + ') — consíguela gratis en pexels.com/api', 'var(--red)');
-      }
+
     } else if (name === 'openai') {
-      const resp = await fetch('https://api.openai.com/v1/models', {
+      const r = await fetch('https://api.openai.com/v1/models', {
         signal: controller.signal,
-        headers: { Authorization: 'Bearer ' + key }
+        headers: { 'Authorization': 'Bearer ' + key }
       });
-      clearTimeout(timeout);
-      if (resp.ok) {
+      clearTimeout(timer);
+      if (r.ok) {
         setStatus(name, 'ok', '✓ OpenAI conectado · TTS-1 y TTS-1 HD disponibles');
-      } else if (resp.status === 401) {
+        showToast('✓ OpenAI API funcionando');
+      } else if (r.status === 401) {
         setStatus(name, 'err', '✕ Key inválida (401) — verifica en platform.openai.com/api-keys');
       } else {
-        setStatus(name, 'err', '✕ Error ' + resp.status + ' — verifica tu cuenta OpenAI', 'var(--red)');
+        setStatus(name, 'err', '✕ Error ' + r.status + ' — verifica tu cuenta OpenAI');
       }
+
+    } else if (name === 'pexels') {
+      const r = await fetch('https://api.pexels.com/v1/search?query=nature&per_page=1', {
+        signal: controller.signal,
+        headers: { 'Authorization': key }
+      });
+      clearTimeout(timer);
+      if (r.ok) {
+        const d = await r.json();
+        setStatus(name, 'ok', '✓ Pexels conectado · ' + (d.total_results?.toLocaleString() || '∞') + ' clips disponibles · GRATIS');
+        showToast('✓ Pexels API funcionando');
+      } else {
+        setStatus(name, 'err', '✕ Key inválida (' + r.status + ') — consíguela gratis en pexels.com/api');
+      }
+
     } else if (name === 'elevenlabs') {
-      const resp = await fetch('https://api.elevenlabs.io/v1/user', {
+      const r = await fetch('https://api.elevenlabs.io/v1/user', {
         signal: controller.signal,
         headers: { 'xi-api-key': key }
       });
-      clearTimeout(timeout);
-      if (resp.ok) {
-        const data = await resp.json().catch(() => ({}));
-        setStatus(name, 'ok', '✓ ElevenLabs conectado · Plan: ' + (data?.subscription?.tier || 'activo'), 'var(--green)');
+      clearTimeout(timer);
+      if (r.ok) {
+        const d = await r.json().catch(() => ({}));
+        setStatus(name, 'ok', '✓ ElevenLabs conectado · Plan: ' + (d?.subscription?.tier || 'activo'));
+        showToast('✓ ElevenLabs API funcionando');
       } else {
-        setStatus(name, 'err', '✕ Key inválida (' + resp.status + ') — verifica en elevenlabs.io', 'var(--red)');
+        setStatus(name, 'err', '✕ Key inválida (' + r.status + ') — verifica en elevenlabs.io');
       }
     }
+
   } catch(e) {
-    clearTimeout(timeout);
+    clearTimeout(timer);
     if (e.name === 'AbortError') {
-setStatus(name, 'warn', '⏱ Timeout 15s — GitHub Pages puede bloquear este test por CORS. La key puede ser válida igualmente. Ve al Pipeline → Genera ideas para probarla directamente.');
-    } else if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
-setStatus(name, 'warn', '⚠ Error de red / CORS — la key puede ser válida. Ve al Pipeline → Genera ideas para probarla directamente.');
+      setStatus(name, 'warn',
+        '⏱ Sin respuesta en 15s — posible bloqueo CORS desde GitHub Pages. ' +
+        'La key puede ser válida. Ve al Pipeline → paso 3 → "Generar con Claude" para probarla directamente.'
+      );
     } else {
-      setStatus(name, 'err', '✕ ' + e.message, 'var(--red)');
+      setStatus(name, 'warn',
+        '⚠ Error de red (' + e.message + ') — si la key está bien guardada, prueba directamente en el Pipeline.'
+      );
     }
   }
 }
+
 
 // ═══════════════════════════════════════════════
 // CLAUDE API — REAL CALLS

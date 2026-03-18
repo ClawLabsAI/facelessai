@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI — Content Engine v3</title>
+<title>FacelessAI v3.1 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -306,7 +306,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3</div>
+    <div class="logo-sub">Content Engine v3.1</div>
   </div>
   <nav class="nav">
     <div class="nsl">Principal</div>
@@ -373,7 +373,10 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div style="font-size:15px;font-weight:600" id="page-title">Dashboard</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-size:15px;font-weight:600" id="page-title">Dashboard</div>
+      <span style="font-size:10px;font-family:var(--mono);color:var(--t3);background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:2px 8px">v3.1</span>
+    </div>
 
     <!-- MODE SWITCH -->
     <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px;margin-left:16px">
@@ -2143,6 +2146,9 @@ function nav(id) {
   });
   document.getElementById('page-title').textContent = TITLES[id] || id;
   window.scrollTo(0, 0);
+
+  // When navigating to settings, always refresh key display from localStorage
+  if (id === 'settings') refreshSettingsDisplay();
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -2880,7 +2886,10 @@ document.addEventListener('click', e => {
 
 // ── INIT ──
 renderSpikes();
-// Keys are loaded after all functions are defined (see bottom of script)
+loadKeys();        // loads keys into KEYS{} memory from localStorage
+setTier(activeTier);
+updateCostEstimate();
+// Settings display refreshes when user navigates to that view (see nav function)
 
 // ═══════════════════════════════════════════════
 // REAL API ENGINE
@@ -2889,15 +2898,12 @@ renderSpikes();
 // ── KEY MANAGEMENT ──
 const KEYS = {};
 function loadKeys() {
-  // First check if localStorage works at all
   try {
     localStorage.setItem('fai_test', '1');
     const ok = localStorage.getItem('fai_test') === '1';
     localStorage.removeItem('fai_test');
-    if (!ok) throw new Error('localStorage read-back failed');
+    if (!ok) throw new Error('read-back failed');
   } catch(e) {
-    console.warn('localStorage not available:', e);
-    // Show warning in settings if visible
     setTimeout(() => {
       const el = document.getElementById('ls-warning');
       if (el) el.style.display = 'block';
@@ -2908,18 +2914,56 @@ function loadKeys() {
   ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
     try {
       const v = localStorage.getItem('fai_key_' + k);
+      if (v && v.length > 5) KEYS[k] = v;
+    } catch(e) {}
+  });
+}
+
+// Called every time user opens Settings — reads live from localStorage and updates UI
+function refreshSettingsDisplay() {
+  ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
+    try {
+      const v = localStorage.getItem('fai_key_' + k);
       if (v && v.length > 5) {
         KEYS[k] = v;
-        updateKeyBadge(k, true);
-        // Show masked placeholder in the input
+        // Badge
+        const badge = document.getElementById('badge-' + k);
+        if (badge) {
+          badge.textContent = '✓ Activa';
+          badge.style.cssText = 'background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
+        }
+        // Icon + text in status grid
+        const icon = document.getElementById('status-' + k + '-icon');
+        const text = document.getElementById('status-' + k + '-text');
+        if (icon) icon.textContent = '✅';
+        if (text) text.textContent = 'Configurada';
+        // Input placeholder
         const inp = document.getElementById('key-' + k);
         if (inp) {
-          inp.placeholder = v.slice(0, 12) + '•••••••••••• (guardada — pega nueva para cambiar)';
+          inp.value = '';
+          inp.placeholder = v.slice(0, 14) + '•••• (guardada — pega nueva para cambiar)';
+          inp.style.borderColor = '#00e87a';
         }
+        // Status message
+        setStatus(k, 'ok', '✓ Key guardada · ' + v.length + ' chars · Pulsa "Probar" para verificar');
+      } else {
+        // Not saved
+        const badge = document.getElementById('badge-' + k);
+        if (badge) {
+          badge.textContent = 'Sin clave';
+          badge.style.cssText = 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
+        }
+        const icon = document.getElementById('status-' + k + '-icon');
+        const text = document.getElementById('status-' + k + '-text');
+        if (icon) icon.textContent = '⭕';
+        if (text) text.textContent = 'No configurada';
+        const inp = document.getElementById('key-' + k);
+        if (inp) { inp.placeholder = ''; inp.style.borderColor = ''; }
+        const msg = document.getElementById('status-msg-' + k);
+        if (msg) msg.style.display = 'none';
       }
-    } catch(e) { console.warn('Error loading key', k, e); }
+    } catch(e) {}
   });
-
   updateSettingsStatus();
   updateSettingsBadge();
 }

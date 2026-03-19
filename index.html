@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.36 — Content Engine</title>
+<title>FacelessAI v3.37-debug — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -69,13 +69,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.main{margin-left:224px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
 .topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;flex:1;overflow-y:auto;}
-.view{display:none;}.view.active{display:block;}
+.content{padding:20px;flex:1;}
+.view{display:none;min-height:100px;}.view.active{display:block;}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:var(--sans);}
@@ -340,10 +340,9 @@ function nav(id) {
   var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
   var titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.textContent = titles[id] || id;
-  var content = document.querySelector('.content');
-  if (content) content.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
+  try { window.scrollTo({top:0, behavior:"instant"}); } catch(e) { window.scrollTo(0,0); }
+  var indicator = document.getElementById('active-view-indicator');
+  if (indicator) indicator.textContent = '📍 Vista activa: ' + id.toUpperCase();
   if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
     try { _navCallbacks[id](); } catch(e) { console.error('nav:', e); }
   }
@@ -361,7 +360,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.36 ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.37-debug ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -543,6 +542,7 @@ window.onerror = function(msg, src, line) {
   </div>
 
   <div class="content">
+<div id="active-view-indicator" style="background:#a78bfa;color:#fff;padding:8px 16px;font-family:monospace;font-size:12px;font-weight:700;border-radius:8px;margin-bottom:16px">📍 Vista activa: DASHBOARD</div>
 <!-- ════════════════ DASHBOARD ════════════════ -->
 <div class="view active" id="view-dashboard">
   <!-- STATS ROW — real data from localStorage -->

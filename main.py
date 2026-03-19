@@ -38,15 +38,11 @@ TEMP_DIR.mkdir(exist_ok=True)
 # ─────────────────────────────────────────
 
 class VideoRequest(BaseModel):
-    audio_b64: Optional[str] = None    # Base64 encoded audio (preferred from browser)
-    audio_url: Optional[str] = None    # URL of the MP3 audio (alternative)
-    pexels_clips: list[str]            # List of Pexels video URLs
+    audio_b64: str                     # Base64 encoded audio from browser
+    pexels_clips: list[str] = []       # List of Pexels video URLs
     script: str = ""                   # Full script text for subtitles
     title: str = "FacelessAI Video"   # Video title
     lang: str = "es"                   # Language: es, en, lat
-    ratio: str = "9:16"               # Aspect ratio
-    resolution: str = "1080x1920"
-    fps: int = 30
     subtitle_style: str = "viral"      # viral, minimal, classic
 
 
@@ -155,20 +151,12 @@ async def process_video(job_id: str, req: VideoRequest):
         jobs[job_id] = {"status": status, "progress": progress, "message": message, "download_url": jobs[job_id].get("download_url")}
 
     try:
-        # ── STEP 1: Download / save audio ──
-        update("processing", 10, "Descargando audio...")
+        # ── STEP 1: Save audio from base64 ──
+        update("processing", 10, "Procesando audio...")
         audio_path = job_dir / "audio.mp3"
-
-        if req.audio_b64:
-            import base64
-            audio_data = base64.b64decode(req.audio_b64)
-            audio_path.write_bytes(audio_data)
-        elif req.audio_url and req.audio_url.startswith("http"):
-            async with httpx.AsyncClient(timeout=30) as client:
-                r = await client.get(req.audio_url)
-                audio_path.write_bytes(r.content)
-        else:
-            raise ValueError("Se requiere audio_b64 o audio_url válida")
+        import base64
+        audio_data = base64.b64decode(req.audio_b64)
+        audio_path.write_bytes(audio_data)
 
         # Get audio duration
         duration = get_audio_duration(str(audio_path))

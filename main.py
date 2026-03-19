@@ -1,8 +1,10 @@
 """
-FacelessAI Backend — Video Generation Server
+FacelessAI Backend — Video Generation Server v2.0
 FastAPI + FFmpeg + Pexels
 Generates real MP4 videos from script + audio + stock clips
+BREAKING CHANGE: audio_url REMOVED. Only audio_b64 accepted.
 """
+
 
 import os
 import re
@@ -93,7 +95,6 @@ async def debug_request(req: VideoRequest):
         "received": {
             "has_audio_b64": bool(req.audio_b64),
             "audio_b64_len": len(req.audio_b64) if req.audio_b64 else 0,
-            "has_audio_url": bool(req.audio_url),
             "pexels_clips_count": len(req.pexels_clips),
             "pexels_clips_preview": req.pexels_clips[:2] if req.pexels_clips else [],
             "script_len": len(req.script),

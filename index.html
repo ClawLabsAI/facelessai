@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.16 — Content Engine</title>
+<title>FacelessAI v3.18 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -324,7 +324,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.16</div>
+    <div class="logo-sub">Content Engine v3.18</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -3156,23 +3156,38 @@ async function generateRealVideo() {
     addLog('🎬 Preparando ' + window._pexelsVideos.length + ' clips de Pexels...', '#38bdf8');
     const clipUrls = window._pexelsVideos.slice(0, 5).map(v => {
       const files = v.video_files || [];
-      const hd = files.find(f => f.quality === 'hd') || files.find(f => f.quality === 'sd') || files[0];
-      return hd?.link || '';
-    }).filter(Boolean);
+      // Try HD first, then SD, then any file
+      const best = files.find(f => f.quality === 'hd' && f.width >= 720)
+                || files.find(f => f.quality === 'hd')
+                || files.find(f => f.quality === 'sd')
+                || files[0];
+      const url = best?.link || best?.url || '';
+      return url;
+    }).filter(u => u && u.startsWith('http'));
 
-    if (!clipUrls.length) throw new Error('No se encontraron URLs de clips válidas');
-    addLog('✓ ' + clipUrls.length + ' clips listos', '#00e87a');
+    addLog('✓ ' + clipUrls.length + ' URLs de clips extraídas', '#00e87a');
 
     addLog('🚀 Enviando al servidor Railway...', '#38bdf8');
     const idea = generatedIdeas[selectedIdeaIndex];
+    const audioB64Clean = audioB64.includes(',') ? audioB64.split(',')[1] : audioB64;
+
+    if (!audioB64Clean || audioB64Clean.length < 100) {
+      throw new Error('Audio inválido — regenera el audio primero');
+    }
+    if (!clipUrls.length) {
+      throw new Error('No hay clips válidos — busca clips de Pexels primero');
+    }
+
     const payload = {
-      audio_b64: audioB64.split(',')[1],
+      audio_b64: audioB64Clean,
       pexels_clips: clipUrls,
       script: currentScript || '',
       title: idea?.hook || 'FacelessAI Video',
       lang: activeLang,
       subtitle_style: 'viral'
     };
+
+    addLog('📦 Payload: audio=' + Math.round(audioB64Clean.length/1024) + 'KB · clips=' + clipUrls.length, '#475569');
 
     const r = await fetch(backendUrl + '/generate', {
       method: 'POST',
@@ -3181,8 +3196,14 @@ async function generateRealVideo() {
     });
 
     if (!r.ok) {
-      const err = await r.json().catch(() => ({}));
-      throw new Error('Error ' + r.status + ': ' + (err.detail || 'Error del servidor'));
+      const rawText = await r.text().catch(() => '{}');
+      addLog('🔴 Respuesta del servidor: ' + rawText.slice(0, 300), '#f87171');
+      let err = {};
+      try { err = JSON.parse(rawText); } catch(e) {}
+      const errText = Array.isArray(err.detail)
+        ? err.detail.map(e => e.msg + ' (' + (e.loc||[]).join('.') + ')').join(' | ')
+        : (typeof err.detail === 'string' ? err.detail : rawText.slice(0, 200));
+      throw new Error('Error ' + r.status + ': ' + errText);
     }
 
     const { job_id } = await r.json();

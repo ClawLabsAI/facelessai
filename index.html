@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.37b-debug — Content Engine</title>
+<title>FacelessAI v3.39 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -69,12 +69,12 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.main{margin-left:224px;flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 .topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;flex:1;}
+.content{padding:20px;flex:1;overflow-y:auto;min-height:0;}
 .view{display:none;min-height:100px;}.view.active{display:block;}
 
 /* ── BUTTONS ── */
@@ -340,13 +340,8 @@ function nav(id) {
   var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
   var titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.textContent = titles[id] || id;
-  try { window.scrollTo({top:0, behavior:"instant"}); } catch(e) { window.scrollTo(0,0); }
-  var indicator = document.getElementById('active-view-indicator');
-  if (indicator) {
-    var dashEl = document.getElementById('view-dashboard');
-    var dashDisplay = dashEl ? window.getComputedStyle(dashEl).display : 'NO ELEMENT';
-    indicator.textContent = '📍 ' + id.toUpperCase() + ' | dashboard=' + dashDisplay;
-  }
+  var _c = document.querySelector('.content'); if(_c) _c.scrollTop = 0;
+
   if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
     try { _navCallbacks[id](); } catch(e) { console.error('nav:', e); }
   }
@@ -364,7 +359,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.37b-debug ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.39 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -464,6 +459,8 @@ window.onerror = function(msg, src, line) {
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
+    <!-- Page title -->
+    <div id="page-title" style="font-size:14px;font-weight:700;color:var(--text1);margin-right:12px;white-space:nowrap">Dashboard</div>
 
     <!-- LANGUAGE SELECTOR -->
     <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px">
@@ -546,7 +543,6 @@ window.onerror = function(msg, src, line) {
   </div>
 
   <div class="content">
-<div id="active-view-indicator" style="background:#a78bfa;color:#fff;padding:8px 16px;font-family:monospace;font-size:12px;font-weight:700;border-radius:8px;margin-bottom:16px">📍 Vista activa: DASHBOARD</div>
 <!-- ════════════════ DASHBOARD ════════════════ -->
 <div class="view active" id="view-dashboard">
   <!-- STATS ROW — real data from localStorage -->
@@ -3675,7 +3671,7 @@ var _navCallbacks = {
   clippipeline: function() { try { setCPStep(0); } catch(e) {} },
   tiktokshop:   function() { try { renderTTSChannels(); } catch(e) {} },
   tiktokproduct:function() { try { setTSStep(0); } catch(e) {} },
-  drafts:       function() { try { renderDrafts(); } catch(e) {} },
+  drafts:       function() { try { renderDrafts(); } catch(e) { console.error(e); } },
   settings:     function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
 };
 

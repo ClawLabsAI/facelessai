@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.9 — Content Engine</title>
+<title>FacelessAI v3.10 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -306,7 +306,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.9</div>
+    <div class="logo-sub">Content Engine v3.10</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -1275,10 +1275,19 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <strong style="color:var(--amber)">ℹ️ Estado actual:</strong> Esta versión genera el <strong>audio real (MP3)</strong> con OpenAI TTS + busca <strong>clips reales en Pexels</strong>. El montaje de vídeo final (MP4) requiere un backend — próximo paso a implementar.
     </div>
 
+    <!-- STEP INDICATOR -->
+    <div style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:#94a3b8">
+      <strong style="color:#e2e8f0">Flujo:</strong>
+      <span id="flow-step-1" style="color:#00e87a">① Genera audio TTS</span> →
+      <span id="flow-step-2" style="color:#475569">② Busca clips Pexels</span> →
+      <span id="flow-step-3" style="color:#475569">③ Genera MP4</span>
+    </div>
+
     <div class="flex g8 mt12" style="justify-content:flex-end">
       <button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button>
-      <button class="btn btn-g btn-sm" id="tts-only-btn" onclick="generateTTSOnly()">🎤 Solo audio MP3</button>
-      <button class="btn btn-p" id="gen-btn" onclick="generateRealVideo()">🎬 Generar vídeo MP4</button>
+      <button class="btn btn-g btn-sm" id="tts-only-btn" onclick="runStep1TTS()">① 🎤 Generar audio</button>
+      <button class="btn btn-g btn-sm" id="pexels-run-btn" onclick="runStep2Pexels()">② 🎬 Buscar clips</button>
+      <button class="btn btn-p" id="gen-btn" onclick="runStep3Video()">③ 🎥 Generar MP4</button>
     </div>
   </div>
 
@@ -2405,6 +2414,8 @@ function setPStep(n) {
     else if (ideaEl) ideaEl.textContent = '— Selecciona una idea en el paso anterior —';
   }
   if (n === 4) {
+    // Reset flow steps indicator
+    updateFlowSteps(window._generatedAudio ? (window._pexelsVideos?.length ? 3 : 2) : 1);
     const nicheQueries = {
       'Finanzas básicas': 'money finance savings bank',
       'Motivación / psicología': 'motivation success mindset',
@@ -2915,8 +2926,54 @@ function initPreferences() {
   setCurrency(activeCurrency);
   setDateFormat(activeDateFormat);
 }
-// ═══════════════════════════════════════════════
-// BACKEND — Railway video generation
+// ── STEP ORCHESTRATION (paso 4) ──
+function updateFlowSteps(active) {
+  const steps = { 1:'flow-step-1', 2:'flow-step-2', 3:'flow-step-3' };
+  Object.entries(steps).forEach(([n, id]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const num = parseInt(n);
+    if (num < active) el.style.color = '#00e87a'; // done
+    else if (num === active) el.style.color = '#fbbf24'; // active
+    else el.style.color = '#475569'; // pending
+  });
+}
+
+async function runStep1TTS() {
+  updateFlowSteps(1);
+  await generateTTS(true); // audio only
+  // After audio done, highlight step 2
+  if (window._generatedAudio) updateFlowSteps(2);
+}
+
+async function runStep2Pexels() {
+  updateFlowSteps(2);
+  const query = document.getElementById('pexels-query')?.value.trim();
+  if (!query) { showToast('⚠ Escribe un término de búsqueda para Pexels'); return; }
+  await searchPexels();
+  if (window._pexelsVideos?.length) updateFlowSteps(3);
+}
+
+async function runStep3Video() {
+  // Check prerequisites
+  if (!window._generatedAudio?.blob) {
+    showToast('⚠ Paso 1 primero: genera el audio con el botón ① 🎤');
+    updateFlowSteps(1);
+    return;
+  }
+  if (!window._pexelsVideos?.length) {
+    showToast('⚠ Paso 2 primero: busca clips con el botón ② 🎬');
+    updateFlowSteps(2);
+    return;
+  }
+  updateFlowSteps(3);
+  await generateRealVideo();
+}
+
+function generateTTSOnly() { runStep1TTS(); }
+function startVidGen() { runStep3Video(); }
+
+// ── BACKEND — Railway video generation
 // ═══════════════════════════════════════════════
 let BACKEND_URL = '';
 try { BACKEND_URL = localStorage.getItem('fai_backend_url') || ''; } catch(e) {}

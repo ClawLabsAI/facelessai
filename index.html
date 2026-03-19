@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.45 — Content Engine</title>
+<title>FacelessAI v3.46 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+html{height:100%;}
 :root{
   --bg0:#0a0d14;--bg1:#0f1320;--bg2:#141928;--bg3:#1c2438;
   --border:#243048;--border2:#2e3d5c;
@@ -41,7 +42,7 @@ body.theme-light .topbar { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 body.theme-light .btn-p { color: #fff; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;display:flex;}
+body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;height:100%;display:flex;margin:0;}
 
 /* ── SIDEBAR ── */
 .sidebar{width:224px;height:100vh;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow:hidden;}
@@ -69,12 +70,12 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
-.topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
+.main{margin-left:224px;flex:1;display:flex;flex-direction:column;height:100vh;}
+.topbar{height:52px;flex-shrink:0;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;flex:1;}
+.content{padding:20px;flex:1;overflow-y:auto;min-height:0;}
 .view{display:none;min-height:100px;}.view.active{display:block;}
 
 /* ── BUTTONS ── */
@@ -360,7 +361,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.45 ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.46 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>

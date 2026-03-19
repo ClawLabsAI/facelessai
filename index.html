@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.36-debug — Content Engine</title>
+<title>FacelessAI v3.36b-debug — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -326,8 +326,16 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 // nav is defined here in <head> so onclick="nav(...)" always works
 var VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliates','admarketing','analytics','monetization','settings'];
 function nav(id) {
-  alert('nav called: ' + id); // DEBUG - remove after confirming
-  // Show/hide views
+  // DEBUG
+  var dbg = [];
+  VIEWS.forEach(function(v) {
+    var el = document.getElementById('view-' + v);
+    if (!el) { dbg.push('MISSING:'+v); return; }
+    el.style.display = (v === id) ? 'block' : 'none';
+    if (v === id) dbg.push('SHOWN:'+v+' computed='+window.getComputedStyle(el).display);
+  });
+  alert('Debug: ' + dbg.join(', '));
+  // Highlight nav item
   VIEWS.forEach(function(v) {
     var el = document.getElementById('view-' + v);
     if (el) el.style.display = (v === id) ? 'block' : 'none';
@@ -363,7 +371,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.36-debug ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.36b-debug ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>

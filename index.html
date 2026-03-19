@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.10 — Content Engine</title>
+<title>FacelessAI v3.14 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -22,6 +22,24 @@
   --sans:'Outfit',sans-serif;
   --r:8px;--rl:12px;
 }
+
+/* ── LIGHT THEME ── */
+body.theme-light {
+  --bg0:#f8fafc;--bg1:#ffffff;--bg2:#f1f5f9;--bg3:#e2e8f0;
+  --border:#cbd5e1;--border2:#94a3b8;
+  --text1:#0f172a;--text2:#334155;--text3:#64748b;
+  --green:#059669;--gdim:#05966915;--gsoft:#05966944;
+  --blue:#0284c7;--bdim:#0284c715;
+  --amber:#d97706;--adim:#d9770615;
+  --red:#dc2626;--reddim:#dc262615;--redsoft:#dc262633;
+  --purple:#7c3aed;--pdim:#7c3aed15;
+  --teal:#0d9488;--tdim:#0d948815;
+}
+body.theme-light .card { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+body.theme-light .sidebar { box-shadow: 2px 0 8px rgba(0,0,0,0.06); }
+body.theme-light .topbar { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+body.theme-light .btn-p { color: #fff; }
+
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;display:flex;}
 
@@ -306,7 +324,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.10</div>
+    <div class="logo-sub">Content Engine v3.14</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -1283,10 +1301,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <span id="flow-step-3" style="color:#475569">③ Genera MP4</span>
     </div>
 
-    <div class="flex g8 mt12" style="justify-content:flex-end">
+    <div class="flex g8 mt12" style="justify-content:flex-end;align-items:center">
       <button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button>
+      <div style="width:1px;height:20px;background:#1e2d44;margin:0 4px"></div>
       <button class="btn btn-g btn-sm" id="tts-only-btn" onclick="runStep1TTS()">① 🎤 Generar audio</button>
+      <span id="flow-arrow-1" style="color:#475569;font-size:16px">→</span>
       <button class="btn btn-g btn-sm" id="pexels-run-btn" onclick="runStep2Pexels()">② 🎬 Buscar clips</button>
+      <span id="flow-arrow-2" style="color:#475569;font-size:16px">→</span>
       <button class="btn btn-p" id="gen-btn" onclick="runStep3Video()">③ 🎥 Generar MP4</button>
     </div>
   </div>
@@ -2414,8 +2435,10 @@ function setPStep(n) {
     else if (ideaEl) ideaEl.textContent = '— Selecciona una idea en el paso anterior —';
   }
   if (n === 4) {
-    // Reset flow steps indicator
-    updateFlowSteps(window._generatedAudio ? (window._pexelsVideos?.length ? 3 : 2) : 1);
+    // Set correct active step based on what's already done
+    setTimeout(() => {
+      updateFlowSteps(window._generatedAudio ? (window._pexelsVideos?.length ? 3 : 2) : 1);
+    }, 50);
     const nicheQueries = {
       'Finanzas básicas': 'money finance savings bank',
       'Motivación / psicología': 'motivation success mindset',
@@ -2811,9 +2834,7 @@ async function generateTTS(audioOnly) {
 
     showToast('✓ Audio generado · $' + cost + ' · Escúchalo abajo y descárgalo');
 
-    // Don't auto-advance — let user listen and download first
-    // Add a manual continue button
-    const genBtn = document.getElementById('gen-btn');
+    // Update gen-btn to show next step
     if (genBtn) {
       genBtn.textContent = '✓ Audio listo — continuar →';
       genBtn.onclick = () => {
@@ -2863,19 +2884,23 @@ try {
 function setTheme(t) {
   activeTheme = t;
   try { localStorage.setItem('fai_theme', t); } catch(e) {}
+
+  // Apply theme to body
+  document.body.classList.toggle('theme-light', t === 'light');
+  document.body.classList.toggle('theme-dark', t === 'dark');
+
+  // Update selector buttons
   ['dark','light'].forEach(x => {
     const el = document.getElementById('theme-' + x);
     if (!el) return;
-    el.style.border      = x === t ? '2px solid #00e87a' : '1px solid #1e2d44';
-    el.style.background  = x === t ? '#00e87a15' : 'transparent';
+    el.style.border     = x === t ? '2px solid var(--green)' : '1px solid var(--border)';
+    el.style.background = x === t ? 'var(--gdim)' : 'transparent';
+    // Update label
+    const lbl = el.querySelector('div:last-child');
+    if (lbl) lbl.textContent = x === t ? 'Activo' : '';
   });
-  if (t === 'light') {
-    showToast('☀️ Tema claro — próximamente disponible');
-    // Reset to dark
-    setTimeout(() => setTheme('dark'), 500);
-    return;
-  }
-  showToast('🌙 Tema oscuro activo');
+
+  showToast(t === 'light' ? '☀️ Tema claro activado' : '🌙 Tema oscuro activado');
 }
 
 function setUILang(lang) {
@@ -2884,28 +2909,48 @@ function setUILang(lang) {
   ['es','en'].forEach(x => {
     const el = document.getElementById('ui-lang-' + x);
     if (!el) return;
-    el.style.border     = x === lang ? '2px solid #00e87a' : '1px solid #1e2d44';
-    el.style.background = x === lang ? '#00e87a15' : 'transparent';
+    el.style.border     = x === lang ? '2px solid var(--green)' : '1px solid var(--border)';
+    el.style.background = x === lang ? 'var(--gdim)' : 'transparent';
+    const lbl = el.querySelector('div:last-child');
+    if (lbl) lbl.textContent = x === lang ? 'Activo' : '';
   });
   if (lang === 'en') {
-    showToast('🇬🇧 English UI — coming soon');
-    setTimeout(() => setUILang('es'), 500);
+    showToast('🇬🇧 English UI — próximamente');
     return;
   }
-  showToast('🇪🇸 Interfaz en español activa');
+  showToast('🇪🇸 Interfaz en español');
 }
 
 function setCurrency(cur) {
   activeCurrency = cur;
   try { localStorage.setItem('fai_currency', cur); } catch(e) {}
+
+  const symbols = { EUR:'€', USD:'$', GBP:'£' };
+  const symbol = symbols[cur] || '$';
+
+  // Update all currency displays in the dashboard
+  document.querySelectorAll('[data-currency]').forEach(el => {
+    el.textContent = symbol;
+  });
+
+  // Update budget pill if showing currency
+  const budgetEl = document.querySelector('.budget-pill');
+  if (budgetEl) {
+    const spans = budgetEl.querySelectorAll('span');
+    // The pill shows "$0.08 / $2" — update the symbol
+    spans.forEach(s => {
+      s.textContent = s.textContent.replace(/[$€£]/g, symbol);
+    });
+  }
+
   ['EUR','USD','GBP'].forEach(x => {
     const el = document.getElementById('cur-' + x.toLowerCase());
     if (!el) return;
-    el.style.border     = x === cur ? '2px solid #00e87a' : '1px solid #1e2d44';
-    el.style.background = x === cur ? '#00e87a15' : 'transparent';
+    el.style.border     = x === cur ? '2px solid var(--green)' : '1px solid var(--border)';
+    el.style.background = x === cur ? 'var(--gdim)' : 'transparent';
   });
-  const symbols = { EUR:'€', USD:'$', GBP:'£' };
-  showToast('💱 Moneda: ' + symbols[cur] + ' ' + cur);
+
+  showToast('💱 Moneda: ' + symbol + ' ' + cur);
 }
 
 function setDateFormat(fmt) {
@@ -2914,17 +2959,59 @@ function setDateFormat(fmt) {
   ['eu','us'].forEach(x => {
     const el = document.getElementById('fmt-' + x);
     if (!el) return;
-    el.style.border     = x === fmt ? '2px solid #00e87a' : '1px solid #1e2d44';
-    el.style.background = x === fmt ? '#00e87a15' : 'transparent';
+    el.style.border     = x === fmt ? '2px solid var(--green)' : '1px solid var(--border)';
+    el.style.background = x === fmt ? 'var(--gdim)' : 'transparent';
   });
-  showToast('📅 Formato: ' + (fmt === 'eu' ? 'DD/MM/YYYY' : 'MM/DD/YYYY'));
+
+  // Update any date displays
+  const now = new Date();
+  const formatted = fmt === 'eu'
+    ? now.toLocaleDateString('es-ES')
+    : now.toLocaleDateString('en-US');
+  showToast('📅 Formato: ' + (fmt === 'eu' ? 'DD/MM/YYYY' : 'MM/DD/YYYY') + ' · Hoy: ' + formatted);
 }
 
 function initPreferences() {
-  setTheme(activeTheme);
-  setUILang(activeUILang);
-  setCurrency(activeCurrency);
-  setDateFormat(activeDateFormat);
+  // Apply theme immediately
+  if (activeTheme === 'light') {
+    document.body.classList.add('theme-light');
+  }
+
+  // Restore selector states silently (no toasts on startup)
+  setTimeout(() => {
+    // Theme buttons
+    ['dark','light'].forEach(x => {
+      const el = document.getElementById('theme-' + x);
+      if (!el) return;
+      el.style.border     = x === activeTheme ? '2px solid var(--green)' : '1px solid var(--border)';
+      el.style.background = x === activeTheme ? 'var(--gdim)' : 'transparent';
+      const lbl = el.querySelector('div:last-child');
+      if (lbl) lbl.textContent = x === activeTheme ? 'Activo' : '';
+    });
+    // UI lang buttons
+    ['es','en'].forEach(x => {
+      const el = document.getElementById('ui-lang-' + x);
+      if (!el) return;
+      el.style.border     = x === activeUILang ? '2px solid var(--green)' : '1px solid var(--border)';
+      el.style.background = x === activeUILang ? 'var(--gdim)' : 'transparent';
+      const lbl = el.querySelector('div:last-child');
+      if (lbl) lbl.textContent = x === activeUILang ? 'Activo' : '';
+    });
+    // Currency buttons
+    ['EUR','USD','GBP'].forEach(x => {
+      const el = document.getElementById('cur-' + x.toLowerCase());
+      if (!el) return;
+      el.style.border     = x === activeCurrency ? '2px solid var(--green)' : '1px solid var(--border)';
+      el.style.background = x === activeCurrency ? 'var(--gdim)' : 'transparent';
+    });
+    // Date format buttons
+    ['eu','us'].forEach(x => {
+      const el = document.getElementById('fmt-' + x);
+      if (!el) return;
+      el.style.border     = x === activeDateFormat ? '2px solid var(--green)' : '1px solid var(--border)';
+      el.style.background = x === activeDateFormat ? 'var(--gdim)' : 'transparent';
+    });
+  }, 150);
 }
 // ── STEP ORCHESTRATION (paso 4) ──
 function updateFlowSteps(active) {
@@ -2933,16 +3020,36 @@ function updateFlowSteps(active) {
     const el = document.getElementById(id);
     if (!el) return;
     const num = parseInt(n);
-    if (num < active) el.style.color = '#00e87a'; // done
-    else if (num === active) el.style.color = '#fbbf24'; // active
-    else el.style.color = '#475569'; // pending
+    if (num < active) el.style.color = '#00e87a';
+    else if (num === active) el.style.color = '#fbbf24';
+    else el.style.color = '#475569';
   });
+
+  // Update button styles
+  const btnMap = { 1:'tts-only-btn', 2:'pexels-run-btn', 3:'gen-btn' };
+  Object.entries(btnMap).forEach(([n, id]) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    const num = parseInt(n);
+    if (num === active) {
+      btn.style.cssText = 'background:#00e87a;color:#060910;border-color:#00e87a;font-weight:700;box-shadow:0 0 12px #00e87a44;transform:scale(1.04);transition:all .2s';
+    } else if (num < active) {
+      btn.style.cssText = 'background:transparent;color:#00e87a;border-color:#00e87a44;font-weight:400;transform:scale(1);transition:all .2s';
+    } else {
+      btn.style.cssText = 'background:transparent;color:#475569;border-color:#1e2d44;font-weight:400;transform:scale(1);transition:all .2s';
+    }
+  });
+
+  // Update arrows
+  const arr1 = document.getElementById('flow-arrow-1');
+  const arr2 = document.getElementById('flow-arrow-2');
+  if (arr1) arr1.style.color = active > 1 ? '#00e87a' : '#475569';
+  if (arr2) arr2.style.color = active > 2 ? '#00e87a' : '#475569';
 }
 
 async function runStep1TTS() {
   updateFlowSteps(1);
-  await generateTTS(true); // audio only
-  // After audio done, highlight step 2
+  await generateTTS(true);
   if (window._generatedAudio) updateFlowSteps(2);
 }
 
@@ -2955,7 +3062,6 @@ async function runStep2Pexels() {
 }
 
 async function runStep3Video() {
-  // Check prerequisites
   if (!window._generatedAudio?.blob) {
     showToast('⚠ Paso 1 primero: genera el audio con el botón ① 🎤');
     updateFlowSteps(1);

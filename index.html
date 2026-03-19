@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.95 — Content Engine</title>
+<title>FacelessAI v3.98 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.95</div>
+    <div class="logo-sub">Content Engine v3.98</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -5329,8 +5329,8 @@ const TIER_CONFIG = {
   opt:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.06, llmModel:'claude-sonnet-4-6',        ttsModel:'OpenAI TTS-1 HD',    label:'🔵 OPTIMIZADO' },
   premium: { llm:'claude', tts:'11labs', img:'pexels', costPerVid:0.25, llmModel:'claude-opus-4-6',          ttsModel:'ElevenLabs v3',      label:'🔴 PREMIUM' }
 };
-let activeTier = 'eco';
-try { activeTier = localStorage.getItem('fai_tier') || 'eco'; } catch(e) {}
+let activeTier = 'opt';
+try { activeTier = localStorage.getItem('fai_active_tier') || 'opt'; } catch(e) {}
 
 // ── LANGUAGE & VOICE CONFIG ──
 const LANG_CONFIG = {
@@ -5345,7 +5345,7 @@ function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
 function getVoice()   { return getLangCfg().voices[activeGender]; }
 
 // ── NAVIGATION ──
-const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','influencer','influencer-personaje','influencer-contenido','influencer-video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliation','admarketing','analytics','monetization','settings'];
+const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','influencer','influencer-contenido','influencer-video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliation','admarketing','analytics','monetization','settings'];
 const TITLES = {
   dashboard:'Dashboard', channels:'Mis canales', drafts:'Borradores',
   trends:'Tendencias — ventana 48h', score:'Score predictivo IA', pipeline:'Pipeline de creación',
@@ -8131,10 +8131,7 @@ var _navCallbacks = {
   pipeline:      function() { try { setPStep(0); applyTierToPipeline(); } catch(e) {} },
   affiliation:   function() { try { renderAffiliates(); } catch(e) { console.error(e); } },
   budget:        function() { try { renderBudget(); } catch(e) {} },
-  models:        function() { try { renderModels(); } catch(e) {} },
-  autopilot:     function() { try { renderAutopilot(); } catch(e) {} },
-  budget:        function() { try { renderBudget(); } catch(e) {} },
-  models:        function() { try { renderModels(); } catch(e) {} },
+  models:        function() { try { renderModels(); } catch(e) { console.error('renderModels:', e); } },
   autopilot:     function() { try { renderAutopilot(); } catch(e) {} },
   settings:      function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
 };
@@ -9722,7 +9719,7 @@ const TIERS = {
   prem:  { label:'PREMIUM',    color:'var(--purple)', cost:'~$0.25', llm:'Claude Opus', tts:'ElevenLabs v3', video:'Pexels + efectos',desc:'Máxima calidad de voz.' },
   ultra: { label:'ULTRA',      color:'#ff6b35',       cost:'~$1.50', llm:'Claude Opus', tts:'ElevenLabs clonada',video:'HeyGen/Runway/D-ID/Pika',desc:'Avatar IA real. Influencer IA.' },
 };
-activeTier = localStorage.getItem('fai_active_tier') || activeTier;
+activeTier = localStorage.getItem('fai_active_tier') || activeTier || 'opt';
 
 function setTierUltra() {
   activeTier = 'ultra';

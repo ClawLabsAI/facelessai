@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.42-debug — Content Engine</title>
+<title>FacelessAI v3.43-debug — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -341,7 +341,15 @@ function nav(id) {
   var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
   var titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.textContent = titles[id] || id;
-  var _c = document.querySelector('.content'); if(_c) _c.scrollTop = 0;
+  var _c = document.querySelector('.content');
+  if (_c) {
+    var cs = window.getComputedStyle(_c);
+    var viewEl = document.getElementById('view-' + id);
+    var viewCs = viewEl ? window.getComputedStyle(viewEl) : null;
+    alert('content: display=' + cs.display + ' overflow=' + cs.overflow + ' h=' + cs.height + 
+          '\nview-' + id + ': display=' + (viewCs ? viewCs.display : 'N/A') + 
+          ' h=' + (viewCs ? viewCs.height : 'N/A') + ' visibility=' + (viewCs ? viewCs.visibility : 'N/A'));
+  }
 
   if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
     try { _navCallbacks[id](); } catch(e) { console.error('nav:', e); }
@@ -360,7 +368,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.42-debug ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.43-debug ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -655,7 +663,7 @@ window.onerror = function(msg, src, line) {
 </div>
 
 <!-- ════════════════ CHANNELS ════════════════ -->
-<div class="view" id="view-channels" style="background:red;color:white;min-height:200px;padding:20px">
+<div class="view" id="view-channels">
 
   <!-- HEADER -->
   <div class="sh mb20">
@@ -4178,13 +4186,13 @@ async function generateTTS(audioOnly) {
 // ═══════════════════════════════════════════════
 // PREFERENCES — theme, UI lang, currency, date format
 // ═══════════════════════════════════════════════
-let activeTheme      = 'light';
+let activeTheme      = 'dark';
 let activeUILang     = 'es';
 let activeCurrency   = 'EUR';
 let activeDateFormat = 'eu';
 
 try {
-  activeTheme      = localStorage.getItem('fai_theme')      || 'light';
+  activeTheme      = localStorage.getItem('fai_theme')      || 'dark';
   activeUILang     = localStorage.getItem('fai_ui_lang')    || 'es';
   activeCurrency   = localStorage.getItem('fai_currency')   || 'EUR';
   activeDateFormat = localStorage.getItem('fai_date_fmt')   || 'eu';
@@ -4282,11 +4290,7 @@ function setDateFormat(fmt) {
 
 function initPreferences() {
   // Apply theme immediately — light is default
-  if (activeTheme !== 'dark') {
-    document.body.classList.add('theme-light');
-  } else {
-    document.body.classList.remove('theme-light');
-  }
+  if (activeTheme === 'light') { document.body.classList.add('theme-light'); } else { document.body.classList.remove('theme-light'); }
 
   // Restore selector states silently (no toasts on startup)
   setTimeout(() => {

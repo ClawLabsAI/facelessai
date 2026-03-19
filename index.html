@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.65 — Content Engine</title>
+<title>FacelessAI v3.80 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -321,7 +321,6 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 /* Clipping step pills */
 .cp-step-pill{padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:var(--bg2);color:var(--text3);border:1px solid var(--border);font-family:var(--mono);}
 .cp-step-pill.act{background:var(--gdim);color:var(--green);border-color:var(--gsoft);}
-.pc{display:block;}
 </style>
 </head>
 <body>
@@ -329,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.65</div>
+    <div class="logo-sub">Content Engine v3.80</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -513,71 +512,204 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <div class="content">
 <!-- ════════════════ DASHBOARD ════════════════ -->
 <div class="view active" id="view-dashboard">
-  <!-- STATS ROW — real data from localStorage -->
-  <div class="g4 mb16">
-    <div class="sc"><div class="sc-label">Borradores creados</div><div class="sc-val" id="dash-stat-drafts">0</div><span class="du" id="dash-stat-drafts-sub">en total</span></div>
-    <div class="sc"><div class="sc-label">Coste IA acumulado</div><div class="sc-val" style="color:var(--green)" id="dash-stat-cost">$0.000</div><span class="du" id="dash-stat-cost-sub">desde el inicio</span></div>
-    <div class="sc"><div class="sc-label">Canales activos</div><div class="sc-val" id="dash-stat-channels">0</div><span class="du" id="dash-stat-channels-sub">configurados</span></div>
-    <div class="sc"><div class="sc-label">Vídeos aprobados</div><div class="sc-val" style="color:var(--amber)" id="dash-stat-approved">0</div><span class="du" id="dash-stat-approved-sub">listos para publicar</span></div>
-  </div>
 
-  <!-- MODE BANNER -->
-  <div style="background:var(--bdim);border:1px solid #38bdf822;border-radius:var(--r);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
-    <div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
-    <div>
-      <div style="font-weight:600;font-size:13px" id="dash-mode-title">MODO MANUAL ACTIVO</div>
-      <div style="font-size:12px;color:var(--text3)" id="dash-mode-sub">Cada vídeo generado pasa por tu revisión antes de publicarse</div>
+  <!-- STATS ROW — mes actual + diferencia vs mes anterior -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+
+    <div class="sc">
+      <div class="sc-label">Vídeos este mes</div>
+      <div class="sc-val" id="dash-stat-drafts">0</div>
+      <span class="du" id="dash-stat-drafts-sub">vs mes anterior</span>
     </div>
-    <button class="btn btn-g btn-sm" style="margin-left:auto" onclick="nav('pipeline')">▶ Generar vídeo</button>
+    <div class="sc">
+      <div class="sc-label">Coste IA este mes</div>
+      <div class="sc-val" style="color:var(--green)" id="dash-stat-cost">$0.000</div>
+      <span class="du" id="dash-stat-cost-sub">vs mes anterior</span>
+    </div>
+    <div class="sc">
+      <div class="sc-label">Canales activos</div>
+      <div class="sc-val" id="dash-stat-channels">0</div>
+      <span class="du" id="dash-stat-channels-sub">configurados</span>
+    </div>
+    <div class="sc">
+      <div class="sc-label">Aprobados este mes</div>
+      <div class="sc-val" style="color:var(--amber)" id="dash-stat-approved">0</div>
+      <span class="du" id="dash-stat-approved-sub">vs mes anterior</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="nav('analytics');setTimeout(function(){switchAnalyticsTab('platforms');},80)" title="YT · TikTok · Instagram">
+      <div class="sc-label">Views este mes <span style="font-size:9px;color:var(--blue)">↗</span></div>
+      <div class="sc-val" id="dash-stat-views">—</div>
+      <span class="du" id="dash-stat-views-sub">añadir en Analytics ↗</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="nav('analytics');setTimeout(function(){switchAnalyticsTab('platforms');},80)" title="YT · TikTok · Instagram">
+      <div class="sc-label">Ingresos este mes <span style="font-size:9px;color:var(--blue)">↗</span></div>
+      <div class="sc-val" style="color:var(--amber)" id="dash-stat-revenue">—</div>
+      <span class="du" id="dash-stat-revenue-sub">añadir en Analytics ↗</span>
+    </div>
+
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+  <!-- AUTOPILOT STATUS BANNER -->
+  <div class="card mb12" id="dash-ap-banner" style="background:linear-gradient(135deg,#00e87a07,transparent);border-color:var(--gsoft);padding:13px 18px">
+    <div class="flex fic g16">
+      <div class="ap-dot" id="dash-ap-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;font-family:var(--mono)" id="dash-ap-title">MODO MANUAL ACTIVO</div>
+        <div style="font-size:12px;color:var(--text3)" id="dash-ap-sub">Cada vídeo generado pasa por tu revisión antes de publicarse</div>
+      </div>
+      <span class="tag tg" id="dash-ap-queue" style="display:none">0 en cola</span>
+      <div id="dash-ap-budget" style="font-size:11px;font-family:var(--mono);color:var(--text3);white-space:nowrap"></div>
+      <button class="btn btn-g btn-sm" onclick="nav('autopilot')">Configurar →</button>
+    </div>
+  </div>
+
+  <!-- PENDING DRAFTS ALERT -->
+  <div class="mb14" id="dash-pending-alert" style="display:none;background:var(--adim);border:1px solid #fbbf2433;border-radius:var(--rl);padding:12px 16px">
+    <div class="flex fic g12">
+      <span style="font-size:18px">📋</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600" id="dash-pending-title">Tienes borradores esperando</div>
+        <div style="font-size:12px;color:var(--text3)">Revísalos y apruébalos para publicar</div>
+      </div>
+      <button class="btn btn-a btn-sm" onclick="nav('drafts')" style="flex-shrink:0">Revisar →</button>
+    </div>
+  </div>
+
+  <!-- MAIN GRID: Canales + Actividad -->
+  <div class="g2 mb16">
+
     <!-- CANALES ACTIVOS -->
-    <div>
-      <div class="stl mb12">Canales activos <span class="nb nbg" id="dash-channels-count"></span></div>
+    <div class="card">
+      <div class="sh mb12">
+        <h2>Canales activos</h2>
+        <button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos →</button>
+      </div>
       <div id="dash-channels-list">
         <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">
           <div style="font-size:32px;margin-bottom:8px">📺</div>
-          Sin canales aún — <button class="btn btn-g btn-sm" onclick="openModal()">+ Crear canal</button>
+          Sin canales — <button class="btn btn-g btn-sm" onclick="openModal()">+ Crear canal</button>
         </div>
       </div>
     </div>
-    <!-- BORRADORES RECIENTES -->
-    <div>
-      <div class="stl mb12">Borradores recientes <span class="nb nba" id="dash-drafts-count"></span></div>
-      <div id="dash-drafts-list">
+
+    <!-- ACTIVIDAD RECIENTE -->
+    <div class="card">
+      <div class="sh mb12"><h2>Actividad reciente</h2></div>
+      <div id="dash-activity-list">
         <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">
-          <div style="font-size:32px;margin-bottom:8px">📋</div>
-          Sin borradores — <button class="btn btn-g btn-sm" onclick="nav('pipeline')">▶ Generar</button>
+          <div style="font-size:32px;margin-bottom:8px">⏳</div>
+          Sin actividad aún
         </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WEEKLY CHART + CTA -->
+  <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:16px;align-items:stretch">
+    <!-- Activity chart -->
+    <div class="card" style="padding:14px">
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Actividad últimos 7 días</div>
+      <div id="dash-weekly-chart" style="display:flex;align-items:flex-end;gap:6px;height:48px">
+        <!-- rendered by renderDashboard -->
+      </div>
+      <div id="dash-weekly-labels" style="display:flex;gap:6px;margin-top:5px">
+        <!-- day labels -->
+      </div>
+    </div>
+    <!-- Big CTA -->
+    <div class="card" style="padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:160px;background:linear-gradient(135deg,var(--gdim),transparent);border-color:var(--gsoft)">
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px">Nuevo vídeo</div>
+      <button class="btn btn-p" style="width:100%;font-size:14px;padding:12px 20px" onclick="nav('pipeline')">▶ Generar</button>
+      <div style="font-size:10px;color:var(--text3);text-align:center" id="dash-cta-sub">Pipeline completo</div>
+    </div>
+  </div>
+
+  <!-- BORRADORES RECIENTES -->
+  <div class="card">
+    <div class="sh mb12">
+      <h2>Borradores recientes</h2>
+      <button class="btn btn-g btn-sm" onclick="nav('drafts')">Ver todos →</button>
+    </div>
+    <div id="dash-drafts-list">
+      <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">
+        <div style="font-size:32px;margin-bottom:8px">📭</div>
+        Sin borradores — <button class="btn btn-g btn-sm" onclick="nav('pipeline')">▶ Generar vídeo</button>
       </div>
     </div>
   </div>
+
 </div>
 
 <!-- ════════════════ CHANNELS ════════════════ -->
 
 <!-- ════════════════ BORRADORES ════════════════ -->
 <div class="view" id="view-drafts">
-  <div class="sh mb16">
-    <h2>Borradores — Pendientes de aprobación</h2>
+  <div class="sh mb12">
+    <h2>Borradores</h2>
     <div class="flex g8">
-      <span class="tag ta" id="drafts-count-tag">0 vídeos esperando</span>
-      <button class="btn btn-g btn-sm" onclick="approveAll()">✓ Aprobar todos</button>
-      <button class="btn btn-g btn-sm" style="border-color:#f87171;color:#f87171" onclick="clearAllDrafts()">✕ Limpiar</button>
+      <button class="btn btn-g btn-sm" onclick="approveAll()">✓ Aprobar todos pendientes</button>
+      <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="clearAllDrafts()">🗑 Limpiar rechazados</button>
     </div>
   </div>
 
-  <div style="background:#38bdf815;border:1px solid #38bdf822;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:#94a3b8">
-    <strong style="color:#38bdf8">Modo manual activo:</strong> Cada vídeo generado llega aquí antes de publicarse. Puedes editar el título, aprobar, rechazar o descargar el audio.
+  <!-- STATS STRIP -->
+  <div class="g4 mb14">
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('pending')">
+      <div class="sc-label">Pendientes</div>
+      <div class="sc-val" style="color:var(--amber)" id="dr-stat-pending">0</div>
+      <span class="du">esperando revisión</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('approved')">
+      <div class="sc-label">Aprobados</div>
+      <div class="sc-val" style="color:var(--green)" id="dr-stat-approved">0</div>
+      <span class="du">listos para publicar</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('rejected')">
+      <div class="sc-label">Rechazados</div>
+      <div class="sc-val" style="color:var(--red)" id="dr-stat-rejected">0</div>
+      <span class="du">descartados</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('all')">
+      <div class="sc-label">Total</div>
+      <div class="sc-val" id="dr-stat-total">0</div>
+      <span class="du">borradores</span>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+    <div class="flex g4">
+      <button class="sty-btn act" id="dr-filter-all"      onclick="setDraftsFilter('all')">Todos</button>
+      <button class="sty-btn"     id="dr-filter-pending"   onclick="setDraftsFilter('pending')">⏳ Pendientes</button>
+      <button class="sty-btn"     id="dr-filter-approved"  onclick="setDraftsFilter('approved')">✓ Aprobados</button>
+      <button class="sty-btn"     id="dr-filter-rejected"  onclick="setDraftsFilter('rejected')">✕ Rechazados</button>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <select class="sel" id="dr-filter-channel" onchange="renderDrafts()" style="font-size:12px;padding:5px 8px">
+        <option value="">Todos los canales</option>
+      </select>
+      <select class="sel" id="dr-sort" onchange="renderDrafts()" style="font-size:12px;padding:5px 8px">
+        <option value="date-desc">Más recientes</option>
+        <option value="date-asc">Más antiguos</option>
+        <option value="score-desc">Mayor score</option>
+        <option value="score-asc">Menor score</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- INFO BANNER -->
+  <div id="dr-mode-banner" style="background:var(--bdim);border:1px solid #38bdf822;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--text3)">
+    <strong style="color:var(--blue)">Modo manual activo:</strong> Cada vídeo generado llega aquí antes de publicarse. Aprueba, edita el título, descarga el audio o publica en YouTube.
   </div>
 
   <div style="display:flex;flex-direction:column;gap:12px" id="drafts-list"></div>
 
-  <div id="drafts-empty" style="text-align:center;padding:48px;color:var(--text3)">
+  <div id="drafts-empty" style="display:none;text-align:center;padding:48px;color:var(--text3)">
     <div style="font-size:48px;margin-bottom:14px">📭</div>
-    <div style="font-size:15px;font-weight:600;margin-bottom:8px">No hay borradores pendientes</div>
-    <div style="font-size:13px;margin-bottom:16px">Genera un vídeo en el pipeline y guárdalo como borrador</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:8px">Sin borradores</div>
+    <div style="font-size:13px;margin-bottom:16px">Genera un vídeo en el pipeline para que aparezca aquí</div>
     <button class="btn btn-p" onclick="nav('pipeline')">▶ Ir al pipeline</button>
   </div>
 </div>
@@ -585,57 +717,167 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <!-- ════════════════ CHANNELS ════════════════ -->
 
 <div class="view" id="view-channels">
-  <div class="sh mb20">
+  <div class="sh mb16">
     <h2>Mis canales</h2>
     <div class="flex g8">
-      <button class="btn btn-g btn-sm" onclick="discoverChannels()">🔍 Descubrir con IA</button>
+      <button class="btn btn-g btn-sm" id="ch-yt-refresh-btn" onclick="fetchAllYouTubeStats().then(()=>renderChannels())" title="Actualizar datos YouTube">↻ YouTube</button>
+      <button class="btn btn-g btn-sm" onclick="discoverChannelsAI()">🔍 Descubrir con IA</button>
       <button class="btn btn-p btn-sm" onclick="openModal()">+ Crear canal</button>
     </div>
   </div>
 
-  <div class="stl mb12" id="channels-count-label">Canales activos</div>
-  <div class="g3 mb24" id="channels-grid">
-    <!-- rendered by renderChannels() -->
+  <!-- STATS STRIP -->
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Canales activos</div><div class="sc-val" id="ch-stat-total">0</div><span class="du">configurados</span></div>
+    <div class="sc"><div class="sc-label">Views totales YT</div><div class="sc-val" id="ch-stat-views">—</div><span class="du">acumuladas</span></div>
+    <div class="sc"><div class="sc-label">Suscriptores YT</div><div class="sc-val" id="ch-stat-subs">—</div><span class="du">totales</span></div>
+    <div class="sc"><div class="sc-label">Vídeos este mes</div><div class="sc-val" id="ch-stat-drafts">0</div><span class="du">todos los canales</span></div>
   </div>
 
-  <!-- AI CHANNEL DISCOVERY -->
-  <div class="stl mb12">🔍 Descubrir oportunidades de canal con IA</div>
-  <div class="card mb14">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px">
-      <div>
-        <label class="lbl">Nicho</label>
-        <select class="sel" id="disc-niche">
-          <option value="finanzas">💰 Finanzas personales</option>
-          <option value="motivacion">🔥 Motivación</option>
-          <option value="tecnologia">💻 Tecnología / IA</option>
-          <option value="salud">🏃 Salud y bienestar</option>
-          <option value="historia">📚 Historia y cultura</option>
-          <option value="negocios">📈 Negocios y emprendimiento</option>
-          <option value="gaming">🎮 Gaming</option>
-          <option value="curiosidades">🤔 Curiosidades y ciencia</option>
-        </select>
+  <!-- CHANNELS GRID -->
+  <div class="stl mb10" id="channels-count-label">Canales activos</div>
+  <div class="g3 mb24" id="channels-grid"><!-- rendered by renderChannels() --></div>
+
+  <!-- EDIT CHANNEL MODAL — full settings -->
+  <div id="edit-channel-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0">
+    <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:520px;max-width:95vw;margin:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <div style="font-size:16px;font-weight:700" id="edit-ch-title">✏️ Configuración del canal</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px" id="edit-ch-subtitle">Edita los parámetros del canal</div>
+        </div>
+        <button onclick="closeEditChannelModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px">×</button>
       </div>
-      <div>
-        <label class="lbl">Mercado</label>
+      <input type="hidden" id="edit-ch-idx">
+
+      <!-- STATS STRIP -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;padding:12px;background:var(--bg2);border-radius:var(--r)">
+        <div style="text-align:center"><div style="font-size:10px;color:var(--text3)">BORRADORES</div><div style="font-weight:700;font-family:var(--mono)" id="edit-ch-stat-drafts">0</div></div>
+        <div style="text-align:center"><div style="font-size:10px;color:var(--text3)">SCORE MEDIO</div><div style="font-weight:700;font-family:var(--mono);color:var(--amber)" id="edit-ch-stat-score">—</div></div>
+        <div style="text-align:center"><div style="font-size:10px;color:var(--text3)">COSTE IA</div><div style="font-weight:700;font-family:var(--mono);color:var(--green)" id="edit-ch-stat-cost">$0</div></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- Identidad -->
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px">Identidad del canal</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="lbl">Nicho</label>
+            <select class="sel" id="edit-ch-niche">
+              <option value="finanzas">💰 Finanzas</option><option value="motivacion">🔥 Motivación</option>
+              <option value="tecnologia">💻 Tech / IA</option><option value="salud">🏃 Salud</option>
+              <option value="negocios">📈 Negocios</option><option value="gaming">🎮 Gaming</option>
+              <option value="historia">📚 Historia</option><option value="curiosidades">🤔 Curiosidades</option>
+            </select>
+          </div>
+          <div><label class="lbl">Idioma</label>
+            <select class="sel" id="edit-ch-lang">
+              <option value="es">🇪🇸 Español</option>
+              <option value="lat">🌎 Latino</option>
+              <option value="en">🇺🇸 English</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="lbl">Género de voz</label>
+            <select class="sel" id="edit-ch-gender">
+              <option value="m">♂ Hombre</option>
+              <option value="f">♀ Mujer</option>
+            </select>
+          </div>
+          <div><label class="lbl">Plataformas</label>
+            <div style="display:flex;gap:12px;padding:8px 0">
+              <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="edit-ch-yt"> YT</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="edit-ch-tt"> TT</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="edit-ch-ig"> IG</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics -->
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:4px">Analytics y monetización</div>
+        <div><label class="lbl">YouTube Channel ID</label>
+          <input class="inp" id="edit-ch-yt-id" placeholder="UC..." style="font-family:var(--mono);font-size:12px">
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">YouTube Studio → Configuración → Canal → Información básica · <a href="https://www.youtube.com/account_advanced" target="_blank" style="color:var(--blue)">Abrir ↗</a></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="lbl">RPM estimado ($/1000 views)</label>
+            <input class="inp" id="edit-ch-rpm" type="number" step="0.5" placeholder="ej. 4.5">
+            <div style="font-size:10px;color:var(--text3);margin-top:3px">Finanzas ~$4-8 · Tech ~$3-6 · Motivación ~$2-4</div>
+          </div>
+          <div><label class="lbl">Score mínimo para AutoPilot</label>
+            <input class="inp" id="edit-ch-min-score" type="number" step="1" min="0" max="100" placeholder="ej. 75">
+            <div style="font-size:10px;color:var(--text3);margin-top:3px">AutoPilot descarta ideas con score menor</div>
+          </div>
+        </div>
+
+        <!-- Notas -->
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:4px">Notas del canal</div>
+        <div>
+          <textarea class="inp" id="edit-ch-notes" rows="2" placeholder="Instrucciones especiales para Claude, tono de voz, temas a evitar..." style="resize:vertical;font-size:13px"></textarea>
+        </div>
+
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:20px;justify-content:space-between">
+        <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="if(confirm('¿Eliminar este canal?')){deleteChannelFromModal()}">🗑 Eliminar canal</button>
+        <div class="flex g8">
+          <button class="btn btn-g btn-sm" onclick="closeEditChannelModal()">Cancelar</button>
+          <button class="btn btn-p" onclick="saveEditChannel()">💾 Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI DISCOVERY -->
+  <div class="stl mb10">🔍 Descubrir oportunidades de canal con IA</div>
+  <div class="card mb14">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">
+      <div><label class="lbl">Idioma objetivo</label>
         <select class="sel" id="disc-market">
-          <option value="es">🇪🇸 España</option>
-          <option value="latam">🌎 LATAM</option>
+          <option value="all">🌍 Todos los mercados</option>
+          <option value="es">🇪🇸 Español España</option>
+          <option value="latam">🌎 Español Latino</option>
           <option value="us">🇺🇸 English US</option>
         </select>
       </div>
-      <div>
-        <label class="lbl">Plataforma</label>
-        <select class="sel" id="disc-platform">
-          <option value="youtube">YouTube Shorts</option>
-          <option value="tiktok">TikTok</option>
-          <option value="instagram">Instagram Reels</option>
+      <div><label class="lbl">Inversión por vídeo</label>
+        <select class="sel" id="disc-budget">
+          <option value="free">🟢 Gratis — $0.00</option>
+          <option value="eco" selected>🟡 Económico — ~$0.01</option>
+          <option value="opt">🔵 Optimizado — ~$0.06</option>
+          <option value="prem">🔴 Premium — ~$0.25</option>
         </select>
       </div>
-      <div style="display:flex;align-items:flex-end">
-        <button class="btn btn-p" style="width:100%" id="disc-btn" onclick="discoverChannelsAI()">🤖 Analizar con IA</button>
+      <div><label class="lbl">Objetivo principal</label>
+        <select class="sel" id="disc-goal">
+          <option value="monetize">💰 Monetizar rápido</option>
+          <option value="grow">📈 Crecer audiencia</option>
+          <option value="diversify">🔀 Diversificar canales</option>
+          <option value="affiliate">⭐ Ingresos afiliados</option>
+          <option value="brand">🏷️ Marca personal</option>
+        </select>
+      </div>
+      <div><label class="lbl">Plataforma principal</label>
+        <select class="sel" id="disc-platform">
+          <option value="youtube">▶ YouTube Shorts</option>
+          <option value="tiktok">♪ TikTok</option>
+          <option value="instagram">◈ Instagram Reels</option>
+          <option value="all">🌐 Multiplataforma</option>
+        </select>
       </div>
     </div>
-    <div id="disc-results" style="display:none"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div><label class="lbl">Nichos a evitar <span style="color:var(--text3);font-weight:400">(opcional)</span></label>
+        <input class="inp" id="disc-avoid" placeholder="ej: política, religión, criptos..."></div>
+      <div><label class="lbl">Nichos de interés <span style="color:var(--text3);font-weight:400">(deja libre para sugerencias IA)</span></label>
+        <input class="inp" id="disc-niche" placeholder="ej: finanzas, salud, tecnología..."></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <button class="btn btn-p" id="disc-btn" onclick="discoverChannelsAI()" style="padding:10px 20px">🤖 Analizar mercado y sugerir canales</button>
+      <span style="font-size:12px;color:var(--text3)">~$0.005 · Claude analiza tendencias reales del mercado</span>
+    </div>
+    <div id="disc-results" style="display:none;margin-top:14px"></div>
   </div>
 </div>
 
@@ -2453,6 +2695,125 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <div class="sh mb16">
     <h2>📊 Analytics</h2>
     <div class="flex g8">
+      <button class="btn btn-g btn-sm" id="an-refresh-btn" onclick="fetchAllYouTubeStats()">↻ Actualizar YT</button>
+      <button class="btn btn-g btn-sm" onclick="exportAnalyticsCSV()">⬇ CSV</button>
+      <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="clearAnalyticsLog()">🗑 Log</button>
+    </div>
+  </div>
+
+  <!-- GLOBAL KPI STATS -->
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Views totales</div><div class="sc-val" id="an-total-views">—</div><span class="du" id="an-total-views-sub">todas las plataformas</span></div>
+    <div class="sc"><div class="sc-label">Ingresos estimados</div><div class="sc-val" style="color:var(--amber)" id="an-total-revenue">—</div><span class="du" id="an-total-revenue-sub">este mes</span></div>
+    <div class="sc"><div class="sc-label">Coste IA total</div><div class="sc-val" style="color:var(--green)" id="an-total-cost">$0.000</div><span class="du">acumulado</span></div>
+    <div class="sc"><div class="sc-label">ROI IA</div><div class="sc-val" id="an-roi">—</div><span class="du" id="an-roi-sub">ingresos / coste IA</span></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="flex g6 mb16">
+    <button class="sty-btn act" id="an-tab-platforms" onclick="switchAnalyticsTab('platforms')">🌐 Por plataforma</button>
+    <button class="sty-btn" id="an-tab-channels"  onclick="switchAnalyticsTab('channels')">📺 Por canal</button>
+    <button class="sty-btn" id="an-tab-summary"   onclick="switchAnalyticsTab('summary')">💰 Costes IA</button>
+    <button class="sty-btn" id="an-tab-log"       onclick="switchAnalyticsTab('log')">📋 Log</button>
+  </div>
+
+  <!-- TAB: Platforms -->
+  <div id="an-panel-platforms">
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <!-- YouTube -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="width:36px;height:36px;border-radius:8px;background:#ff444420;display:flex;align-items:center;justify-content:center;font-size:18px">▶</div>
+          <div style="flex:1"><div style="font-weight:700">YouTube Shorts</div><div style="font-size:11px;color:var(--text3)">Datos via YouTube Data API v3</div></div>
+          <span id="yt-api-badge" style="font-size:10px;padding:2px 8px;border-radius:99px;background:var(--gdim);color:var(--green)">API conectada</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">VIEWS TOTALES</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="yt-total-views">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">SUSCRIPTORES</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="yt-total-subs">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">VÍDEOS</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="yt-total-videos">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">INGRESOS EST.</div><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--amber)" id="yt-total-revenue">—</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--text3)" id="yt-last-updated">Sin datos — añade YouTube Channel ID en cada canal para obtener datos reales</div>
+      </div>
+
+      <!-- TikTok -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="width:36px;height:36px;border-radius:8px;background:#00d4c420;display:flex;align-items:center;justify-content:center;font-size:18px">♪</div>
+          <div style="flex:1"><div style="font-weight:700">TikTok</div><div style="font-size:11px;color:var(--text3)">Entrada manual · No hay API pública</div></div>
+          <button class="btn btn-g btn-sm" onclick="openPlatformModal('tiktok')">✎ Actualizar</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">VIEWS</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="tt-total-views">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">SEGUIDORES</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="tt-total-followers">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">LIKES</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="tt-total-likes">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">INGRESOS EST.</div><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--amber)" id="tt-total-revenue">—</div></div>
+        </div>
+      </div>
+
+      <!-- Instagram -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="width:36px;height:36px;border-radius:8px;background:#e1306c20;display:flex;align-items:center;justify-content:center;font-size:18px">◈</div>
+          <div style="flex:1"><div style="font-weight:700">Instagram Reels</div><div style="font-size:11px;color:var(--text3)">Entrada manual · No hay API pública</div></div>
+          <button class="btn btn-g btn-sm" onclick="openPlatformModal('instagram')">✎ Actualizar</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">VIEWS</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="ig-total-views">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">SEGUIDORES</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="ig-total-followers">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">ALCANCE</div><div style="font-size:20px;font-weight:800;font-family:var(--mono)" id="ig-total-reach">—</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">INGRESOS EST.</div><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--amber)" id="ig-total-revenue">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform data modal -->
+    <div id="platform-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center">
+      <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:440px;max-width:95vw">
+        <div style="font-size:15px;font-weight:700;margin-bottom:16px" id="pm-title">Actualizar datos</div>
+        <div style="display:flex;flex-direction:column;gap:10px" id="pm-fields"></div>
+        <div class="flex g8 mt16">
+          <button class="btn btn-g btn-sm" onclick="closePlatformModal()">Cancelar</button>
+          <button class="btn btn-p btn-sm" onclick="savePlatformData()">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: By channel -->
+  <div id="an-panel-channels" style="display:none">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:13px;color:var(--text3)">Haz clic en ↻ para obtener datos reales de YouTube. TikTok e Instagram son manuales.</div>
+      <button class="btn btn-p btn-sm" onclick="fetchAllYouTubeStats()">↻ Actualizar todos</button>
+    </div>
+    <div id="an-channels-table" style="display:flex;flex-direction:column;gap:8px">
+      <div style="text-align:center;padding:32px;color:var(--text3)">Sin canales configurados</div>
+    </div>
+  </div>
+
+  <!-- TAB: AI Costs -->
+  <div id="an-panel-summary" style="display:none">
+    <div class="g4 mb16">
+      <div class="sc"><div class="sc-label">Gasto hoy</div><div class="sc-val" id="an-cost-today">$0.000</div></div>
+      <div class="sc"><div class="sc-label">Gasto semana</div><div class="sc-val" id="an-cost-week">$0.000</div></div>
+      <div class="sc"><div class="sc-label">Proyección mensual</div><div class="sc-val" id="an-cost-projection">$0.00</div></div>
+      <div class="sc"><div class="sc-label">Coste/borrador</div><div class="sc-val" id="an-cost-per-draft">$0.000</div></div>
+    </div>
+    <div id="an-summary-list"></div>
+  </div>
+
+  <!-- TAB: Log -->
+  <div id="an-panel-log" style="display:none">
+    <div id="an-log-list" style="display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto">
+      <div style="text-align:center;padding:32px;color:var(--text3);font-size:13px">El log se llena automáticamente con cada llamada a la IA.</div>
+    </div>
+  </div>
+</div>
+<div class="view" id="view-analytics">
+  <div class="sh mb16">
+    <h2>📊 Analytics</h2>
+    <div class="flex g8">
       <button class="btn btn-g btn-sm" onclick="exportAnalyticsCSV()">⬇ Exportar CSV</button>
       <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="clearAnalyticsLog()">🗑 Limpiar log</button>
     </div>
@@ -2704,6 +3065,26 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       </div>
     </div>
 
+
+      <!-- YouTube Data API -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:28px;height:28px;border-radius:6px;background:#ff444420;display:flex;align-items:center;justify-content:center;font-size:14px">▶</div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:600;color:var(--text1)">YouTube Data API v3</div>
+            <div style="font-size:10px;color:var(--text3);font-family:var(--mono)" id="status-youtube-text">No configurada</div>
+          </div>
+          <span style="font-size:10px;padding:2px 6px;border-radius:99px" id="status-youtube-badge">—</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="key-youtube" placeholder="AIza..." style="flex:1;font-size:12px;font-family:var(--mono)">
+          <button class="btn btn-p btn-sm" onclick="saveKey('youtube')">Guardar</button>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:6px">
+          <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">Google Cloud Console</a> → Activar YouTube Data API v3 → Crear API key
+        </div>
+      </div>
+
     <!-- RIGHT: TIER SELECTOR + COST -->
     <div style="display:flex;flex-direction:column;gap:14px">
 
@@ -2905,6 +3286,11 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <label class="lbl">Nombre del canal</label>
         <input class="inp" id="ch-name" placeholder="Ej: FinanceFacts" style="font-size:13px">
         <div style="font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--mono)" id="ch-name-preview">El sufijo se añade automáticamente</div>
+      </div>
+      <div>
+        <label class="lbl">YouTube Channel ID <span style="font-size:10px;color:var(--text3)">(opcional — para datos reales en Analytics)</span></label>
+        <input class="inp" id="ch-yt-id" placeholder="UC..." style="font-size:13px;font-family:var(--mono)">
+        <div style="font-size:10px;color:var(--text3);margin-top:3px">YouTube Studio → Configuración → Canal → Información básica</div>
       </div>
       <div>
         <label class="lbl">Nicho principal</label>
@@ -3999,62 +4385,164 @@ function addDraft(draft) {
 }
 
 function renderDrafts() {
-  const drafts = getDrafts();
-  const list = document.getElementById('drafts-list');
-  const empty = document.getElementById('drafts-empty');
-  const tag = document.getElementById('drafts-count-tag');
-  const navBadge = document.getElementById('drafts-nav-badge');
-  const topBadge = document.getElementById('drafts-badge');
-
+  const allDrafts  = getDrafts();
+  const list       = document.getElementById('drafts-list');
+  const empty      = document.getElementById('drafts-empty');
+  const navBadge   = document.getElementById('drafts-nav-badge');
+  const topBadge   = document.getElementById('drafts-badge');
   if (!list) return;
-  const pending = drafts.filter(d => d.status === 'pending');
-  if (tag) tag.textContent = pending.length + ' vídeo' + (pending.length !== 1 ? 's' : '') + ' esperando';
-  if (navBadge) navBadge.textContent = pending.length || '';
-  if (topBadge) topBadge.style.display = pending.length ? 'flex' : 'none';
-  if (topBadge) topBadge.textContent = pending.length;
 
-  if (drafts.length === 0) {
+  // ── Stats ──
+  const pending  = allDrafts.filter(d => d.status === 'pending');
+  const approved = allDrafts.filter(d => d.status === 'approved');
+  const rejected = allDrafts.filter(d => d.status === 'rejected');
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  setEl('dr-stat-pending',  pending.length);
+  setEl('dr-stat-approved', approved.length);
+  setEl('dr-stat-rejected', rejected.length);
+  setEl('dr-stat-total',    allDrafts.length);
+  if (navBadge) navBadge.textContent = pending.length || '';
+  if (topBadge) { topBadge.style.display = pending.length ? 'flex':'none'; topBadge.textContent = pending.length; }
+
+  // ── Channel filter options ──
+  const chSel = document.getElementById('dr-filter-channel');
+  if (chSel) {
+    const channels = [...new Set(allDrafts.map(d=>d.channel).filter(Boolean))];
+    const curVal = chSel.value;
+    chSel.innerHTML = '<option value="">Todos los canales</option>' +
+      channels.map(ch => `<option value="${ch}" ${curVal===ch?'selected':''}>${ch}</option>`).join('');
+  }
+
+  // ── Apply filters ──
+  const activeFilter = (document.querySelector('.sty-btn.act[id^="dr-filter-"]')?.id||'dr-filter-all').replace('dr-filter-','');
+  const chFilter     = chSel?.value || '';
+  const sortVal      = document.getElementById('dr-sort')?.value || 'date-desc';
+
+  let drafts = allDrafts.filter(d => {
+    if (activeFilter !== 'all' && d.status !== activeFilter) return false;
+    if (chFilter && d.channel !== chFilter) return false;
+    return true;
+  });
+
+  // ── Sort ──
+  drafts.sort((a,b) => {
+    if (sortVal === 'date-desc')  return (b.createdAt||0) - (a.createdAt||0);
+    if (sortVal === 'date-asc')   return (a.createdAt||0) - (b.createdAt||0);
+    if (sortVal === 'score-desc') return (b.score||0) - (a.score||0);
+    if (sortVal === 'score-asc')  return (a.score||0) - (b.score||0);
+    return 0;
+  });
+
+  if (!drafts.length) {
     list.innerHTML = '';
-    if (empty) empty.style.display = 'block';
+    if (empty) { empty.style.display='block'; }
     return;
   }
   if (empty) empty.style.display = 'none';
 
+  const currency  = localStorage.getItem('fai_currency')==='EUR' ? '€' : '$';
+  const langFlags = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' };
+  const borderCol = { pending:'#fbbf24', approved:'#00e87a', rejected:'#f87171' };
+  const statusTag = s => s==='approved'
+    ? '<span class="tag tg" style="font-size:10px">✓ Aprobado</span>'
+    : s==='rejected'
+    ? '<span class="tag" style="font-size:10px;background:var(--reddim);color:var(--red);border-color:var(--redsoft)">✕ Rechazado</span>'
+    : '<span class="tag ta" style="font-size:10px">⏳ Pendiente</span>';
+
   list.innerHTML = drafts.map(d => {
     const ago = getTimeAgo(d.createdAt);
-    const borderColor = d.status === 'pending' ? '#fbbf24' : d.status === 'approved' ? '#00e87a' : '#f87171';
-    const statusTag = d.status === 'approved'
-      ? '<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">✓ Aprobado</span>'
-      : d.status === 'rejected'
-      ? '<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#f8717115;color:#f87171;border:1px solid #f8717144;font-family:monospace">✕ Rechazado</span>'
-      : '<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#fbbf2415;color:#fbbf24;border:1px solid #fbbf2444;font-family:monospace">⏳ Pendiente</span>';
+    const bc  = borderCol[d.status] || '#fbbf24';
+    const hasAudio = d.audioUrl || d.audio_url;
+    const hasVideo = d.videoUrl || d.video_url;
+    const ytKey    = localStorage.getItem('fai_key_youtube') || KEYS.youtube;
+    const title    = (d.hook || d.title || '').replace(/"/g,'&quot;');
+    const source   = d.source === 'autopilot'
+      ? '<span class="tag tg" style="font-size:10px">🤖 AutoPilot</span>' : '';
 
-    return `<div class="card" style="border-left:3px solid ${borderColor}">
-      <div style="display:grid;grid-template-columns:1fr auto;gap:16px">
+    return `<div class="card" style="border-left:3px solid ${bc}" id="draft-card-${d.id}">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start">
+
+        <!-- LEFT: Content -->
         <div>
-          <div style="font-size:13px;font-weight:700;margin-bottom:6px">${d.hook || d.title || 'Sin título'}</div>
+          <!-- Title + tags -->
+          <div style="font-size:14px;font-weight:700;margin-bottom:8px">${d.hook||d.title||'Sin título'}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-            ${statusTag}
-            ${d.score ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">Score: ${d.score}/100</span>` : ''}
-            ${d.cost ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#fbbf2415;color:#fbbf24;border:1px solid #fbbf2444;font-family:monospace">$${d.cost}</span>` : ''}
-            ${d.lang ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">${{es:'🇪🇸',en:'🇺🇸',lat:'🌎'}[d.lang]||'🌍'} ${d.lang.toUpperCase()}</span>` : ''}
-            <span style="font-size:11px;color:#475569;font-family:monospace">${ago}</span>
+            ${statusTag(d.status)}
+            ${source}
+            ${d.score ? `<span class="tag tg" style="font-size:10px">Score: ${d.score}/100</span>` : ''}
+            ${d.cost  ? `<span class="tag ta" style="font-size:10px">${currency}${parseFloat(d.cost).toFixed(3)}</span>` : ''}
+            ${d.lang  ? `<span class="tag" style="font-size:10px">${langFlags[d.lang]||'🌍'} ${d.lang.toUpperCase()}</span>` : ''}
+            ${d.channel ? `<span class="tag" style="font-size:10px">📺 ${d.channel}</span>` : ''}
+            <span style="font-size:11px;color:var(--text3);font-family:var(--mono)">${ago}</span>
           </div>
-          <div style="margin-bottom:8px">
-            <label style="font-size:10px;color:#475569;font-family:monospace;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Título para publicar</label>
-            <input class="inp" value="${(d.hook || d.title || '').replace(/"/g,'&quot;')}" id="draft-title-${d.id}" style="font-size:12px">
+
+          <!-- Editable title -->
+          <div style="margin-bottom:10px">
+            <label style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Título para publicar</label>
+            <input class="inp" value="${title}" id="draft-title-${d.id}" style="font-size:12px" onchange="updateDraftTitle(${d.id},this.value)">
           </div>
-          ${d.audioUrl ? `<audio controls src="${d.audioUrl}" style="width:100%;height:32px;margin-bottom:6px"></audio>` : ''}
-          ${d.script ? `<details style="font-size:11px;color:#475569;font-family:monospace"><summary style="cursor:pointer;color:#94a3b8">Ver script</summary><pre style="margin-top:6px;white-space:pre-wrap;font-size:11px;max-height:120px;overflow-y:auto">${d.script.slice(0,500)}...</pre></details>` : ''}
+
+          <!-- Audio player -->
+          ${hasAudio ? `<div style="margin-bottom:8px">
+            <label style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Audio TTS</label>
+            <audio controls src="${hasAudio}" style="width:100%;height:32px;border-radius:6px"></audio>
+          </div>` : ''}
+
+          <!-- Script preview -->
+          ${d.script ? `<details style="margin-bottom:4px">
+            <summary style="font-size:11px;color:var(--text3);cursor:pointer;font-family:var(--mono)">Ver script ▾</summary>
+            <pre style="margin-top:6px;font-size:11px;color:var(--text2);white-space:pre-wrap;max-height:120px;overflow-y:auto;background:var(--bg2);padding:8px;border-radius:6px">${d.script.slice(0,600)}${d.script.length>600?'...':''}</pre>
+          </details>` : ''}
         </div>
-        <div style="display:flex;flex-direction:column;gap:6px;min-width:110px">
-          ${d.status === 'pending' ? `<button class="btn btn-p btn-sm" onclick="approveDraft(${d.id})">✓ Aprobar</button>` : ''}
-          ${d.audioUrl ? `<a class="btn btn-g btn-sm" href="${d.audioUrl}" download="audio-${d.id}.mp3" style="text-align:center;text-decoration:none">⬇ MP3</a>` : ''}
-          <button class="btn btn-g btn-sm" onclick="deleteDraft(${d.id})" style="border-color:#f87171;color:#f87171">✕ Eliminar</button>
+
+        <!-- RIGHT: Actions -->
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:120px">
+          ${d.status==='pending' ? `<button class="btn btn-p btn-sm" onclick="approveDraft(${d.id})">✓ Aprobar</button>` : ''}
+          ${hasVideo ? `<button class="btn btn-g btn-sm" onclick="publishToYouTube(${d.id})" style="border-color:#ff4444;color:#ff4444">▶ YouTube</button>` : ''}
+          ${hasAudio ? `<a class="btn btn-g btn-sm" href="${hasAudio}" download="audio-${d.id}.mp3" style="text-align:center;text-decoration:none">⬇ MP3</a>` : ''}
+          ${hasVideo ? `<a class="btn btn-g btn-sm" href="${hasVideo}" download="video-${d.id}.mp4" style="text-align:center;text-decoration:none">⬇ MP4</a>` : ''}
+          ${d.status==='pending' ? `<button class="btn btn-g btn-sm" onclick="rejectDraft(${d.id})" style="border-color:var(--red);color:var(--red)">✕ Rechazar</button>` : ''}
+          <button class="btn btn-g btn-sm" onclick="deleteDraft(${d.id})" style="color:var(--text3)">🗑 Borrar</button>
         </div>
+
       </div>
     </div>`;
   }).join('');
+}
+
+var _activeDraftsFilter = 'all';
+function setDraftsFilter(f) {
+  _activeDraftsFilter = f;
+  ['all','pending','approved','rejected'].forEach(s => {
+    const btn = document.getElementById('dr-filter-' + s);
+    if (btn) btn.classList.toggle('act', s === f);
+  });
+  renderDrafts();
+}
+function updateDraftTitle(id, val) {
+  const drafts = getDrafts().map(d => d.id===id ? {...d, hook:val, title:val} : d);
+  saveDrafts(drafts);
+}
+function rejectDraft(id) {
+  const drafts = getDrafts().map(d => d.id===id ? {...d, status:'rejected'} : d);
+  saveDrafts(drafts);
+  renderDrafts();
+  renderDashboard();
+  showToast('✕ Borrador rechazado');
+}
+function approveAll() {
+  const drafts = getDrafts().map(d => d.status==='pending' ? {...d, status:'approved', approvedAt:Date.now()} : d);
+  saveDrafts(drafts);
+  renderDrafts();
+  renderDashboard();
+  showToast('✓ Todos los pendientes aprobados');
+}
+function clearAllDrafts() {
+  if (!confirm('¿Eliminar todos los borradores rechazados?')) return;
+  saveDrafts(getDrafts().filter(d => d.status !== 'rejected'));
+  renderDrafts();
+  renderDashboard();
+  showToast('🗑 Rechazados eliminados');
 }
 
 function getTimeAgo(iso) {
@@ -4404,7 +4892,7 @@ function createChannel() {
   const nicheEl = document.getElementById('ch-niche');
   const niche = nicheEl?.value || 'finanzas';
   const channels = getChannels();
-  channels.push({ id:Date.now(), name:fullName, niche, lang:chLang, gender:chGender, voice, createdAt:new Date().toISOString(), status:'active' });
+  channels.push({ id:Date.now(), name:fullName, niche, lang:chLang, gender:chGender, voice, youtubeChannelId: document.getElementById('ch-yt-id')?.value.trim() || '', platforms:['youtube'], createdAt:new Date().toISOString(), status:'active' });
   saveChannels(channels);
   closeModal();
   setLang(chLang);
@@ -4833,38 +5321,6 @@ function logAICall(type, channel, cost, tokens) {
   if (log.length > 500) log.splice(500);
   saveAnalyticsLog(log);
 }
-function renderAnalytics() {
-  const log = getAnalyticsLog();
-  const totalCost = log.reduce((s, e) => s + (e.cost || 0), 0);
-  const totalCalls = log.length;
-  const drafts = getDrafts ? getDrafts().length : 0;
-  const costPerVideo = drafts > 0 ? totalCost / drafts : 0;
-
-  const setCost = id => { const el = document.getElementById(id); if (el) el.textContent = '$' + totalCost.toFixed(3); };
-  const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  setCost('an-total-cost'); setVal('an-total-calls', totalCalls);
-  setVal('an-total-videos', drafts); setVal('an-cost-per-video', '$' + costPerVideo.toFixed(2));
-
-  // Render log
-  const logEl = document.getElementById('an-log-list');
-  if (logEl) {
-    if (log.length === 0) {
-      logEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:13px">El log se llena automáticamente con cada llamada a la IA.</div>';
-    } else {
-      const typeColors = { ideas:'var(--blue)', score:'var(--amber)', script:'var(--purple)', tts:'var(--teal)', discover:'var(--green)' };
-      logEl.innerHTML = log.slice(0, 100).map(e => {
-        const ago = getTimeAgo(e.ts);
-        const col = typeColors[e.type] || 'var(--text2)';
-        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg2);border-radius:var(--r);font-size:12px">
-          <span style="font-family:var(--mono);padding:2px 7px;border-radius:99px;background:${col}20;color:${col};font-size:10px;flex-shrink:0">${e.type}</span>
-          <span style="color:var(--text2);flex:1">${e.channel}</span>
-          <span style="color:var(--green);font-family:var(--mono)">$${(e.cost||0).toFixed(4)}</span>
-          <span style="color:var(--text3)">${ago}</span>
-        </div>`;
-      }).join('');
-    }
-  }
-}
 function switchAnalyticsTab(tab) {
   ['log','summary','channels'].forEach(t => {
     const btn = document.getElementById('an-tab-' + t);
@@ -4896,69 +5352,250 @@ function clearAnalyticsLog() {
 // DASHBOARD — datos reales
 // ══════════════════════════════════════════════════════════
 function renderDashboard() {
-  const drafts = getDrafts();
-  const channels = getChannels();
-  const approved = drafts.filter(d => d.status === 'approved');
-  const pending = drafts.filter(d => d.status === 'pending');
-  const totalCost = drafts.reduce((s, d) => s + (d.cost || 0), 0);
-  const log = getAnalyticsLog();
-  const aiCost = log.reduce((s, e) => s + (e.cost || 0), 0);
+  const allDrafts = getDrafts();
+  const channels  = getChannels();
+  const allLog    = getAnalyticsLog();
 
-  const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  setEl('dash-stat-drafts', drafts.length);
-  setEl('dash-stat-drafts-sub', pending.length > 0 ? pending.length + ' pendientes de aprobar' : 'en total');
-  setEl('dash-stat-cost', '$' + aiCost.toFixed(3));
-  setEl('dash-stat-cost-sub', 'en ' + log.length + ' llamadas IA');
+  // ── Month helpers ──
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const prevStart  = new Date(now.getFullYear(), now.getMonth()-1, 1).getTime();
+  const prevEnd    = monthStart;
+
+  const thisDrafts = allDrafts.filter(d => (d.createdAt||0) >= monthStart);
+  const prevDrafts = allDrafts.filter(d => (d.createdAt||0) >= prevStart && (d.createdAt||0) < prevEnd);
+  const thisApproved = thisDrafts.filter(d => d.status==='approved');
+  const prevApproved = prevDrafts.filter(d => d.status==='approved');
+  const pending = allDrafts.filter(d => d.status==='pending');
+
+  const thisLog  = allLog.filter(e => (e.ts||0) >= monthStart);
+  const prevLog  = allLog.filter(e => (e.ts||0) >= prevStart && (e.ts||0) < prevEnd);
+  const thisCost = thisLog.reduce((s,e) => s+(e.cost||0), 0);
+  const prevCost = prevLog.reduce((s,e) => s+(e.cost||0), 0);
+
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+
+  // ── Delta helper ──
+  function delta(cur, prev) {
+    if (prev === 0 && cur === 0) return '';
+    if (prev === 0) return '↑ nuevo';
+    const pct = ((cur - prev) / prev * 100).toFixed(0);
+    return (pct >= 0 ? '↑ ' : '↓ ') + Math.abs(pct) + '% vs mes ant.';
+  }
+  function colorDelta(cur, prev, invertGood) {
+    if (prev === 0) return '';
+    const good = invertGood ? cur < prev : cur > prev;
+    return good ? 'color:var(--green)' : 'color:var(--red)';
+  }
+
+  // ── Stats ──
+  setEl('dash-stat-drafts', thisDrafts.length);
+  const draftDelta = delta(thisDrafts.length, prevDrafts.length);
+  const draftSub = document.getElementById('dash-stat-drafts-sub');
+  if (draftSub) { draftSub.textContent = draftDelta || (pending.length > 0 ? pending.length + ' pendientes' : 'este mes'); draftSub.style.cssText = colorDelta(thisDrafts.length, prevDrafts.length); }
+
+  setEl('dash-stat-cost', '$' + thisCost.toFixed(3));
+  const costSub = document.getElementById('dash-stat-cost-sub');
+  if (costSub) { costSub.textContent = delta(thisCost, prevCost) || 'este mes'; costSub.style.cssText = colorDelta(thisCost, prevCost, true); }
+
   setEl('dash-stat-channels', channels.length);
-  setEl('dash-stat-channels-sub', channels.length > 0 ? 'activos' : 'configurados');
-  setEl('dash-stat-approved', approved.length);
-  setEl('dash-stat-approved-sub', approved.length > 0 ? 'listos para publicar' : 'aprobados');
+  setEl('dash-stat-channels-sub', channels.length === 1 ? 'activo' : 'activos');
 
-  const nicheColors = { finanzas:'#22c55e', motivacion:'#f97316', tecnologia:'#3b82f6', salud:'#10b981', historia:'#8b5cf6', negocios:'#f59e0b', gaming:'#ec4899', curiosidades:'#06b6d4' };
+  setEl('dash-stat-approved', thisApproved.length);
+  const appSub = document.getElementById('dash-stat-approved-sub');
+  if (appSub) { appSub.textContent = delta(thisApproved.length, prevApproved.length) || 'aprobados'; appSub.style.cssText = colorDelta(thisApproved.length, prevApproved.length); }
 
-  // Channels list
-  const chEl = document.getElementById('dash-channels-list');
-  if (chEl) {
-    if (!channels.length) {
-      chEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px"><div style="font-size:32px;margin-bottom:8px">📺</div>Sin canales aún</div>';
+  // ── Views + Revenue (from analytics platform data) ──
+  const vd = getViewsData ? getViewsData() : {};
+  const ttData = getPlatformData('tiktok');
+  const igData = getPlatformData('instagram');
+  const channels_list = getChannels();
+  const ytViews = channels_list.reduce((s,ch) => {
+    const st = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
+    return s + (st?.views||0);
+  }, 0);
+  const totalViews = ytViews + (ttData.views||0) + (igData.views||0) || vd.views || 0;
+  const currency = localStorage.getItem('fai_currency') === 'EUR' ? '€' : '$';
+
+  const viewsEl  = document.getElementById('dash-stat-views');
+  const viewsSub = document.getElementById('dash-stat-views-sub');
+  const revEl    = document.getElementById('dash-stat-revenue');
+  const revSub   = document.getElementById('dash-stat-revenue-sub');
+
+  if (totalViews) {
+    if (viewsEl)  viewsEl.textContent  = formatViews(totalViews);
+    if (viewsSub) viewsSub.textContent = 'YT+TT+IG · ver en Analytics ↗';
+  } else {
+    if (viewsEl)  viewsEl.textContent  = '—';
+    if (viewsSub) viewsSub.textContent = 'añadir en Analytics ↗';
+  }
+
+  // Revenue
+  const ytRevenue = channels_list.reduce((s,ch) => {
+    const st = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
+    return s + ((st?.views||0) * (ch.rpm||3) / 1000);
+  }, 0);
+  const ttRevenue = (ttData.views||0) * (ttData.rpm||0.5) / 1000;
+  const igRevenue = (igData.views||0) * (igData.rpm||0.3) / 1000;
+  const totalRevenue = ytRevenue + ttRevenue + igRevenue || (vd.realRevenue || (vd.views||0) * (vd.rpm||2) / 1000);
+
+  if (totalRevenue > 0) {
+    if (revEl)  revEl.textContent  = currency + totalRevenue.toLocaleString('es-ES',{maximumFractionDigits:0});
+    if (revSub) revSub.textContent = 'YT+TT+IG · ver en Analytics ↗';
+  } else {
+    if (revEl)  revEl.textContent  = '—';
+    if (revSub) revSub.textContent = 'añadir en Analytics ↗';
+  }
+
+  // ── AutoPilot banner ──
+  const apOn = localStorage.getItem('fai_autopilot') === '1';
+  const apDot   = document.getElementById('dash-ap-dot');
+  const apTitle = document.getElementById('dash-ap-title');
+  const apSub   = document.getElementById('dash-ap-sub');
+  const apQueue = document.getElementById('dash-ap-queue');
+  const apBanner = document.getElementById('dash-ap-banner');
+  if (apOn) {
+    if (apDot)    apDot.style.background = 'var(--green)';
+    if (apTitle)  { apTitle.textContent = 'AUTOPILOT ACTIVO'; apTitle.style.color = 'var(--green)'; }
+    const interval = parseInt(localStorage.getItem('fai_ap_interval') || '6');
+    if (apSub)    apSub.textContent = 'Ejecutando cada ' + interval + 'h · ' + thisDrafts.filter(d=>d.source==='autopilot').length + ' borradores este mes';
+    if (apBanner) apBanner.style.borderColor = 'var(--gsoft)';
+    if (apQueue && pending.length > 0) { apQueue.style.display='inline'; apQueue.textContent = pending.length + ' en cola'; }
+  } else {
+    if (apDot)    apDot.style.background = 'var(--text3)';
+    if (apTitle)  { apTitle.textContent = 'MODO MANUAL ACTIVO'; apTitle.style.color = 'var(--text1)'; }
+    if (apSub)    apSub.textContent = 'Cada vídeo pasa por tu revisión · ' + thisDrafts.length + ' vídeos creados este mes';
+    if (apBanner) apBanner.style.borderColor = 'var(--border)';
+    if (apQueue)  apQueue.style.display = 'none';
+  }
+
+  // ── Pending alert ──
+  const pendingAlert = document.getElementById('dash-pending-alert');
+  const pendingTitle = document.getElementById('dash-pending-title');
+  if (pendingAlert) {
+    if (pending.length > 0) {
+      pendingAlert.style.display = 'block';
+      if (pendingTitle) pendingTitle.textContent = pending.length + ' borrador' + (pending.length>1?'es':'') + ' esperando tu aprobación';
     } else {
-      const badge = document.getElementById('dash-channels-count');
-      if (badge) badge.textContent = channels.length;
-      chEl.innerHTML = channels.slice(0,4).map(ch => {
-        const col = nicheColors[ch.niche] || 'var(--green)';
-        return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px;cursor:pointer" onclick="nav('pipeline')">
-          <div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div>
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:13px;truncate">${ch.name}</div>
-            <div style="font-size:11px;color:var(--text3)">${ch.niche || 'general'} · ${ch.lang === 'es' ? '🇪🇸' : ch.lang === 'lat' ? '🌎' : '🇺🇸'}</div>
-          </div>
-          <span style="font-size:11px;color:var(--text3)">▶</span>
-        </div>`;
-      }).join('') + (channels.length > 4 ? `<div style="text-align:center;margin-top:4px"><button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos (${channels.length}) →</button></div>` : '');
+      pendingAlert.style.display = 'none';
     }
   }
 
-  // Drafts list
+  // ── Channels list ──
+  const nicheColors = { finanzas:'#22c55e', motivacion:'#f97316', tecnologia:'#3b82f6', salud:'#10b981', historia:'#8b5cf6', negocios:'#f59e0b', gaming:'#ec4899', curiosidades:'#06b6d4' };
+  const nicheEmoji  = { finanzas:'💰', motivacion:'🔥', tecnologia:'💻', salud:'🏃', historia:'📚', negocios:'📈', gaming:'🎮', curiosidades:'🤔' };
+  const chEl = document.getElementById('dash-channels-list');
+  if (chEl) {
+    if (!channels.length) {
+      chEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px"><div style="font-size:32px;margin-bottom:8px">📺</div>Sin canales — <button class="btn btn-g btn-sm" onclick="openModal()">+ Crear canal</button></div>';
+    } else {
+      chEl.innerHTML = channels.slice(0,4).map(ch => {
+        const col   = nicheColors[ch.niche] || 'var(--green)';
+        const emoji = nicheEmoji[ch.niche]  || '📺';
+        const flag  = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' }[ch.lang] || '🌐';
+        const chDraftsThisMonth = thisDrafts.filter(d => d.channel === ch.name).length;
+        const yt = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
+        return `<div class="chrow" onclick="workOnChannel('${ch.name.replace(/'/g,"\'")}')">
+          <div class="ch-icon" style="background:${col}20;color:${col}">${emoji}</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600">${ch.name}</div>
+            <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${(ch.niche||'').toUpperCase()} · ${flag}${yt?' · '+formatViews(yt.views)+' views':''}</div>
+          </div>
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+          <span style="font-size:11px;font-family:var(--mono);color:var(--text3)">${chDraftsThisMonth > 0 ? chDraftsThisMonth+' vídeo'+(chDraftsThisMonth>1?'s':'')+' este mes' : 'Activo'}</span>
+        </div>`;
+      }).join('') + (channels.length > 4 ? `<div style="text-align:center;margin-top:8px"><button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos (${channels.length}) →</button></div>` : '');
+    }
+  }
+
+  // ── Activity log ──
+  const actEl = document.getElementById('dash-activity-list');
+  if (actEl) {
+    const typeColors = { claude:'var(--purple)', tts:'var(--blue)', clipping:'var(--teal)', discover:'var(--green)', affiliates:'var(--amber)', trends:'var(--red)' };
+    const typeLabels = { claude:'Pipeline IA', tts:'Audio TTS', clipping:'Clipping', discover:'Descubrimiento', affiliates:'Afiliados', trends:'Tendencias' };
+    const logEntries = allLog.slice(0,4).map(e => ({ col: typeColors[e.type]||'var(--text3)', label: typeLabels[e.type]||e.type, text: e.channel && e.channel!=='general' ? 'en '+e.channel : '', ts: e.ts }));
+    const draftEntries = allDrafts.slice(0,2).map(d => ({ col: d.status==='approved'?'var(--green)':d.status==='pending'?'var(--amber)':'var(--red)', label: d.status==='approved'?'Aprobado':d.status==='pending'?'Borrador':'Rechazado', text: (d.hook||'').slice(0,35), ts: d.createdAt||0 }));
+    const all = [...logEntries,...draftEntries].filter(e=>e.ts).sort((a,b)=>b.ts-a.ts).slice(0,5);
+    if (all.length) {
+      actEl.innerHTML = all.map(e => `<div class="ai"><div class="ad" style="background:${e.col}"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">${e.label}</strong>${e.text?' '+e.text:''}</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">${getTimeAgo(e.ts)}</span></div>`).join('');
+    } else {
+      actEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px"><div style="font-size:32px;margin-bottom:8px">⏳</div>Sin actividad aún</div>';
+    }
+  }
+
+  // ── Weekly activity chart ──
+  const chartEl  = document.getElementById('dash-weekly-chart');
+  const labelsEl = document.getElementById('dash-weekly-labels');
+  if (chartEl && labelsEl) {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      const dayEnd   = dayStart + 86400000;
+      const count    = allDrafts.filter(x => (x.createdAt||0) >= dayStart && (x.createdAt||0) < dayEnd).length;
+      const label    = d.toLocaleDateString('es-ES', {weekday:'short'}).slice(0,2);
+      days.push({ count, label, isToday: i === 0 });
+    }
+    const maxCount = Math.max(...days.map(d => d.count), 1);
+    const barColors = ['var(--blue)','var(--blue)','var(--blue)','var(--blue)','var(--blue)','var(--blue)','var(--green)'];
+    chartEl.innerHTML = days.map((d, i) => {
+      const h = Math.max(4, Math.round((d.count / maxCount) * 44));
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+        ${d.count > 0 ? `<span style="font-size:9px;color:var(--text3);font-family:var(--mono)">${d.count}</span>` : ''}
+        <div style="width:100%;border-radius:3px 3px 0 0;background:${d.isToday?'var(--green)':'var(--blue)'};opacity:${d.isToday?1:0.5};height:${h}px;transition:height .3s;min-height:4px"></div>
+      </div>`;
+    }).join('');
+    labelsEl.innerHTML = days.map((d, i) =>
+      `<div style="flex:1;text-align:center;font-size:9px;color:${d.isToday?'var(--green)':'var(--text3)'};font-family:var(--mono);font-weight:${d.isToday?700:400}">${d.label}</div>`
+    ).join('');
+  }
+
+  // ── CTA subtitle ──
+  const ctaSub = document.getElementById('dash-cta-sub');
+  if (ctaSub) {
+    if (allDrafts.filter(d=>d.status==='pending').length > 0) {
+      ctaSub.innerHTML = '<span style="color:var(--amber)">⏳ ' + allDrafts.filter(d=>d.status==='pending').length + ' pendiente' + (allDrafts.filter(d=>d.status==='pending').length>1?'s':'') + ' de aprobar</span>';
+    } else {
+      ctaSub.textContent = 'Pipeline completo · 5 pasos';
+    }
+  }
+
+  // ── Budget in AP banner ──
+  const apBudgetEl = document.getElementById('dash-ap-budget');
+  if (apBudgetEl) {
+    const limits = typeof getBudgetLimits !== 'undefined' ? getBudgetLimits() : {day:2,month:30};
+    const todayCost = allLog.filter(e => now.getTime()-e.ts < 86400000).reduce((s,e)=>s+(e.cost||0),0);
+    const pct = Math.round(todayCost / limits.day * 100);
+    const col = pct >= 100 ? 'var(--red)' : pct >= 80 ? 'var(--amber)' : 'var(--green)';
+    apBudgetEl.innerHTML = `<span style="color:${col}">$${todayCost.toFixed(3)}</span><span style="color:var(--text3)"> / $${limits.day} hoy (${pct}%)</span>`;
+  }
+
+  // ── Recent drafts ──
   const drEl = document.getElementById('dash-drafts-list');
   if (drEl) {
-    if (!drafts.length) {
-      drEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px"><div style="font-size:32px;margin-bottom:8px">📋</div>Sin borradores</div>';
+    const recentDrafts = allDrafts.slice(0,5);
+    if (!recentDrafts.length) {
+      drEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px"><div style="font-size:32px;margin-bottom:8px">📭</div>Sin borradores este mes</div>';
     } else {
-      const badge = document.getElementById('dash-drafts-count');
-      if (badge) badge.textContent = pending.length || '';
       const borderCol = { pending:'#fbbf24', approved:'#00e87a', rejected:'#f87171' };
-      drEl.innerHTML = drafts.slice(0,4).map(d => {
-        const ago = getTimeAgo(d.createdAt);
-        const col = borderCol[d.status] || '#fbbf24';
-        return `<div style="padding:10px 12px;background:var(--bg2);border-radius:var(--r);border-left:3px solid ${col};margin-bottom:6px;cursor:pointer" onclick="nav('drafts')">
-          <div style="font-size:12px;font-weight:600;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.hook || d.title || 'Sin título'}</div>
-          <div style="font-size:11px;color:var(--text3);display:flex;gap:8px">
-            <span>${d.channel || 'general'}</span>
-            <span>${ago}</span>
-            ${d.score ? '<span style="color:var(--amber)">Score: ' + d.score + '</span>' : ''}
+      drEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px">' +
+        recentDrafts.map(d => `
+        <div style="padding:10px 14px;background:var(--bg2);border-radius:var(--r);border-left:3px solid ${borderCol[d.status]||'#fbbf24'};cursor:pointer;display:flex;align-items:center;gap:12px" onclick="nav('drafts')">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.hook||d.title||'Sin título'}</div>
+            <div style="font-size:11px;color:var(--text3);display:flex;gap:8px;margin-top:2px">
+              <span>${d.channel||'general'}</span>
+              <span>${getTimeAgo(d.createdAt)}</span>
+              ${d.score?'<span style="color:var(--amber)">Score:'+d.score+'</span>':''}
+              ${d.source==='autopilot'?'<span style="color:var(--green)">AutoPilot</span>':''}
+            </div>
           </div>
-        </div>`;
-      }).join('') + (drafts.length > 4 ? `<div style="text-align:center;margin-top:4px"><button class="btn btn-g btn-sm" onclick="nav('drafts')">Ver todos (${drafts.length}) →</button></div>` : '');
+          <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:${borderCol[d.status]||'#fbbf24'}20;color:${borderCol[d.status]||'#fbbf24'};white-space:nowrap">
+            ${d.status==='approved'?'✓ Aprobado':d.status==='rejected'?'✕ Rechazado':'⏳ Pendiente'}
+          </span>
+        </div>`).join('') + '</div>' +
+        (allDrafts.length > 5 ? `<div style="text-align:center;margin-top:8px"><button class="btn btn-g btn-sm" onclick="nav('drafts')">Ver todos (${allDrafts.length}) →</button></div>` : '');
     }
   }
 }
@@ -4966,17 +5603,100 @@ function renderDashboard() {
 // ══════════════════════════════════════════════════════════
 // CHANNELS — render cards reales
 // ══════════════════════════════════════════════════════════
+function goToAnalyticsPlatforms(){nav("analytics");setTimeout(function(){switchAnalyticsTab("platforms");},80);}
+function renderChannelPlatStats(ch, i, yt, ttData, igData, currency) {
+  const plats = ch.platforms || ['youtube'];
+  let html = '';
+  const rpm = ch.rpm || 3;
+  const rev = yt ? (yt.views * rpm / 1000) : 0;
+
+  if (plats.includes('youtube')) {
+    if (yt) {
+      html += '<div style="display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;padding:8px;background:var(--bg2);border-radius:var(--r);align-items:center">' +
+        '<span style="font-size:10px;color:#ff4444;font-weight:700">▶ YT</span>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">VIEWS</div><div style="font-size:12px;font-weight:700;font-family:var(--mono)">' + formatViews(yt.views) + '</div></div>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">SUBS</div><div style="font-size:12px;font-weight:700;font-family:var(--mono)">' + formatViews(yt.subscribers) + '</div></div>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">EST.</div><div style="font-size:12px;font-weight:700;font-family:var(--mono);color:var(--amber)">' + currency + rev.toFixed(0) + '</div></div>' +
+        '</div>';
+    } else {
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg2);border-radius:var(--r)">' +
+        '<span style="font-size:10px;color:#ff4444;font-weight:700">▶ YT</span>' +
+        '<span style="font-size:11px;color:var(--text3);flex:1">' + (ch.youtubeChannelId ? '↻ Pulsa YouTube para actualizar' : '✏️ Añade Channel ID en Editar') + '</span>' +
+        (!ch.youtubeChannelId ? '<button class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px" onclick="openEditChannelModal(' + i + ')">+ ID</button>' : '') +
+        '</div>';
+    }
+  }
+
+  if (plats.includes('tiktok')) {
+    if (ttData.views) {
+      const ttRev = ((ttData.views||0) * (ttData.rpm||0.5) / 1000);
+      html += '<div style="display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;padding:8px;background:var(--bg2);border-radius:var(--r);align-items:center">' +
+        '<span style="font-size:10px;color:#00d4c4;font-weight:700">♪ TT</span>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">VIEWS</div><div style="font-size:12px;font-weight:700;font-family:var(--mono)">' + formatViews(ttData.views) + '</div></div>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">SEGS.</div><div style="font-size:12px;font-weight:700;font-family:var(--mono)">' + formatViews(ttData.followers||0) + '</div></div>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">EST.</div><div style="font-size:12px;font-weight:700;font-family:var(--mono);color:var(--amber)">' + currency + ttRev.toFixed(0) + '</div></div>' +
+        '</div>';
+    } else {
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg2);border-radius:var(--r)">' +
+        '<span style="font-size:10px;color:#00d4c4;font-weight:700">♪ TT</span>' +
+        '<span style="font-size:11px;color:var(--text3);flex:1">Sin datos · Añade en Analytics</span>' +
+        '<button class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px" onclick="goToAnalyticsPlatforms()">+ Datos</button>' +
+        '</div>';
+    }
+  }
+
+  if (plats.includes('instagram')) {
+    if (igData.views) {
+      const igRev = ((igData.views||0) * (igData.rpm||0.3) / 1000);
+      html += '<div style="display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;padding:8px;background:var(--bg2);border-radius:var(--r);align-items:center">' +
+        '<span style="font-size:10px;color:#e1306c;font-weight:700">◈ IG</span>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">VIEWS</div><div style="font-size:12px;font-weight:700;font-family:var(--mono)">' + formatViews(igData.views) + '</div></div>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">SEGS.</div><div style="font-size:12px;font-weight:700;font-family:var(--mono)">' + formatViews(igData.followers||0) + '</div></div>' +
+        '<div style="text-align:center"><div style="font-size:9px;color:var(--text3)">EST.</div><div style="font-size:12px;font-weight:700;font-family:var(--mono);color:var(--amber)">' + currency + igRev.toFixed(0) + '</div></div>' +
+        '</div>';
+    } else {
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg2);border-radius:var(--r)">' +
+        '<span style="font-size:10px;color:#e1306c;font-weight:700">◈ IG</span>' +
+        '<span style="font-size:11px;color:var(--text3);flex:1">Sin datos · Añade en Analytics</span>' +
+        '<button class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px" onclick="goToAnalyticsPlatforms()">+ Datos</button>' +
+        '</div>';
+    }
+  }
+
+  return html;
+}
+
 function renderChannels() {
-  const channels = getChannels();
-  const grid = document.getElementById('channels-grid');
+  const channels  = getChannels();
+  const allDrafts = getDrafts();
+  const now       = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+  const grid  = document.getElementById('channels-grid');
   const label = document.getElementById('channels-count-label');
   if (!grid) return;
-
   if (label) label.textContent = 'Canales activos (' + channels.length + ')';
 
-  const nicheEmoji = { finanzas:'💰', motivacion:'🔥', tecnologia:'💻', salud:'🏃', historia:'📚', negocios:'📈', gaming:'🎮', curiosidades:'🤔' };
+  // ── Stats strip ──
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  const ytViews = channels.reduce((s,ch) => {
+    const st = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
+    return s + (st ? st.views : 0);
+  }, 0);
+  const ytSubs = channels.reduce((s,ch) => {
+    const st = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
+    return s + (st ? st.subscribers : 0);
+  }, 0);
+  const monthDrafts = allDrafts.filter(d => (d.createdAt||0) >= monthStart).length;
+  setEl('ch-stat-total',  channels.length);
+  setEl('ch-stat-views',  ytViews  ? formatViews(ytViews)  : '—');
+  setEl('ch-stat-subs',   ytSubs   ? formatViews(ytSubs)   : '—');
+  setEl('ch-stat-drafts', monthDrafts);
+
+  const nicheEmoji  = { finanzas:'💰', motivacion:'🔥', tecnologia:'💻', salud:'🏃', historia:'📚', negocios:'📈', gaming:'🎮', curiosidades:'🤔' };
   const nicheColors = { finanzas:'#22c55e', motivacion:'#f97316', tecnologia:'#3b82f6', salud:'#10b981', historia:'#8b5cf6', negocios:'#f59e0b', gaming:'#ec4899', curiosidades:'#06b6d4' };
-  const langFlag = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' };
+  const langFlag    = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' };
+  const currency    = localStorage.getItem('fai_currency') === 'EUR' ? '€' : '$';
 
   if (!channels.length) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text3)">
@@ -4989,28 +5709,150 @@ function renderChannels() {
   }
 
   grid.innerHTML = channels.map((ch, i) => {
-    const col = nicheColors[ch.niche] || 'var(--green)';
-    const emoji = nicheEmoji[ch.niche] || '📺';
-    const flag = langFlag[ch.lang] || '🌐';
-    const draftCount = getDrafts ? getDrafts().filter(d => d.channel === ch.name).length : 0;
-    return `<div class="card" style="border-top:3px solid ${col};position:relative">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px">
-        <div style="width:36px;height:36px;border-radius:8px;background:${col}20;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${emoji}</div>
+    const col   = nicheColors[ch.niche] || 'var(--green)';
+    const emoji = nicheEmoji[ch.niche]  || '📺';
+    const flag  = langFlag[ch.lang]     || '🌐';
+    const yt    = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
+
+    // Draft stats
+    const chDraftsTotal = allDrafts.filter(d => d.channel === ch.name).length;
+    const chDraftsMonth = allDrafts.filter(d => d.channel === ch.name && (d.createdAt||0) >= monthStart).length;
+    const chPending     = allDrafts.filter(d => d.channel === ch.name && d.status === 'pending').length;
+    const chScores      = allDrafts.filter(d => d.channel === ch.name && d.score).map(d => d.score);
+    const avgScore      = chScores.length ? Math.round(chScores.reduce((a,b)=>a+b,0)/chScores.length) : null;
+
+    // Platform data (global — same for all channels as it's per-platform not per-channel)
+    const ttData = getPlatformData('tiktok');
+    const igData = getPlatformData('instagram');
+    // Revenue estimate
+    const rpm     = ch.rpm || 3;
+    const revenue = yt ? (yt.views * rpm / 1000) : 0;
+
+    const platforms = (ch.platforms || ['youtube']);
+    const platTags  = platforms.map(p =>
+      p==='youtube' ? '<span class="tag" style="font-size:10px;border-color:#ff4444;color:#ff4444">▶ YT</span>' :
+      p==='tiktok'  ? '<span class="tag" style="font-size:10px;border-color:#00d4c4;color:#00d4c4">TT</span>' :
+      '<span class="tag" style="font-size:10px;border-color:#e1306c;color:#e1306c">IG</span>'
+    ).join('');
+
+    return `<div class="card" style="border-top:3px solid ${col}">
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <div style="width:38px;height:38px;border-radius:9px;background:${col}20;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${emoji}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-weight:700;font-size:14px;margin-bottom:2px">${ch.name}</div>
-          <div style="font-size:11px;color:var(--text3)">${flag} ${ch.niche || 'general'} · ${ch.gender === 'm' ? '♂ Hombre' : '♀ Mujer'}</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ch.name}</div>
+          <div style="font-size:11px;color:var(--text3)">${flag} ${(ch.niche||'general').toUpperCase()} · ${ch.gender==='m'?'♂':'♀'} · RPM $${rpm}</div>
         </div>
-        <button onclick="deleteChannel(${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px" title="Eliminar">×</button>
+        <div style="display:flex;gap:4px">
+          <button onclick="openEditChannelModal(${i})" class="btn btn-g btn-sm" style="font-size:11px;padding:3px 10px" title="Editar configuración">✏️ Editar</button>
+          <button onclick="deleteChannel(${i})" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:13px;padding:3px 8px" title="Eliminar">×</button>
+        </div>
       </div>
-      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
-        ${(ch.platforms||['youtube']).map(p => `<span class="tag" style="font-size:10px">${p === 'youtube' ? '▶ YT' : p === 'tiktok' ? 'TT' : 'IG'}</span>`).join('')}
-        ${draftCount > 0 ? `<span class="tag ta" style="font-size:10px">${draftCount} borradores</span>` : ''}
+
+      <!-- Lang/voice/score tags like v3.20 -->
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+        <span class="tag" style="font-size:10px;background:var(--bg3)">${flag} ${ch.lang==='es'?'Español':ch.lang==='lat'?'Latino':'English'}</span>
+        <span class="tag" style="font-size:10px;background:var(--bg3)">${ch.gender==='m'?'♂':'♀'} ${ch.voice||'auto'}</span>
+        ${avgScore ? `<span class="tag tg" style="font-size:10px;font-weight:700">Score ${avgScore}</span>` : ''}
+        ${chPending > 0 ? `<span class="tag ta" style="font-size:10px">⏳ ${chPending} pendiente${chPending>1?'s':''}</span>` : ''}
       </div>
+      <!-- Platform tags -->
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+        ${platTags}
+      </div>
+
+      <!-- Platform stats -->
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px" id="ch-plat-${i}">
+        ${renderChannelPlatStats(ch, i, yt, ttData, igData, currency)}
+      </div>
+      <!-- Draft stats -->
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">
+        ${chDraftsMonth > 0 ? `<span style="color:var(--text2)">${chDraftsMonth} vídeo${chDraftsMonth>1?'s':''} este mes</span> · ` : ''}
+        ${chDraftsTotal} total${chDraftsTotal!==1?'es':''}
+      </div>
+
+      <!-- Actions -->
       <div style="display:flex;gap:8px">
-        <button class="btn btn-p btn-sm" style="flex:1" onclick="workOnChannel('${ch.name}')">▶ Trabajar</button>
+        <button class="btn btn-p btn-sm" style="flex:1" onclick="workOnChannel('${ch.name.replace(/'/g,"\'")}')">▶ Trabajar en este canal</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function openEditChannelModal(idx) {
+  const channels = getChannels();
+  const ch = channels[idx];
+  if (!ch) return;
+  const allDrafts = getDrafts();
+  const allLog    = getAnalyticsLog();
+  const chDrafts  = allDrafts.filter(d => d.channel === ch.name);
+  const chScores  = chDrafts.filter(d=>d.score).map(d=>d.score);
+  const avgScore  = chScores.length ? Math.round(chScores.reduce((a,b)=>a+b,0)/chScores.length) : null;
+  const chCost    = allLog.filter(e=>e.channel===ch.name).reduce((s,e)=>s+(e.cost||0),0);
+
+  const setVal = (id,v) => { const el=document.getElementById(id); if(el) el.value=v||''; };
+  const setTxt = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+
+  document.getElementById('edit-ch-idx').value = idx;
+  setTxt('edit-ch-title', '✏️ ' + ch.name);
+  setTxt('edit-ch-subtitle', (ch.niche||'').toUpperCase() + ' · ' + (ch.lang==='es'?'🇪🇸 Español':ch.lang==='lat'?'🌎 Latino':'🇺🇸 English'));
+  setTxt('edit-ch-stat-drafts', chDrafts.length + ' total');
+  setTxt('edit-ch-stat-score', avgScore ? avgScore+'/100' : '—');
+  setTxt('edit-ch-stat-cost', '$'+(chCost).toFixed(3));
+
+  setVal('edit-ch-niche', ch.niche || 'finanzas');
+  setVal('edit-ch-lang', ch.lang || 'es');
+  setVal('edit-ch-gender', ch.gender || 'm');
+  setVal('edit-ch-yt-id', ch.youtubeChannelId || '');
+  setVal('edit-ch-rpm', ch.rpm || '');
+  setVal('edit-ch-min-score', ch.minScore || '');
+  setVal('edit-ch-notes', ch.notes || '');
+
+  const plats = ch.platforms || ['youtube'];
+  const ytCb = document.getElementById('edit-ch-yt');
+  const ttCb = document.getElementById('edit-ch-tt');
+  const igCb = document.getElementById('edit-ch-ig');
+  if (ytCb) ytCb.checked = plats.includes('youtube');
+  if (ttCb) ttCb.checked = plats.includes('tiktok');
+  if (igCb) igCb.checked = plats.includes('instagram');
+
+  const m = document.getElementById('edit-channel-modal');
+  if (m) m.style.display = 'flex';
+}
+function closeEditChannelModal() {
+  const m = document.getElementById('edit-channel-modal');
+  if (m) m.style.display = 'none';
+}
+function saveEditChannel() {
+  const idx = parseInt(document.getElementById('edit-ch-idx').value);
+  const channels = getChannels();
+  if (!channels[idx]) return;
+  const ch = channels[idx];
+  ch.niche            = document.getElementById('edit-ch-niche')?.value       || ch.niche;
+  ch.lang             = document.getElementById('edit-ch-lang')?.value        || ch.lang;
+  ch.gender           = document.getElementById('edit-ch-gender')?.value      || ch.gender;
+  ch.youtubeChannelId = document.getElementById('edit-ch-yt-id')?.value.trim() || '';
+  ch.rpm              = parseFloat(document.getElementById('edit-ch-rpm')?.value) || ch.rpm || 3;
+  ch.minScore         = parseInt(document.getElementById('edit-ch-min-score')?.value) || null;
+  ch.notes            = document.getElementById('edit-ch-notes')?.value.trim() || '';
+  const plats = [];
+  if (document.getElementById('edit-ch-yt')?.checked) plats.push('youtube');
+  if (document.getElementById('edit-ch-tt')?.checked) plats.push('tiktok');
+  if (document.getElementById('edit-ch-ig')?.checked) plats.push('instagram');
+  if (plats.length) ch.platforms = plats;
+  // Update voice based on lang+gender
+  const voices = { es:{m:'onyx',f:'nova'}, lat:{m:'fable',f:'shimmer'}, en:{m:'echo',f:'alloy'} };
+  ch.voice = voices[ch.lang]?.[ch.gender] || ch.voice;
+  saveChannels(channels);
+  closeEditChannelModal();
+  renderChannels();
+  renderDashboard();
+  showToast('✓ Canal "' + ch.name + '" actualizado');
+}
+function deleteChannelFromModal() {
+  const idx = parseInt(document.getElementById('edit-ch-idx').value);
+  closeEditChannelModal();
+  deleteChannel(idx);
 }
 function deleteChannel(idx) {
   const channels = getChannels();
@@ -5033,60 +5875,77 @@ function workOnChannel(name) {
   showToast('Trabajando en: ' + name);
 }
 function discoverChannelsAI() {
-  const niche = document.getElementById('disc-niche')?.value;
-  const market = document.getElementById('disc-market')?.value;
-  const platform = document.getElementById('disc-platform')?.value;
-  const btn = document.getElementById('disc-btn');
-  const results = document.getElementById('disc-results');
   if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
-  if (btn) { btn.textContent = '⏳ Analizando...'; btn.disabled = true; }
+  const market   = document.getElementById('disc-market')?.value   || 'all';
+  const budget   = document.getElementById('disc-budget')?.value   || 'eco';
+  const goal     = document.getElementById('disc-goal')?.value     || 'monetize';
+  const platform = document.getElementById('disc-platform')?.value || 'youtube';
+  const avoid    = document.getElementById('disc-avoid')?.value.trim()  || '';
+  const niche    = document.getElementById('disc-niche')?.value.trim()  || '';
+  const btn      = document.getElementById('disc-btn');
+  const results  = document.getElementById('disc-results');
+  if (btn) { btn.textContent = '⏳ Analizando mercado...'; btn.disabled = true; }
   if (results) results.style.display = 'none';
 
-  const prompt = `Analiza el mercado de ${niche} en ${market === 'es' ? 'España' : market === 'latam' ? 'Latinoamérica' : 'Estados Unidos (English)'} para ${platform}.
-Sugiere 6 oportunidades de canal faceless específicas y accionables. Para cada una incluye:
-- Nombre sugerido del canal
-- Descripción del concepto (1 línea)
-- Puntuación de oportunidad (1-100) basada en CPM, saturación y crecimiento
-- CPM estimado en USD
-- Nivel de saturación (Bajo/Medio/Alto)
-- ROI estimado mensual con 30 vídeos/mes
+  const marketLabel = { all:'todos los mercados (ES+LAT+US)', es:'España (español peninsular)', latam:'Latinoamérica (español neutro)', us:'Estados Unidos (English)' };
+  const budgetLabel = { free:'$0 (IA gratuita local)', eco:'~$0.01/vídeo', opt:'~$0.06/vídeo', prem:'~$0.25/vídeo' };
+  const goalLabel   = { monetize:'monetizar rápido con alto CPM', grow:'crecer audiencia viralmente', diversify:'diversificar cartera de canales', affiliate:'ingresos por afiliados', brand:'construir marca personal' };
+  const platLabel   = { youtube:'YouTube Shorts', tiktok:'TikTok', instagram:'Instagram Reels', all:'multiplataforma (YT+TT+IG)' };
 
-Responde SOLO en JSON así:
-[{"name":"...","concept":"...","score":85,"cpm":4.5,"saturation":"Bajo","roi_monthly":"$800-1200"},...]`;
+  const prompt = `Eres experto en canales faceless. Sugiere 6 oportunidades de canal para:
+Mercado: ${marketLabel[market]||market} | Inversión: ${budgetLabel[budget]||budget} | Objetivo: ${goalLabel[goal]||goal} | Plataforma: ${platLabel[platform]||platform}
+${avoid?'Evitar: '+avoid+' | ':''}${niche?'Interés en: '+niche:''}
 
-  const model = activeTier === 'economico' ? 'claude-haiku-4-5-20251001' : 'claude-sonnet-4-20250514';
+Para cada canal responde en JSON:
+[{"name":"...","niche":"finanzas","concept":"...","lang":"es","score":88,"cpm":5.2,"saturation":"Baja","monthly_roi":"$400-800","why":"razón específica ahora","first_video":"idea concreta primer vídeo"}]
+Solo JSON, sin texto extra.`;
+
   fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type':'application/json', 'x-api-key': KEYS.anthropic, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
-    body: JSON.stringify({ model, max_tokens: 1200, messages: [{ role:'user', content: prompt }] })
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})
   })
-  .then(r => r.json())
-  .then(data => {
-    const text = data.content?.[0]?.text || '';
-    const json = text.replace(/```json|```/g,'').trim();
-    const opportunities = JSON.parse(json);
+  .then(r=>r.json())
+  .then(data=>{
+    const text = data.content?.[0]?.text||'';
+    const opps = JSON.parse(text.replace(/```json|```/g,'').trim());
     if (results) {
       results.style.display = 'block';
-      results.innerHTML = `<div style="font-size:12px;color:var(--text3);margin-bottom:10px">✓ ${opportunities.length} oportunidades encontradas por Claude</div>
-        <div class="g3">${opportunities.map(op => `
-          <div class="card-d" style="padding:14px">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-              <div style="font-weight:700;font-size:13px">${op.name}</div>
-              <span class="tag tg" style="font-size:11px">${op.score}/100</span>
-            </div>
-            <p style="font-size:12px;color:var(--text2);margin-bottom:8px">${op.concept}</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-              <span class="tag" style="font-size:10px">CPM: $${op.cpm}</span>
-              <span class="tag" style="font-size:10px">Saturación: ${op.saturation}</span>
-              <span class="tag tg" style="font-size:10px">ROI: ${op.roi_monthly}/mes</span>
-            </div>
-            <button class="btn btn-g btn-sm" onclick="createChannelFromDisc('${op.name.replace(/'/g, "\'")}')">+ Crear este canal</button>
-          </div>`).join('')}</div>`;
+      const nc = {finanzas:'#22c55e',motivacion:'#f97316',tecnologia:'#3b82f6',salud:'#10b981',negocios:'#f59e0b',gaming:'#ec4899',historia:'#8b5cf6',curiosidades:'#06b6d4'};
+      const sc = s => s>=85?'var(--green)':s>=70?'var(--amber)':'var(--red)';
+      results.innerHTML = `<div style="font-size:12px;color:var(--text3);margin-bottom:12px">✓ ${opps.length} oportunidades · ${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</div>
+      <div class="g3">${opps.map(op=>{
+        const col=nc[op.niche]||'var(--green)';
+        return `<div class="card" style="border-top:3px solid ${col}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div style="font-weight:700;font-size:13px">${op.name}</div>
+            <span style="font-size:14px;font-weight:800;font-family:var(--mono);color:${sc(op.score)}">${op.score}/100</span>
+          </div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:8px">${op.concept}</p>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+            <span class="tag" style="font-size:10px">CPM: $${op.cpm}</span>
+            <span class="tag" style="font-size:10px">Sat: ${op.saturation}</span>
+            <span class="tag tg" style="font-size:10px">ROI: ${op.monthly_roi}/mes</span>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;font-style:italic">💡 ${op.why}</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">🎬 ${op.first_video}</div>
+          <button class="btn btn-p btn-sm" style="width:100%" onclick="createChannelFromDisc('${op.name.replace(/'/g,"\'")}','${op.niche||'finanzas'}','${op.lang||'es'}')">+ Crear este canal</button>
+        </div>`;
+      }).join('')}</div>`;
     }
-    logAICall('discover', 'channels', 0.003, 800);
+    logAICall('discover','channels',0.005,1200);
+    showToast('✓ '+opps.length+' oportunidades encontradas');
   })
-  .catch(e => { showToast('Error: ' + e.message); })
-  .finally(() => { if (btn) { btn.textContent = '🤖 Analizar con IA'; btn.disabled = false; } });
+  .catch(e=>showToast('Error: '+e.message))
+  .finally(()=>{if(btn){btn.textContent='🤖 Analizar mercado y sugerir canales';btn.disabled=false;}});
+}
+function createChannelFromDisc(name, niche, lang) {
+  const nameEl = document.getElementById('ch-name');
+  const nicheEl = document.getElementById('ch-niche');
+  if (nameEl) nameEl.value = name.replace(/ (ES|EN|LAT)$/, '');
+  if (nicheEl) nicheEl.value = niche;
+  if (lang) { chLang = lang; setLang(lang); }
+  openModal();
 }
 function createChannelFromDisc(name) {
   document.getElementById('ch-name').value = name;
@@ -5221,6 +6080,7 @@ var _navCallbacks = {
   analytics:     function() { try { renderAnalytics(); switchAnalyticsTab('log'); } catch(e) { console.error(e); } },
   clipping:      function() { try { renderClipChannels(); } catch(e) { console.error(e); } },
   clippipeline:  function() { try { setCPStep(0); } catch(e) {} },
+  pipeline:      function() { try { setPStep(0); } catch(e) {} },
   affiliation:   function() { try { renderAffiliates(); } catch(e) { console.error(e); } },
   budget:        function() { try { renderBudget(); } catch(e) {} },
   autopilot:     function() { try { renderAutopilot(); } catch(e) {} },
@@ -5883,6 +6743,370 @@ function renderAutopilot() {
   if (badge) badge.textContent = autopilotRunning ? 'ON' : 'OFF';
   if (interval) interval.value = getAutopilotInterval();
 }
+
+// ══════════════════════════════════════════════════════════
+// VIEWS + REVENUE — manual input
+// ══════════════════════════════════════════════════════════
+function getViewsData() {
+  try { return JSON.parse(localStorage.getItem('fai_views_data') || '{}'); } catch(e) { return {}; }
+}
+function openViewsModal() {
+  const d = getViewsData();
+  const views = document.getElementById('vm-views');
+  const rpm   = document.getElementById('vm-rpm');
+  const rev   = document.getElementById('vm-real-revenue');
+  if (views) views.value = d.views || '';
+  if (rpm)   rpm.value   = d.rpm   || '';
+  if (rev)   rev.value   = d.realRevenue || '';
+  const m = document.getElementById('views-modal');
+  if (m) m.style.display = 'flex';
+}
+function closeViewsModal() {
+  const m = document.getElementById('views-modal');
+  if (m) m.style.display = 'none';
+}
+function saveViewsData() {
+  const views = parseFloat(document.getElementById('vm-views')?.value) || 0;
+  const rpm   = parseFloat(document.getElementById('vm-rpm')?.value)   || 0;
+  const realRevenue = parseFloat(document.getElementById('vm-real-revenue')?.value) || 0;
+  localStorage.setItem('fai_views_data', JSON.stringify({ views, rpm, realRevenue, updatedAt: Date.now() }));
+  closeViewsModal();
+  renderDashboard();
+  showToast('✓ Métricas actualizadas');
+}
+function formatViews(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n/1000).toFixed(1)    + 'K';
+  return n.toString();
+}
+
+// ══════════════════════════════════════════════════════════
+// ANALYTICS — platform data storage
+// ══════════════════════════════════════════════════════════
+function getPlatformData(platform) {
+  try { return JSON.parse(localStorage.getItem('fai_plat_' + platform) || '{}'); } catch(e) { return {}; }
+}
+function savePlatformData_store(platform, data) {
+  localStorage.setItem('fai_plat_' + platform, JSON.stringify({...data, updatedAt: Date.now()}));
+}
+function getChannelStats(channelId) {
+  try { return JSON.parse(localStorage.getItem('fai_yt_' + channelId) || 'null'); } catch(e) { return null; }
+}
+function saveChannelStats(channelId, stats) {
+  localStorage.setItem('fai_yt_' + channelId, JSON.stringify({...stats, fetchedAt: Date.now()}));
+}
+
+// ── YouTube Data API v3 (real data, API key only) ──
+async function fetchYouTubeChannelStats(channelId, apiKey) {
+  const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${channelId}&key=${apiKey}`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('YouTube API error: ' + resp.status);
+  const data = await resp.json();
+  if (!data.items || !data.items.length) throw new Error('Canal no encontrado: ' + channelId);
+  const stats = data.items[0].statistics;
+  const snippet = data.items[0].snippet;
+  return {
+    channelId,
+    title:       snippet.title,
+    thumbnail:   snippet.thumbnails?.default?.url,
+    subscribers: parseInt(stats.subscriberCount || 0),
+    views:       parseInt(stats.viewCount || 0),
+    videoCount:  parseInt(stats.videoCount || 0),
+  };
+}
+
+async function fetchAllYouTubeStats() {
+  const ytKey = localStorage.getItem('fai_key_youtube') || KEYS.youtube;
+  const btn = document.getElementById('an-refresh-btn');
+  if (btn) { btn.textContent = '⏳ Actualizando...'; btn.disabled = true; }
+
+  if (!ytKey) {
+    showToast('⚠ Añade tu YouTube API key en Configuración');
+    if (btn) { btn.textContent = '↻ Actualizar YT'; btn.disabled = false; }
+    return;
+  }
+
+  const channels = getChannels();
+  const ytChannels = channels.filter(ch => ch.youtubeChannelId && (ch.platforms||[]).includes('youtube'));
+  
+  if (!ytChannels.length) {
+    showToast('⚠ Añade YouTube Channel ID en los canales para obtener datos reales');
+    if (btn) { btn.textContent = '↻ Actualizar YT'; btn.disabled = false; }
+    return;
+  }
+
+  let fetched = 0, errors = 0;
+  for (const ch of ytChannels) {
+    try {
+      const stats = await fetchYouTubeChannelStats(ch.youtubeChannelId, ytKey);
+      // Merge with manual RPM data
+      const manual = getChannelStats(ch.youtubeChannelId) || {};
+      saveChannelStats(ch.youtubeChannelId, { ...manual, ...stats });
+      fetched++;
+    } catch(e) {
+      console.warn('YT fetch error for', ch.name, e.message);
+      errors++;
+    }
+  }
+
+  showToast(`✓ ${fetched} canal${fetched>1?'es':''} actualizados${errors?' · '+errors+' error'+( errors>1?'es':''):''}`)  ;
+  renderAnalytics();
+  if (btn) { btn.textContent = '↻ Actualizar YT'; btn.disabled = false; }
+}
+
+// ── Platform manual modal ──
+var currentPlatformModal = '';
+function openPlatformModal(platform) {
+  currentPlatformModal = platform;
+  const d = getPlatformData(platform);
+  const labels = {
+    tiktok:    { title:'♪ TikTok — Datos manuales', fields:[
+      {id:'views',     label:'Views totales',    placeholder:'ej. 1200000', val: d.views},
+      {id:'followers', label:'Seguidores',        placeholder:'ej. 45000',  val: d.followers},
+      {id:'likes',     label:'Likes totales',     placeholder:'ej. 85000',  val: d.likes},
+      {id:'rpm',       label:'RPM est. ($/1K)',   placeholder:'ej. 0.5',    val: d.rpm},
+    ]},
+    instagram: { title:'◈ Instagram Reels — Datos manuales', fields:[
+      {id:'views',     label:'Views totales',    placeholder:'ej. 800000',  val: d.views},
+      {id:'followers', label:'Seguidores',        placeholder:'ej. 22000',  val: d.followers},
+      {id:'reach',     label:'Alcance mensual',   placeholder:'ej. 150000', val: d.reach},
+      {id:'rpm',       label:'RPM est. ($/1K)',   placeholder:'ej. 0.3',    val: d.rpm},
+    ]},
+  };
+  const cfg = labels[platform] || labels.tiktok;
+  const title = document.getElementById('pm-title');
+  const fields = document.getElementById('pm-fields');
+  if (title) title.textContent = cfg.title;
+  if (fields) fields.innerHTML = cfg.fields.map(f => `
+    <div>
+      <label class="lbl">${f.label}</label>
+      <input class="inp" id="pm-${f.id}" type="number" step="any" placeholder="${f.placeholder}" value="${f.val||''}">
+    </div>`).join('');
+  const m = document.getElementById('platform-modal');
+  if (m) m.style.display = 'flex';
+}
+function closePlatformModal() {
+  const m = document.getElementById('platform-modal');
+  if (m) m.style.display = 'none';
+}
+function savePlatformData() {
+  const p = currentPlatformModal;
+  const fields = {
+    tiktok:    ['views','followers','likes','rpm'],
+    instagram: ['views','followers','reach','rpm'],
+  };
+  const data = {};
+  (fields[p] || []).forEach(f => {
+    const v = parseFloat(document.getElementById('pm-'+f)?.value);
+    if (!isNaN(v) && v > 0) data[f] = v;
+  });
+  savePlatformData_store(p, data);
+  closePlatformModal();
+  renderAnalytics();
+  showToast('✓ Datos de ' + p + ' guardados');
+}
+
+// ── Full Analytics render ──
+function renderAnalytics() {
+  const log    = getAnalyticsLog();
+  const drafts = getDrafts();
+  const channels = getChannels();
+
+  // ── Global KPIs ──
+  const aiCost = log.reduce((s,e) => s+(e.cost||0), 0);
+  const setEl  = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+
+  // Gather all platform views
+  const ytChannels  = channels.filter(ch => ch.youtubeChannelId);
+  const ytViews     = ytChannels.reduce((s,ch) => {
+    const st = getChannelStats(ch.youtubeChannelId);
+    return s + (st?.views||0);
+  }, 0);
+  const ttData  = getPlatformData('tiktok');
+  const igData  = getPlatformData('instagram');
+  const ttViews = ttData.views || 0;
+  const igViews = igData.views || 0;
+  // Also add manually entered views from dashboard
+  const manualVd = getViewsData ? getViewsData() : {};
+  const totalViews = ytViews + ttViews + igViews || manualVd.views || 0;
+
+  // Revenue estimation
+  const ytRevenue = ytChannels.reduce((s,ch) => {
+    const st = getChannelStats(ch.youtubeChannelId);
+    const rpm = parseFloat(localStorage.getItem('fai_rpm_' + (ch.youtubeChannelId||'')) || ch.rpm || 3);
+    return s + ((st?.views||0) * rpm / 1000);
+  }, 0);
+  const ttRevenue = (ttData.views||0) * (ttData.rpm||0.5) / 1000;
+  const igRevenue = (igData.views||0) * (igData.rpm||0.3) / 1000;
+  const totalRevenue = ytRevenue + ttRevenue + igRevenue || (manualVd.realRevenue || (manualVd.views||0) * (manualVd.rpm||2) / 1000);
+  const roi = aiCost > 0 && totalRevenue > 0 ? (totalRevenue / aiCost).toFixed(0) + 'x' : '—';
+  const currency = localStorage.getItem('fai_currency') === 'EUR' ? '€' : '$';
+
+  setEl('an-total-cost', '$' + aiCost.toFixed(3));
+  if (totalViews) {
+    setEl('an-total-views', formatViews(totalViews));
+    setEl('an-total-views-sub', 'YT+TT+IG combinadas');
+  } else { setEl('an-total-views', '—'); setEl('an-total-views-sub', 'añade datos por plataforma'); }
+  if (totalRevenue) {
+    setEl('an-total-revenue', currency + totalRevenue.toLocaleString('es-ES',{maximumFractionDigits:0}));
+    setEl('an-total-revenue-sub', 'ingresos estimados');
+  } else { setEl('an-total-revenue', '—'); setEl('an-total-revenue-sub', 'añade views para calcular'); }
+  setEl('an-roi', roi);
+  setEl('an-roi-sub', aiCost > 0 ? ('$' + aiCost.toFixed(2) + ' invertido en IA') : 'sin inversión IA aún');
+
+  // ── YouTube platform stats ──
+  const ytBadge = document.getElementById('yt-api-badge');
+  const ytKey   = localStorage.getItem('fai_key_youtube') || KEYS.youtube;
+  if (ytBadge) {
+    if (ytKey)           { ytBadge.textContent='API conectada';     ytBadge.style.background='var(--gdim)'; ytBadge.style.color='var(--green)'; }
+    else                 { ytBadge.textContent='Sin API key';       ytBadge.style.background='var(--rdim)'; ytBadge.style.color='var(--red)'; }
+  }
+  const ytSubs    = ytChannels.reduce((s,ch) => s+(getChannelStats(ch.youtubeChannelId)?.subscribers||0), 0);
+  const ytVideos  = ytChannels.reduce((s,ch) => s+(getChannelStats(ch.youtubeChannelId)?.videoCount||0), 0);
+  setEl('yt-total-views',   ytViews ? formatViews(ytViews) : '—');
+  setEl('yt-total-subs',    ytSubs  ? formatViews(ytSubs)  : '—');
+  setEl('yt-total-videos',  ytVideos || '—');
+  setEl('yt-total-revenue', ytRevenue > 0 ? currency + ytRevenue.toFixed(0) : '—');
+  const lastFetch = ytChannels.map(ch => getChannelStats(ch.youtubeChannelId)?.fetchedAt||0).filter(Boolean);
+  const latestFetch = lastFetch.length ? Math.max(...lastFetch) : 0;
+  setEl('yt-last-updated', latestFetch ? ('Actualizado: ' + new Date(latestFetch).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})) : (ytChannels.length ? 'Pulsa ↻ para obtener datos de YouTube' : 'Añade YouTube Channel ID en cada canal → Configuración del canal'));
+
+  // ── TikTok ──
+  setEl('tt-total-views',     ttData.views     ? formatViews(ttData.views)     : '—');
+  setEl('tt-total-followers', ttData.followers ? formatViews(ttData.followers) : '—');
+  setEl('tt-total-likes',     ttData.likes     ? formatViews(ttData.likes)     : '—');
+  setEl('tt-total-revenue',   ttRevenue > 0    ? currency + ttRevenue.toFixed(0) : '—');
+
+  // ── Instagram ──
+  setEl('ig-total-views',     igData.views     ? formatViews(igData.views)     : '—');
+  setEl('ig-total-followers', igData.followers ? formatViews(igData.followers) : '—');
+  setEl('ig-total-reach',     igData.reach     ? formatViews(igData.reach)     : '—');
+  setEl('ig-total-revenue',   igRevenue > 0    ? currency + igRevenue.toFixed(0) : '—');
+
+  // ── By channel table ──
+  const chTable = document.getElementById('an-channels-table');
+  if (chTable) {
+    if (!channels.length) {
+      chTable.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)">Sin canales configurados</div>';
+    } else {
+      const nicheColors = { finanzas:'#22c55e',motivacion:'#f97316',tecnologia:'#3b82f6',salud:'#10b981',negocios:'#f59e0b',gaming:'#ec4899',curiosidades:'#06b6d4',historia:'#8b5cf6' };
+      chTable.innerHTML = `
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr auto;gap:8px;padding:8px 12px;font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;border-bottom:1px solid var(--border)">
+          <span>Canal</span><span>Plataformas</span><span>Views</span><span>Subs</span><span>Vídeos</span><span>Ingresos</span><span></span>
+        </div>` +
+        channels.map(ch => {
+          const col = nicheColors[ch.niche] || 'var(--green)';
+          const ytSt = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
+          const chDrafts = drafts.filter(d => d.channel === ch.name).length;
+          const rpm = ch.rpm || 3;
+          const chRevenue = ytSt ? (ytSt.views * rpm / 1000) : 0;
+          const platforms = (ch.platforms||['youtube']).map(p => p==='youtube'?'YT':p==='tiktok'?'TT':'IG').join(' ');
+          return `
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr auto;gap:8px;padding:10px 12px;align-items:center;background:var(--bg2);border-radius:var(--r);font-size:13px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div>
+              <div>
+                <div style="font-weight:600">${ch.name}</div>
+                <div style="font-size:10px;color:var(--text3)">${ch.niche||''} · ${chDrafts} borrador${chDrafts!==1?'es':''}</div>
+              </div>
+            </div>
+            <span style="font-size:11px;color:var(--text3)">${platforms}</span>
+            <span style="font-family:var(--mono)">${ytSt ? formatViews(ytSt.views) : '—'}</span>
+            <span style="font-family:var(--mono)">${ytSt ? formatViews(ytSt.subscribers) : '—'}</span>
+            <span style="font-family:var(--mono)">${ytSt ? ytSt.videoCount : '—'}</span>
+            <span style="font-family:var(--mono);color:var(--amber)">${chRevenue > 0 ? '$'+chRevenue.toFixed(0) : '—'}</span>
+            <button class="btn btn-g btn-sm" style="font-size:10px;padding:3px 8px" onclick="openChannelRpmModal('${ch.name.replace(/'/g,"\\'")}')">RPM</button>
+          </div>`;
+        }).join('');
+    }
+  }
+
+  // ── AI Costs tab ──
+  const now    = Date.now();
+  const dayMs  = 86400000;
+  const today  = log.filter(e => now-e.ts < dayMs).reduce((s,e) => s+(e.cost||0), 0);
+  const week   = log.filter(e => now-e.ts < 7*dayMs).reduce((s,e) => s+(e.cost||0), 0);
+  const daysIn = new Date().getDate();
+  const proj   = daysIn > 0 ? (aiCost / daysIn) * 30 : 0;
+  setEl('an-cost-today',      '$' + today.toFixed(3));
+  setEl('an-cost-week',       '$' + week.toFixed(3));
+  setEl('an-cost-projection', '$' + proj.toFixed(2));
+  setEl('an-cost-per-draft',  drafts.length ? '$' + (aiCost/drafts.length).toFixed(4) : '$0.000');
+
+  const breakdown = {};
+  log.forEach(e => { breakdown[e.type] = (breakdown[e.type]||0) + (e.cost||0); });
+  const sumEl = document.getElementById('an-summary-list');
+  if (sumEl) {
+    const total = Object.values(breakdown).reduce((s,v)=>s+v,0) || 1;
+    const cols = { claude:'var(--purple)', tts:'var(--blue)', clipping:'var(--teal)', discover:'var(--green)', affiliates:'var(--amber)', trends:'var(--red)' };
+    sumEl.innerHTML = Object.entries(breakdown).length
+      ? '<div style="display:flex;flex-direction:column;gap:10px">' + Object.entries(breakdown).sort((a,b)=>b[1]-a[1]).map(([type,cost]) => `
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+            <span style="color:${cols[type]||'var(--text2)'};font-weight:600">${type}</span>
+            <span style="font-family:var(--mono)">$${cost.toFixed(4)} · ${(cost/total*100).toFixed(0)}%</span>
+          </div>
+          <div style="background:var(--bg2);border-radius:99px;height:6px;overflow:hidden">
+            <div style="height:100%;border-radius:99px;background:${cols[type]||'var(--text2)'};width:${(cost/total*100).toFixed(1)}%;transition:width .5s"></div>
+          </div>
+        </div>`).join('') + '</div>'
+      : '<div style="text-align:center;padding:32px;color:var(--text3)">Sin llamadas IA aún</div>';
+  }
+
+  // ── Log tab ──
+  const logEl = document.getElementById('an-log-list');
+  if (logEl) {
+    if (!log.length) {
+      logEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:13px">El log se llena automáticamente con cada llamada a la IA.</div>';
+    } else {
+      const tCols = { claude:'var(--purple)',tts:'var(--blue)',clipping:'var(--teal)',discover:'var(--green)',affiliates:'var(--amber)',trends:'var(--red)' };
+      logEl.innerHTML = log.slice(0,100).map(e => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg2);border-radius:var(--r);font-size:12px">
+          <span style="font-family:var(--mono);padding:2px 7px;border-radius:99px;background:${(tCols[e.type]||'var(--text3)')}20;color:${tCols[e.type]||'var(--text3)'};font-size:10px;flex-shrink:0">${e.type}</span>
+          <span style="color:var(--text2);flex:1">${e.channel||'general'}</span>
+          <span style="color:var(--green);font-family:var(--mono)">$${(e.cost||0).toFixed(4)}</span>
+          <span style="color:var(--text3)">${getTimeAgo(e.ts)}</span>
+        </div>`).join('');
+    }
+  }
+
+  // Update dashboard views/revenue too
+  const dashViewsEl = document.getElementById('dash-stat-views');
+  if (dashViewsEl && totalViews) {
+    dashViewsEl.textContent = formatViews(totalViews);
+    const sub = document.getElementById('dash-stat-views-sub');
+    if (sub) sub.textContent = 'YT+TT+IG combinadas';
+  }
+  if (totalRevenue > 0) {
+    const revEl = document.getElementById('dash-stat-revenue');
+    if (revEl) revEl.textContent = currency + totalRevenue.toLocaleString('es-ES',{maximumFractionDigits:0});
+    const revSub = document.getElementById('dash-stat-revenue-sub');
+    if (revSub) revSub.textContent = 'YT+TT+IG · ver en Analytics ↗';
+  }
+}
+
+function switchAnalyticsTab(tab) {
+  ['platforms','channels','summary','log'].forEach(t => {
+    const btn = document.getElementById('an-tab-' + t);
+    const panel = document.getElementById('an-panel-' + t);
+    if (btn) btn.classList.toggle('act', t === tab);
+    if (panel) panel.style.display = t === tab ? 'block' : 'none';
+  });
+}
+
+function openChannelRpmModal(channelName) {
+  const channels = getChannels();
+  const ch = channels.find(c => c.name === channelName);
+  if (!ch) return;
+  const rpm = prompt(`RPM para "${channelName}" ($/1000 views):\nFinanzas: $4-8 · Tech: $3-6 · Motivación: $2-4`, ch.rpm || '3');
+  if (rpm && !isNaN(parseFloat(rpm))) {
+    const idx = channels.findIndex(c => c.name === channelName);
+    channels[idx].rpm = parseFloat(rpm);
+    saveChannels(channels);
+    renderAnalytics();
+    showToast('✓ RPM actualizado: $' + rpm + '/K views');
+  }
+}
 // ── INIT ──
 renderDashboard();
 renderChannels();
@@ -5921,7 +7145,7 @@ function loadKeys() {
     return;
   }
 
-  ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
+  ['anthropic','openai','pexels','elevenlabs','youtube'].forEach(k => {
     try {
       const v = localStorage.getItem('fai_key_' + k);
       if (v && v.length > 5) KEYS[k] = v;
@@ -6635,7 +7859,7 @@ function diagStorage() {
   }
 
   // Test 2: saved keys
-  ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
+  ['anthropic','openai','pexels','elevenlabs','youtube'].forEach(k => {
     try {
       const v = localStorage.getItem('fai_key_' + k);
       lines.push(v

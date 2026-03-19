@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.5 — Content Engine</title>
+<title>FacelessAI v3.8 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -306,7 +306,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.5</div>
+    <div class="logo-sub">Content Engine v3.8</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -375,13 +375,9 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="font-size:15px;font-weight:600" id="page-title">Dashboard</div>
-      <span style="font-size:10px;font-family:var(--mono);color:var(--t3);background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:2px 8px">v3.5</span>
-    </div>
 
     <!-- LANGUAGE SELECTOR -->
-    <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px;margin-left:12px">
+    <div style="display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px">
       <button id="lang-es" onclick="setLang('es')" style="padding:4px 12px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:var(--text1);color:var(--bg0);transition:all .2s">🇪🇸 Español</button>
       <button id="lang-en" onclick="setLang('en')" style="padding:4px 12px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:transparent;color:var(--text3);transition:all .2s">🇺🇸 English</button>
       <button id="lang-lat" onclick="setLang('lat')" style="padding:4px 12px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:transparent;color:var(--text3);transition:all .2s">🌎 Latino</button>
@@ -398,26 +394,24 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <button id="mode-btn-manual" onclick="setMode('manual')" style="padding:4px 14px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:var(--text1);color:var(--bg0);transition:all .2s">✋ Manual</button>
       <button id="mode-btn-auto" onclick="setMode('auto')" style="padding:4px 14px;border-radius:99px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:transparent;color:var(--text3);transition:all .2s">🤖 AutoPilot</button>
     </div>
-    <div id="mode-indicator" style="font-size:11px;color:var(--text3);font-family:var(--mono)">MODO MANUAL ACTIVO</div>
 
-    <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+    <!-- RIGHT SIDE -->
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+
+      <!-- Budget pill -->
       <div class="budget-pill">
         <div class="bdot"></div>
         <span style="color:var(--text2)">Hoy:</span>
         <span style="font-weight:700">$0.08</span>
-        <span style="color:var(--text3)">/ $2 límite</span>
+        <span style="color:var(--text3)">/ $2</span>
       </div>
-      <!-- Drafts badge -->
-      <button class="btn btn-g btn-sm" onclick="nav('drafts')" style="position:relative">
-        📋 Borradores
-        <span id="drafts-badge" style="position:absolute;top:-6px;right:-6px;background:var(--amber);color:var(--bg0);font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono)">3</span>
-      </button>
-      <button class="btn btn-g btn-sm" onclick="openModal()">+ Canal</button>
-      <!-- GITHUB DEPLOY BUTTON -->
-      <button class="btn btn-g btn-sm" id="deploy-btn" onclick="deployToGitHub()" style="border-color:#4f46e5;color:#818cf8;gap:6px" title="Subir última versión a GitHub Pages automáticamente">
+
+      <!-- Deploy — icon only, subtle -->
+      <button id="deploy-btn" onclick="deployToGitHub()" title="Deploy a GitHub Pages" style="width:30px;height:30px;border-radius:8px;border:1px solid #4f46e544;background:#4f46e510;color:#818cf8;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s" onmouseover="this.style.background='#4f46e525'" onmouseout="this.style.background='#4f46e510'">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-        Deploy
       </button>
+
+      <!-- Generate CTA -->
       <button class="btn btn-p btn-sm" onclick="nav('pipeline')">▶ Generar</button>
     </div>
   </div>
@@ -531,141 +525,24 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <div class="sh mb16">
     <h2>Borradores — Pendientes de aprobación</h2>
     <div class="flex g8">
-      <span class="tag ta" id="drafts-count-tag">3 vídeos esperando tu decisión</span>
+      <span class="tag ta" id="drafts-count-tag">0 vídeos esperando</span>
       <button class="btn btn-g btn-sm" onclick="approveAll()">✓ Aprobar todos</button>
+      <button class="btn btn-g btn-sm" style="border-color:#f87171;color:#f87171" onclick="clearAllDrafts()">✕ Limpiar</button>
     </div>
   </div>
 
-  <!-- How it works -->
-  <div style="background:var(--bdim);border:1px solid #38bdf822;border-radius:var(--r);padding:12px 16px;margin-bottom:18px;font-size:13px;color:var(--text2)">
-    <strong style="color:var(--blue)">Modo manual activo:</strong> Cada vídeo generado llega aquí antes de publicarse. Puedes editar, aprobar, rechazar o programar cada uno individualmente. El AutoPilot salta este paso y publica directamente.
+  <div style="background:#38bdf815;border:1px solid #38bdf822;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:#94a3b8">
+    <strong style="color:#38bdf8">Modo manual activo:</strong> Cada vídeo generado llega aquí antes de publicarse. Puedes editar el título, aprobar, rechazar o descargar el audio.
   </div>
 
-  <!-- Draft items -->
-  <div style="display:flex;flex-direction:column;gap:12px" id="drafts-list">
+  <div style="display:flex;flex-direction:column;gap:12px" id="drafts-list"></div>
 
-    <!-- Draft 1 -->
-    <div class="card" id="draft-1" style="border-left:3px solid var(--amber)">
-      <div style="display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:start">
-        <!-- Thumbnail -->
-        <div style="background:linear-gradient(180deg,#0f1e38,#1a3a5c);border-radius:var(--r);aspect-ratio:9/16;max-height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0">
-          <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;padding:0 6px"><div style="background:rgba(0,0,0,.85);display:inline-block;padding:3px 6px;border-radius:3px;font-size:9px;font-weight:700;color:#fff">¿PERDIENDO <span style="color:#00e87a">$300</span>?</div></div>
-          <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);padding:1px 5px;border-radius:3px;font-size:9px;font-family:var(--mono);color:#fff">44.8s</div>
-          <div style="font-size:20px;opacity:.5">▶</div>
-        </div>
-        <!-- Info + editing -->
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div>
-            <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:4px">❌ El ERROR que te cuesta $300 al mes sin saberlo</div>
-            <div class="flex g6 fw">
-              <span class="tag tg" style="font-size:10px">Score: 88/100</span>
-              <span class="tag ta" style="font-size:10px">$0.019 coste</span>
-              <span class="tag tb" style="font-size:10px">Short 44.8s</span>
-              <span style="font-size:11px;color:var(--text3);font-family:var(--mono)">FinanceFacts ES · hace 2h</span>
-            </div>
-          </div>
-          <!-- Editable fields inline -->
-          <div><label class="lbl" style="font-size:10px">Título para publicar</label>
-          <input class="inp" value="❌ El ERROR que te cuesta $300 al mes sin saberlo #shorts" style="font-size:12px"></div>
-          <div class="flex g8">
-            <div style="flex:1"><label class="lbl" style="font-size:10px">Plataformas</label>
-            <div class="flex g6"><button class="btn btn-g btn-sm" style="font-size:11px;border-color:#ff4444;color:#ff4444;padding:3px 8px">▶ YT ✓</button><button class="btn btn-g btn-sm" style="font-size:11px;border-color:#00d4c4;color:#00d4c4;padding:3px 8px">TT ✓</button><button class="btn btn-g btn-sm" style="font-size:11px;padding:3px 8px;color:var(--text3)">IG —</button></div></div>
-            <div style="flex:1"><label class="lbl" style="font-size:10px">Publicar</label>
-            <input type="datetime-local" class="inp" value="2026-03-19T18:00" style="font-size:11px"></div>
-          </div>
-        </div>
-        <!-- Action buttons -->
-        <div style="display:flex;flex-direction:column;gap:8px;min-width:120px">
-          <button class="btn btn-p btn-sm" onclick="approveDraft(1)">✓ Aprobar</button>
-          <button class="btn btn-g btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="editDraft(1)">✏️ Editar más</button>
-          <button class="btn btn-g btn-sm" onclick="downloadDraft(1)">⬇ Descargar</button>
-          <button class="btn btn-g btn-sm" style="border-color:var(--red);color:var(--red)" onclick="deleteDraft(1)">✕ Rechazar</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Draft 2 -->
-    <div class="card" id="draft-2" style="border-left:3px solid var(--amber)">
-      <div style="display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:start">
-        <div style="background:linear-gradient(180deg,#1a0f38,#2a1a5c);border-radius:var(--r);aspect-ratio:9/16;max-height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0">
-          <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;padding:0 6px"><div style="background:rgba(0,0,0,.85);display:inline-block;padding:3px 6px;border-radius:3px;font-size:9px;font-weight:700;color:#fff">BANCOS vs TÚ</div></div>
-          <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);padding:1px 5px;border-radius:3px;font-size:9px;font-family:var(--mono);color:#fff">58.3s</div>
-          <div style="font-size:20px;opacity:.5">▶</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div>
-            <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:4px">🤫 Lo que los BANCOS no quieren que sepas sobre tus ahorros</div>
-            <div class="flex g6 fw">
-              <span class="tag tg" style="font-size:10px">Score: 91/100</span>
-              <span class="tag ta" style="font-size:10px">$0.021 coste</span>
-              <span class="tag tb" style="font-size:10px">Reel 58.3s</span>
-              <span style="font-size:11px;color:var(--text3);font-family:var(--mono)">FinanceFacts ES · hace 5h</span>
-            </div>
-          </div>
-          <div><label class="lbl" style="font-size:10px">Título para publicar</label>
-          <input class="inp" value="🤫 Lo que los BANCOS no quieren que sepas #finanzas" style="font-size:12px"></div>
-          <div class="flex g8">
-            <div style="flex:1"><label class="lbl" style="font-size:10px">Plataformas</label>
-            <div class="flex g6"><button class="btn btn-g btn-sm" style="font-size:11px;border-color:#ff4444;color:#ff4444;padding:3px 8px">▶ YT ✓</button><button class="btn btn-g btn-sm" style="font-size:11px;border-color:#00d4c4;color:#00d4c4;padding:3px 8px">TT ✓</button><button class="btn btn-g btn-sm" style="font-size:11px;border-color:#e1306c;color:#e1306c;padding:3px 8px">IG ✓</button></div></div>
-            <div style="flex:1"><label class="lbl" style="font-size:10px">Publicar</label>
-            <input type="datetime-local" class="inp" value="2026-03-19T20:15" style="font-size:11px"></div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;min-width:120px">
-          <button class="btn btn-p btn-sm" onclick="approveDraft(2)">✓ Aprobar</button>
-          <button class="btn btn-g btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="editDraft(2)">✏️ Editar más</button>
-          <button class="btn btn-g btn-sm" onclick="downloadDraft(2)">⬇ Descargar</button>
-          <button class="btn btn-g btn-sm" style="border-color:var(--red);color:var(--red)" onclick="deleteDraft(2)">✕ Rechazar</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Draft 3 -->
-    <div class="card" id="draft-3" style="border-left:3px solid var(--blue)">
-      <div style="display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:start">
-        <div style="background:linear-gradient(180deg,#0a1f0a,#1a3a1a);border-radius:var(--r);aspect-ratio:9/16;max-height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0">
-          <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;padding:0 6px"><div style="background:rgba(0,0,0,.85);display:inline-block;padding:3px 6px;border-radius:3px;font-size:9px;font-weight:700;color:#fff">$2,000/MES → ESTO</div></div>
-          <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);padding:1px 5px;border-radius:3px;font-size:9px;font-family:var(--mono);color:#fff">52.1s</div>
-          <div style="font-size:20px;opacity:.5">▶</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div>
-            <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:4px">📊 Si ganas $2,000/mes, deberías estar haciendo ESTO con tu dinero</div>
-            <div class="flex g6 fw">
-              <span class="tag tg" style="font-size:10px">Score: 85/100</span>
-              <span class="tag ta" style="font-size:10px">$0.018 coste</span>
-              <span class="tag tb" style="font-size:10px">Short 52.1s</span>
-              <span style="font-size:11px;color:var(--text3);font-family:var(--mono)">URL→Vídeo · hace 1d</span>
-            </div>
-          </div>
-          <div><label class="lbl" style="font-size:10px">Título para publicar</label>
-          <input class="inp" value="📊 Si ganas $2,000/mes haz ESTO ahora #inversión #shorts" style="font-size:12px"></div>
-          <div class="flex g8">
-            <div style="flex:1"><label class="lbl" style="font-size:10px">Plataformas</label>
-            <div class="flex g6"><button class="btn btn-g btn-sm" style="font-size:11px;border-color:#ff4444;color:#ff4444;padding:3px 8px">▶ YT ✓</button><button class="btn btn-g btn-sm" style="font-size:11px;padding:3px 8px;color:var(--text3)">TT —</button><button class="btn btn-g btn-sm" style="font-size:11px;padding:3px 8px;color:var(--text3)">IG —</button></div></div>
-            <div style="flex:1"><label class="lbl" style="font-size:10px">Publicar</label>
-            <input type="datetime-local" class="inp" value="2026-03-20T18:00" style="font-size:11px"></div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;min-width:120px">
-          <button class="btn btn-p btn-sm" onclick="approveDraft(3)">✓ Aprobar</button>
-          <button class="btn btn-g btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="editDraft(3)">✏️ Editar más</button>
-          <button class="btn btn-g btn-sm" onclick="downloadDraft(3)">⬇ Descargar</button>
-          <button class="btn btn-g btn-sm" style="border-color:var(--red);color:var(--red)" onclick="deleteDraft(3)">✕ Rechazar</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Empty state (hidden) -->
-  <div id="drafts-empty" style="display:none;text-align:center;padding:48px;color:var(--text3)">
+  <div id="drafts-empty" style="text-align:center;padding:48px;color:var(--text3)">
     <div style="font-size:48px;margin-bottom:14px">📭</div>
     <div style="font-size:15px;font-weight:600;margin-bottom:8px">No hay borradores pendientes</div>
-    <div style="font-size:13px;margin-bottom:16px">Genera un vídeo en el pipeline para que aparezca aquí</div>
-    <button class="btn btn-p" onclick="nav('pipeline')">▶ Generar nuevo vídeo</button>
+    <div style="font-size:13px;margin-bottom:16px">Genera un vídeo en el pipeline y guárdalo como borrador</div>
+    <button class="btn btn-p" onclick="nav('pipeline')">▶ Ir al pipeline</button>
   </div>
-
 </div>
 
 <!-- ════════════════ CHANNELS ════════════════ -->
@@ -1202,28 +1079,53 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
   <!-- Step 2: Score mini -->
   <div class="pc" id="p-2">
-    <div class="sh"><h2>Score predictivo</h2><span class="tag tg">$0.00 · gratis</span></div>
-    <div class="g2">
-      <div style="text-align:center">
-        <div class="score-ring" style="margin:16px auto">
-          <svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;top:0;left:0;transform:rotate(-90deg)">
-            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg3)" stroke-width="8"/>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--green)" stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="38"/>
-          </svg>
-          <div class="score-val" style="color:var(--green)">88</div><div class="score-lbl">/ 100</div>
+    <div class="sh">
+      <h2>Score predictivo</h2>
+      <button class="btn btn-p btn-sm" id="score-pipe-btn" onclick="runPipelineScore()">🤖 Analizar con Claude</button>
+    </div>
+
+    <!-- Selected idea preview -->
+    <div id="score-pipe-idea" style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#94a3b8">
+      <span style="color:#475569;font-size:11px;font-family:monospace">IDEA SELECCIONADA:</span><br>
+      <span id="score-pipe-idea-text" style="color:#e2e8f0;font-weight:600">— Selecciona una idea en el paso anterior —</span>
+    </div>
+
+    <!-- Results (hidden until run) -->
+    <div id="score-pipe-results" style="display:none">
+      <div class="g2">
+        <div style="text-align:center">
+          <div class="score-ring" style="margin:16px auto">
+            <svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;top:0;left:0;transform:rotate(-90deg)">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg3)" stroke-width="8"/>
+              <circle id="score-pipe-circle" cx="60" cy="60" r="50" fill="none" stroke="#00e87a" stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="47"/>
+            </svg>
+            <div class="score-val" id="score-pipe-number" style="color:#00e87a">85</div>
+            <div class="score-lbl">/ 100</div>
+          </div>
+          <div class="mb12" id="score-pipe-verdict"><span class="tag tg">✓ APROBADO</span></div>
+          <div style="font-size:13px;color:var(--text2);background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:10px;text-align:left" id="score-pipe-rec">Recomendación aparecerá aquí</div>
         </div>
-        <div class="mb12"><span class="tag tg">✓ APROBADO — generar vídeo</span></div>
-        <div style="font-size:13px;color:var(--text2);background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:10px;text-align:left">Short 45s · Hook "error + dinero" · Publicar martes 18h · Afiliado Revolut</div>
-      </div>
-      <div>
-        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Prob. +100K views</span><span class="smetric-v" style="color:var(--green)">74%</span></div><div class="sbar"><div class="sbar-f" style="width:74%;background:var(--green)"></div></div></div>
-        <div class="smetric"><div class="smetric-h"><span class="smetric-n">CPM estimado</span><span class="smetric-v" style="color:var(--amber)">$8.40</span></div><div class="sbar"><div class="sbar-f" style="width:84%;background:var(--amber)"></div></div></div>
-        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Saturación nicho</span><span class="smetric-v" style="color:var(--green)">Baja 28%</span></div><div class="sbar"><div class="sbar-f" style="width:28%;background:var(--blue)"></div></div></div>
-        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Potencial afiliación</span><span class="smetric-v" style="color:var(--green)">Alto</span></div><div class="sbar"><div class="sbar-f" style="width:82%;background:var(--purple)"></div></div></div>
-        <div class="smetric"><div class="smetric-h"><span class="smetric-n">Coste producción</span><span class="smetric-v" style="color:var(--green)">$0.027</span></div><div class="sbar"><div class="sbar-f" style="width:3%;background:var(--green)"></div></div></div>
+        <div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Prob. +100K views</span><span class="smetric-v" id="sp-m1" style="color:#00e87a">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b1" style="width:0%;background:#00e87a"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">CPM estimado</span><span class="smetric-v" id="sp-m2" style="color:#fbbf24">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b2" style="width:0%;background:#fbbf24"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Saturación nicho</span><span class="smetric-v" id="sp-m3" style="color:#38bdf8">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b3" style="width:0%;background:#38bdf8"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Potencial afiliación</span><span class="smetric-v" id="sp-m4" style="color:#a78bfa">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b4" style="width:0%;background:#a78bfa"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Retención estimada</span><span class="smetric-v" id="sp-m5" style="color:#2dd4bf">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b5" style="width:0%;background:#2dd4bf"></div></div></div>
+        </div>
       </div>
     </div>
-    <div class="flex mt14 g8" style="justify-content:flex-end"><button class="btn btn-g btn-sm" onclick="setPStep(1)">← Atrás</button><button class="btn btn-p" onclick="setPStep(3)">Generar script →</button></div>
+
+    <!-- Placeholder before scoring -->
+    <div id="score-pipe-placeholder" style="text-align:center;padding:32px;color:var(--text3)">
+      <div style="font-size:32px;margin-bottom:12px">🎯</div>
+      <div style="font-size:14px;margin-bottom:6px">Pulsa "Analizar con Claude" para obtener el score real</div>
+      <div style="font-size:11px;font-family:var(--mono)">~$0.001 · Claude Haiku</div>
+    </div>
+
+    <div class="flex mt14 g8" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="setPStep(1)">← Atrás</button>
+      <button class="btn btn-p" id="score-pipe-continue" onclick="setPStep(3)">Generar script →</button>
+    </div>
   </div>
 
   <!-- Step 3: Script -->
@@ -2212,6 +2114,89 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
     </div>
   </div>
+
+  <!-- ════ PREFERENCIAS GENERALES ════ -->
+  <div style="margin-top:28px">
+    <div class="stl mb16">Preferencias generales</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+      <!-- TEMA -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">🎨 Tema de la interfaz</div>
+        <div style="display:flex;gap:8px">
+          <div id="theme-dark" onclick="setTheme('dark')" style="flex:1;border:2px solid #00e87a;background:#00e87a15;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:22px;margin-bottom:4px">🌙</div>
+            <div style="font-size:12px;font-weight:600">Oscuro</div>
+            <div style="font-size:10px;color:#94a3b8;font-family:monospace">Activo</div>
+          </div>
+          <div id="theme-light" onclick="setTheme('light')" style="flex:1;border:1px solid #1e2d44;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:22px;margin-bottom:4px">☀️</div>
+            <div style="font-size:12px;font-weight:600">Claro</div>
+            <div style="font-size:10px;color:#94a3b8;font-family:monospace">Próximamente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IDIOMA UI -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">🌐 Idioma de la interfaz</div>
+        <div style="display:flex;gap:8px">
+          <div id="ui-lang-es" onclick="setUILang('es')" style="flex:1;border:2px solid #00e87a;background:#00e87a15;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:22px;margin-bottom:4px">🇪🇸</div>
+            <div style="font-size:12px;font-weight:600">Español</div>
+            <div style="font-size:10px;color:#94a3b8;font-family:monospace">Activo</div>
+          </div>
+          <div id="ui-lang-en" onclick="setUILang('en')" style="flex:1;border:1px solid #1e2d44;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:22px;margin-bottom:4px">🇬🇧</div>
+            <div style="font-size:12px;font-weight:600">English</div>
+            <div style="font-size:10px;color:#94a3b8;font-family:monospace">Próximamente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MONEDA -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">💱 Moneda preferida</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div id="cur-eur" onclick="setCurrency('EUR')" style="border:2px solid #00e87a;background:#00e87a15;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:18px;margin-bottom:2px">€</div>
+            <div style="font-size:11px;font-weight:600">Euro</div>
+          </div>
+          <div id="cur-usd" onclick="setCurrency('USD')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:18px;margin-bottom:2px">$</div>
+            <div style="font-size:11px;font-weight:600">Dólar</div>
+          </div>
+          <div id="cur-gbp" onclick="setCurrency('GBP')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:18px;margin-bottom:2px">£</div>
+            <div style="font-size:11px;font-weight:600">Libra</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORMATO FECHA -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">📅 Formato de fecha y hora</div>
+        <div style="display:flex;gap:8px">
+          <div id="fmt-eu" onclick="setDateFormat('eu')" style="flex:1;border:2px solid #00e87a;background:#00e87a15;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:13px;font-weight:700;font-family:monospace;margin-bottom:2px">19/03/2026</div>
+            <div style="font-size:10px;color:#94a3b8">DD/MM/YYYY</div>
+          </div>
+          <div id="fmt-us" onclick="setDateFormat('us')" style="flex:1;border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:13px;font-weight:700;font-family:monospace;margin-bottom:2px">03/19/2026</div>
+            <div style="font-size:10px;color:#94a3b8">MM/DD/YYYY</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FUTURE SETTINGS NOTE -->
+    <div style="margin-top:14px;background:#38bdf808;border:1px solid #38bdf822;border-radius:8px;padding:12px 16px;font-size:12px;color:#475569;line-height:1.7">
+      <strong style="color:#38bdf8">Próximamente en Preferencias:</strong>
+      Notificaciones por email cuando AutoPilot genera un vídeo · Zona horaria · Límite de gasto por canal · Backup y restauración de configuración · Acceso multiusuario (equipo)
+    </div>
+  </div>
+
 </div>
 
   </div><!-- /content -->
@@ -2376,11 +2361,14 @@ function nav(id) {
   document.querySelectorAll('.ni[data-view]').forEach(el => {
     el.classList.toggle('active', el.dataset.view === id);
   });
-  document.getElementById('page-title').textContent = TITLES[id] || id;
+  const titleEl = document.getElementById('page-title');
+  if (titleEl) titleEl.textContent = TITLES[id] || id;
   window.scrollTo(0, 0);
 
   // Refresh settings display after DOM is visible
-  if (id === 'settings') setTimeout(refreshSettingsDisplay, 50);
+  if (id === 'settings') setTimeout(() => { refreshSettingsDisplay(); initPreferences(); }, 50);
+  // Render drafts when navigating to drafts view
+  if (id === 'drafts') renderDrafts();
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -2394,6 +2382,13 @@ function setPStep(n) {
     document.getElementById('p-' + i)?.classList.toggle('act', i === n);
   }
   // When entering video step, auto-suggest Pexels query and check keys
+  // When entering score step, pre-fill selected idea
+  if (n === 2) {
+    const idea = generatedIdeas[selectedIdeaIndex];
+    const ideaEl = document.getElementById('score-pipe-idea-text');
+    if (ideaEl && idea) ideaEl.textContent = idea.hook;
+    else if (ideaEl) ideaEl.textContent = '— Selecciona una idea en el paso anterior —';
+  }
   if (n === 4) {
     const nicheQueries = {
       'Finanzas básicas': 'money finance savings bank',
@@ -2508,16 +2503,13 @@ function setMode(m) {
   currentMode = m;
   const mb = document.getElementById('mode-btn-manual');
   const ab = document.getElementById('mode-btn-auto');
-  const mi = document.getElementById('mode-indicator');
   if (m === 'manual') {
-    mb.style.background = 'var(--text1)'; mb.style.color = 'var(--bg0)';
-    ab.style.background = 'transparent'; ab.style.color = 'var(--text3)';
-    mi.textContent = 'MODO MANUAL — aprobación requerida'; mi.style.color = 'var(--amber)';
+    if (mb) { mb.style.background = 'var(--text1)'; mb.style.color = 'var(--bg0)'; }
+    if (ab) { ab.style.background = 'transparent'; ab.style.color = 'var(--text3)'; }
     showToast('✋ Modo manual — los vídeos irán a Borradores antes de publicarse');
   } else {
-    ab.style.background = 'var(--green)'; ab.style.color = 'var(--bg0)';
-    mb.style.background = 'transparent'; mb.style.color = 'var(--text3)';
-    mi.textContent = 'AUTOPILOT ACTIVO — publicación automática'; mi.style.color = 'var(--green)';
+    if (ab) { ab.style.background = 'var(--green)'; ab.style.color = 'var(--bg0)'; }
+    if (mb) { mb.style.background = 'transparent'; mb.style.color = 'var(--text3)'; }
     showToast('🤖 AutoPilot — los vídeos se publicarán automáticamente');
   }
 }
@@ -2827,30 +2819,349 @@ async function generateTTS(audioOnly) {
   }
 }
 
-// ── APPROVAL SCREEN ACTIONS ──
+// ═══════════════════════════════════════════════
+// PREFERENCES — theme, UI lang, currency, date format
+// ═══════════════════════════════════════════════
+let activeTheme      = 'dark';
+let activeUILang     = 'es';
+let activeCurrency   = 'EUR';
+let activeDateFormat = 'eu';
+
+try {
+  activeTheme      = localStorage.getItem('fai_theme')      || 'dark';
+  activeUILang     = localStorage.getItem('fai_ui_lang')    || 'es';
+  activeCurrency   = localStorage.getItem('fai_currency')   || 'EUR';
+  activeDateFormat = localStorage.getItem('fai_date_fmt')   || 'eu';
+} catch(e) {}
+
+function setTheme(t) {
+  activeTheme = t;
+  try { localStorage.setItem('fai_theme', t); } catch(e) {}
+  ['dark','light'].forEach(x => {
+    const el = document.getElementById('theme-' + x);
+    if (!el) return;
+    el.style.border      = x === t ? '2px solid #00e87a' : '1px solid #1e2d44';
+    el.style.background  = x === t ? '#00e87a15' : 'transparent';
+  });
+  if (t === 'light') {
+    showToast('☀️ Tema claro — próximamente disponible');
+    // Reset to dark
+    setTimeout(() => setTheme('dark'), 500);
+    return;
+  }
+  showToast('🌙 Tema oscuro activo');
+}
+
+function setUILang(lang) {
+  activeUILang = lang;
+  try { localStorage.setItem('fai_ui_lang', lang); } catch(e) {}
+  ['es','en'].forEach(x => {
+    const el = document.getElementById('ui-lang-' + x);
+    if (!el) return;
+    el.style.border     = x === lang ? '2px solid #00e87a' : '1px solid #1e2d44';
+    el.style.background = x === lang ? '#00e87a15' : 'transparent';
+  });
+  if (lang === 'en') {
+    showToast('🇬🇧 English UI — coming soon');
+    setTimeout(() => setUILang('es'), 500);
+    return;
+  }
+  showToast('🇪🇸 Interfaz en español activa');
+}
+
+function setCurrency(cur) {
+  activeCurrency = cur;
+  try { localStorage.setItem('fai_currency', cur); } catch(e) {}
+  ['EUR','USD','GBP'].forEach(x => {
+    const el = document.getElementById('cur-' + x.toLowerCase());
+    if (!el) return;
+    el.style.border     = x === cur ? '2px solid #00e87a' : '1px solid #1e2d44';
+    el.style.background = x === cur ? '#00e87a15' : 'transparent';
+  });
+  const symbols = { EUR:'€', USD:'$', GBP:'£' };
+  showToast('💱 Moneda: ' + symbols[cur] + ' ' + cur);
+}
+
+function setDateFormat(fmt) {
+  activeDateFormat = fmt;
+  try { localStorage.setItem('fai_date_fmt', fmt); } catch(e) {}
+  ['eu','us'].forEach(x => {
+    const el = document.getElementById('fmt-' + x);
+    if (!el) return;
+    el.style.border     = x === fmt ? '2px solid #00e87a' : '1px solid #1e2d44';
+    el.style.background = x === fmt ? '#00e87a15' : 'transparent';
+  });
+  showToast('📅 Formato: ' + (fmt === 'eu' ? 'DD/MM/YYYY' : 'MM/DD/YYYY'));
+}
+
+function initPreferences() {
+  setTheme(activeTheme);
+  setUILang(activeUILang);
+  setCurrency(activeCurrency);
+  setDateFormat(activeDateFormat);
+}
+// ═══════════════════════════════════════════════
+function getDrafts() {
+  try { return JSON.parse(localStorage.getItem('fai_drafts') || '[]'); } catch(e) { return []; }
+}
+function saveDrafts(drafts) {
+  try { localStorage.setItem('fai_drafts', JSON.stringify(drafts)); } catch(e) {}
+}
+
+function addDraft(draft) {
+  const drafts = getDrafts();
+  draft.id = Date.now();
+  draft.createdAt = new Date().toISOString();
+  draft.status = 'pending';
+  drafts.unshift(draft);
+  saveDrafts(drafts);
+  renderDrafts();
+  updateDraftBadge(drafts.length);
+  showToast('📋 Guardado en Borradores — revísalo cuando quieras');
+}
+
+function renderDrafts() {
+  const drafts = getDrafts();
+  const list = document.getElementById('drafts-list');
+  const empty = document.getElementById('drafts-empty');
+  const tag = document.getElementById('drafts-count-tag');
+  const navBadge = document.getElementById('drafts-nav-badge');
+  const topBadge = document.getElementById('drafts-badge');
+
+  if (!list) return;
+  const pending = drafts.filter(d => d.status === 'pending');
+  if (tag) tag.textContent = pending.length + ' vídeo' + (pending.length !== 1 ? 's' : '') + ' esperando';
+  if (navBadge) navBadge.textContent = pending.length || '';
+  if (topBadge) topBadge.style.display = pending.length ? 'flex' : 'none';
+  if (topBadge) topBadge.textContent = pending.length;
+
+  if (drafts.length === 0) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  list.innerHTML = drafts.map(d => {
+    const ago = getTimeAgo(d.createdAt);
+    const borderColor = d.status === 'pending' ? '#fbbf24' : d.status === 'approved' ? '#00e87a' : '#f87171';
+    const statusTag = d.status === 'approved'
+      ? '<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">✓ Aprobado</span>'
+      : d.status === 'rejected'
+      ? '<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#f8717115;color:#f87171;border:1px solid #f8717144;font-family:monospace">✕ Rechazado</span>'
+      : '<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#fbbf2415;color:#fbbf24;border:1px solid #fbbf2444;font-family:monospace">⏳ Pendiente</span>';
+
+    return `<div class="card" style="border-left:3px solid ${borderColor}">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:16px">
+        <div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:6px">${d.hook || d.title || 'Sin título'}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+            ${statusTag}
+            ${d.score ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">Score: ${d.score}/100</span>` : ''}
+            ${d.cost ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#fbbf2415;color:#fbbf24;border:1px solid #fbbf2444;font-family:monospace">$${d.cost}</span>` : ''}
+            ${d.lang ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">${{es:'🇪🇸',en:'🇺🇸',lat:'🌎'}[d.lang]||'🌍'} ${d.lang.toUpperCase()}</span>` : ''}
+            <span style="font-size:11px;color:#475569;font-family:monospace">${ago}</span>
+          </div>
+          <div style="margin-bottom:8px">
+            <label style="font-size:10px;color:#475569;font-family:monospace;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Título para publicar</label>
+            <input class="inp" value="${(d.hook || d.title || '').replace(/"/g,'&quot;')}" id="draft-title-${d.id}" style="font-size:12px">
+          </div>
+          ${d.audioUrl ? `<audio controls src="${d.audioUrl}" style="width:100%;height:32px;margin-bottom:6px"></audio>` : ''}
+          ${d.script ? `<details style="font-size:11px;color:#475569;font-family:monospace"><summary style="cursor:pointer;color:#94a3b8">Ver script</summary><pre style="margin-top:6px;white-space:pre-wrap;font-size:11px;max-height:120px;overflow-y:auto">${d.script.slice(0,500)}...</pre></details>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:110px">
+          ${d.status === 'pending' ? `<button class="btn btn-p btn-sm" onclick="approveDraft(${d.id})">✓ Aprobar</button>` : ''}
+          ${d.audioUrl ? `<a class="btn btn-g btn-sm" href="${d.audioUrl}" download="audio-${d.id}.mp3" style="text-align:center;text-decoration:none">⬇ MP3</a>` : ''}
+          <button class="btn btn-g btn-sm" onclick="deleteDraft(${d.id})" style="border-color:#f87171;color:#f87171">✕ Eliminar</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getTimeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'ahora mismo';
+  if (m < 60) return 'hace ' + m + 'min';
+  const h = Math.floor(m / 60);
+  if (h < 24) return 'hace ' + h + 'h';
+  return 'hace ' + Math.floor(h / 24) + 'd';
+}
+
+function approveDraft(id) {
+  const drafts = getDrafts().map(d => d.id === id ? {...d, status:'approved'} : d);
+  saveDrafts(drafts);
+  renderDrafts();
+  showToast('✓ Aprobado — listo para publicar');
+}
+
+function deleteDraft(id) {
+  const drafts = getDrafts().filter(d => d.id !== id);
+  saveDrafts(drafts);
+  renderDrafts();
+  showToast('✕ Borrador eliminado');
+}
+
+function approveAll() {
+  const drafts = getDrafts().map(d => d.status === 'pending' ? {...d, status:'approved'} : d);
+  saveDrafts(drafts);
+  renderDrafts();
+  showToast('✓ Todos los borradores aprobados');
+}
+
+function clearAllDrafts() {
+  if (!confirm('¿Eliminar todos los borradores?')) return;
+  saveDrafts([]);
+  renderDrafts();
+  showToast('🗑 Borradores eliminados');
+}
+
+// ═══════════════════════════════════════════════
+// PIPELINE SCORE — uses selected idea automatically
+// ═══════════════════════════════════════════════
+async function runPipelineScore() {
+  if (!KEYS.anthropic) {
+    showToast('⚠ Configura tu Anthropic API key en ⚙️ Configuración');
+    return;
+  }
+
+  const idea = generatedIdeas[selectedIdeaIndex];
+  const hookText = idea?.hook || document.querySelector('#p-1 .idea.sel .idea-hook')?.textContent || '';
+
+  if (!hookText) {
+    showToast('⚠ Primero selecciona una idea en el paso anterior');
+    setPStep(1);
+    return;
+  }
+
+  // Show idea being scored
+  const ideaEl = document.getElementById('score-pipe-idea-text');
+  if (ideaEl) ideaEl.textContent = hookText;
+
+  const btn = document.getElementById('score-pipe-btn');
+  if (btn) { btn.textContent = '⏳ Analizando...'; btn.disabled = true; }
+
+  const placeholder = document.getElementById('score-pipe-placeholder');
+  if (placeholder) placeholder.style.display = 'none';
+
+  const langCfg = getLangCfg();
+
+  const prompt = `Analyze this viral video idea for the ${langCfg.promptLang} market:
+"${hookText}"
+Niche: ${selectedNiche}
+
+Respond ONLY in valid JSON:
+{
+  "score": 84,
+  "veredicto": "APROBADO",
+  "prob100k": 72,
+  "cpm": 8.4,
+  "saturacion": 28,
+  "saturacionLabel": "Baja",
+  "afiliacion": "Alto",
+  "afiliacionPct": 80,
+  "retencion": "68-74",
+  "retencionPct": 71,
+  "recomendacion": "Short 45s. Hook tipo error + dinero. Publicar ${langCfg.bestTime}."
+}
+Only JSON, no additional text.`;
+
+  try {
+    const raw = await callClaude(prompt, null, 300);
+    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+
+    // Show results
+    const results = document.getElementById('score-pipe-results');
+    if (results) results.style.display = 'grid';
+
+    const circle = document.getElementById('score-pipe-circle');
+    const num = document.getElementById('score-pipe-number');
+    const verdict = document.getElementById('score-pipe-verdict');
+    const rec = document.getElementById('score-pipe-rec');
+    const isOk = data.score >= 70;
+
+    if (circle) { circle.setAttribute('stroke-dashoffset', 314 - (314 * data.score / 100)); circle.setAttribute('stroke', isOk ? '#00e87a' : '#fbbf24'); }
+    if (num) { num.textContent = data.score; num.style.color = isOk ? '#00e87a' : '#fbbf24'; }
+    if (verdict) verdict.innerHTML = isOk
+      ? '<span class="tag tg" style="font-size:12px">✓ APROBADO — generar script</span>'
+      : '<span class="tag ta" style="font-size:12px">⚠ REVISAR — potencial limitado</span>';
+    if (rec) rec.textContent = data.recomendacion;
+
+    const metrics = [
+      { id:'sp-m1', bid:'sp-b1', val: data.prob100k+'%', pct: data.prob100k, color:'#00e87a' },
+      { id:'sp-m2', bid:'sp-b2', val: '$'+data.cpm, pct: data.cpm*10, color:'#fbbf24' },
+      { id:'sp-m3', bid:'sp-b3', val: data.saturacionLabel+' '+data.saturacion+'%', pct: data.saturacion, color:'#38bdf8' },
+      { id:'sp-m4', bid:'sp-b4', val: data.afiliacion, pct: data.afiliacionPct, color:'#a78bfa' },
+      { id:'sp-m5', bid:'sp-b5', val: data.retencion+'%', pct: data.retencionPct, color:'#2dd4bf' }
+    ];
+    metrics.forEach(m => {
+      const v = document.getElementById(m.id); const b = document.getElementById(m.bid);
+      if (v) { v.textContent = m.val; v.style.color = m.color; }
+      if (b) { b.style.width = m.pct+'%'; b.style.background = m.color; }
+    });
+
+    // Store score for use in draft/approval
+    window._lastScore = data.score;
+    showToast('✓ Score: ' + data.score + '/100 · ' + data.veredicto);
+
+  } catch(e) {
+    if (placeholder) { placeholder.style.display = 'block'; placeholder.innerHTML = '<div style="color:#f87171;font-family:monospace;font-size:13px">✕ Error: ' + e.message + '<br><button class="btn btn-g btn-sm" style="margin-top:12px" onclick="runPipelineScore()">↻ Reintentar</button></div>'; }
+    showToast('✕ Error: ' + e.message);
+  } finally {
+    if (btn) { btn.textContent = '🤖 Analizar con Claude'; btn.disabled = false; }
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CHANNELS — localStorage backed
+// ═══════════════════════════════════════════════
+function getChannels() {
+  try { return JSON.parse(localStorage.getItem('fai_channels') || '[]'); } catch(e) { return []; }
+}
+function saveChannels(channels) {
+  try { localStorage.setItem('fai_channels', JSON.stringify(channels)); } catch(e) {}
+}
 function approveAndPublish() {
   const title = document.getElementById('apv-title')?.value || '';
-  showToast('🚀 Aprobado y publicando en YT + TikTok + IG · Programado 18:00 ✓');
+  showToast('🚀 Aprobado — se publicará en YouTube/TikTok/IG cuando esté conectada la API');
   setTimeout(() => nav('dashboard'), 1500);
 }
 
 function saveDraft() {
-  showToast('💾 Guardado en Borradores — puedes revisarlo cuando quieras');
-  updateDraftBadge(1);
-  setTimeout(() => nav('drafts'), 1000);
+  const title = document.getElementById('apv-title')?.value || '';
+  const desc = document.getElementById('apv-desc')?.value || '';
+  const idea = generatedIdeas[selectedIdeaIndex];
+  const audio = window._generatedAudio;
+
+  addDraft({
+    hook: title || idea?.hook || 'Sin título',
+    script: currentScript || '',
+    niche: selectedNiche,
+    lang: activeLang,
+    gender: activeGender,
+    voice: getVoice(),
+    score: window._lastScore || idea?.viralScore || null,
+    cost: audio?.cost || null,
+    audioUrl: audio?.url || null,
+    duration: audio?.duration || null,
+    description: desc
+  });
+  setTimeout(() => nav('drafts'), 800);
 }
 
 function rejectVideo() {
-  if (confirm('¿Seguro que quieres rechazar este vídeo? Se eliminará sin publicar.')) {
-    showToast('✕ Vídeo rechazado y eliminado');
+  if (confirm('¿Seguro que quieres rechazar este vídeo?')) {
+    showToast('✕ Vídeo rechazado');
     setPStep(0);
   }
 }
 
 function setBestTime() {
+  const langCfg = getLangCfg();
   document.getElementById('apv-schedule').value = '2026-03-19T18:00';
-  document.getElementById('apv-time-tip').textContent = '⚡ Seleccionado: Martes 18:00 → pico de engagement +43% para finanzas en España';
-  showToast('💡 Mejor hora seleccionada: Martes 18:00');
+  document.getElementById('apv-time-tip').textContent = '⚡ Mejor hora para ' + langCfg.label + ': ' + langCfg.bestTime;
+  showToast('💡 Mejor hora seleccionada: ' + langCfg.bestTime);
 }
 
 // ── DRAFT MANAGEMENT ──
@@ -3001,11 +3312,15 @@ function createChannel() {
   const fullName = name + ' ' + suffixes[chLang];
   const cfg = LANG_CONFIG[chLang] || LANG_CONFIG.es;
   const voice = cfg.voices[chGender];
+  const nicheEl = document.getElementById('ch-niche');
+  const niche = nicheEl?.value || 'finanzas';
+  const channels = getChannels();
+  channels.push({ id:Date.now(), name:fullName, niche, lang:chLang, gender:chGender, voice, createdAt:new Date().toISOString(), status:'active' });
+  saveChannels(channels);
   closeModal();
-  showToast('✓ Canal "' + fullName + '" creado · Voz: ' + voice + ' · Listo para producir');
-  // Set active lang/gender to match this channel
   setLang(chLang);
   setVoiceGender(chGender);
+  showToast('✓ Canal "' + fullName + '" creado · Voz: ' + voice + ' · Guardado');
 }
 
 // ── SELECT CHANNEL (loads lang/gender into topbar) ──
@@ -3368,14 +3683,16 @@ async function confirmDeploy() {
     // Flash deploy button green
     const deployBtn = document.getElementById('deploy-btn');
     if (deployBtn) {
-      deployBtn.style.borderColor = 'var(--green)';
-      deployBtn.style.color = 'var(--green)';
-      deployBtn.textContent = '✓ Deployed';
+      deployBtn.style.background = '#00e87a20';
+      deployBtn.style.borderColor = '#00e87a44';
+      deployBtn.style.color = '#00e87a';
+      deployBtn.innerHTML = '✓';
       setTimeout(() => {
-        deployBtn.style.borderColor = '#4f46e5';
+        deployBtn.style.background = '#4f46e510';
+        deployBtn.style.borderColor = '#4f46e544';
         deployBtn.style.color = '#818cf8';
-        deployBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Deploy';
-      }, 6000);
+        deployBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>';
+      }, 5000);
     }
 
     showToast('🚀 Gist actualizado — URL live en ~60 segundos');
@@ -3417,6 +3734,8 @@ loadKeys();
 setTier(activeTier);
 updateCostEstimate();
 initLangVoice();
+initPreferences();
+renderDrafts();
 // Live preview for channel name in modal
 document.addEventListener('input', e => {
   if (e.target && e.target.id === 'ch-name') updateChPreview();

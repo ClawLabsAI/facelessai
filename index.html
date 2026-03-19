@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.46 — Content Engine</title>
+<title>FacelessAI v3.47 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-html{height:100%;}
 :root{
   --bg0:#0a0d14;--bg1:#0f1320;--bg2:#141928;--bg3:#1c2438;
   --border:#243048;--border2:#2e3d5c;
@@ -42,7 +41,7 @@ body.theme-light .topbar { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 body.theme-light .btn-p { color: #fff; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;height:100%;display:flex;margin:0;}
+body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;display:flex;}
 
 /* ── SIDEBAR ── */
 .sidebar{width:224px;height:100vh;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow:hidden;}
@@ -70,13 +69,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;flex:1;display:flex;flex-direction:column;height:100vh;}
-.topbar{height:52px;flex-shrink:0;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
+.main{margin-left:224px;flex:1;display:flex;flex-direction:column;}
+.topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;flex:1;overflow-y:auto;min-height:0;}
-.view{display:none;min-height:100px;}.view.active{display:block;}
+.content{padding:20px;flex:1;}
+.view{display:none;}.view.active{display:block;}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:var(--sans);}
@@ -324,26 +323,29 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 #debug-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#f87171;color:#fff;font-family:monospace;font-size:12px;padding:8px 16px;z-index:9999;word-break:break-all}
 </style>
 <script>
-// nav is defined here in <head> so onclick="nav(...)" always works
+// nav() in <head> so onclick="nav(...)" works before main script loads
 var VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliates','admarketing','analytics','monetization','settings'];
 function nav(id) {
+  // Toggle CSS active class on views (CSS handles display:none/block)
   VIEWS.forEach(function(v) {
     var el = document.getElementById('view-' + v);
-    if (el) el.style.display = (v === id) ? 'block' : 'none';
+    if (el) {
+      if (v === id) { el.classList.add('active'); }
+      else { el.classList.remove('active'); }
+    }
   });
+  // Highlight active nav item
   var items = document.querySelectorAll('.ni[data-view]');
   for (var i = 0; i < items.length; i++) {
     var isActive = items[i].getAttribute('data-view') === id;
     items[i].classList.toggle('active', isActive);
-    items[i].style.background = '';
-    items[i].style.color = '';
-    items[i].style.borderColor = '';
   }
+  // Update page title
   var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
   var titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.textContent = titles[id] || id;
-  // scroll handled by browser
-
+  window.scrollTo(0, 0);
+  // Trigger per-view callbacks once main script has loaded
   if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
     try { _navCallbacks[id](); } catch(e) { console.error('nav:', e); }
   }
@@ -354,6 +356,7 @@ window.onerror = function(msg, src, line) {
 };
 </script>
 </head>
+</head>
 
 <body>
 <div id="debug-bar"></div>
@@ -361,7 +364,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.46 ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.47 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -546,7 +549,7 @@ window.onerror = function(msg, src, line) {
 
   <div class="content">
 <!-- ════════════════ DASHBOARD ════════════════ -->
-<div class="view" id="view-dashboard">
+<div class="view active" id="view-dashboard">
   <!-- STATS ROW — real data from localStorage -->
   <div class="g4 mb16">
     <div class="sc"><div class="sc-label">Borradores creados</div><div class="sc-val" id="dash-stat-drafts">0</div><span class="du" id="dash-stat-drafts-sub">en total</span></div>
@@ -5418,16 +5421,6 @@ document.addEventListener('click', e => {
 });
 
 // ── INIT ──
-// Set initial display states via inline styles (bypasses any CSS issues)
-(function() {
-  const initView = 'dashboard';
-  if (typeof VIEWS !== 'undefined') {
-    VIEWS.forEach(v => {
-      const el = document.getElementById('view-' + v);
-      if (el) el.style.display = v === initView ? 'block' : 'none';
-    });
-  }
-})();
 
 const _initFns = [
   ['renderSpikes', renderSpikes],

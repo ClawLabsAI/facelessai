@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.39 — Content Engine</title>
+<title>FacelessAI v3.42-debug — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -41,7 +41,7 @@ body.theme-light .topbar { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 body.theme-light .btn-p { color: #fff; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;display:flex;}
+body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;}
 
 /* ── SIDEBAR ── */
 .sidebar{width:224px;height:100vh;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow:hidden;}
@@ -69,12 +69,12 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.main{margin-left:224px;}
 .topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;flex:1;overflow-y:auto;min-height:0;}
+.content{padding:20px;}
 .view{display:none;min-height:100px;}.view.active{display:block;}
 
 /* ── BUTTONS ── */
@@ -332,10 +332,11 @@ function nav(id) {
   });
   var items = document.querySelectorAll('.ni[data-view]');
   for (var i = 0; i < items.length; i++) {
-    var active = items[i].getAttribute('data-view') === id;
-    items[i].style.background = active ? 'var(--gdim)' : '';
-    items[i].style.color = active ? 'var(--green)' : '';
-    items[i].style.borderColor = active ? 'var(--gsoft)' : 'transparent';
+    var isActive = items[i].getAttribute('data-view') === id;
+    items[i].classList.toggle('active', isActive);
+    items[i].style.background = '';
+    items[i].style.color = '';
+    items[i].style.borderColor = '';
   }
   var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
   var titleEl = document.getElementById('page-title');
@@ -359,15 +360,15 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.39 ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.42-debug ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
-    <div class="ni active" data-view="dashboard" onclick="nav('dashboard')">
+    <div class="ni" data-view="dashboard" onclick="nav('dashboard')">
       <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard
     </div>
     <div class="ni" data-view="channels" onclick="nav('channels')">
-      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><circle cx="8" cy="11" r="2.5"/></svg>Canales<span class="nb nbg">3</span>
+      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><circle cx="8" cy="11" r="2.5"/></svg>Canales<span class="nb nbg" id="channels-nav-badge"></span>
     </div>
     <div class="ni" data-view="drafts" onclick="nav('drafts')">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="2"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="8" y2="11"/></svg>Borradores<span class="nb nba" id="drafts-nav-badge">3</span>
@@ -544,7 +545,7 @@ window.onerror = function(msg, src, line) {
 
   <div class="content">
 <!-- ════════════════ DASHBOARD ════════════════ -->
-<div class="view active" id="view-dashboard">
+<div class="view" id="view-dashboard">
   <!-- STATS ROW — real data from localStorage -->
   <div class="g4 mb16">
     <div class="sc"><div class="sc-label">Borradores creados</div><div class="sc-val" id="dash-stat-drafts">0</div><span class="du" id="dash-stat-drafts-sub">en total</span></div>
@@ -654,7 +655,7 @@ window.onerror = function(msg, src, line) {
 </div>
 
 <!-- ════════════════ CHANNELS ════════════════ -->
-<div class="view" id="view-channels">
+<div class="view" id="view-channels" style="background:red;color:white;min-height:200px;padding:20px">
 
   <!-- HEADER -->
   <div class="sh mb20">
@@ -5667,6 +5668,7 @@ function renderChannels() {
   if (!grid) return;
 
   if (label) label.textContent = 'Canales activos (' + channels.length + ')';
+  const navBadge = document.getElementById('channels-nav-badge'); if (navBadge) navBadge.textContent = channels.length || '';
 
   const langFlag = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' };
   const langLabel = { es:'Español', en:'English', lat:'Latino' };

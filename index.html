@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.14 — Content Engine</title>
+<title>FacelessAI v3.15 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -324,7 +324,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.14</div>
+    <div class="logo-sub">Content Engine v3.15</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -2829,39 +2829,20 @@ async function generateTTS(audioOnly) {
         '<span style="color:var(--green)">Coste: $' + cost + '</span>';
     }
 
-    if (genBtn) { genBtn.textContent = '▶ Regenerar audio'; genBtn.disabled = false; }
     if (ttsBtn) { ttsBtn.disabled = false; }
+    // Reset tts button text
+    if (ttsBtn) ttsBtn.textContent = '① 🎤 Generar audio';
 
-    showToast('✓ Audio generado · $' + cost + ' · Escúchalo abajo y descárgalo');
+    showToast('✓ Audio generado · $' + cost + ' · Escúchalo abajo — ahora busca clips (②)');
 
-    // Update gen-btn to show next step
-    if (genBtn) {
-      genBtn.textContent = '✓ Audio listo — continuar →';
-      genBtn.onclick = () => {
-        const titleEl = document.getElementById('apv-title');
-        if (titleEl && generatedIdeas[selectedIdeaIndex]?.hook) {
-          titleEl.value = generatedIdeas[selectedIdeaIndex].hook;
-        }
-        // Copy audio download to approval screen
-        const apvAudio = document.getElementById('apv-audio-wrap');
-        if (apvAudio && audioUrl) {
-          apvAudio.style.display = 'block';
-          const apvPlayer = document.getElementById('apv-audio-player');
-          const apvDl = document.getElementById('apv-audio-dl');
-          if (apvPlayer) { apvPlayer.src = audioUrl; apvPlayer.load(); }
-          if (apvDl) { apvDl.href = audioUrl; apvDl.download = 'audio-facelessai.mp3'; }
-        }
-        setPStep(5);
-      };
-      genBtn.disabled = false;
-    }
+    // Advance to step 2 in the flow — do NOT touch gen-btn
+    updateFlowSteps(2);
 
   } catch(e) {
     addLog('✕ Error: ' + e.message, 'var(--red)');
     if (loading) loading.style.display = 'none';
     if (idle) idle.style.display = 'block';
-    if (genBtn) { genBtn.textContent = '▶ Generar audio + buscar clips'; genBtn.disabled = false; }
-    if (ttsBtn) { ttsBtn.disabled = false; }
+    if (ttsBtn) { ttsBtn.disabled = false; ttsBtn.textContent = '① 🎤 Generar audio'; }
     showToast('✕ Error TTS: ' + e.message);
   }
 }

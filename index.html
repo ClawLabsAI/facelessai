@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.36b-debug — Content Engine</title>
+<title>FacelessAI v3.36 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -69,12 +69,12 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;flex:1;display:flex;flex-direction:column;}
+.main{margin-left:224px;flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 .topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;flex:1;}
+.content{padding:20px;flex:1;overflow-y:auto;}
 .view{display:none;}.view.active{display:block;}
 
 /* ── BUTTONS ── */
@@ -326,21 +326,10 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 // nav is defined here in <head> so onclick="nav(...)" always works
 var VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliates','admarketing','analytics','monetization','settings'];
 function nav(id) {
-  // DEBUG
-  var dbg = [];
-  VIEWS.forEach(function(v) {
-    var el = document.getElementById('view-' + v);
-    if (!el) { dbg.push('MISSING:'+v); return; }
-    el.style.display = (v === id) ? 'block' : 'none';
-    if (v === id) dbg.push('SHOWN:'+v+' computed='+window.getComputedStyle(el).display);
-  });
-  alert('Debug: ' + dbg.join(', '));
-  // Highlight nav item
   VIEWS.forEach(function(v) {
     var el = document.getElementById('view-' + v);
     if (el) el.style.display = (v === id) ? 'block' : 'none';
   });
-  // Highlight nav item
   var items = document.querySelectorAll('.ni[data-view]');
   for (var i = 0; i < items.length; i++) {
     var active = items[i].getAttribute('data-view') === id;
@@ -348,14 +337,15 @@ function nav(id) {
     items[i].style.color = active ? 'var(--green)' : '';
     items[i].style.borderColor = active ? 'var(--gsoft)' : 'transparent';
   }
-  // Page title
   var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
   var titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.textContent = titles[id] || id;
-  window.scrollTo(0, 0);
-  // Notify main script
+  var content = document.querySelector('.content');
+  if (content) content.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
   if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
-    try { _navCallbacks[id](); } catch(e) { console.error('nav callback error:', e); }
+    try { _navCallbacks[id](); } catch(e) { console.error('nav:', e); }
   }
 }
 window.onerror = function(msg, src, line) {
@@ -371,7 +361,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.36b-debug ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.36 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>

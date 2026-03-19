@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.43-debug — Content Engine</title>
+<title>FacelessAI v3.43 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -41,7 +41,7 @@ body.theme-light .topbar { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 body.theme-light .btn-p { color: #fff; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;}
+body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;margin:0;}
 
 /* ── SIDEBAR ── */
 .sidebar{width:224px;height:100vh;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow:hidden;}
@@ -69,12 +69,12 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;}
+.main{margin-left:224px;min-height:100vh;display:flex;flex-direction:column;}
 .topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;}
+.content{padding:20px;min-height:calc(100vh - 52px);box-sizing:border-box;}
 .view{display:none;min-height:100px;}.view.active{display:block;}
 
 /* ── BUTTONS ── */
@@ -341,15 +341,7 @@ function nav(id) {
   var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
   var titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.textContent = titles[id] || id;
-  var _c = document.querySelector('.content');
-  if (_c) {
-    var cs = window.getComputedStyle(_c);
-    var viewEl = document.getElementById('view-' + id);
-    var viewCs = viewEl ? window.getComputedStyle(viewEl) : null;
-    alert('content: display=' + cs.display + ' overflow=' + cs.overflow + ' h=' + cs.height + 
-          '\nview-' + id + ': display=' + (viewCs ? viewCs.display : 'N/A') + 
-          ' h=' + (viewCs ? viewCs.height : 'N/A') + ' visibility=' + (viewCs ? viewCs.visibility : 'N/A'));
-  }
+  // scroll handled by browser
 
   if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
     try { _navCallbacks[id](); } catch(e) { console.error('nav:', e); }
@@ -368,7 +360,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.43-debug ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.43 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>

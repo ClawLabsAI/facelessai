@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.32 — Content Engine</title>
+<title>FacelessAI v3.33 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -318,35 +318,51 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 @keyframes sup{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg0);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
 </style>
-</head>
+
 <style>
 #debug-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#f87171;color:#fff;font-family:monospace;font-size:12px;padding:8px 16px;z-index:9999;word-break:break-all}
 </style>
 <script>
-// Early error catcher — shows JS errors visually on the page
-window.onerror = function(msg, src, line, col, err) {
-  var bar = document.getElementById('debug-bar');
-  if (!bar) {
-    bar = document.createElement('div');
-    bar.id = 'debug-bar';
-    document.body.appendChild(bar);
+// nav is defined here in <head> so onclick="nav(...)" always works
+var VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliates','admarketing','analytics','monetization','settings'];
+function nav(id) {
+  // Show/hide views
+  VIEWS.forEach(function(v) {
+    var el = document.getElementById('view-' + v);
+    if (el) el.style.display = (v === id) ? 'block' : 'none';
+  });
+  // Highlight nav item
+  var items = document.querySelectorAll('.ni[data-view]');
+  for (var i = 0; i < items.length; i++) {
+    var active = items[i].getAttribute('data-view') === id;
+    items[i].style.background = active ? 'var(--gdim)' : '';
+    items[i].style.color = active ? 'var(--green)' : '';
+    items[i].style.borderColor = active ? 'var(--gsoft)' : 'transparent';
   }
-  bar.style.display = 'block';
-  bar.textContent = '⚠ JS Error: ' + msg + ' (line ' + line + ')';
-  return false;
-};
-window.addEventListener('unhandledrejection', function(e) {
+  // Page title
+  var titles = {dashboard:'Dashboard',channels:'Mis canales',drafts:'Borradores',trends:'Tendencias',score:'Score predictivo IA',pipeline:'Pipeline de creación',url2video:'URL → Vídeo',clipping:'✂️ Clipping',clippipeline:'✂️ Pipeline Clipping',templates:'Plantillas virales',clone:'Clonar canal',reuse:'Reutilizar contenido',tiktokshop:'🛍️ TikTok Shop',tiktokproduct:'🛍️ Pipeline Producto',tiktokauto:'🛍️ AutoPost Shop',autopilot:'AutoPilot',models:'Modelos IA',budget:'Presupuesto',affiliates:'⭐ Afiliados',admarketing:'📢 Publicidad',analytics:'📊 Analytics',monetization:'Monetización',settings:'⚙️ Configuración'};
+  var titleEl = document.getElementById('page-title');
+  if (titleEl) titleEl.textContent = titles[id] || id;
+  window.scrollTo(0, 0);
+  // Notify main script
+  if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
+    try { _navCallbacks[id](); } catch(e) { console.error('nav callback error:', e); }
+  }
+}
+window.onerror = function(msg, src, line) {
   var bar = document.getElementById('debug-bar');
-  if (bar) { bar.style.display='block'; bar.textContent = '⚠ Promise Error: ' + (e.reason?.message || e.reason); }
-});
+  if (bar) { bar.style.display='block'; bar.textContent='⚠ JS Error: '+msg+' (line '+line+')'; }
+};
 </script>
+</head>
+
 <body>
 <div id="debug-bar"></div>
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.32</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.33 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -1830,10 +1846,10 @@ window.addEventListener('unhandledrejection', function(e) {
 <div class="view" id="view-models">
   <div class="sh mb16"><h2>Configuración de modelos IA</h2><span class="tag tg">$0.027 / vídeo · ahorro 96.8% vs premium</span></div>
   <div class="flex g8 mb14">
-    <button class="btn btn-g btn-sm" onclick="showToast('Preset \'Todo Gratis\' — $0.00/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span> Todo Gratis</button>
-    <button class="btn btn-g btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="showToast('Preset \'Económico\' aplicado — $0.027/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span> Económico (actual)</button>
-    <button class="btn btn-g btn-sm" style="border-color:var(--blue);color:var(--blue)" onclick="showToast('Preset \'Optimizado\' — $0.14/vídeo, calidad máxima')"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block"></span> Optimizado</button>
-    <button class="btn btn-g btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="showToast('Preset \'Premium\' — $0.84/vídeo con GPT-4+ElevenLabs')"><span style="width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block"></span> Premium</button>
+    <button class="btn btn-g btn-sm" onclick="showToast('Preset 'Todo Gratis' — $0.00/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span> Todo Gratis</button>
+    <button class="btn btn-g btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="showToast('Preset 'Económico' aplicado — $0.027/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span> Económico (actual)</button>
+    <button class="btn btn-g btn-sm" style="border-color:var(--blue);color:var(--blue)" onclick="showToast('Preset 'Optimizado' — $0.14/vídeo, calidad máxima')"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block"></span> Optimizado</button>
+    <button class="btn btn-g btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="showToast('Preset 'Premium' — $0.84/vídeo con GPT-4+ElevenLabs')"><span style="width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block"></span> Premium</button>
   </div>
   <div class="card" style="padding:0;overflow:hidden">
     <table class="models-tbl">
@@ -3631,7 +3647,8 @@ function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
 function getVoice()   { return getLangCfg().voices[activeGender]; }
 
 // ── NAVIGATION ──
-const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliates','admarketing','analytics','monetization','settings'];
+// VIEWS defined in head script
+// TITLES for page header
 const TITLES = {
   dashboard:'Dashboard', channels:'Mis canales', drafts:'Borradores',
   trends:'Tendencias — ventana 48h', score:'Score predictivo IA', pipeline:'Pipeline de creación',
@@ -3645,39 +3662,21 @@ const TITLES = {
   monetization:'Monetización', settings:'⚙️ Configuración'
 };
 
-function nav(id) {
-  // Use direct style instead of CSS class to avoid any specificity issues
-  VIEWS.forEach(v => {
-    const el = document.getElementById('view-' + v);
-    if (el) el.style.display = (v === id) ? 'block' : 'none';
-  });
+// Register per-view callbacks for the head nav() function
+var _navCallbacks = {
+  analytics:    function() { try { renderAnalytics(); switchAnalyticsTab('summary'); } catch(e) { console.error(e); } },
+  affiliates:   function() { try { renderAffiliates(); } catch(e) { console.error(e); } },
+  dashboard:    function() { try { renderDashboard(); } catch(e) { console.error(e); } },
+  channels:     function() { try { renderChannels(); } catch(e) { console.error(e); } },
+  clipping:     function() { try { renderClipChannels(); } catch(e) { console.error(e); } },
+  clippipeline: function() { try { setCPStep(0); } catch(e) {} },
+  tiktokshop:   function() { try { renderTTSChannels(); } catch(e) {} },
+  tiktokproduct:function() { try { setTSStep(0); } catch(e) {} },
+  drafts:       function() { try { renderDrafts(); } catch(e) {} },
+  settings:     function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
+};
 
-  // Highlight active nav item
-  document.querySelectorAll('.ni[data-view]').forEach(el => {
-    const isActive = el.dataset.view === id;
-    el.style.background = isActive ? 'var(--gdim)' : '';
-    el.style.color = isActive ? 'var(--green)' : '';
-    el.style.borderColor = isActive ? 'var(--gsoft)' : 'transparent';
-  });
-
-  const titleEl = document.getElementById('page-title');
-  if (titleEl) titleEl.textContent = TITLES[id] || id;
-  window.scrollTo(0, 0);
-
-  // Per-view render calls
-  try { if (id === 'analytics') { renderAnalytics(); switchAnalyticsTab('summary'); } } catch(e) { console.error('analytics:', e); }
-  try { if (id === 'affiliates') renderAffiliates(); } catch(e) { console.error('affiliates:', e); }
-  try { if (id === 'dashboard') renderDashboard(); } catch(e) { console.error('dashboard:', e); }
-  try { if (id === 'channels') renderChannels(); } catch(e) { console.error('channels:', e); }
-  try { if (id === 'clipping') renderClipChannels(); } catch(e) { console.error('clipping:', e); }
-  try { if (id === 'clippipeline') setCPStep(0); } catch(e) {}
-  try { if (id === 'tiktokshop') renderTTSChannels(); } catch(e) {}
-  try { if (id === 'tiktokproduct') setTSStep(0); } catch(e) {}
-  try { if (id === 'settings') setTimeout(() => { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); } catch(e) {}
-  try { if (id === 'drafts') renderDrafts(); } catch(e) {}
-}
-
-// Nav handled by inline onclick on .ni elements
+// Nav handled by head script + _navCallbacks above
 
 // ── PIPELINE ──
 function setPStep(n) {
@@ -5640,7 +5639,7 @@ function renderDashboard() {
   const draftList = document.getElementById('dash-drafts-list');
   if (draftList) {
     if (drafts.length === 0) {
-      draftList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📭</div><div style="font-size:13px;margin-bottom:10px">Sin borradores aún</div><button class="btn btn-p btn-sm" onclick="nav(\'pipeline\')">▶ Generar vídeo</button></div>';
+      draftList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📭</div><div style="font-size:13px;margin-bottom:10px">Sin borradores aún</div><button class="btn btn-p btn-sm" onclick="nav('pipeline')">▶ Generar vídeo</button></div>';
     } else {
       const statusColor = { pending:'#fbbf24', approved:'#00e87a', rejected:'#f87171' };
       const statusLabel = { pending:'⏳ Pendiente', approved:'✓ Aprobado', rejected:'✕ Rechazado' };
@@ -5894,7 +5893,7 @@ Only JSON.`;
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;min-width:120px">
-          <button class="btn btn-p btn-sm" onclick="useYTSuggestion('${ch.sampleVideoUrl.replace(/'/g,"\\'")}', '${ch.name.replace(/'/g,"\\'")}')">▶ Usar este vídeo</button>
+          <button class="btn btn-p btn-sm" onclick="useYTSuggestion('${ch.sampleVideoUrl.replace(/'/g,"\'")}', '${ch.name.replace(/'/g,"\'")}')">▶ Usar este vídeo</button>
           <a href="${ch.sampleVideoUrl}" target="_blank" class="btn btn-g btn-sm" style="text-align:center;text-decoration:none;font-size:11px">Ver en YT ↗</a>
         </div>
       </div>
@@ -7272,7 +7271,7 @@ Only JSON.`;
             <div style="font-size:11px;color:var(--text2);margin-bottom:6px">${p.whyGreat}</div>
             <div style="font-size:11px;color:#38bdf8;margin-bottom:8px;font-style:italic">💡 Ángulo: ${p.viralAngle}</div>
             <div style="font-size:11px;background:#f472b615;border:1px solid #f472b633;border-radius:6px;padding:6px;color:var(--text2);margin-bottom:8px">CTA: "${p.ctaSuggestion}"</div>
-            <button class="btn btn-p btn-sm" style="width:100%" onclick="addAffiliateFromSuggestion('${p.name.replace(/'/g,"\\'")}','${p.commission.replace(/'/g,"\\'")}','${(p.signupUrl||'').replace(/'/g,"\\'")}','${p.ctaSuggestion.replace(/'/g,"\\'")}','${niche}')">+ Añadir a mis afiliados</button>
+            <button class="btn btn-p btn-sm" style="width:100%" onclick="addAffiliateFromSuggestion('${p.name.replace(/'/g,"\'")}','${p.commission.replace(/'/g,"\'")}','${(p.signupUrl||'').replace(/'/g,"\'")}','${p.ctaSuggestion.replace(/'/g,"\'")}','${niche}')">+ Añadir a mis afiliados</button>
           </div>
         `).join('')}
       </div>`;

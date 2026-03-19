@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.98 — Content Engine</title>
+<title>FacelessAI v4.00 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.98</div>
+    <div class="logo-sub">Content Engine v4.00</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -2072,9 +2072,29 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     </div>
   </div>
 
-  <!-- TIER CARDS -->
+  <!-- TIER CARDS — static fallback + dynamic update -->
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px" id="models-tier-grid">
-    <!-- rendered by renderModels() -->
+    <div onclick="setActiveTier('free','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div><div style="font-size:11px;font-weight:700;color:var(--green)">GRATIS</div></div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.00</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
+    </div>
+    <div onclick="setActiveTier('eco','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><div style="font-size:11px;font-weight:700;color:var(--blue)">ECONÓMICO</div></div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.02</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
+    </div>
+    <div onclick="setActiveTier('opt','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--amber);background:rgba(251,191,36,0.08)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber)"></div><div style="font-size:11px;font-weight:700;color:var(--amber)">OPTIMIZADO</div></div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--amber)">$0.06</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
+      <div style="font-size:9px;color:var(--amber);margin-top:4px;font-weight:700">✓ ACTIVO</div>
+    </div>
+    <div onclick="setActiveTier('prem','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple)"></div><div style="font-size:11px;font-weight:700;color:var(--purple)">PREMIUM</div></div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.25</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
+    </div>
+    <div onclick="setActiveTier('ultra','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#ff6b35"></div><div style="font-size:11px;font-weight:700;color:#ff6b35">ULTRA</div></div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$1.47</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
+    </div>
   </div>
 
   <!-- COMPARISON TABLE -->
@@ -2092,7 +2112,14 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
             <th style="padding:8px 12px;text-align:center;color:#ff6b35;font-weight:700">ULTRA</th>
           </tr>
         </thead>
-        <tbody id="models-comparison-tbody"><!-- rendered --></tbody>
+        <tbody id="models-comparison-tbody">
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 12px;color:var(--text2);font-weight:500">💡 Ideas virales</td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Llama</div><div style="font-size:9px;color:var(--text3)">★★☆☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Haiku</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border);background:rgba(251,191,36,0.08)"><div style="font-size:10px;font-weight:600;color:var(--amber)">Sonnet</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Opus</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Opus</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 12px;color:var(--text2);font-weight:500">✍️ Script</td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Kokoro</div><div style="font-size:9px;color:var(--text3)">★★☆☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Haiku</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border);background:rgba(251,191,36,0.08)"><div style="font-size:10px;font-weight:600;color:var(--amber)">Sonnet</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Opus</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Opus</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 12px;color:var(--text2);font-weight:500">🎯 Score IA</td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Reglas</div><div style="font-size:9px;color:var(--text3)">★★☆☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Haiku</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border);background:rgba(251,191,36,0.08)"><div style="font-size:10px;font-weight:600;color:var(--amber)">Sonnet</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Opus</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Opus</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 12px;color:var(--text2);font-weight:500">🎤 Voz TTS</td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Kokoro</div><div style="font-size:9px;color:var(--text3)">★★☆☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">TTS-1</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border);background:rgba(251,191,36,0.08)"><div style="font-size:10px;font-weight:600;color:var(--amber)">TTS-1 HD</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">ElevenLabs</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">EL Clonada</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 12px;color:var(--text2);font-weight:500">🎬 Vídeo</td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Pexels</div><div style="font-size:9px;color:var(--text3)">★★☆☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Pexels HD</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border);background:rgba(251,191,36,0.08)"><div style="font-size:10px;font-weight:600;color:var(--amber)">Pexels HD+</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Pexels HD+</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">HeyGen/Runway</div><div style="font-size:9px;color:var(--text3)">★★★★★</div></td></tr>
+          <tr><td style="padding:7px 12px;color:var(--text2);font-weight:500">📝 Subtítulos</td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Whisper</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Whisper</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border);background:rgba(251,191,36,0.08)"><div style="font-size:10px;font-weight:600;color:var(--amber)">Whisper</div><div style="font-size:9px;color:var(--text3)">★★★☆☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Whisper API</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td><td style="padding:7px 12px;text-align:center;border-left:1px solid var(--border)"><div style="font-size:10px;color:var(--text2)">Whisper API</div><div style="font-size:9px;color:var(--text3)">★★★★☆</div></td></tr>
+        </tbody>
         <tfoot>
           <tr style="background:var(--bg2);font-weight:700">
             <td style="padding:8px 12px;color:var(--text2)">💰 Coste/vídeo</td>
@@ -2136,8 +2163,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         </tr>
       </thead>
       <tbody id="models-tbody">
-        <!-- rendered by renderModels() -->
-      </tbody>
+          <tr><td style="color:var(--text1);font-weight:600;font-size:13px">💡 Ideas virales</td><td><span style="font-size:13px;font-weight:600;color:var(--amber)">Claude Sonnet</span></td><td style="font-size:11px;color:var(--text3)">Ideas más creativas y virales</td><td><span class="tag ta" style="font-size:10px">$0.003</span></td><td style="font-size:12px;color:var(--amber)">★★★★☆</td></tr>
+          <tr><td style="color:var(--text1);font-weight:600;font-size:13px">✍️ Script</td><td><span style="font-size:13px;font-weight:600;color:var(--amber)">Claude Sonnet</span></td><td style="font-size:11px;color:var(--text3)">Scripts de alta calidad</td><td><span class="tag ta" style="font-size:10px">$0.012</span></td><td style="font-size:12px;color:var(--amber)">★★★★☆</td></tr>
+          <tr><td style="color:var(--text1);font-weight:600;font-size:13px">🎯 Score IA</td><td><span style="font-size:13px;font-weight:600;color:var(--amber)">Claude Sonnet</span></td><td style="font-size:11px;color:var(--text3)">Score con contexto de mercado</td><td><span class="tag ta" style="font-size:10px">$0.003</span></td><td style="font-size:12px;color:var(--amber)">★★★★☆</td></tr>
+          <tr><td style="color:var(--text1);font-weight:600;font-size:13px">🎤 Voz TTS</td><td><span style="font-size:13px;font-weight:600;color:var(--amber)">OpenAI TTS-1 HD</span></td><td style="font-size:11px;color:var(--text3)">Voz HD, muy natural</td><td><span class="tag ta" style="font-size:10px">$0.030</span></td><td style="font-size:12px;color:var(--amber)">★★★★☆</td></tr>
+          <tr><td style="color:var(--text1);font-weight:600;font-size:13px">🎬 Vídeo</td><td><span style="font-size:13px;font-weight:600;color:var(--amber)">Pexels HD + efectos</span></td><td style="font-size:11px;color:var(--text3)">Clips con zoom/pan</td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td><td style="font-size:12px;color:var(--amber)">★★★★☆</td></tr>
+          <tr><td style="color:var(--text1);font-weight:600;font-size:13px">📝 Subtítulos</td><td><span style="font-size:13px;font-weight:600;color:var(--amber)">Whisper local</span></td><td style="font-size:11px;color:var(--text3)">Transcripción precisa</td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td><td style="font-size:12px;color:var(--amber)">★★★★☆</td></tr>
+        </tbody>
     </table>
   </div>
 
@@ -10357,69 +10389,70 @@ const STAGE_LABELS = {
 };
 
 function renderModels() {
-  const tier = activeTier || 'opt';
-  const t    = TIERS[tier];
-  if (!t) return;
+  try {
+    const tier = activeTier || 'opt';
+    const t    = TIERS[tier] || TIERS['opt'];
 
-  // Header badges
-  const badge = document.getElementById('models-active-tier-badge');
-  const costBadge = document.getElementById('models-active-cost-badge');
-  if (badge) { badge.textContent = t.label; badge.style.color = t.color; }
-  if (costBadge) costBadge.textContent = t.cost + '/vídeo';
+    // Header badges
+    const badge = document.getElementById('models-active-tier-badge');
+    const costBadge = document.getElementById('models-active-cost-badge');
+    if (badge)     { badge.textContent = t.label; badge.style.color = t.color; }
+    if (costBadge) costBadge.textContent = t.cost + '/vídeo';
 
-  // Tier cards
-  const grid = document.getElementById('models-tier-grid');
-  if (grid) {
-    grid.innerHTML = Object.entries(TIERS).map(([key, ti]) => {
-      const active = key === tier;
-      const cfg = MODEL_CONFIG[key];
-      const totalCost = cfg ? Object.values(cfg).reduce((s,m)=>s+(m.cost||0),0) : 0;
-      return `<div onclick="setActiveTier('${key}','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid ${active?ti.color:'var(--border)'};background:${active?ti.color+'15':'var(--bg2)'};transition:all .2s">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <div style="width:8px;height:8px;border-radius:50%;background:${ti.color}"></div>
-          <div style="font-size:11px;font-weight:700;color:${ti.color}">${ti.label}</div>
-        </div>
-        <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:${active?ti.color:'var(--text1)'}">$${totalCost.toFixed(2)}</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
-        ${active?'<div style="font-size:9px;color:'+ti.color+';margin-top:4px;font-weight:700">✓ ACTIVO</div>':''}
-      </div>`;
-    }).join('');
+    // ── Tier cards ──
+    const grid = document.getElementById('models-tier-grid');
+    if (grid) {
+      grid.innerHTML = Object.entries(TIERS).map(([key, ti]) => {
+        const active = key === tier;
+        const cfg = MODEL_CONFIG[key] || {};
+        const totalCost = Object.values(cfg).reduce((s,m) => s + (m.cost||0), 0);
+        const col = ti.color || 'var(--text2)';
+        return '<div onclick="setActiveTier(\'' + key + '\',\'\')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid ' + (active ? col : 'var(--border)') + ';background:' + (active ? 'rgba(100,100,100,0.1)' : 'var(--bg2)') + ';transition:all .2s">' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">' +
+            '<div style="width:8px;height:8px;border-radius:50%;background:' + col + '"></div>' +
+            '<div style="font-size:11px;font-weight:700;color:' + col + '">' + ti.label + '</div>' +
+          '</div>' +
+          '<div style="font-size:18px;font-weight:800;font-family:var(--mono);color:' + (active ? col : 'var(--text1)') + '">$' + totalCost.toFixed(2) + '</div>' +
+          '<div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>' +
+          (active ? '<div style="font-size:9px;color:' + col + ';margin-top:4px;font-weight:700">✓ ACTIVO</div>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    // ── Table header label ──
+    const tblLabel = document.getElementById('models-table-tier-label');
+    if (tblLabel) { tblLabel.textContent = t.label + ' · ' + t.cost + '/vídeo'; tblLabel.style.color = t.color; }
+
+    // ── Table body ──
+    const tbody = document.getElementById('models-tbody');
+    if (tbody) {
+      const cfg = MODEL_CONFIG[tier] || MODEL_CONFIG['opt'];
+      tbody.innerHTML = Object.entries(STAGE_LABELS).map(([stage, label]) => {
+        const m = cfg[stage] || {};
+        const q = m.quality || 3;
+        const stars = '★'.repeat(q) + '☆'.repeat(5 - q);
+        const costTag = m.cost > 0
+          ? '<span class="tag ta" style="font-size:10px">$' + m.cost.toFixed(3) + '</span>'
+          : '<span class="tag tg" style="font-size:10px">GRATIS</span>';
+        return '<tr>' +
+          '<td style="color:var(--text1);font-weight:600;font-size:13px">' + label + '</td>' +
+          '<td><span style="font-size:13px;font-weight:600;color:' + t.color + '">' + (m.model||'—') + '</span></td>' +
+          '<td style="font-size:11px;color:var(--text3)">' + (m.desc||'') + '</td>' +
+          '<td>' + costTag + '</td>' +
+          '<td style="font-size:12px;color:var(--amber);letter-spacing:1px">' + stars + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    // ── Update rest ──
+    updateCostCalc();
+    renderComparisonTable();
+    renderModelsApiStatus();
+    updateModelsRecommendation();
+
+  } catch(e) {
+    console.error('renderModels error:', e);
   }
-
-  // Table header label
-  const tblLabel = document.getElementById('models-table-tier-label');
-  if (tblLabel) { tblLabel.textContent = t.label + ' · ' + t.cost + '/vídeo'; tblLabel.style.color = t.color; }
-
-  // Table
-  const tbody = document.getElementById('models-tbody');
-  if (tbody) {
-    const cfg = MODEL_CONFIG[tier] || MODEL_CONFIG.opt;
-    tbody.innerHTML = Object.entries(STAGE_LABELS).map(([stage, label]) => {
-      const m = cfg[stage] || {};
-      const stars = '★'.repeat(m.quality||3) + '☆'.repeat(5-(m.quality||3));
-      const costTag = m.cost > 0
-        ? `<span class="tag ta" style="font-size:10px">$${m.cost.toFixed(3)}</span>`
-        : '<span class="tag tg" style="font-size:10px">GRATIS</span>';
-      return `<tr>
-        <td style="color:var(--text1);font-weight:600;font-size:13px">${label}</td>
-        <td><span style="font-size:13px;font-weight:600;color:${t.color}">${m.model||'—'}</span></td>
-        <td style="font-size:11px;color:var(--text3)">${m.desc||''}</td>
-        <td>${costTag}</td>
-        <td style="font-size:12px;color:var(--amber);letter-spacing:1px">${stars}</td>
-      </tr>`;
-    }).join('');
-  }
-
-  // Update cost calc
-  updateCostCalc();
-  // Render comparison table
-  renderComparisonTable();
-
-  // API status
-  renderModelsApiStatus();
-
-  // Recommendation
-  updateModelsRecommendation();
 }
 
 function updateCostCalc() {

@@ -3,9 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.47 — Content Engine</title>
+<title>FacelessAI v3.53 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ── LAYOUT ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg0); color: var(--text1); font-family: var(--sans); font-size: 14px; line-height: 1.6; }
+.sidebar { width: 224px; height: 100vh; background: var(--bg1); border-right: 1px solid var(--border); position: fixed; top: 0; left: 0; z-index: 100; overflow-y: auto; display: flex; flex-direction: column; }
+.topbar { position: fixed; top: 0; left: 224px; right: 0; height: 52px; background: var(--bg1); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; z-index: 50; }
+#main-content { margin-left: 224px; margin-top: 52px; padding: 20px; }
+
+/* ── COMPONENT STYLES ── */
+
 :root{
   --bg0:#0a0d14;--bg1:#0f1320;--bg2:#141928;--bg3:#1c2438;
   --border:#243048;--border2:#2e3d5c;
@@ -36,15 +45,11 @@ body.theme-light {
   --teal:#0d9488;--tdim:#0d948815;
 }
 body.theme-light .card { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-body.theme-light .sidebar { box-shadow: 2px 0 8px rgba(0,0,0,0.06); }
-body.theme-light .topbar { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 body.theme-light .btn-p { color: #fff; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;display:flex;}
 
 /* ── SIDEBAR ── */
-.sidebar{width:224px;height:100vh;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow:hidden;}
 .logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .logo-mark{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green);}
 .logo-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);}
@@ -69,13 +74,10 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg0);flex-shrink:0;}
 
 /* ── MAIN ── */
-.main{margin-left:224px;flex:1;display:flex;flex-direction:column;}
-.topbar{height:52px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
 .budget-pill{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;font-size:11px;font-family:var(--mono);}
 .bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.content{padding:20px;flex:1;}
-.view{display:none;}.view.active{display:block;}
+
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:var(--sans);}
@@ -317,8 +319,11 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 .toast.show{display:flex;}
 @keyframes sup{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg0);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
-</style>
 
+
+.view{display:none;}
+.view.active{display:block;}
+</style>
 <style>
 #debug-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#f87171;color:#fff;font-family:monospace;font-size:12px;padding:8px 16px;z-index:9999;word-break:break-all}
 </style>
@@ -356,15 +361,12 @@ window.onerror = function(msg, src, line) {
 };
 </script>
 </head>
-</head>
-
 <body>
 <div id="debug-bar"></div>
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.47 ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.51 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -460,10 +462,7 @@ window.onerror = function(msg, src, line) {
     </div>
   </div>
 </aside>
-
-<!-- MAIN -->
-<div class="main">
-  <div class="topbar">
+<div class="topbar">
     <!-- Page title -->
     <div id="page-title" style="font-size:14px;font-weight:700;color:var(--text1);margin-right:12px;white-space:nowrap">Dashboard</div>
 
@@ -546,8 +545,8 @@ window.onerror = function(msg, src, line) {
       </div>
     </div>
   </div>
+<div id="main-content">
 
-  <div class="content">
 <!-- ════════════════ DASHBOARD ════════════════ -->
 <div class="view active" id="view-dashboard">
   <!-- STATS ROW — real data from localStorage -->
@@ -3449,7 +3448,9 @@ window.onerror = function(msg, src, line) {
 
 </div>
 
-  </div><!-- /content -->
+  
+</div>
+
 </div><!-- /main -->
 
 <!-- MODAL: Nuevo Canal -->
@@ -3568,6 +3569,7 @@ window.onerror = function(msg, src, line) {
   <span style="color:var(--green);font-size:16px">✓</span>
   <span id="toast-msg">Acción completada</span>
 </div>
+
 
 
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.15 — Content Engine</title>
+<title>FacelessAI v3.16 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -324,7 +324,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.15</div>
+    <div class="logo-sub">Content Engine v3.16</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -2730,8 +2730,8 @@ async function generateTTS(audioOnly) {
   const genLog = document.getElementById('gen-log');
   const logLines = document.getElementById('gen-log-lines');
 
-  if (genBtn) { genBtn.disabled = true; genBtn.textContent = '⏳ Generando audio...'; }
-  if (ttsBtn) { ttsBtn.disabled = true; }
+  // Only disable ttsBtn — never touch gen-btn (that's the MP4 button)
+  if (ttsBtn) { ttsBtn.disabled = true; ttsBtn.textContent = '⏳ Generando...'; }
   if (idle) idle.style.display = 'none';
   if (loading) loading.style.display = 'block';
   if (ring) ring.style.display = 'block';
@@ -3036,9 +3036,16 @@ async function runStep1TTS() {
 
 async function runStep2Pexels() {
   updateFlowSteps(2);
+  const btn = document.getElementById('pexels-run-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Buscando...'; }
   const query = document.getElementById('pexels-query')?.value.trim();
-  if (!query) { showToast('⚠ Escribe un término de búsqueda para Pexels'); return; }
+  if (!query) {
+    showToast('⚠ Escribe un término de búsqueda para Pexels');
+    if (btn) { btn.disabled = false; btn.textContent = '② 🎬 Buscar clips'; }
+    return;
+  }
   await searchPexels();
+  if (btn) { btn.disabled = false; btn.textContent = '② 🎬 Buscar clips'; }
   if (window._pexelsVideos?.length) updateFlowSteps(3);
 }
 

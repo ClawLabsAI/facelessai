@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.90 — Content Engine</title>
+<title>FacelessAI v3.92 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.90</div>
+    <div class="logo-sub">Content Engine v3.92</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -356,7 +356,18 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3H3a2 2 0 00-2 2v6a2 2 0 002 2h3M10 3h3a2 2 0 012 2v6a2 2 0 01-2 2h-3M5 8h6"/></svg>URL → Vídeo
     </div>
 
-    <div class="nsl" style="margin-top:6px">Biblioteca</div>
+    <div class="nsl" style="margin-top:6px">Influencer IA</div>
+      <div class="ni" data-view="influencer">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>Mis personajes
+        <span id="influencer-nav-badge" class="nbadge" style="display:none"></span>
+      </div>
+      <div class="ni" data-view="influencer-contenido">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H2v12h12V2z"/><path d="M5 6h6M5 9h4"/></svg>Contenido IA
+      </div>
+      <div class="ni" data-view="influencer-video">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 14,8 5,13"/></svg>Vídeo IA <span class="tag" style="font-size:9px;padding:1px 5px;margin-left:4px;background:var(--pdim);color:var(--purple);border:none">ULTRA</span>
+      </div>
+      <div class="nsl" style="margin-top:6px">Biblioteca</div>
     <div class="ni" data-view="templates">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="10" rx="2"/><line x1="4" y1="14" x2="12" y2="14"/><line x1="8" y1="11" x2="8" y2="14"/></svg>Plantillas virales<span class="nb nba">12</span>
     </div>
@@ -2531,6 +2542,356 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <!-- ════════ SETTINGS ════════ -->
 
 <!-- ════════════════ CLIPPING ════════════════ -->
+<!-- ════════════════ INFLUENCER IA ════════════════ -->
+<div class="view" id="view-influencer">
+  <div class="sh mb16">
+    <h2>👤 Influencer IA — Mis personajes</h2>
+    <button class="btn btn-p btn-sm" onclick="openNewPersonaModal()">+ Crear personaje</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Personajes activos</div><div class="sc-val" id="inf-stat-total">0</div><span class="du">creados</span></div>
+    <div class="sc"><div class="sc-label">Vídeos generados</div><div class="sc-val" id="inf-stat-videos">0</div><span class="du">con avatares</span></div>
+    <div class="sc"><div class="sc-label">Seguidores totales</div><div class="sc-val" id="inf-stat-followers">—</div><span class="du">todas las plataformas</span></div>
+    <div class="sc"><div class="sc-label">Ingresos estimados</div><div class="sc-val" style="color:var(--amber)" id="inf-stat-revenue">—</div><span class="du">este mes</span></div>
+  </div>
+
+  <!-- Personas grid -->
+  <div class="stl mb10" id="inf-personas-label">Personajes</div>
+  <div class="g3 mb20" id="inf-personas-grid">
+    <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text3)">
+      <div style="font-size:48px;margin-bottom:14px">👤</div>
+      <div style="font-weight:600;margin-bottom:8px">Sin personajes aún</div>
+      <p style="font-size:13px;margin-bottom:16px">Crea tu primer influencer IA con nombre, personalidad, voz y estética propias</p>
+      <button class="btn btn-p" onclick="openNewPersonaModal()">+ Crear primer personaje</button>
+    </div>
+  </div>
+
+  <!-- Tier recommendation banner -->
+  <div style="background:linear-gradient(135deg,var(--pdim),var(--bdim));border:1px solid var(--purple);border-radius:var(--rl);padding:14px 18px;margin-bottom:16px">
+    <div class="flex fic g12">
+      <span style="font-size:24px">⚡</span>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:14px;color:var(--purple)">Tier ULTRA recomendado para Influencer IA</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Claude Opus + ElevenLabs voz clonada + HeyGen avatar · ~$1.50/vídeo · Calidad broadcast</div>
+      </div>
+      <button class="btn btn-sm" style="background:var(--purple);color:#fff;border:none" onclick="setTierUltra()">Activar ULTRA</button>
+    </div>
+  </div>
+
+  <!-- API status -->
+  <div class="card">
+    <div class="stl mb12">🔌 APIs de vídeo IA</div>
+    <div style="display:flex;flex-direction:column;gap:8px" id="inf-api-status">
+      <!-- rendered by renderInfluencerApiStatus() -->
+    </div>
+    <button class="btn btn-g btn-sm" style="margin-top:12px" onclick="nav('settings')">⚙️ Configurar API keys →</button>
+  </div>
+
+  <!-- Modal crear personaje -->
+  <div id="persona-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0">
+    <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:560px;max-width:95vw;margin:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div style="font-size:16px;font-weight:700">👤 Nuevo personaje IA</div>
+        <button onclick="closePersonaModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px">×</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="lbl">Nombre del personaje</label>
+            <input class="inp" id="prs-name" placeholder="ej. Luna García, Alex Chen..."></div>
+          <div><label class="lbl">Edad aparente</label>
+            <input class="inp" id="prs-age" type="number" placeholder="25" min="18" max="60"></div>
+        </div>
+
+        <div><label class="lbl">Descripción física / look</label>
+          <input class="inp" id="prs-look" placeholder="ej. Mujer latina, pelo oscuro, estilo profesional casual..."></div>
+
+        <div><label class="lbl">Personalidad y tono de voz</label>
+          <textarea class="inp" id="prs-personality" rows="2" placeholder="ej. Motivadora, cercana, usa humor inteligente, habla como una amiga experta en finanzas..." style="resize:vertical"></textarea></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div><label class="lbl">Nicho principal</label>
+            <select class="sel" id="prs-niche">
+              <option value="finanzas">💰 Finanzas</option>
+              <option value="motivacion">🔥 Motivación</option>
+              <option value="tecnologia">💻 Tech / IA</option>
+              <option value="salud">🏃 Salud</option>
+              <option value="lifestyle">✨ Lifestyle</option>
+              <option value="negocios">📈 Negocios</option>
+              <option value="belleza">💄 Belleza</option>
+              <option value="fitness">🏋️ Fitness</option>
+            </select>
+          </div>
+          <div><label class="lbl">Idioma</label>
+            <select class="sel" id="prs-lang">
+              <option value="es">🇪🇸 Español</option>
+              <option value="lat">🌎 Latino</option>
+              <option value="en">🇺🇸 English</option>
+            </select>
+          </div>
+          <div><label class="lbl">Género de voz</label>
+            <select class="sel" id="prs-gender">
+              <option value="f">♀ Femenino</option>
+              <option value="m">♂ Masculino</option>
+            </select>
+          </div>
+        </div>
+
+        <div><label class="lbl">Plataformas objetivo</label>
+          <div class="flex g12">
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="prs-yt" checked> YouTube</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="prs-tt" checked> TikTok</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="prs-ig" checked> Instagram</label>
+          </div>
+        </div>
+
+        <div><label class="lbl">HeyGen Avatar ID <span style="color:var(--text3);font-weight:400">(opcional — para vídeos con avatar)</span></label>
+          <input class="inp" id="prs-heygen-id" placeholder="ej. avatar_id de HeyGen" style="font-family:var(--mono);font-size:12px">
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">Crea tu avatar en app.heygen.com → API → Avatar ID</div>
+        </div>
+
+        <div><label class="lbl">Instrucciones para Claude <span style="color:var(--text3);font-weight:400">(cómo debe escribir los scripts)</span></label>
+          <textarea class="inp" id="prs-claude-notes" rows="2" placeholder="ej. Siempre empieza con una pregunta provocadora. Usa expresiones coloquiales españolas. Nunca uses jerga financiera sin explicarla..." style="resize:vertical"></textarea></div>
+
+      </div>
+      <div class="flex g8 mt20">
+        <button class="btn btn-g btn-sm" onclick="closePersonaModal()">Cancelar</button>
+        <button class="btn btn-p" onclick="savePersona()">💾 Crear personaje</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ INFLUENCER IA — CONTENIDO ════════════════ -->
+<div class="view" id="view-influencer-contenido">
+  <div class="sh mb16">
+    <h2>📝 Influencer IA — Generar contenido</h2>
+    <div class="flex g8">
+      <select class="sel" id="inf-content-persona" style="width:180px;font-size:12px" onchange="loadPersonaContext()">
+        <option value="">— Selecciona personaje —</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Persona context bar -->
+  <div id="inf-persona-ctx" style="display:none;background:var(--bg2);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--text2)"></div>
+
+  <div class="g2 mb16">
+    <!-- Left: Input -->
+    <div class="card">
+      <div class="stl mb10">💡 Idea o tendencia</div>
+      <textarea class="inp" id="inf-content-idea" rows="3" placeholder="ej. 5 errores de finanzas que cometen los millennials..." style="resize:vertical;margin-bottom:10px"></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="lbl">Formato</label>
+          <select class="sel" id="inf-content-format" style="font-size:12px">
+            <option value="short">📱 Short / Reel (60s)</option>
+            <option value="vlog">🎬 Vlog style (3-5min)</option>
+            <option value="tutorial">📚 Tutorial</option>
+            <option value="opinion">💬 Opinión personal</option>
+            <option value="story">📖 Historia personal</option>
+          </select>
+        </div>
+        <div><label class="lbl">Tono</label>
+          <select class="sel" id="inf-content-tone" style="font-size:12px">
+            <option value="auto">🤖 Auto (según personaje)</option>
+            <option value="energico">⚡ Enérgico</option>
+            <option value="cercano">🤝 Cercano / Íntimo</option>
+            <option value="educativo">📚 Educativo</option>
+            <option value="humoristico">😄 Humorístico</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-p" style="width:100%" onclick="generateInfluencerContent()">🤖 Generar guión con personalidad de ${personaje}</button>
+    </div>
+
+    <!-- Right: Tier selector -->
+    <div class="card">
+      <div class="stl mb10">⚡ Tier de generación</div>
+      <div id="inf-tier-selector"></div>
+      <div id="inf-tier-recommendation" style="margin-top:10px;padding:8px;background:var(--bg2);border-radius:var(--r);font-size:11px;color:var(--text3)">
+        Selecciona un personaje para ver la recomendación de tier
+      </div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div id="inf-content-output" style="display:none">
+    <div class="stl mb8">📄 Guión generado</div>
+    <div class="card mb12">
+      <div id="inf-script-content" style="font-size:13px;line-height:1.7;color:var(--text2);white-space:pre-wrap"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="sendInfluencerToVideo()">▶ Generar vídeo con avatar</button>
+      <button class="btn btn-g btn-sm" onclick="sendInfluencerToPipeline()">▶ Ir al Pipeline (TTS)</button>
+      <button class="btn btn-g btn-sm" onclick="saveInfluencerDraft()">💾 Guardar borrador</button>
+      <button class="btn btn-g btn-sm" onclick="copyInfluencerScript()">📋 Copiar script</button>
+    </div>
+  </div>
+
+  <div id="inf-content-placeholder" style="text-align:center;padding:48px;color:var(--text3)">
+    <div style="font-size:48px;margin-bottom:14px">📝</div>
+    <p>Selecciona un personaje e introduce una idea para generar el guión con su personalidad</p>
+  </div>
+</div>
+
+<!-- ════════════════ INFLUENCER IA — VÍDEO ════════════════ -->
+<div class="view" id="view-influencer-video">
+  <div class="sh mb16">
+    <h2>🎬 Influencer IA — Vídeo con avatar</h2>
+    <span class="tag" style="background:var(--pdim);color:var(--purple);border-color:var(--purple)">⚡ Tier ULTRA</span>
+  </div>
+
+  <!-- API selector tabs -->
+  <div class="flex g6 mb16">
+    <button class="sty-btn act" id="vidai-tab-heygen"  onclick="switchVideoAITab('heygen')">👤 HeyGen</button>
+    <button class="sty-btn"     id="vidai-tab-did"     onclick="switchVideoAITab('did')">🎭 D-ID</button>
+    <button class="sty-btn"     id="vidai-tab-runway"  onclick="switchVideoAITab('runway')">🎨 Runway Gen-3</button>
+    <button class="sty-btn"     id="vidai-tab-pika"    onclick="switchVideoAITab('pika')">✨ Pika</button>
+  </div>
+
+  <!-- HeyGen panel -->
+  <div id="vidai-panel-heygen">
+    <div class="g2 mb14">
+      <div class="card">
+        <div class="stl mb10">👤 HeyGen — Avatar hablando</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Ideal para influencer IA. El avatar habla directamente a cámara con tu script. ~$0.50-1/min</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div><label class="lbl">Personaje / Avatar ID</label>
+            <select class="sel" id="hg-persona-sel" style="font-size:12px"><option value="">— Selecciona personaje —</option></select>
+          </div>
+          <div><label class="lbl">Script (texto que dirá el avatar)</label>
+            <textarea class="inp" id="hg-script" rows="4" placeholder="Pega aquí el guión generado o escribe directamente..." style="resize:vertical"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div><label class="lbl">Idioma de voz</label>
+              <select class="sel" id="hg-lang" style="font-size:12px">
+                <option value="es">🇪🇸 Español</option><option value="lat">🌎 Latino</option><option value="en">🇺🇸 English</option>
+              </select>
+            </div>
+            <div><label class="lbl">Ratio</label>
+              <select class="sel" id="hg-ratio" style="font-size:12px">
+                <option value="9:16">📱 9:16 (Shorts/Reels)</option>
+                <option value="16:9">🖥 16:9 (YouTube)</option>
+                <option value="1:1">⬛ 1:1 (Instagram)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-p" onclick="generateHeyGenVideo()">🎬 Generar vídeo con HeyGen</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="stl mb10">💰 Estimación de coste</div>
+        <div id="hg-cost-breakdown" style="font-size:12px;color:var(--text2);line-height:2">
+          <div>Script: ~$0.003 (Claude Opus)</div>
+          <div>Voz: ~$0.10 (ElevenLabs clonada)</div>
+          <div>Avatar vídeo: ~$0.80 (HeyGen 1min)</div>
+          <div style="border-top:1px solid var(--border);padding-top:8px;margin-top:8px;font-weight:700;color:var(--amber)">Total: ~$0.90/vídeo</div>
+        </div>
+        <div class="stl mt12 mb8">📊 Estado HeyGen</div>
+        <div id="hg-api-status" style="font-size:12px;color:var(--text3)">Verificando API key...</div>
+        <div id="hg-job-log" style="margin-top:10px;display:none;max-height:150px;overflow-y:auto;font-size:11px;font-family:var(--mono)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D-ID panel -->
+  <div id="vidai-panel-did" style="display:none">
+    <div class="card mb14">
+      <div class="stl mb10">🎭 D-ID — Avatar hablando</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Similar a HeyGen, algo más económico. Buena calidad para Shorts. ~$0.30-0.60/min</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label class="lbl">URL de imagen del presentador</label>
+          <input class="inp" id="did-image-url" placeholder="https://... (imagen del rostro del influencer IA)">
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">Usa una imagen generada por Midjourney o FLUX de tu personaje</div>
+        </div>
+        <div><label class="lbl">Script</label>
+          <textarea class="inp" id="did-script" rows="4" placeholder="Guión para el avatar..." style="resize:vertical"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="lbl">Voz (D-ID TTS)</label>
+            <select class="sel" id="did-voice" style="font-size:12px">
+              <option value="es-ES-AlvaroNeural">🇪🇸 Álvaro (♂ ES)</option>
+              <option value="es-ES-ElviraNeural">🇪🇸 Elvira (♀ ES)</option>
+              <option value="es-MX-JorgeNeural">🌎 Jorge (♂ LAT)</option>
+              <option value="en-US-GuyNeural">🇺🇸 Guy (♂ EN)</option>
+              <option value="en-US-AriaNeural">🇺🇸 Aria (♀ EN)</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn btn-p" style="width:100%" onclick="generateDIDVideo()">🎬 Generar con D-ID</button>
+          </div>
+        </div>
+      </div>
+      <div id="did-job-log" style="margin-top:10px;display:none;max-height:150px;overflow-y:auto;font-size:11px;font-family:var(--mono)"></div>
+    </div>
+  </div>
+
+  <!-- Runway panel -->
+  <div id="vidai-panel-runway" style="display:none">
+    <div class="card mb14">
+      <div class="stl mb10">🎨 Runway Gen-3 — Vídeo generativo</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Genera vídeo a partir de imagen + prompt. Más artístico, ideal para B-roll o intros. ~$0.05-0.15/seg</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label class="lbl">Imagen de referencia (URL)</label>
+          <input class="inp" id="rw-image-url" placeholder="https://... (imagen base para el vídeo)">
+        </div>
+        <div><label class="lbl">Prompt de vídeo</label>
+          <textarea class="inp" id="rw-prompt" rows="3" placeholder="ej. A young woman smiling and talking to camera in a modern office, professional lighting, cinematic..." style="resize:vertical"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div><label class="lbl">Duración</label>
+            <select class="sel" id="rw-duration" style="font-size:12px">
+              <option value="5">5 segundos</option><option value="10">10 segundos</option>
+            </select>
+          </div>
+          <div><label class="lbl">Ratio</label>
+            <select class="sel" id="rw-ratio" style="font-size:12px">
+              <option value="9:16">📱 9:16</option><option value="16:9">🖥 16:9</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn btn-p" style="width:100%" onclick="generateRunwayVideo()">🎨 Generar</button>
+          </div>
+        </div>
+      </div>
+      <div id="rw-job-log" style="margin-top:10px;display:none;max-height:150px;overflow-y:auto;font-size:11px;font-family:var(--mono)"></div>
+    </div>
+  </div>
+
+  <!-- Pika panel -->
+  <div id="vidai-panel-pika" style="display:none">
+    <div class="card mb14">
+      <div class="stl mb10">✨ Pika — Vídeo IA</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Alternativa a Runway, más accesible. Bueno para efectos visuales y transiciones. ~$0.02-0.08/seg</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label class="lbl">Prompt de vídeo</label>
+          <textarea class="inp" id="pika-prompt" rows="3" placeholder="ej. Cinematic shot of a confident woman explaining finance tips, bokeh background..." style="resize:vertical"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="lbl">Imagen base (opcional)</label>
+            <input class="inp" id="pika-image" placeholder="URL de imagen...">
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn btn-p" style="width:100%" onclick="generatePikaVideo()">✨ Generar con Pika</button>
+          </div>
+        </div>
+      </div>
+      <div id="pika-job-log" style="margin-top:10px;display:none;max-height:150px;overflow-y:auto;font-size:11px;font-family:var(--mono)"></div>
+    </div>
+  </div>
+
+  <!-- Results area -->
+  <div id="vidai-results" style="display:none" class="card">
+    <div class="stl mb10">✅ Vídeo generado</div>
+    <video id="vidai-player" controls style="width:100%;max-height:300px;border-radius:var(--r);background:#000"></video>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <a id="vidai-download" class="btn btn-p btn-sm" download="influencer-video.mp4">⬇ Descargar MP4</a>
+      <button class="btn btn-g btn-sm" onclick="saveInfluencerVideoAsDraft()">💾 Guardar como borrador</button>
+    </div>
+  </div>
+</div>
 <div class="view" id="view-clipping">
   <div class="sh mb20">
     <h2>✂️ Clipping — Canales</h2>
@@ -3108,7 +3469,54 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         </div>
       </div>
 
-    <!-- RIGHT: TIER SELECTOR + COST -->
+    
+      <!-- ━━ VIDEO AI APIs ━━ -->
+      <div style="font-size:10px;color:var(--purple);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px;font-weight:700">⚡ Tier ULTRA — APIs de vídeo IA</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;border-color:var(--purple)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:28px;height:28px;border-radius:6px;background:var(--pdim);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:600">HeyGen API</div><div style="font-size:10px;color:var(--text3)">Avatares IA hablando · ~$0.80/min</div></div>
+          <span id="status-heygen-badge" style="font-size:10px;padding:2px 6px;border-radius:99px;background:var(--bg3);color:var(--text3)">—</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="key-heygen" placeholder="API key de HeyGen..." style="flex:1;font-size:12px;font-family:var(--mono)">
+          <button class="btn btn-p btn-sm" onclick="saveKey('heygen')">Guardar</button>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:28px;height:28px;border-radius:6px;background:var(--pdim);display:flex;align-items:center;justify-content:center;font-size:14px">🎭</div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:600">D-ID API</div><div style="font-size:10px;color:var(--text3)">Avatares IA · ~$0.40/min</div></div>
+          <span id="status-did-badge" style="font-size:10px;padding:2px 6px;border-radius:99px;background:var(--bg3);color:var(--text3)">—</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="key-did" placeholder="Basic auth de D-ID..." style="flex:1;font-size:12px;font-family:var(--mono)">
+          <button class="btn btn-p btn-sm" onclick="saveKey('did')">Guardar</button>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:28px;height:28px;border-radius:6px;background:var(--pdim);display:flex;align-items:center;justify-content:center;font-size:14px">🎨</div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:600">Runway Gen-3 API</div><div style="font-size:10px;color:var(--text3)">Vídeo generativo · ~$0.10/seg</div></div>
+          <span id="status-runway-badge" style="font-size:10px;padding:2px 6px;border-radius:99px;background:var(--bg3);color:var(--text3)">—</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="key-runway" placeholder="API key de Runway..." style="flex:1;font-size:12px;font-family:var(--mono)">
+          <button class="btn btn-p btn-sm" onclick="saveKey('runway')">Guardar</button>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:28px;height:28px;border-radius:6px;background:var(--pdim);display:flex;align-items:center;justify-content:center;font-size:14px">✨</div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:600">Pika API</div><div style="font-size:10px;color:var(--text3)">Vídeo IA · ~$0.05/seg</div></div>
+          <span id="status-pika-badge" style="font-size:10px;padding:2px 6px;border-radius:99px;background:var(--bg3);color:var(--text3)">—</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="key-pika" placeholder="API key de Pika..." style="flex:1;font-size:12px;font-family:var(--mono)">
+          <button class="btn btn-p btn-sm" onclick="saveKey('pika')">Guardar</button>
+        </div>
+      </div>
+<!-- RIGHT: TIER SELECTOR + COST -->
     <div style="display:flex;flex-direction:column;gap:14px">
 
       <!-- ACTIVE TIER -->
@@ -3444,7 +3852,7 @@ function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
 function getVoice()   { return getLangCfg().voices[activeGender]; }
 
 // ── NAVIGATION ──
-const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliation','admarketing','analytics','monetization','settings'];
+const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','influencer','influencer-personaje','influencer-contenido','influencer-video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliation','admarketing','analytics','monetization','settings'];
 const TITLES = {
   dashboard:'Dashboard', channels:'Mis canales', drafts:'Borradores',
   trends:'Tendencias — ventana 48h', score:'Score predictivo IA', pipeline:'Pipeline de creación',
@@ -4296,6 +4704,7 @@ async function generateRealVideo() {
     }).filter(u => u && u.startsWith('http'));
 
     addLog('✓ ' + clipUrls.length + ' URLs de clips extraídas', '#00e87a');
+    clipUrls.forEach((u,i) => addLog('  Clip ' + (i+1) + ': ' + u.slice(0,60) + '...', '#475569'));
 
     addLog('🚀 Enviando al servidor Railway...', '#38bdf8');
     const idea = generatedIdeas[selectedIdeaIndex];
@@ -6216,7 +6625,10 @@ var _navCallbacks = {
   dashboard:     function() { try { renderDashboard(); } catch(e) { console.error(e); } },
   channels:      function() { try { renderChannels(); } catch(e) { console.error(e); } },
   drafts:        function() { try { renderDrafts(); } catch(e) { console.error(e); } },
-  trends:        function() { try { loadTrendsChannels(); } catch(e) {} },
+  trends:           function() { try { loadTrendsChannels(); } catch(e) {} },
+  influencer:        function() { try { renderInfluencer(); } catch(e) {} },
+  'influencer-contenido': function() { try { loadInfluencerContenido(); } catch(e) {} },
+  'influencer-video':     function() { try { loadInfluencerContenido(); switchVideoAITab('heygen'); } catch(e) {} },
   score:         function() { try { loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e) {} },
   analytics:     function() { try { renderAnalytics(); switchAnalyticsTab('log'); } catch(e) { console.error(e); } },
   clipping:      function() { try { renderClipChannels(); } catch(e) { console.error(e); } },
@@ -7802,6 +8214,584 @@ function openChannelRpmModal(channelName) {
     showToast('✓ RPM actualizado: $' + rpm + '/K views');
   }
 }
+
+// ══════════════════════════════════════════════════════════
+// ULTRA TIER + TIER RECOMMENDATION ENGINE
+// ══════════════════════════════════════════════════════════
+const TIERS = {
+  free:  { label:'GRATIS',     color:'var(--green)',  cost:'$0.00',  llm:'Llama local', tts:'Kokoro',        video:'—',            desc:'Sin coste. Calidad básica.' },
+  eco:   { label:'ECONÓMICO',  color:'var(--blue)',   cost:'~$0.01', llm:'Claude Haiku',tts:'OpenAI TTS-1',  video:'Pexels clips', desc:'Ideal para volumen alto.' },
+  opt:   { label:'OPTIMIZADO', color:'var(--amber)',  cost:'~$0.06', llm:'Claude Sonnet',tts:'OpenAI TTS-1 HD',video:'Pexels HD',  desc:'Balance calidad/precio.' },
+  prem:  { label:'PREMIUM',    color:'var(--purple)', cost:'~$0.25', llm:'Claude Opus', tts:'ElevenLabs v3', video:'Pexels + efectos',desc:'Máxima calidad de voz.' },
+  ultra: { label:'ULTRA',      color:'#ff6b35',       cost:'~$1.50', llm:'Claude Opus', tts:'ElevenLabs clonada',video:'HeyGen/Runway/D-ID/Pika',desc:'Avatar IA real. Influencer IA.' },
+};
+activeTier = localStorage.getItem('fai_active_tier') || activeTier;
+
+function setTierUltra() {
+  activeTier = 'ultra';
+  localStorage.setItem('fai_active_tier', 'ultra');
+  showToast('⚡ Tier ULTRA activado · Claude Opus + ElevenLabs + HeyGen/Runway');
+  renderTierSelector();
+}
+
+function renderTierSelector(containerId, context) {
+  const el = document.getElementById(containerId || 'inf-tier-selector');
+  if (!el) return;
+  el.innerHTML = Object.entries(TIERS).map(([key, t]) => `
+    <div onclick="setActiveTier('${key}','${containerId||''}')" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);cursor:pointer;margin-bottom:4px;background:${activeTier===key?t.color+'20':'var(--bg2)'};border:1px solid ${activeTier===key?t.color:'var(--border)'}">
+      <div style="width:8px;height:8px;border-radius:50%;background:${t.color};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:700;color:${t.color}">${t.label} <span style="font-size:10px;color:var(--text3);font-weight:400">· ${t.cost}/vídeo</span></div>
+        <div style="font-size:10px;color:var(--text3)">${t.llm} · ${t.tts} · Video: ${t.video}</div>
+      </div>
+      ${activeTier===key?'<span style="font-size:10px;color:'+t.color+'">✓ Activo</span>':''}
+    </div>`).join('');
+}
+
+function setActiveTier(tier, containerId) {
+  activeTier = tier;
+  localStorage.setItem('fai_active_tier', tier);
+  renderTierSelector(containerId);
+  const t = TIERS[tier];
+  showToast('Tier: ' + t.label + ' · ' + t.cost + '/vídeo');
+}
+
+function getAITierRecommendation(context) {
+  // context: 'influencer', 'pipeline', 'autopilot', 'volume'
+  const hasHeyGen = !!(localStorage.getItem('fai_key_heygen') || KEYS.heygen);
+  const hasElevenLabs = !!(localStorage.getItem('fai_key_elevenlabs') || KEYS.elevenlabs);
+  
+  if (context === 'influencer') {
+    return { tier:'ultra', reason:'Para Influencer IA necesitas avatar real (HeyGen) + voz clonada (ElevenLabs). La calidad hace que la audiencia confíe en el personaje.' };
+  }
+  if (context === 'volume' || context === 'autopilot') {
+    return { tier:'eco', reason:'Para producción en volumen (AutoPilot), el tier Económico minimiza costes manteniendo buena calidad. $0.01/vídeo × 30 = $0.30/mes.' };
+  }
+  if (hasElevenLabs) {
+    return { tier:'prem', reason:'Tienes ElevenLabs configurado — el tier Premium aprovecha tu inversión con la mejor calidad de voz disponible.' };
+  }
+  return { tier:'opt', reason:'Tier Optimizado: mejor relación calidad/precio para la mayoría de canales. Claude Sonnet genera scripts excelentes a bajo coste.' };
+}
+
+function showTierRecommendation(context, containerId) {
+  const rec = getAITierRecommendation(context);
+  const t = TIERS[rec.tier];
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = `<div style="display:flex;gap:8px;align-items:flex-start">
+    <span style="font-size:14px">🤖</span>
+    <div>
+      <div style="font-size:11px;font-weight:700;color:${t.color};margin-bottom:3px">Claude recomienda: ${t.label}</div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.5">${rec.reason}</div>
+      <button onclick="setActiveTier('${rec.tier}','${containerId}')" class="btn btn-sm" style="margin-top:6px;font-size:10px;padding:2px 8px;background:${t.color}20;color:${t.color};border-color:${t.color}">Usar ${t.label}</button>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// INFLUENCER IA — Personajes
+// ══════════════════════════════════════════════════════════
+function getPersonas() {
+  try { return JSON.parse(localStorage.getItem('fai_personas') || '[]'); } catch(e) { return []; }
+}
+function savePersonas(ps) { localStorage.setItem('fai_personas', JSON.stringify(ps)); }
+
+function renderInfluencer() {
+  const personas = getPersonas();
+  const grid = document.getElementById('inf-personas-grid');
+  const label = document.getElementById('inf-personas-label');
+  if (label) label.textContent = 'Personajes (' + personas.length + ')';
+
+  // Stats
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  setEl('inf-stat-total', personas.length);
+  setEl('inf-stat-videos', getDrafts().filter(d=>d.source==='influencer').length);
+
+  // API status
+  renderInfluencerApiStatus();
+
+  if (!grid) return;
+  if (!personas.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text3)"><div style="font-size:48px;margin-bottom:14px">👤</div><div style="font-weight:600;margin-bottom:8px">Sin personajes aún</div><p style="font-size:13px;margin-bottom:16px">Crea tu primer influencer IA</p><button class="btn btn-p" onclick="openNewPersonaModal()">+ Crear personaje</button></div>';
+    return;
+  }
+
+  const nicheEmoji = { finanzas:'💰',motivacion:'🔥',tecnologia:'💻',salud:'🏃',lifestyle:'✨',negocios:'📈',belleza:'💄',fitness:'🏋️' };
+  const nicheColors = { finanzas:'#22c55e',motivacion:'#f97316',tecnologia:'#3b82f6',salud:'#10b981',lifestyle:'#e879f9',negocios:'#f59e0b',belleza:'#ec4899',fitness:'#10b981' };
+  const langFlag = { es:'🇪🇸',lat:'🌎',en:'🇺🇸' };
+
+  grid.innerHTML = personas.map((p, i) => {
+    const col = nicheColors[p.niche] || 'var(--purple)';
+    const emoji = nicheEmoji[p.niche] || '👤';
+    const flag = langFlag[p.lang] || '🌍';
+    const initials = (p.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const vids = getDrafts().filter(d=>d.persona===p.name).length;
+    return `<div class="card" style="border-top:3px solid ${col}">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <div style="width:44px;height:44px;border-radius:50%;background:${col}30;border:2px solid ${col};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:${col};flex-shrink:0">${initials}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:14px">${p.name}</div>
+          <div style="font-size:11px;color:var(--text3)">${flag} ${(p.niche||'').toUpperCase()} · ${p.gender==='f'?'♀':'♂'} · ${p.age||'?'} años</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px" onclick="editPersona(${i})">✏️</button>
+          <button onclick="deletePersona(${i})" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 6px">×</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.5;max-height:40px;overflow:hidden">${p.personality||'Sin descripción'}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+        ${(p.platforms||[]).map(pl=>pl==='youtube'?'<span class="tag" style="font-size:10px;color:#ff4444;border-color:#ff4444">▶ YT</span>':pl==='tiktok'?'<span class="tag" style="font-size:10px;color:#00d4c4;border-color:#00d4c4">TT</span>':'<span class="tag" style="font-size:10px;color:#e1306c;border-color:#e1306c">IG</span>').join('')}
+        ${p.heygenId?'<span class="tag" style="font-size:10px;color:var(--purple);border-color:var(--purple)">HeyGen ✓</span>':''}
+        ${vids>0?'<span class="tag ta" style="font-size:10px">'+vids+' vídeo'+( vids>1?'s':'')+'</span>':''}
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-p btn-sm" style="flex:1" onclick="workWithPersona('${p.name.replace(/'/g,"\\'")}')" >📝 Crear contenido</button>
+        ${p.heygenId?'<button class="btn btn-sm" style="background:var(--purple);color:#fff;border:none;border-radius:var(--r);padding:4px 10px;font-size:12px;cursor:pointer" onclick="workWithPersonaVideo(\''+p.name.replace(/'/g,"\\'")+'\')" >🎬 Vídeo</button>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderInfluencerApiStatus() {
+  const el = document.getElementById('inf-api-status');
+  if (!el) return;
+  const apis = [
+    { key:'heygen',  label:'HeyGen',     icon:'👤', desc:'Avatar hablando',    link:'https://app.heygen.com/settings?nav=API' },
+    { key:'did',     label:'D-ID',       icon:'🎭', desc:'Avatar económico',   link:'https://studio.d-id.com/account-settings' },
+    { key:'runway',  label:'Runway Gen-3',icon:'🎨',desc:'Vídeo generativo',   link:'https://app.runwayml.com/account/api-keys' },
+    { key:'pika',    label:'Pika',       icon:'✨', desc:'Vídeo IA alternativo',link:'https://pika.art/settings' },
+  ];
+  el.innerHTML = apis.map(a => {
+    const hasKey = !!(localStorage.getItem('fai_key_'+a.key) || KEYS[a.key]);
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
+      <span style="font-size:16px">${a.icon}</span>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:600">${a.label} <span style="font-size:10px;color:var(--text3);font-weight:400">— ${a.desc}</span></div>
+      </div>
+      ${hasKey
+        ? '<span class="tag tg" style="font-size:10px">✓ Conectada</span>'
+        : '<a href="'+a.link+'" target="_blank" class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px">+ Obtener key</a>'}
+    </div>`;
+  }).join('');
+}
+
+function openNewPersonaModal() {
+  ['prs-name','prs-age','prs-look','prs-personality','prs-claude-notes','prs-heygen-id'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('prs-yt').checked = true;
+  document.getElementById('prs-tt').checked = true;
+  document.getElementById('prs-ig').checked = true;
+  const m = document.getElementById('persona-modal');
+  if(m) m.style.display='flex';
+}
+function closePersonaModal() {
+  const m = document.getElementById('persona-modal');
+  if(m) m.style.display='none';
+}
+function savePersona() {
+  const name = document.getElementById('prs-name')?.value.trim();
+  if (!name) { showToast('⚠ Introduce un nombre'); return; }
+  const platforms = [];
+  if (document.getElementById('prs-yt')?.checked) platforms.push('youtube');
+  if (document.getElementById('prs-tt')?.checked) platforms.push('tiktok');
+  if (document.getElementById('prs-ig')?.checked) platforms.push('instagram');
+  const persona = {
+    name, age: document.getElementById('prs-age')?.value||'',
+    look: document.getElementById('prs-look')?.value.trim()||'',
+    personality: document.getElementById('prs-personality')?.value.trim()||'',
+    niche: document.getElementById('prs-niche')?.value||'finanzas',
+    lang: document.getElementById('prs-lang')?.value||'es',
+    gender: document.getElementById('prs-gender')?.value||'f',
+    platforms, heygenId: document.getElementById('prs-heygen-id')?.value.trim()||'',
+    claudeNotes: document.getElementById('prs-claude-notes')?.value.trim()||'',
+    createdAt: Date.now()
+  };
+  const ps = getPersonas();
+  ps.push(persona);
+  savePersonas(ps);
+  closePersonaModal();
+  renderInfluencer();
+  showToast('✓ Personaje creado: ' + name);
+}
+function deletePersona(i) {
+  const ps = getPersonas();
+  if (!confirm('¿Eliminar a ' + ps[i]?.name + '?')) return;
+  ps.splice(i,1); savePersonas(ps); renderInfluencer();
+}
+function editPersona(i) {
+  const ps = getPersonas();
+  const p = ps[i];
+  if (!p) return;
+  ['prs-name','prs-age','prs-look','prs-personality','prs-heygen-id','prs-claude-notes'].forEach(id => {
+    const field = id.replace('prs-','').replace('-','');
+    const el = document.getElementById(id);
+    if (el) el.value = p[field] || p.look || p.personality || p.heygenId || p.claudeNotes || p.age || '';
+  });
+  document.getElementById('prs-name').value = p.name||'';
+  document.getElementById('prs-age').value = p.age||'';
+  document.getElementById('prs-look').value = p.look||'';
+  document.getElementById('prs-personality').value = p.personality||'';
+  document.getElementById('prs-heygen-id').value = p.heygenId||'';
+  document.getElementById('prs-claude-notes').value = p.claudeNotes||'';
+  const nicheEl = document.getElementById('prs-niche'); if(nicheEl) nicheEl.value=p.niche||'finanzas';
+  const langEl  = document.getElementById('prs-lang');  if(langEl)  langEl.value=p.lang||'es';
+  const genEl   = document.getElementById('prs-gender');if(genEl)   genEl.value=p.gender||'f';
+  document.getElementById('prs-yt').checked = (p.platforms||[]).includes('youtube');
+  document.getElementById('prs-tt').checked = (p.platforms||[]).includes('tiktok');
+  document.getElementById('prs-ig').checked = (p.platforms||[]).includes('instagram');
+  const m = document.getElementById('persona-modal');
+  if(m) m.style.display='flex';
+}
+function workWithPersona(name) {
+  nav('influencer-contenido');
+  const sel = document.getElementById('inf-content-persona');
+  if(sel) { sel.value=name; loadPersonaContext(); }
+}
+function workWithPersonaVideo(name) {
+  nav('influencer-video');
+  const sel = document.getElementById('hg-persona-sel');
+  if(sel) sel.value=name;
+}
+
+// ── Influencer contenido ──
+function loadInfluencerContenido() {
+  const ps = getPersonas();
+  ['inf-content-persona','hg-persona-sel'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— Selecciona personaje —</option>' +
+      ps.map(p=>`<option value="${p.name}" ${cur===p.name?'selected':''}>${p.name} · ${p.niche}</option>`).join('');
+  });
+  renderTierSelector('inf-tier-selector');
+  showTierRecommendation('influencer','inf-tier-recommendation');
+}
+function loadPersonaContext() {
+  const name = document.getElementById('inf-content-persona')?.value;
+  const ctx  = document.getElementById('inf-persona-ctx');
+  const genBtn = document.querySelector('#view-influencer-contenido button.btn-p');
+  if (!name) { if(ctx) ctx.style.display='none'; return; }
+  const p = getPersonas().find(x=>x.name===name);
+  if (!p || !ctx) return;
+  ctx.style.display = 'block';
+  const flag = {es:'🇪🇸',lat:'🌎',en:'🇺🇸'}[p.lang]||'🌍';
+  ctx.innerHTML = `<strong>${p.name}</strong> · ${flag} · ${(p.niche||'').toUpperCase()} · ${p.gender==='f'?'♀':'♂'} ${p.age||'?'} años<br><em style="color:var(--text3)">${p.personality?.slice(0,100)||''}</em>`;
+  if (genBtn) genBtn.textContent = `🤖 Generar guión con personalidad de ${p.name}`;
+}
+async function generateInfluencerContent() {
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
+  const personaName = document.getElementById('inf-content-persona')?.value;
+  const idea        = document.getElementById('inf-content-idea')?.value.trim();
+  const format      = document.getElementById('inf-content-format')?.value || 'short';
+  const tone        = document.getElementById('inf-content-tone')?.value   || 'auto';
+  if (!personaName) { showToast('Selecciona un personaje'); return; }
+  if (!idea) { showToast('Introduce una idea o tema'); return; }
+
+  const p = getPersonas().find(x=>x.name===personaName);
+  if (!p) return;
+  const formatLabel = { short:'60 segundos (Short/Reel)', vlog:'3-5 minutos (Vlog)', tutorial:'Tutorial paso a paso', opinion:'Opinión personal directa', story:'Historia personal' };
+  const langLabel   = { es:'español de España', lat:'español latino neutro', en:'English US' };
+
+  const output = document.getElementById('inf-content-output');
+  const placeholder = document.getElementById('inf-content-placeholder');
+  if (output) output.style.display='none';
+  if (placeholder) placeholder.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3)">⏳ Generando guión con la personalidad de '+personaName+'...</div>';
+
+  const prompt = `Eres ${personaName}, un influencer IA con las siguientes características:
+- Edad: ${p.age||'25'} años | Nicho: ${p.niche} | Idioma: ${langLabel[p.lang]||p.lang}
+- Look/Estética: ${p.look||'profesional y cercano'}
+- Personalidad: ${p.personality||'amigable y experto'}
+- Instrucciones especiales: ${p.claudeNotes||'ninguna'}
+
+Escribe un guión de ${formatLabel[format]} sobre: "${idea}"
+${tone!=='auto'?'Tono especial: '+tone:'Usa tu personalidad natural'}
+
+El guión debe sonar EXACTAMENTE como ${personaName} hablaría — con su vocabulario, sus muletillas, su forma de conectar con la audiencia.
+NO uses formato de guión técnico. Escribe el texto tal como lo diría el personaje, natural y fluido.
+Empieza DIRECTAMENTE con el hook, sin presentaciones ni metaetiquetas.`;
+
+  try {
+    const tier = TIERS[activeTier] || TIERS.opt;
+    const model = activeTier==='ultra'||activeTier==='prem' ? 'claude-opus-4-6' : activeTier==='opt' ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model, max_tokens:1000, messages:[{role:'user',content:prompt}]})
+    });
+    const data = await resp.json();
+    const script = data.content?.[0]?.text || '';
+    window._influencerScript = script;
+    window._influencerPersona = p;
+
+    const scriptEl = document.getElementById('inf-script-content');
+    if (scriptEl) scriptEl.textContent = script;
+    if (output) output.style.display='block';
+    if (placeholder) placeholder.style.display='none';
+    logAICall('claude','influencer-'+personaName, 0.006, 600);
+    showToast('✓ Guión generado con la voz de ' + personaName);
+  } catch(e) {
+    if(placeholder) placeholder.innerHTML='<div style="color:var(--red);text-align:center;padding:24px">✗ '+e.message+'</div>';
+  }
+}
+function sendInfluencerToVideo() {
+  const script = window._influencerScript;
+  const p = window._influencerPersona;
+  if (!script) { showToast('Genera primero el guión'); return; }
+  nav('influencer-video');
+  const hgScript = document.getElementById('hg-script');
+  const didScript = document.getElementById('did-script');
+  if (hgScript) hgScript.value = script;
+  if (didScript) didScript.value = script;
+  if (p?.heygenId) {
+    const sel = document.getElementById('hg-persona-sel');
+    if (sel) sel.value = p.name;
+  }
+}
+function sendInfluencerToPipeline() {
+  const script = window._influencerScript;
+  if (!script) { showToast('Genera primero el guión'); return; }
+  currentScript = script;
+  nav('pipeline');
+  setPStep(3);
+  const el = document.getElementById('script-content');
+  if (el) el.textContent = script;
+  showToast('▶ Guión cargado en Pipeline paso 3');
+}
+function saveInfluencerDraft() {
+  const script = window._influencerScript;
+  const p = window._influencerPersona;
+  if (!script) return;
+  addDraft({
+    hook: script.split('\n')[0].slice(0,80),
+    script, lang: p?.lang||'es', gender:p?.gender||'f',
+    voice: p?.lang==='en'?( p?.gender==='m'?'echo':'alloy'):p?.lang==='lat'?(p?.gender==='m'?'fable':'shimmer'):(p?.gender==='m'?'onyx':'nova'),
+    status:'pending', source:'influencer', persona:p?.name||'',
+    createdAt:Date.now()
+  });
+  showToast('✓ Guardado como borrador');
+}
+function copyInfluencerScript() {
+  navigator.clipboard.writeText(window._influencerScript||'').then(()=>showToast('✓ Script copiado'));
+}
+
+// ── Video AI tab switching ──
+function switchVideoAITab(tab) {
+  ['heygen','did','runway','pika'].forEach(t => {
+    const btn   = document.getElementById('vidai-tab-'+t);
+    const panel = document.getElementById('vidai-panel-'+t);
+    if(btn)   btn.classList.toggle('act', t===tab);
+    if(panel) panel.style.display = t===tab?'block':'none';
+  });
+}
+
+// ── HeyGen ──
+async function generateHeyGenVideo() {
+  const apiKey = localStorage.getItem('fai_key_heygen') || KEYS.heygen;
+  if (!apiKey) { showToast('⚠ Añade tu HeyGen API key en Configuración'); nav('settings'); return; }
+  const personaName = document.getElementById('hg-persona-sel')?.value;
+  const script = document.getElementById('hg-script')?.value.trim();
+  const lang   = document.getElementById('hg-lang')?.value || 'es';
+  const ratio  = document.getElementById('hg-ratio')?.value || '9:16';
+  if (!script) { showToast('⚠ Introduce el script'); return; }
+  
+  const persona = personaName ? getPersonas().find(p=>p.name===personaName) : null;
+  const avatarId = persona?.heygenId || '';
+  if (!avatarId) { showToast('⚠ Este personaje no tiene HeyGen Avatar ID. Añádelo en la configuración del personaje.'); return; }
+
+  const log = document.getElementById('hg-job-log');
+  if (log) { log.style.display='block'; log.innerHTML=''; }
+  const addLog = msg => { if(log) log.innerHTML+=`<div style="color:var(--text3);margin-bottom:2px">${new Date().toLocaleTimeString()} — ${msg}</div>`; };
+  addLog('🎬 Enviando a HeyGen...');
+
+  try {
+    const voiceId = { es:'es-ES-AlvaroNeural', lat:'es-MX-JorgeNeural', en:'en-US-GuyNeural' }[lang] || 'es-ES-AlvaroNeural';
+    const resp = await fetch('https://api.heygen.com/v2/video/generate', {
+      method:'POST',
+      headers:{'X-Api-Key':apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        video_inputs:[{
+          character:{ type:'avatar', avatar_id:avatarId, avatar_style:'normal' },
+          voice:{ type:'text', input_text:script, voice_id:voiceId },
+          background:{ type:'color', value:'#f8fafc' }
+        }],
+        dimension:{ width:ratio==='9:16'?720:1280, height:ratio==='9:16'?1280:720 },
+        test:false
+      })
+    });
+    const data = await resp.json();
+    if (!resp.ok || data.error) throw new Error(data.error?.message || 'HeyGen error ' + resp.status);
+    const videoId = data.data?.video_id;
+    addLog('✓ Job creado: ' + videoId + ' · Procesando (2-3 min)...');
+    showToast('⏳ HeyGen procesando · ~2-3 min · ID: ' + videoId);
+    // Poll for completion
+    pollHeyGenJob(videoId, apiKey, addLog);
+  } catch(e) {
+    addLog('✗ Error: ' + e.message);
+    showToast('HeyGen error: ' + e.message);
+  }
+}
+async function pollHeyGenJob(videoId, apiKey, addLog) {
+  let attempts = 0;
+  const poll = async () => {
+    attempts++;
+    try {
+      const resp = await fetch(`https://api.heygen.com/v1/video_status.get?video_id=${videoId}`, {
+        headers:{'X-Api-Key':apiKey}
+      });
+      const data = await resp.json();
+      const status = data.data?.status;
+      addLog(`[${attempts*10}s] Estado: ${status}`);
+      if (status === 'completed') {
+        const url = data.data?.video_url;
+        addLog('✅ Vídeo listo: ' + url);
+        showInfluencerVideoResult(url);
+        showToast('✅ HeyGen: vídeo generado');
+      } else if (status === 'failed') {
+        addLog('✗ HeyGen falló: ' + (data.data?.error||'error desconocido'));
+      } else if (attempts < 24) {
+        setTimeout(poll, 10000); // poll every 10s, max 4min
+      }
+    } catch(e) { addLog('✗ Poll error: ' + e.message); }
+  };
+  setTimeout(poll, 15000);
+}
+
+// ── D-ID ──
+async function generateDIDVideo() {
+  const apiKey = localStorage.getItem('fai_key_did') || KEYS.did;
+  if (!apiKey) { showToast('⚠ Añade tu D-ID API key en Configuración'); nav('settings'); return; }
+  const imageUrl = document.getElementById('did-image-url')?.value.trim();
+  const script   = document.getElementById('did-script')?.value.trim();
+  const voice    = document.getElementById('did-voice')?.value || 'es-ES-AlvaroNeural';
+  if (!imageUrl || !script) { showToast('⚠ Rellena imagen y script'); return; }
+  
+  const log = document.getElementById('did-job-log');
+  if(log) { log.style.display='block'; log.innerHTML=''; }
+  const addLog = msg => { if(log) log.innerHTML+=`<div style="color:var(--text3);margin-bottom:2px">${new Date().toLocaleTimeString()} — ${msg}</div>`; };
+  addLog('🎭 Enviando a D-ID...');
+
+  try {
+    const resp = await fetch('https://api.d-id.com/talks', {
+      method:'POST',
+      headers:{'Authorization':'Basic '+apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        source_url:imageUrl,
+        script:{ type:'text', subtitles:false, provider:{ type:'microsoft', voice_id:voice }, input:script },
+        config:{ fluent:true, pad_audio:0 }
+      })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.description || 'D-ID error ' + resp.status);
+    addLog('✓ Job: ' + data.id + ' · Procesando...');
+    showToast('⏳ D-ID procesando · ~1 min');
+    // Poll
+    let attempts = 0;
+    const poll = async () => {
+      attempts++;
+      const r = await fetch('https://api.d-id.com/talks/'+data.id, { headers:{'Authorization':'Basic '+apiKey} });
+      const d = await r.json();
+      addLog(`[${attempts*8}s] ${d.status}`);
+      if (d.status==='done') { showInfluencerVideoResult(d.result_url); showToast('✅ D-ID: vídeo listo'); }
+      else if (d.status==='error') addLog('✗ Error: '+d.error?.description);
+      else if (attempts<15) setTimeout(poll,8000);
+    };
+    setTimeout(poll,10000);
+  } catch(e) { addLog('✗ '+e.message); showToast('D-ID error: '+e.message); }
+}
+
+// ── Runway ──
+async function generateRunwayVideo() {
+  const apiKey = localStorage.getItem('fai_key_runway') || KEYS.runway;
+  if (!apiKey) { showToast('⚠ Añade tu Runway API key en Configuración'); nav('settings'); return; }
+  const imageUrl = document.getElementById('rw-image-url')?.value.trim();
+  const prompt   = document.getElementById('rw-prompt')?.value.trim();
+  const duration = parseInt(document.getElementById('rw-duration')?.value||'5');
+  const ratio    = document.getElementById('rw-ratio')?.value || '9:16';
+  if (!prompt) { showToast('⚠ Introduce un prompt'); return; }
+
+  const log = document.getElementById('rw-job-log');
+  if(log) { log.style.display='block'; log.innerHTML=''; }
+  const addLog = msg => { if(log) log.innerHTML+=`<div style="color:var(--text3);margin-bottom:2px">${new Date().toLocaleTimeString()} — ${msg}</div>`; };
+  addLog('🎨 Enviando a Runway Gen-3...');
+
+  try {
+    const body = { promptText:prompt, duration, ratio, watermark:false };
+    if (imageUrl) body.promptImage = imageUrl;
+    const resp = await fetch('https://api.dev.runwayml.com/v1/image_to_video', {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json','X-Runway-Version':'2024-11-06'},
+      body:JSON.stringify(body)
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Runway error ' + resp.status);
+    const taskId = data.id;
+    addLog('✓ Task: ' + taskId + ' · Procesando (~30-90s)...');
+    showToast('⏳ Runway procesando...');
+    // Poll
+    let att = 0;
+    const poll = async () => {
+      att++;
+      const r = await fetch('https://api.dev.runwayml.com/v1/tasks/'+taskId, {
+        headers:{'Authorization':'Bearer '+apiKey,'X-Runway-Version':'2024-11-06'}
+      });
+      const d = await r.json();
+      addLog(`[${att*10}s] ${d.status} ${d.progress?Math.round(d.progress*100)+'%':''}`);
+      if (d.status==='SUCCEEDED') { showInfluencerVideoResult(d.output?.[0]); showToast('✅ Runway: vídeo listo'); }
+      else if (d.status==='FAILED') addLog('✗ '+d.failure);
+      else if (att<12) setTimeout(poll,10000);
+    };
+    setTimeout(poll,15000);
+  } catch(e) { addLog('✗ '+e.message); showToast('Runway error: '+e.message); }
+}
+
+// ── Pika ──
+async function generatePikaVideo() {
+  const apiKey = localStorage.getItem('fai_key_pika') || KEYS.pika;
+  if (!apiKey) { showToast('⚠ Añade tu Pika API key en Configuración'); nav('settings'); return; }
+  const prompt   = document.getElementById('pika-prompt')?.value.trim();
+  const imageUrl = document.getElementById('pika-image')?.value.trim();
+  if (!prompt) { showToast('⚠ Introduce un prompt'); return; }
+
+  const log = document.getElementById('pika-job-log');
+  if(log) { log.style.display='block'; log.innerHTML=''; }
+  const addLog = msg => { if(log) log.innerHTML+=`<div style="color:var(--text3);margin-bottom:2px">${new Date().toLocaleTimeString()} — ${msg}</div>`; };
+  addLog('✨ Enviando a Pika...');
+
+  try {
+    const body = { promptText:prompt, options:{ aspectRatio:'9:16', frameRate:24, camera:{} } };
+    if (imageUrl) body.image = imageUrl;
+    const resp = await fetch('https://api.pika.art/v1/generate', {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.message || 'Pika error ' + resp.status);
+    addLog('✓ Job: ' + (data.id||data.job_id) + ' · Procesando...');
+    showToast('⏳ Pika procesando...');
+    if (data.video?.url) { showInfluencerVideoResult(data.video.url); return; }
+    // Basic poll if needed
+    showToast('💡 Pika: descarga el vídeo desde app.pika.art cuando esté listo');
+  } catch(e) { addLog('✗ '+e.message); showToast('Pika error: '+e.message); }
+}
+
+function showInfluencerVideoResult(url) {
+  if (!url) return;
+  const results = document.getElementById('vidai-results');
+  const player  = document.getElementById('vidai-player');
+  const dl      = document.getElementById('vidai-download');
+  if (results) results.style.display='block';
+  if (player)  { player.src=url; player.load(); }
+  if (dl)      { dl.href=url; }
+  results?.scrollIntoView({behavior:'smooth'});
+}
+function saveInfluencerVideoAsDraft() {
+  const url = document.getElementById('vidai-player')?.src;
+  if (!url) return;
+  addDraft({ hook:'Vídeo influencer IA', videoUrl:url, status:'approved', source:'influencer', createdAt:Date.now() });
+  showToast('✓ Guardado como borrador aprobado');
+}
 // ── INIT ──
 renderDashboard();
 renderChannels();
@@ -7840,7 +8830,7 @@ function loadKeys() {
     return;
   }
 
-  ['anthropic','openai','pexels','elevenlabs','youtube'].forEach(k => {
+  ['anthropic','openai','pexels','elevenlabs','youtube','heygen','did','runway','pika'].forEach(k => {
     try {
       const v = localStorage.getItem('fai_key_' + k);
       if (v && v.length > 5) KEYS[k] = v;
@@ -8555,7 +9545,7 @@ function diagStorage() {
   }
 
   // Test 2: saved keys
-  ['anthropic','openai','pexels','elevenlabs','youtube'].forEach(k => {
+  ['anthropic','openai','pexels','elevenlabs','youtube','heygen','did','runway','pika'].forEach(k => {
     try {
       const v = localStorage.getItem('fai_key_' + k);
       lines.push(v

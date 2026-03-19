@@ -3,27 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.33 — Content Engine</title>
+<title>FacelessAI v3.35 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg0:#060910;--bg1:#0b0f18;--bg2:#111827;--bg3:#1a2236;
-  --border:#1e2d44;--border2:#253550;
-  --green:#00e87a;--gdim:#00e87a1a;--gsoft:#00e87a44;
-  --blue:#38bdf8;--bdim:#38bdf81a;
-  --amber:#fbbf24;--adim:#fbbf241a;
-  --red:#f87171;--reddim:#f8717115;--redsoft:#f8717133;
-  --red:#f87171;--rdim:#f871711a;
-  --purple:#a78bfa;--pdim:#a78bfa1a;
-  --pink:#f472b6;--pkdim:#f472b61a;
-  --teal:#2dd4bf;--tdim:#2dd4bf1a;
-  --text1:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+  --bg0:#0a0d14;--bg1:#0f1320;--bg2:#141928;--bg3:#1c2438;
+  --border:#243048;--border2:#2e3d5c;
+  --green:#00e87a;--gdim:#00e87a1f;--gsoft:#00e87a55;
+  --blue:#38bdf8;--bdim:#38bdf81f;
+  --amber:#fbbf24;--adim:#fbbf241f;
+  --red:#f87171;--reddim:#f8717120;--redsoft:#f8717140;
+  --red:#f87171;--rdim:#f871711f;
+  --purple:#a78bfa;--pdim:#a78bfa1f;
+  --pink:#f472b6;--pkdim:#f472b61f;
+  --teal:#2dd4bf;--tdim:#2dd4bf1f;
+  --text1:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;
   --mono:'Space Mono',monospace;
   --sans:'Outfit',sans-serif;
   --r:8px;--rl:12px;
 }
 
-/* ── LIGHT THEME ── */
+/* ── LIGHT THEME (DEFAULT) ── */
 body.theme-light {
   --bg0:#f8fafc;--bg1:#ffffff;--bg2:#f1f5f9;--bg3:#e2e8f0;
   --border:#cbd5e1;--border2:#94a3b8;
@@ -232,7 +232,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 /* ── VIDEO PREVIEW ── */
 .vprev{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);aspect-ratio:9/16;max-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;position:relative;overflow:hidden;}
-.vprev-bg{position:absolute;inset:0;background:linear-gradient(180deg,#1a2236,#0b1a2e);opacity:.8;}
+.vprev-bg{position:absolute;inset:0;background:linear-gradient(180deg,var(--bg3),#0b1a2e);opacity:.8;}
 .vprev-c{position:relative;z-index:1;text-align:center;}
 .prog-ring{width:48px;height:48px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--green);animation:spin 1s linear infinite;display:none;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -362,7 +362,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.33 ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.35 ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -437,7 +437,7 @@ window.onerror = function(msg, src, line) {
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z"/></svg>Afiliados<span class="nb" style="background:#f472b615;color:#f472b6;border:1px solid #f472b644;font-size:9px;padding:1px 5px;border-radius:99px;font-family:monospace">NEW</span>
     </div>
     <div class="ni" data-view="admarketing" onclick="nav('admarketing')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M5 8h6M8 5v6"/></svg>Publicidad<span class="nb" style="background:#47556920;color:#475569;border:1px solid #47556944;font-size:9px;padding:1px 5px;border-radius:99px;font-family:monospace">SOON</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M5 8h6M8 5v6"/></svg>Publicidad<span class="nb" style="background:#47556920;color:var(--text3);border:1px solid #47556944;font-size:9px;padding:1px 5px;border-radius:99px;font-family:monospace">SOON</span>
     </div>
 
     <div class="nsl" style="margin-top:6px">Datos</div>
@@ -1137,8 +1137,8 @@ window.onerror = function(msg, src, line) {
     </div>
 
     <!-- Selected idea preview -->
-    <div id="score-pipe-idea" style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#94a3b8">
-      <span style="color:#475569;font-size:11px;font-family:monospace">IDEA SELECCIONADA:</span><br>
+    <div id="score-pipe-idea" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#94a3b8">
+      <span style="color:var(--text3);font-size:11px;font-family:monospace">IDEA SELECCIONADA:</span><br>
       <span id="score-pipe-idea-text" style="color:#e2e8f0;font-weight:600">— Selecciona una idea en el paso anterior —</span>
     </div>
 
@@ -1338,20 +1338,20 @@ window.onerror = function(msg, src, line) {
     </div>
 
     <!-- STEP INDICATOR -->
-    <div style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:#94a3b8">
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:#94a3b8">
       <strong style="color:#e2e8f0">Flujo:</strong>
       <span id="flow-step-1" style="color:#00e87a">① Genera audio TTS</span> →
-      <span id="flow-step-2" style="color:#475569">② Busca clips Pexels</span> →
-      <span id="flow-step-3" style="color:#475569">③ Genera MP4</span>
+      <span id="flow-step-2" style="color:var(--text3)">② Busca clips Pexels</span> →
+      <span id="flow-step-3" style="color:var(--text3)">③ Genera MP4</span>
     </div>
 
     <div class="flex g8 mt12" style="justify-content:flex-end;align-items:center">
       <button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button>
-      <div style="width:1px;height:20px;background:#1e2d44;margin:0 4px"></div>
+      <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
       <button class="btn btn-g btn-sm" id="tts-only-btn" onclick="runStep1TTS()">① 🎤 Generar audio</button>
-      <span id="flow-arrow-1" style="color:#475569;font-size:16px">→</span>
+      <span id="flow-arrow-1" style="color:var(--text3);font-size:16px">→</span>
       <button class="btn btn-g btn-sm" id="pexels-run-btn" onclick="runStep2Pexels()">② 🎬 Buscar clips</button>
-      <span id="flow-arrow-2" style="color:#475569;font-size:16px">→</span>
+      <span id="flow-arrow-2" style="color:var(--text3);font-size:16px">→</span>
       <button class="btn btn-p" id="gen-btn" onclick="runStep3Video()">③ 🎥 Generar MP4</button>
     </div>
   </div>
@@ -1958,7 +1958,7 @@ window.onerror = function(msg, src, line) {
     <div class="card" style="cursor:pointer;border-top:2px solid #a78bfa" onclick="openClipModalWithNiche('podcasts-negocios')">
       <div style="font-size:22px;margin-bottom:6px">🎙️</div>
       <div style="font-size:13px;font-weight:700;margin-bottom:4px">Podcasts de negocios</div>
-      <div style="font-size:11px;color:#475569;margin-bottom:8px">Lex Fridman, Hormozi, Naval...</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Lex Fridman, Hormozi, Naval...</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $8-15</span>
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#a78bfa15;color:#a78bfa;font-family:monospace">Baja saturación ES</span>
@@ -1967,7 +1967,7 @@ window.onerror = function(msg, src, line) {
     <div class="card" style="cursor:pointer;border-top:2px solid #38bdf8" onclick="openClipModalWithNiche('divulgacion')">
       <div style="font-size:22px;margin-bottom:6px">🧬</div>
       <div style="font-size:13px;font-weight:700;margin-bottom:4px">Divulgación científica</div>
-      <div style="font-size:11px;color:#475569;margin-bottom:8px">Veritasium, Kurzgesagt traducido...</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Veritasium, Kurzgesagt traducido...</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $6-12</span>
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#38bdf815;color:#38bdf8;font-family:monospace">Alta retención</span>
@@ -1976,7 +1976,7 @@ window.onerror = function(msg, src, line) {
     <div class="card" style="cursor:pointer;border-top:2px solid #00e87a" onclick="openClipModalWithNiche('entrevistas')">
       <div style="font-size:22px;margin-bottom:6px">🎤</div>
       <div style="font-size:13px;font-weight:700;margin-bottom:4px">Entrevistas y debates</div>
-      <div style="font-size:11px;color:#475569;margin-bottom:8px">Momentos polémicos, frases potentes...</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Momentos polémicos, frases potentes...</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $5-10</span>
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#fbbf2415;color:#fbbf24;font-family:monospace">Viral fácil</span>
@@ -1985,7 +1985,7 @@ window.onerror = function(msg, src, line) {
     <div class="card" style="cursor:pointer;border-top:2px solid #fbbf24" onclick="openClipModalWithNiche('finanzas')">
       <div style="font-size:22px;margin-bottom:6px">💰</div>
       <div style="font-size:13px;font-weight:700;margin-bottom:4px">Finanzas e inversión</div>
-      <div style="font-size:11px;color:#475569;margin-bottom:8px">Graham Stephan, Meet Kevin, Andrei...</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Graham Stephan, Meet Kevin, Andrei...</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $12-25</span>
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#fbbf2415;color:#fbbf24;font-family:monospace">CPM más alto</span>
@@ -1994,7 +1994,7 @@ window.onerror = function(msg, src, line) {
     <div class="card" style="cursor:pointer;border-top:2px solid #f472b6" onclick="openClipModalWithNiche('motivacion')">
       <div style="font-size:22px;margin-bottom:6px">🔥</div>
       <div style="font-size:13px;font-weight:700;margin-bottom:4px">Motivación y mindset</div>
-      <div style="font-size:11px;color:#475569;margin-bottom:8px">Goggins, Tate clips, Jordan Peterson...</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Goggins, Tate clips, Jordan Peterson...</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $4-8</span>
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#f472b615;color:#f472b6;font-family:monospace">Muy viral</span>
@@ -2003,7 +2003,7 @@ window.onerror = function(msg, src, line) {
     <div class="card" style="cursor:pointer;border-top:2px solid #2dd4bf" onclick="openClipModalWithNiche('deporte')">
       <div style="font-size:22px;margin-bottom:6px">⚽</div>
       <div style="font-size:13px;font-weight:700;margin-bottom:4px">Deporte y fitness</div>
-      <div style="font-size:11px;color:#475569;margin-bottom:8px">Análisis tácticos, momentos épicos...</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Análisis tácticos, momentos épicos...</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $3-7</span>
         <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#2dd4bf15;color:#2dd4bf;font-family:monospace">Audiencia masiva</span>
@@ -2054,7 +2054,7 @@ window.onerror = function(msg, src, line) {
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div>
           <div style="font-size:13px;font-weight:600;color:#a78bfa">🤖 Sugerencias de canales de YouTube</div>
-          <div style="font-size:11px;color:#475569;margin-top:2px">Claude analiza tu nicho y sugiere los mejores canales para clipear</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">Claude analiza tu nicho y sugiere los mejores canales para clipear</div>
         </div>
         <button class="btn btn-g btn-sm" id="cp-suggest-btn" onclick="suggestYTChannels()" style="border-color:#a78bfa44;color:#a78bfa;flex-shrink:0">✨ Sugerir canales</button>
       </div>
@@ -2097,7 +2097,7 @@ window.onerror = function(msg, src, line) {
       </div>
       <div id="cp-video-info" style="display:none;background:#a78bfa15;border:1px solid #a78bfa33;border-radius:8px;padding:12px">
         <div style="font-size:13px;font-weight:600" id="cp-video-title">—</div>
-        <div style="font-size:11px;color:#475569;font-family:monospace;margin-top:4px" id="cp-video-meta">—</div>
+        <div style="font-size:11px;color:var(--text3);font-family:monospace;margin-top:4px" id="cp-video-meta">—</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
@@ -2156,7 +2156,7 @@ window.onerror = function(msg, src, line) {
       <div style="background:var(--bg3);border-radius:99px;height:6px;overflow:hidden;margin-bottom:8px">
         <div id="cp-transcribe-bar" style="background:#a78bfa;height:100%;width:0%;transition:width .5s;border-radius:99px"></div>
       </div>
-      <div style="font-size:11px;color:#475569;font-family:monospace" id="cp-transcribe-msg">—</div>
+      <div style="font-size:11px;color:var(--text3);font-family:monospace" id="cp-transcribe-msg">—</div>
     </div>
 
     <div id="cp-transcript-preview" style="display:none" class="card mb14">
@@ -2725,11 +2725,11 @@ window.onerror = function(msg, src, line) {
           <div style="font-size:18px">🇺🇸</div><div style="font-size:11px;font-weight:600;margin-top:3px">English US</div>
           <div style="font-size:9px;color:#94a3b8;font-family:monospace">CPM más alto</div>
         </div>
-        <div id="tts-lang-es" onclick="selectTTSLang('es')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+        <div id="tts-lang-es" onclick="selectTTSLang('es')" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center">
           <div style="font-size:18px">🇪🇸</div><div style="font-size:11px;font-weight:600;margin-top:3px">Español ES</div>
           <div style="font-size:9px;color:#94a3b8;font-family:monospace">Mercado España</div>
         </div>
-        <div id="tts-lang-lat" onclick="selectTTSLang('lat')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+        <div id="tts-lang-lat" onclick="selectTTSLang('lat')" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center">
           <div style="font-size:18px">🌎</div><div style="font-size:11px;font-weight:600;margin-top:3px">Latino</div>
           <div style="font-size:9px;color:#94a3b8;font-family:monospace">LATAM</div>
         </div>
@@ -2890,7 +2890,7 @@ window.onerror = function(msg, src, line) {
 <div class="view" id="view-admarketing">
   <div class="sh mb20">
     <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#475569,#1e2d44);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📢</div>
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#475569,var(--border));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📢</div>
       <div>
         <h2 style="font-size:17px">Publicidad de canales</h2>
         <div style="font-size:12px;color:var(--text3)">Promociona tus canales con publicidad pagada · YouTube Ads · Meta Ads · TikTok Ads</div>
@@ -2920,29 +2920,29 @@ window.onerror = function(msg, src, line) {
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg2);border-radius:8px">
           <span style="font-size:18px">📊</span>
           <div><div style="font-size:12px;font-weight:600">Dashboard de campañas</div><div style="font-size:11px;color:#475569">Todas tus campañas en un solo lugar</div></div>
-          <span style="margin-left:auto;font-size:10px;color:#475569;font-family:monospace">Q2 2026</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:monospace">Q2 2026</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg2);border-radius:8px">
           <span style="font-size:18px">🎯</span>
           <div><div style="font-size:12px;font-weight:600">Targeting IA</div><div style="font-size:11px;color:#475569">Claude sugiere audiencias por nicho</div></div>
-          <span style="margin-left:auto;font-size:10px;color:#475569;font-family:monospace">Q2 2026</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:monospace">Q2 2026</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg2);border-radius:8px">
           <span style="font-size:18px">💸</span>
           <div><div style="font-size:12px;font-weight:600">Budget optimizer</div><div style="font-size:11px;color:#475569">Reparte presupuesto entre canales automáticamente</div></div>
-          <span style="margin-left:auto;font-size:10px;color:#475569;font-family:monospace">Q3 2026</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:monospace">Q3 2026</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg2);border-radius:8px">
           <span style="font-size:18px">🔗</span>
           <div><div style="font-size:12px;font-weight:600">Conexión directa APIs</div><div style="font-size:11px;color:#475569">YouTube Ads · Meta Ads · TikTok Ads</div></div>
-          <span style="margin-left:auto;font-size:10px;color:#475569;font-family:monospace">Q3 2026</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:monospace">Q3 2026</span>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Notify me -->
-  <div style="background:linear-gradient(135deg,#1e2d4480,#0b0f1880);border:1px solid #253550;border-radius:12px;padding:24px;text-align:center">
+  <div style="background:linear-gradient(135deg,var(--border)80,#0b0f1880);border:1px solid var(--border2);border-radius:12px;padding:24px;text-align:center">
     <div style="font-size:28px;margin-bottom:10px">🔔</div>
     <div style="font-size:15px;font-weight:600;margin-bottom:6px">Este módulo está en desarrollo</div>
     <div style="font-size:13px;color:var(--text3);margin-bottom:16px;max-width:400px;margin-left:auto;margin-right:auto">Mientras tanto, puedes empezar con tus afiliados orgánicos en el módulo de Afiliados — es la forma más rentable de monetizar al inicio.</div>
@@ -3133,7 +3133,7 @@ window.onerror = function(msg, src, line) {
   </div>
 
   <!-- localStorage test button -->
-  <div style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
     <div style="flex:1;font-size:12px;color:#94a3b8">
       <strong style="color:#e2e8f0">🔒 Seguridad:</strong> Las keys se guardan solo en tu navegador (localStorage). Nunca salen de tu dispositivo.
     </div>
@@ -3353,7 +3353,7 @@ window.onerror = function(msg, src, line) {
           <button class="btn btn-g btn-sm" onclick="testBackend()">Probar</button>
         </div>
         <div id="status-msg-backend" style="display:none"></div>
-        <div style="font-size:11px;color:#475569;margin-top:6px">
+        <div style="font-size:11px;color:var(--text3);margin-top:6px">
           Tu URL: <span style="color:#00e87a;font-family:monospace" id="backend-url-display">No configurada</span>
         </div>
       </div>
@@ -3375,7 +3375,7 @@ window.onerror = function(msg, src, line) {
             <div style="font-size:12px;font-weight:600">Oscuro</div>
             <div style="font-size:10px;color:#94a3b8;font-family:monospace">Activo</div>
           </div>
-          <div id="theme-light" onclick="setTheme('light')" style="flex:1;border:1px solid #1e2d44;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
+          <div id="theme-light" onclick="setTheme('light')" style="flex:1;border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
             <div style="font-size:22px;margin-bottom:4px">☀️</div>
             <div style="font-size:12px;font-weight:600">Claro</div>
             <div style="font-size:10px;color:#94a3b8;font-family:monospace">Próximamente</div>
@@ -3392,7 +3392,7 @@ window.onerror = function(msg, src, line) {
             <div style="font-size:12px;font-weight:600">Español</div>
             <div style="font-size:10px;color:#94a3b8;font-family:monospace">Activo</div>
           </div>
-          <div id="ui-lang-en" onclick="setUILang('en')" style="flex:1;border:1px solid #1e2d44;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
+          <div id="ui-lang-en" onclick="setUILang('en')" style="flex:1;border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all .2s">
             <div style="font-size:22px;margin-bottom:4px">🇬🇧</div>
             <div style="font-size:12px;font-weight:600">English</div>
             <div style="font-size:10px;color:#94a3b8;font-family:monospace">Próximamente</div>
@@ -3408,11 +3408,11 @@ window.onerror = function(msg, src, line) {
             <div style="font-size:18px;margin-bottom:2px">€</div>
             <div style="font-size:11px;font-weight:600">Euro</div>
           </div>
-          <div id="cur-usd" onclick="setCurrency('USD')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+          <div id="cur-usd" onclick="setCurrency('USD')" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
             <div style="font-size:18px;margin-bottom:2px">$</div>
             <div style="font-size:11px;font-weight:600">Dólar</div>
           </div>
-          <div id="cur-gbp" onclick="setCurrency('GBP')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+          <div id="cur-gbp" onclick="setCurrency('GBP')" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
             <div style="font-size:18px;margin-bottom:2px">£</div>
             <div style="font-size:11px;font-weight:600">Libra</div>
           </div>
@@ -3427,7 +3427,7 @@ window.onerror = function(msg, src, line) {
             <div style="font-size:13px;font-weight:700;font-family:monospace;margin-bottom:2px">19/03/2026</div>
             <div style="font-size:10px;color:#94a3b8">DD/MM/YYYY</div>
           </div>
-          <div id="fmt-us" onclick="setDateFormat('us')" style="flex:1;border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
+          <div id="fmt-us" onclick="setDateFormat('us')" style="flex:1;border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all .2s">
             <div style="font-size:13px;font-weight:700;font-family:monospace;margin-bottom:2px">03/19/2026</div>
             <div style="font-size:10px;color:#94a3b8">MM/DD/YYYY</div>
           </div>
@@ -3437,7 +3437,7 @@ window.onerror = function(msg, src, line) {
     </div>
 
     <!-- FUTURE SETTINGS NOTE -->
-    <div style="margin-top:14px;background:#38bdf808;border:1px solid #38bdf822;border-radius:8px;padding:12px 16px;font-size:12px;color:#475569;line-height:1.7">
+    <div style="margin-top:14px;background:#38bdf808;border:1px solid #38bdf822;border-radius:8px;padding:12px 16px;font-size:12px;color:var(--text3);line-height:1.7">
       <strong style="color:#38bdf8">Próximamente en Preferencias:</strong>
       Notificaciones por email cuando AutoPilot genera un vídeo · Zona horaria · Límite de gasto por canal · Backup y restauración de configuración · Acceso multiusuario (equipo)
     </div>
@@ -3486,12 +3486,12 @@ window.onerror = function(msg, src, line) {
           <div style="font-size:12px;font-weight:600;margin-top:4px">Español</div>
           <div style="font-size:10px;color:#94a3b8;font-family:monospace">España</div>
         </div>
-        <div class="ch-lang-btn" id="chl-en" onclick="selectChLang('en')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+        <div class="ch-lang-btn" id="chl-en" onclick="selectChLang('en')" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center">
           <div style="font-size:18px">🇺🇸</div>
           <div style="font-size:12px;font-weight:600;margin-top:4px">English</div>
           <div style="font-size:10px;color:#94a3b8;font-family:monospace">US · CPM 3x</div>
         </div>
-        <div class="ch-lang-btn" id="chl-lat" onclick="selectChLang('lat')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+        <div class="ch-lang-btn" id="chl-lat" onclick="selectChLang('lat')" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center">
           <div style="font-size:18px">🌎</div>
           <div style="font-size:12px;font-weight:600;margin-top:4px">Español</div>
           <div style="font-size:10px;color:#94a3b8;font-family:monospace">Latinoamérica</div>
@@ -3507,7 +3507,7 @@ window.onerror = function(msg, src, line) {
           <div style="font-size:22px">♂</div>
           <div><div style="font-size:13px;font-weight:600">Masculina</div><div style="font-size:10px;color:#94a3b8;font-family:monospace" id="chv-m-voice">onyx</div></div>
         </div>
-        <div id="chv-f" onclick="selectChGender('f')" style="border:1px solid #1e2d44;border-radius:8px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:10px">
+        <div id="chv-f" onclick="selectChGender('f')" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:10px">
           <div style="font-size:22px">♀</div>
           <div><div style="font-size:13px;font-weight:600">Femenina</div><div style="font-size:10px;color:#94a3b8;font-family:monospace" id="chv-f-voice">nova</div></div>
         </div>
@@ -4178,13 +4178,13 @@ async function generateTTS(audioOnly) {
 // ═══════════════════════════════════════════════
 // PREFERENCES — theme, UI lang, currency, date format
 // ═══════════════════════════════════════════════
-let activeTheme      = 'dark';
+let activeTheme      = 'light';
 let activeUILang     = 'es';
 let activeCurrency   = 'EUR';
 let activeDateFormat = 'eu';
 
 try {
-  activeTheme      = localStorage.getItem('fai_theme')      || 'dark';
+  activeTheme      = localStorage.getItem('fai_theme')      || 'light';
   activeUILang     = localStorage.getItem('fai_ui_lang')    || 'es';
   activeCurrency   = localStorage.getItem('fai_currency')   || 'EUR';
   activeDateFormat = localStorage.getItem('fai_date_fmt')   || 'eu';
@@ -4281,9 +4281,11 @@ function setDateFormat(fmt) {
 }
 
 function initPreferences() {
-  // Apply theme immediately
-  if (activeTheme === 'light') {
+  // Apply theme immediately — light is default
+  if (activeTheme !== 'dark') {
     document.body.classList.add('theme-light');
+  } else {
+    document.body.classList.remove('theme-light');
   }
 
   // Restore selector states silently (no toasts on startup)
@@ -4345,7 +4347,7 @@ function updateFlowSteps(active) {
     } else if (num < active) {
       btn.style.cssText = 'background:transparent;color:#00e87a;border-color:#00e87a44;font-weight:400;transform:scale(1);transition:all .2s';
     } else {
-      btn.style.cssText = 'background:transparent;color:#475569;border-color:#1e2d44;font-weight:400;transform:scale(1);transition:all .2s';
+      btn.style.cssText = 'background:transparent;color:var(--text3);border-color:var(--border);font-weight:400;transform:scale(1);transition:all .2s';
     }
   });
 
@@ -4470,7 +4472,7 @@ async function generateRealVideo() {
     if (!logLines) return;
     const d = document.createElement('div');
     const t = new Date().toLocaleTimeString('es-ES');
-    d.innerHTML = '<span style="color:#475569;margin-right:8px">' + t + '</span><span style="color:' + color + '">' + msg + '</span>';
+    d.innerHTML = '<span style="color:var(--text3);margin-right:8px">' + t + '</span><span style="color:' + color + '">' + msg + '</span>';
     logLines.appendChild(d);
     logLines.scrollTop = logLines.scrollHeight;
     const txt = document.getElementById('vprev-txt');
@@ -4647,15 +4649,15 @@ function renderDrafts() {
             ${statusTag}
             ${d.score ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">Score: ${d.score}/100</span>` : ''}
             ${d.cost ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#fbbf2415;color:#fbbf24;border:1px solid #fbbf2444;font-family:monospace">$${d.cost}</span>` : ''}
-            ${d.lang ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">${{es:'🇪🇸',en:'🇺🇸',lat:'🌎'}[d.lang]||'🌍'} ${d.lang.toUpperCase()}</span>` : ''}
-            <span style="font-size:11px;color:#475569;font-family:monospace">${ago}</span>
+            ${d.lang ? `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:var(--bg3);color:#94a3b8;border:1px solid var(--border);font-family:monospace">${{es:'🇪🇸',en:'🇺🇸',lat:'🌎'}[d.lang]||'🌍'} ${d.lang.toUpperCase()}</span>` : ''}
+            <span style="font-size:11px;color:var(--text3);font-family:monospace">${ago}</span>
           </div>
           <div style="margin-bottom:8px">
-            <label style="font-size:10px;color:#475569;font-family:monospace;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Título para publicar</label>
+            <label style="font-size:10px;color:var(--text3);font-family:monospace;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Título para publicar</label>
             <input class="inp" value="${(d.hook || d.title || '').replace(/"/g,'&quot;')}" id="draft-title-${d.id}" style="font-size:12px">
           </div>
           ${d.audioUrl ? `<audio controls src="${d.audioUrl}" style="width:100%;height:32px;margin-bottom:6px"></audio>` : ''}
-          ${d.script ? `<details style="font-size:11px;color:#475569;font-family:monospace"><summary style="cursor:pointer;color:#94a3b8">Ver script</summary><pre style="margin-top:6px;white-space:pre-wrap;font-size:11px;max-height:120px;overflow-y:auto">${d.script.slice(0,500)}...</pre></details>` : ''}
+          ${d.script ? `<details style="font-size:11px;color:var(--text3);font-family:monospace"><summary style="cursor:pointer;color:#94a3b8">Ver script</summary><pre style="margin-top:6px;white-space:pre-wrap;font-size:11px;max-height:120px;overflow-y:auto">${d.script.slice(0,500)}...</pre></details>` : ''}
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;min-width:110px">
           ${d.status === 'pending' ? `<button class="btn btn-p btn-sm" onclick="approveDraft(${d.id})">✓ Aprobar</button>` : ''}
@@ -4945,7 +4947,7 @@ function selectChLang(lang) {
     const el = document.getElementById('chl-' + l);
     if (!el) return;
     if (l === lang) { el.style.border = '2px solid #00e87a'; el.style.background = '#00e87a15'; }
-    else { el.style.border = '1px solid #1e2d44'; el.style.background = 'transparent'; }
+    else { el.style.border = '1px solid var(--border)'; el.style.background = 'transparent'; }
   });
   updateChVoicePreview();
   updateChPreview();
@@ -4957,7 +4959,7 @@ function selectChGender(g) {
     const el = document.getElementById('chv-' + x);
     if (!el) return;
     if (x === g) { el.style.border = '2px solid #00e87a'; el.style.background = '#00e87a15'; }
-    else { el.style.border = '1px solid #1e2d44'; el.style.background = 'transparent'; }
+    else { el.style.border = '1px solid var(--border)'; el.style.background = 'transparent'; }
   });
   updateChVoicePreview();
   updateChPreview();
@@ -5115,7 +5117,7 @@ function renderDiscoveredChannel(ch, i) {
   const scoreColor = ch.score >= 85 ? '#00e87a' : ch.score >= 70 ? '#fbbf24' : '#f87171';
   const satColor = ch.saturation < 35 ? '#00e87a' : ch.saturation < 60 ? '#fbbf24' : '#f87171';
 
-  return `<div style="background:#0b0f18;border:1px solid #1e2d44;border-radius:10px;padding:16px">
+  return `<div style="background:#0b0f18;border:1px solid var(--border);border-radius:10px;padding:16px">
     <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:12px">
       <div style="display:flex;align-items:center;gap:10px">
         <div style="font-size:24px">${ch.emoji}</div>
@@ -5126,7 +5128,7 @@ function renderDiscoveredChannel(ch, i) {
       </div>
       <div style="text-align:right">
         <div style="font-size:22px;font-weight:800;font-family:monospace;color:${scoreColor}">${ch.score}</div>
-        <div style="font-size:9px;color:#475569;font-family:monospace">SCORE /100</div>
+        <div style="font-size:9px;color:var(--text3);font-family:monospace">SCORE /100</div>
         <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${trendColor}20;color:${trendColor};border:1px solid ${trendColor}44;font-family:monospace">${ch.trend}</span>
       </div>
     </div>
@@ -5134,19 +5136,19 @@ function renderDiscoveredChannel(ch, i) {
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
       <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
         <div style="font-size:13px;font-weight:700;font-family:monospace;color:#fbbf24">$${ch.cpmMin}-${ch.cpmMax}</div>
-        <div style="font-size:9px;color:#475569;font-family:monospace">CPM EST.</div>
+        <div style="font-size:9px;color:var(--text3);font-family:monospace">CPM EST.</div>
       </div>
       <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
         <div style="font-size:13px;font-weight:700;font-family:monospace;color:${satColor}">${ch.saturation}%</div>
-        <div style="font-size:9px;color:#475569;font-family:monospace">SATURACIÓN</div>
+        <div style="font-size:9px;color:var(--text3);font-family:monospace">SATURACIÓN</div>
       </div>
       <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
         <div style="font-size:13px;font-weight:700;font-family:monospace;color:#38bdf8">${ch.monthsToMonetize}m</div>
-        <div style="font-size:9px;color:#475569;font-family:monospace">MONETIZAR</div>
+        <div style="font-size:9px;color:var(--text3);font-family:monospace">MONETIZAR</div>
       </div>
       <div style="background:#111827;border-radius:6px;padding:8px;text-align:center">
         <div style="font-size:12px;font-weight:700;font-family:monospace;color:#00e87a">${ch.revenueMonth3}</div>
-        <div style="font-size:9px;color:#475569;font-family:monospace">MES 3 EST.</div>
+        <div style="font-size:9px;color:var(--text3);font-family:monospace">MES 3 EST.</div>
       </div>
     </div>
 
@@ -5161,7 +5163,7 @@ function renderDiscoveredChannel(ch, i) {
       <div><strong style="color:#e2e8f0">Dificultad:</strong> <span style="color:${ch.difficulty === 'Low' ? '#00e87a' : '#fbbf24'}">${ch.difficulty}</span></div>
     </div>
 
-    ${ch.references ? `<div style="font-size:11px;color:#475569;margin-bottom:10px;font-family:monospace">Referencias: ${ch.references}</div>` : ''}
+    ${ch.references ? `<div style="font-size:11px;color:var(--text3);margin-bottom:10px;font-family:monospace">Referencias: ${ch.references}</div>` : ''}
 
     <div style="display:flex;gap:8px">
       <button class="btn btn-p btn-sm" style="flex:1" onclick="createFromDiscovery('${ch.name}','${ch.lang}','${ch.gender}','${ch.niche}')">✨ Crear este canal</button>
@@ -5522,7 +5524,7 @@ function refreshSettingsDisplay() {
       const badge = document.getElementById('badge-' + k);
       if (badge) {
         badge.textContent = 'Sin clave';
-        badge.setAttribute('style', 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace;display:inline-block');
+        badge.setAttribute('style', 'background:var(--bg3);color:var(--text3);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace;display:inline-block');
       }
       const icon = document.getElementById('status-' + k + '-icon');
       const text = document.getElementById('status-' + k + '-text');
@@ -5548,7 +5550,7 @@ function refreshSettingsDisplay() {
       tag.setAttribute('style', 'background:#fbbf2415;color:#fbbf24;border:1px solid #fbbf2444;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace');
     } else {
       tag.textContent = 'Sin configurar';
-      tag.setAttribute('style', 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace');
+      tag.setAttribute('style', 'background:var(--bg3);color:var(--text3);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace');
     }
   }
 
@@ -5639,7 +5641,7 @@ function renderDashboard() {
   const draftList = document.getElementById('dash-drafts-list');
   if (draftList) {
     if (drafts.length === 0) {
-      draftList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📭</div><div style="font-size:13px;margin-bottom:10px">Sin borradores aún</div><button class="btn btn-p btn-sm" onclick="nav('pipeline')">▶ Generar vídeo</button></div>';
+      draftList.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📭</div><div style="font-size:13px;margin-bottom:10px">Sin borradores aún</div><button class="btn btn-p btn-sm" onclick="nav('pipeline')">▶ Generar vídeo</button></div>`;
     } else {
       const statusColor = { pending:'#fbbf24', approved:'#00e87a', rejected:'#f87171' };
       const statusLabel = { pending:'⏳ Pendiente', approved:'✓ Aprobado', rejected:'✕ Rechazado' };
@@ -5647,7 +5649,7 @@ function renderDashboard() {
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
           <div style="flex:1">
             <div style="font-size:12px;font-weight:600;color:var(--text1)">${(d.hook||d.title||'Sin título').slice(0,45)}</div>
-            <div style="font-size:10px;color:#475569;font-family:monospace">${getTimeAgo(d.createdAt)}</div>
+            <div style="font-size:10px;color:var(--text3);font-family:monospace">${getTimeAgo(d.createdAt)}</div>
           </div>
           <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:${statusColor[d.status]||'#fbbf24'}15;color:${statusColor[d.status]||'#fbbf24'};border:1px solid ${statusColor[d.status]||'#fbbf24'}44;font-family:monospace">${statusLabel[d.status]||'⏳'}</span>
         </div>
@@ -5783,9 +5785,9 @@ function renderClipChannels() {
     const color = colors[ch.niche] || '#a78bfa';
     return `<div class="card" style="border-top:2px solid ${color}">
       <div style="font-size:14px;font-weight:700;margin-bottom:4px">${ch.name}</div>
-      <div style="font-size:11px;color:#475569;font-family:monospace;margin-bottom:8px">${ch.nicheLabel} · ${ch.langLabel}</div>
+      <div style="font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:8px">${ch.nicheLabel} · ${ch.langLabel}</div>
       <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:${color};margin-bottom:4px">${ch.clips}</div>
-      <div style="font-size:10px;color:#475569;font-family:monospace;margin-bottom:10px">CLIPS GENERADOS</div>
+      <div style="font-size:10px;color:var(--text3);font-family:monospace;margin-bottom:10px">CLIPS GENERADOS</div>
       <button class="btn btn-p btn-sm" style="width:100%" onclick="nav('clippipeline');setCPStep(0)">▶ Crear clips</button>
     </div>`;
   }).join('');
@@ -5811,7 +5813,7 @@ function setCPStep(n) {
   if (n === 3) {
     const summaryList = document.getElementById('cp-gen-summary-list');
     if (summaryList && cpMoments.length > 0) {
-      summaryList.innerHTML = cpMoments.map((m,i) => `<div style="display:flex;align-items:center;gap:8px"><span style="color:#a78bfa;font-family:monospace">${i+1}.</span><span style="font-weight:600">${m.title}</span><span style="color:#475569;font-family:monospace">${formatSeconds(m.start)} → ${formatSeconds(m.end)}</span></div>`).join('');
+      summaryList.innerHTML = cpMoments.map((m,i) => `<div style="display:flex;align-items:center;gap:8px"><span style="color:#a78bfa;font-family:monospace">${i+1}.</span><span style="font-weight:600">${m.title}</span><span style="color:var(--text3);font-family:monospace">${formatSeconds(m.start)} → ${formatSeconds(m.end)}</span></div>`).join('');
     } else if (summaryList) { summaryList.textContent = '— Selecciona momentos en el paso anterior —'; }
   }
 }
@@ -5838,7 +5840,7 @@ async function suggestYTChannels() {
 
   if (btn) { btn.textContent = '⏳ Buscando...'; btn.disabled = true; }
   if (results) results.style.display = 'block';
-  if (list) list.innerHTML = '<div style="color:#475569;font-family:monospace;font-size:12px;padding:8px">⏳ Claude analizando mejores canales...</div>';
+  if (list) list.innerHTML = '<div style="color:var(--text3);font-family:monospace;font-size:12px;padding:8px">⏳ Claude analizando mejores canales...</div>';
 
   const prompt = `You are an expert YouTube clipping strategist. Suggest the 6 best YouTube channels for clipping content in the ${nicheLabels[niche]} niche.
 
@@ -5879,7 +5881,7 @@ Only JSON.`;
         <div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
             <span style="font-size:13px;font-weight:700">${ch.name}</span>
-            <span style="font-size:10px;color:#475569;font-family:monospace">${ch.handle}</span>
+            <span style="font-size:10px;color:var(--text3);font-family:monospace">${ch.handle}</span>
             <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#a78bfa20;color:#a78bfa;font-family:monospace">🔥 ${ch.clipPotential}%</span>
           </div>
           <div style="font-size:12px;color:var(--text2);margin-bottom:6px">${ch.description}</div>
@@ -5888,7 +5890,7 @@ Only JSON.`;
             <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#38bdf815;color:#38bdf8;font-family:monospace">${ch.avgViews} views</span>
             <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#fbbf2415;color:#fbbf24;font-family:monospace">${ch.bestFor}</span>
           </div>
-          <div style="font-size:11px;color:#475569;font-family:monospace;background:var(--bg3);border-radius:6px;padding:6px 8px">
+          <div style="font-size:11px;color:var(--text3);font-family:monospace;background:var(--bg3);border-radius:6px;padding:6px 8px">
             📹 Ejemplo: <em style="color:var(--text2)">${ch.sampleVideoTitle}</em>
           </div>
         </div>
@@ -6054,7 +6056,7 @@ Only JSON.`;
               <span style="font-size:13px;font-weight:700">${m.title}</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
-              <span style="font-size:11px;color:#475569;font-family:monospace">${formatSeconds(m.start)} → ${formatSeconds(m.end)}</span>
+              <span style="font-size:11px;color:var(--text3);font-family:monospace">${formatSeconds(m.start)} → ${formatSeconds(m.end)}</span>
               <span style="font-size:11px;font-family:monospace;color:#00e87a">🔥 ${m.viralScore}%</span>
             </div>
           </div>
@@ -6131,7 +6133,7 @@ function renderReadyClips(clips, backendUrl) {
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div>
           <div style="font-size:13px;font-weight:700">${clip.title}</div>
-          <div style="font-size:11px;color:#475569;font-family:monospace">${clip.duration}s · ${clip.size_mb}MB · ${formatSeconds(clip.start)} → ${formatSeconds(clip.end)}</div>
+          <div style="font-size:11px;color:var(--text3);font-family:monospace">${clip.duration}s · ${clip.size_mb}MB · ${formatSeconds(clip.start)} → ${formatSeconds(clip.end)}</div>
         </div>
         <a href="${backendUrl}${clip.download_url}" download="clip_${i+1}.mp4" class="btn btn-p btn-sm" style="text-decoration:none">⬇ Descargar</a>
       </div>
@@ -6169,7 +6171,7 @@ function selectTTSLang(lang) {
   ['en','es','lat'].forEach(l => {
     const el = document.getElementById('tts-lang-' + l);
     if (!el) return;
-    el.style.border = l === lang ? '2px solid #00e87a' : '1px solid #1e2d44';
+    el.style.border = l === lang ? '2px solid #00e87a' : '1px solid var(--border)';
     el.style.background = l === lang ? '#00e87a15' : 'transparent';
   });
 }
@@ -6343,7 +6345,7 @@ async function generateUGCScripts() {
   const btn = document.getElementById('ts-scripts-btn');
   if (btn) { btn.textContent = '⏳ Generando...'; btn.disabled = true; }
   const container = document.getElementById('ts-scripts-container');
-  if (container) container.innerHTML = '<div style="text-align:center;padding:24px;color:#475569;font-family:monospace">⏳ Claude generando 3 variantes UGC...</div>';
+  if (container) container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-family:monospace">⏳ Claude generando 3 variantes UGC...</div>';
 
   const prompt = `You are an expert TikTok Shop UGC content creator. Create 3 script variations for this product.
 
@@ -6508,7 +6510,7 @@ async function searchPexelsShop() {
   if (!query) { showToast('⚠ Introduce un término de búsqueda'); return; }
 
   const preview = document.getElementById('ts-clips-preview');
-  if (preview) preview.innerHTML = '<div style="font-size:12px;color:#475569;font-family:monospace">⏳ Buscando clips...</div>';
+  if (preview) preview.innerHTML = '<div style="font-size:12px;color:var(--text3);font-family:monospace">⏳ Buscando clips...</div>';
 
   try {
     const r = await fetch('https://api.pexels.com/videos/search?query=' + encodeURIComponent(query) + '&per_page=6&size=medium&orientation=portrait', {
@@ -6646,7 +6648,7 @@ async function discoverShopNiches() {
   const minComm = document.getElementById('tts-disc-commission')?.value || '10';
 
   if (btn) { btn.textContent = '⏳ Analizando mercado...'; btn.disabled = true; }
-  if (results) { results.style.display = 'block'; results.innerHTML = '<div style="color:#475569;font-family:monospace;font-size:12px">⏳ Claude analizando tendencias TikTok Shop...</div>'; }
+  if (results) { results.style.display = 'block'; results.innerHTML = '<div style="color:var(--text3);font-family:monospace;font-size:12px">⏳ Claude analizando tendencias TikTok Shop...</div>'; }
 
   const langNames = { en:'US English market', es:'Spain Spanish market', lat:'Latin America Spanish market' };
   const catNames = { all:'all categories', beauty:'beauty & skincare', home:'home & kitchen', fitness:'fitness & health', pets:'pets', tech:'gadgets & tech', fashion:'fashion & accessories' };
@@ -6696,7 +6698,7 @@ Only JSON.`;
               <span style="font-size:22px">${n.emoji}</span>
               <div>
                 <div style="font-size:13px;font-weight:700">${n.name}</div>
-                <div style="font-size:10px;color:#475569;font-family:monospace">${n.saturation} saturación</div>
+                <div style="font-size:10px;color:var(--text3);font-family:monospace">${n.saturation} saturación</div>
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
@@ -6822,7 +6824,7 @@ function renderActivityChart() {
     const h = Math.max(4, Math.round((d.calls / maxCalls) * 80));
     const isToday = d.date.toDateString() === new Date().toDateString();
     return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
-      <div style="font-size:9px;color:#475569;font-family:var(--mono)">${d.calls || ''}</div>
+      <div style="font-size:9px;color:var(--text3);font-family:var(--mono)">${d.calls || ''}</div>
       <div style="width:100%;background:${isToday ? '#38bdf8' : '#38bdf840'};border-radius:4px 4px 0 0;height:${h}px;transition:height .3s;min-height:4px" title="${d.calls} llamadas · $${d.cost.toFixed(3)}"></div>
     </div>`;
   }).join('');
@@ -7161,7 +7163,7 @@ function renderAffiliates() {
           <div style="font-size:12px;font-family:var(--mono);color:${color};margin-bottom:8px">${a.commission}</div>
           <div style="font-size:12px;color:var(--text3);background:var(--bg2);border-radius:6px;padding:6px 10px;font-family:var(--mono);word-break:break-all;margin-bottom:8px">${a.url}</div>
           ${a.cta ? `<div style="font-size:12px;color:var(--text2);font-style:italic">💬 CTA: "${a.cta}"</div>` : ''}
-          ${a.niches ? `<div style="font-size:11px;color:#475569;margin-top:4px;font-family:var(--mono)">Nichos: ${a.niches}</div>` : ''}
+          ${a.niches ? `<div style="font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono)">Nichos: ${a.niches}</div>` : ''}
         </div>
 
         <!-- Actions -->
@@ -7201,7 +7203,7 @@ async function suggestAffiliates() {
   const type = document.getElementById('aff-suggest-type')?.value || 'all';
 
   if (btn) { btn.textContent = '⏳ Analizando...'; btn.disabled = true; }
-  if (results) { results.style.display = 'block'; results.innerHTML = '<div style="color:#475569;font-family:monospace;font-size:12px;padding:8px">⏳ Claude buscando los mejores programas de afiliados...</div>'; }
+  if (results) { results.style.display = 'block'; results.innerHTML = '<div style="color:var(--text3);font-family:monospace;font-size:12px;padding:8px">⏳ Claude buscando los mejores programas de afiliados...</div>'; }
 
   const marketNames = { es:'Spain (Spanish audience)', en:'USA/Global (English)', lat:'Latin America (Spanish)' };
   const typeNames = { recurring:'recurring commission programs', 'high-ticket':'high-ticket programs (>$50 per sale)', easy:'easy to promote programs with high conversion', all:'all types' };
@@ -7261,11 +7263,11 @@ Only JSON.`;
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
               <div style="background:var(--bg3);border-radius:6px;padding:6px;text-align:center">
                 <div style="font-size:12px;font-weight:700;color:#00e87a">${p.commission}</div>
-                <div style="font-size:9px;color:#475569;font-family:monospace">COMISIÓN</div>
+                <div style="font-size:9px;color:var(--text3);font-family:monospace">COMISIÓN</div>
               </div>
               <div style="background:var(--bg3);border-radius:6px;padding:6px;text-align:center">
                 <div style="font-size:12px;font-weight:700;color:#fbbf24">${p.avgEarningsPer1kViews}</div>
-                <div style="font-size:9px;color:#475569;font-family:monospace">$/1K VIEWS</div>
+                <div style="font-size:9px;color:var(--text3);font-family:monospace">$/1K VIEWS</div>
               </div>
             </div>
             <div style="font-size:11px;color:var(--text2);margin-bottom:6px">${p.whyGreat}</div>
@@ -7343,7 +7345,7 @@ function diagStorage() {
   // Show in the div AND as alert so it's impossible to miss
   const el = document.getElementById('diag-result');
   if (el) {
-    el.style.cssText = 'display:block;background:#111827;border:1px solid #1e2d44;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;font-family:monospace;line-height:2';
+    el.style.cssText = 'display:block;background:#111827;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;font-family:monospace;line-height:2';
     el.innerHTML = lines.map(l => {
       const color = l.startsWith('✅') || l.startsWith('🔑') || l.startsWith('💾') ? '#00e87a'
                   : l.startsWith('❌') ? '#f87171' : '#94a3b8';
@@ -7461,7 +7463,7 @@ function setStatus(name, type, msg) {
 function showInlineStatus(elId, msg, color) {
   const el = document.getElementById(elId);
   if (!el) return;
-  el.style.cssText = 'display:block;color:' + color + ';padding:8px 12px;background:#1a2236;border-radius:6px;border:1px solid ' + color + ';font-size:12px;margin-top:8px';
+  el.style.cssText = 'display:block;color:' + color + ';padding:8px 12px;background:var(--bg3);border-radius:6px;border:1px solid ' + color + ';font-size:12px;margin-top:8px';
   el.textContent = msg;
 }
 
@@ -7635,7 +7637,7 @@ function updateKeyBadge(name, ok) {
   } else {
     if (badge) {
       badge.textContent = 'Sin clave';
-      badge.style.cssText = 'background:#1a2236;color:#475569;border:1px solid #1e2d44;font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
+      badge.style.cssText = 'background:var(--bg3);color:var(--text3);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:99px;font-family:monospace';
     }
     if (icon) icon.textContent = '⭕';
     if (text) text.textContent = 'No configurada';

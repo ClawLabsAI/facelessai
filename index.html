@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.37-debug — Content Engine</title>
+<title>FacelessAI v3.37b-debug — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -342,7 +342,11 @@ function nav(id) {
   if (titleEl) titleEl.textContent = titles[id] || id;
   try { window.scrollTo({top:0, behavior:"instant"}); } catch(e) { window.scrollTo(0,0); }
   var indicator = document.getElementById('active-view-indicator');
-  if (indicator) indicator.textContent = '📍 Vista activa: ' + id.toUpperCase();
+  if (indicator) {
+    var dashEl = document.getElementById('view-dashboard');
+    var dashDisplay = dashEl ? window.getComputedStyle(dashEl).display : 'NO ELEMENT';
+    indicator.textContent = '📍 ' + id.toUpperCase() + ' | dashboard=' + dashDisplay;
+  }
   if (typeof _navCallbacks !== 'undefined' && _navCallbacks[id]) {
     try { _navCallbacks[id](); } catch(e) { console.error('nav:', e); }
   }
@@ -360,7 +364,7 @@ window.onerror = function(msg, src, line) {
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.37-debug ✓</div>
+    <div class="logo-sub" style="color:#00e87a;font-weight:700">Content Engine v3.37b-debug ✓</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>

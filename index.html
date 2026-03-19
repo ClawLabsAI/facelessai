@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.27 — Content Engine</title>
+<title>FacelessAI v3.29 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -324,7 +324,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.27</div>
+    <div class="logo-sub">Content Engine v3.29</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -2912,6 +2912,154 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   </div>
 </div>
 
+<!-- ════════ ANALYTICS ════════ -->
+<div class="view" id="view-analytics">
+  <div class="sh mb20">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📊</div>
+      <div>
+        <h2 style="font-size:17px">Analytics</h2>
+        <div style="font-size:12px;color:var(--text3)">Costes · Producción · Log de llamadas IA</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-g btn-sm" onclick="exportAnalyticsCSV()">⬇ Exportar CSV</button>
+      <button class="btn btn-g btn-sm" onclick="clearAILog()" style="color:var(--red);border-color:var(--redsoft)">🗑 Limpiar log</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div style="display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content">
+    <button id="tab-summary" onclick="switchAnalyticsTab('summary')" style="padding:7px 18px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:var(--text1);color:var(--bg0);font-family:var(--sans);transition:all .2s">📊 Resumen</button>
+    <button id="tab-costs" onclick="switchAnalyticsTab('costs')" style="padding:7px 18px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);font-family:var(--sans);transition:all .2s">💸 Costes</button>
+    <button id="tab-log" onclick="switchAnalyticsTab('log')" style="padding:7px 18px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);font-family:var(--sans);transition:all .2s">🤖 Log IA</button>
+  </div>
+
+  <!-- TAB: SUMMARY -->
+  <div id="analytics-summary">
+    <!-- Top stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+      <div style="background:#38bdf815;border:1px solid #38bdf833;border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-weight:800;font-family:var(--mono);color:#38bdf8" id="an-total-cost">$0.000</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px">COSTE TOTAL</div>
+      </div>
+      <div style="background:#00e87a15;border:1px solid #00e87a44;border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-weight:800;font-family:var(--mono);color:#00e87a" id="an-total-calls">0</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px">LLAMADAS IA</div>
+      </div>
+      <div style="background:#a78bfa15;border:1px solid #a78bfa33;border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-weight:800;font-family:var(--mono);color:#a78bfa" id="an-total-videos">0</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px">VÍDEOS GENERADOS</div>
+      </div>
+      <div style="background:#fbbf2415;border:1px solid #fbbf2444;border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-weight:800;font-family:var(--mono);color:#fbbf24" id="an-cost-per-video">$0.00</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px">COSTE/VÍDEO</div>
+      </div>
+    </div>
+
+    <!-- Activity chart -->
+    <div class="card mb16">
+      <div style="font-size:13px;font-weight:600;margin-bottom:14px">📈 Actividad — últimos 7 días</div>
+      <div id="an-activity-chart" style="display:flex;align-items:flex-end;gap:8px;height:80px;padding-bottom:4px">
+        <!-- rendered by JS -->
+      </div>
+      <div id="an-activity-labels" style="display:flex;gap:8px;margin-top:6px">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Two column summary -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">🤖 Coste por tipo de IA</div>
+        <div id="an-cost-by-type" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">📺 Producción por módulo</div>
+        <div id="an-production-by-module" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: COSTS -->
+  <div id="analytics-costs" style="display:none">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+      <div class="card" style="border-top:2px solid #38bdf8">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">HOY</div>
+        <div style="font-size:24px;font-weight:800;font-family:var(--mono);color:#38bdf8" id="an-cost-today">$0.000</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px" id="an-calls-today">0 llamadas</div>
+      </div>
+      <div class="card" style="border-top:2px solid #a78bfa">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">ESTA SEMANA</div>
+        <div style="font-size:24px;font-weight:800;font-family:var(--mono);color:#a78bfa" id="an-cost-week">$0.000</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px" id="an-calls-week">0 llamadas</div>
+      </div>
+      <div class="card" style="border-top:2px solid #00e87a">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">PROYECCIÓN MES</div>
+        <div style="font-size:24px;font-weight:800;font-family:var(--mono);color:#00e87a" id="an-cost-projection">$0.00</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">al ritmo actual</div>
+      </div>
+    </div>
+
+    <!-- Cost breakdown table -->
+    <div class="card mb14">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px">💸 Desglose por servicio</div>
+      <div id="an-cost-breakdown">
+        <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;font-size:11px;font-family:var(--mono);color:var(--text3);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:8px">
+          <span>SERVICIO</span><span>BARRA</span><span>LLAMADAS</span><span>COSTE</span>
+        </div>
+        <div id="an-breakdown-rows" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+
+    <!-- Savings comparison -->
+    <div class="card" style="background:linear-gradient(135deg,#00e87a08,transparent);border-color:#00e87a33">
+      <div style="font-size:13px;font-weight:600;color:#00e87a;margin-bottom:12px">💡 Ahorro vs herramientas equivalentes</div>
+      <div id="an-savings-comparison" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+
+  <!-- TAB: LOG IA -->
+  <div id="analytics-log" style="display:none">
+    <!-- Filters -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <select class="sel" id="an-log-filter-type" onchange="renderAnalyticsLog()" style="flex:1;min-width:130px">
+        <option value="all">Todos los tipos</option>
+        <option value="claude">Claude (scripts/ideas)</option>
+        <option value="tts">OpenAI TTS (audio)</option>
+        <option value="whisper">Whisper (transcripción)</option>
+        <option value="pexels">Pexels (clips)</option>
+        <option value="backend">Backend Railway (MP4)</option>
+      </select>
+      <select class="sel" id="an-log-filter-days" onchange="renderAnalyticsLog()" style="flex:1;min-width:120px">
+        <option value="1">Hoy</option>
+        <option value="7" selected>Últimos 7 días</option>
+        <option value="30">Últimos 30 días</option>
+        <option value="all">Todo el historial</option>
+      </select>
+      <div style="font-size:12px;color:var(--text3);padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-family:var(--mono)" id="an-log-total-shown">0 registros</div>
+    </div>
+
+    <!-- Log table -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="display:grid;grid-template-columns:120px 100px 1fr 80px 70px;gap:0;font-size:11px;font-weight:600;font-family:var(--mono);color:var(--text3);padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg2)">
+        <span>FECHA/HORA</span>
+        <span>TIPO</span>
+        <span>DESCRIPCIÓN</span>
+        <span>TOKENS</span>
+        <span style="text-align:right">COSTE</span>
+      </div>
+      <div id="an-log-rows" style="max-height:400px;overflow-y:auto">
+        <div style="text-align:center;padding:40px;color:var(--text3)">
+          <div style="font-size:32px;margin-bottom:12px">🤖</div>
+          <div style="font-size:13px">El log se irá llenando con cada llamada a la IA</div>
+          <div style="font-size:11px;font-family:var(--mono);margin-top:6px;color:#475569">Claude · OpenAI TTS · Whisper · Pexels</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ════════ TEMPLATES ════════ -->
 <div class="view" id="view-templates">
   <div class="sh mb20"><h2>Plantillas virales</h2></div>
@@ -3388,6 +3536,61 @@ const TIER_CONFIG = {
   opt:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.06, llmModel:'claude-sonnet-4-6',        ttsModel:'OpenAI TTS-1 HD',    label:'🔵 OPTIMIZADO' },
   premium: { llm:'claude', tts:'11labs', img:'pexels', costPerVid:0.25, llmModel:'claude-opus-4-6',          ttsModel:'ElevenLabs v3',      label:'🔴 PREMIUM' }
 };
+
+
+// ═══════════════════════════════════════════════
+let aiLog = [];
+try { aiLog = JSON.parse(localStorage.getItem('fai_ai_log') || '[]'); } catch(e) {}
+
+const AI_COSTS = {
+  'claude-haiku-3':    { input: 0.00000025, output: 0.00000125 },
+  'claude-sonnet-4-5': { input: 0.000003,   output: 0.000015   },
+  'claude-opus-4-5':   { input: 0.000015,   output: 0.000075   },
+  'tts-1':             { chars: 0.000015 },
+  'tts-1-hd':          { chars: 0.00003  },
+  'whisper-1':         { minutes: 0.006   },
+  'pexels':            { per_call: 0       },
+  'railway':           { per_call: 0       }
+};
+
+function logAICall(type, model, description, inputTokens, outputTokens, extraData) {
+  const costs = AI_COSTS[model] || {};
+  let cost = 0;
+  if (costs.input)    cost = (inputTokens || 0) * costs.input + (outputTokens || 0) * costs.output;
+  if (costs.chars)    cost = (extraData?.chars || 0) * costs.chars;
+  if (costs.minutes)  cost = (extraData?.minutes || 0) * costs.minutes;
+  if (costs.per_call) cost = costs.per_call;
+
+  const entry = {
+    id: Date.now(),
+    ts: new Date().toISOString(),
+    type,     // claude | tts | whisper | pexels | backend
+    model,
+    description,
+    inputTokens: inputTokens || 0,
+    outputTokens: outputTokens || 0,
+    cost: parseFloat(cost.toFixed(6)),
+    extra: extraData || {}
+  };
+
+  aiLog.unshift(entry); // newest first
+  if (aiLog.length > 500) aiLog = aiLog.slice(0, 500); // keep last 500
+  try { localStorage.setItem('fai_ai_log', JSON.stringify(aiLog)); } catch(e) {}
+
+  // Update budget pill
+  updateBudgetPill();
+}
+
+function updateBudgetPill() {
+  const today = new Date().toDateString();
+  const todayCost = aiLog
+    .filter(e => new Date(e.ts).toDateString() === today)
+    .reduce((s, e) => s + e.cost, 0);
+  const pill = document.querySelector('.budget-pill');
+  if (!pill) return;
+  const spans = pill.querySelectorAll('span');
+  if (spans[1]) spans[1].textContent = '$' + todayCost.toFixed(3);
+}
 let activeTier = 'eco';
 try { activeTier = localStorage.getItem('fai_tier') || 'eco'; } catch(e) {}
 
@@ -3431,6 +3634,7 @@ function nav(id) {
   window.scrollTo(0, 0);
 
   // Refresh settings display after DOM is visible
+  if (id === 'analytics') { renderAnalytics(); switchAnalyticsTab('summary'); }
   if (id === 'affiliates') renderAffiliates();
   if (id === 'dashboard') renderDashboard();
   if (id === 'channels') renderChannels();
@@ -3875,6 +4079,8 @@ async function generateTTS(audioOnly) {
     const audioBlob = await ttsResp.blob();
     const audioUrl = URL.createObjectURL(audioBlob);
     const sizeKB = Math.round(audioBlob.size / 1024);
+    // Log TTS call
+    logAICall('tts', model, 'TTS: ' + scriptText.slice(0,60) + '... (' + scriptText.length + ' chars)', 0, 0, { chars: scriptText.length });
 
     addLog('✓ Audio generado — ' + sizeKB + ' KB · MP3', 'var(--green)');
 
@@ -6499,7 +6705,320 @@ function saveTTSDraft() {
 
 // ═══════════════════════════════════════════════
 // ═══════════════════════════════════════════════
-// AFFILIATES MODULE
+// ANALYTICS — AI call logging + cost tracking
+function clearAILog() {
+  if (!confirm('¿Eliminar todo el historial de llamadas IA?')) return;
+  aiLog = [];
+  try { localStorage.removeItem('fai_ai_log'); } catch(e) {}
+  renderAnalytics();
+  showToast('🗑 Log eliminado');
+}
+
+// ── TAB SWITCHING ──
+let activeAnalyticsTab = 'summary';
+function switchAnalyticsTab(tab) {
+  activeAnalyticsTab = tab;
+  ['summary','costs','log'].forEach(t => {
+    const btn = document.getElementById('tab-' + t);
+    const panel = document.getElementById('analytics-' + t);
+    if (btn) {
+      btn.style.background = t === tab ? 'var(--text1)' : 'transparent';
+      btn.style.color = t === tab ? 'var(--bg0)' : 'var(--text3)';
+    }
+    if (panel) panel.style.display = t === tab ? 'block' : 'none';
+  });
+  if (tab === 'log') renderAnalyticsLog();
+  if (tab === 'costs') renderAnalyticsCosts();
+}
+
+// ── MAIN RENDER ──
+function renderAnalytics() {
+  const drafts = getDrafts();
+  const totalCost = aiLog.reduce((s, e) => s + e.cost, 0);
+  const totalCalls = aiLog.length;
+  const totalVideos = drafts.length;
+  const costPerVideo = totalVideos > 0 ? totalCost / totalVideos : 0;
+
+  const setEl = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+  setEl('an-total-cost', '$' + totalCost.toFixed(3));
+  setEl('an-total-calls', totalCalls.toLocaleString());
+  setEl('an-total-videos', totalVideos);
+  setEl('an-cost-per-video', '$' + costPerVideo.toFixed(3));
+
+  renderActivityChart();
+  renderCostByType();
+  renderProductionByModule();
+
+  if (activeAnalyticsTab === 'costs') renderAnalyticsCosts();
+  if (activeAnalyticsTab === 'log') renderAnalyticsLog();
+}
+
+// ── ACTIVITY CHART (last 7 days) ──
+function renderActivityChart() {
+  const chart = document.getElementById('an-activity-chart');
+  const labels = document.getElementById('an-activity-labels');
+  if (!chart || !labels) return;
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d);
+  }
+
+  const dayData = days.map(d => {
+    const ds = d.toDateString();
+    const entries = aiLog.filter(e => new Date(e.ts).toDateString() === ds);
+    return { date: d, calls: entries.length, cost: entries.reduce((s, e) => s + e.cost, 0) };
+  });
+
+  const maxCalls = Math.max(...dayData.map(d => d.calls), 1);
+  const dayNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+  chart.innerHTML = dayData.map(d => {
+    const h = Math.max(4, Math.round((d.calls / maxCalls) * 80));
+    const isToday = d.date.toDateString() === new Date().toDateString();
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+      <div style="font-size:9px;color:#475569;font-family:var(--mono)">${d.calls || ''}</div>
+      <div style="width:100%;background:${isToday ? '#38bdf8' : '#38bdf840'};border-radius:4px 4px 0 0;height:${h}px;transition:height .3s;min-height:4px" title="${d.calls} llamadas · $${d.cost.toFixed(3)}"></div>
+    </div>`;
+  }).join('');
+
+  labels.innerHTML = dayData.map(d => {
+    const isToday = d.date.toDateString() === new Date().toDateString();
+    return `<div style="flex:1;text-align:center;font-size:10px;font-family:var(--mono);color:${isToday ? '#38bdf8' : 'var(--text3)'}">
+      ${isToday ? 'HOY' : dayNames[d.date.getDay()]}
+    </div>`;
+  }).join('');
+}
+
+// ── COST BY TYPE ──
+function renderCostByType() {
+  const el = document.getElementById('an-cost-by-type');
+  if (!el) return;
+
+  const byType = {};
+  aiLog.forEach(e => {
+    if (!byType[e.type]) byType[e.type] = { cost: 0, calls: 0 };
+    byType[e.type].cost += e.cost;
+    byType[e.type].calls++;
+  });
+
+  const total = Object.values(byType).reduce((s, v) => s + v.cost, 0) || 1;
+  const typeConfig = {
+    claude:  { label: 'Claude (IA)', color: '#a78bfa', emoji: '🤖' },
+    tts:     { label: 'OpenAI TTS', color: '#38bdf8', emoji: '🎤' },
+    whisper: { label: 'Whisper', color: '#00e87a', emoji: '🎙️' },
+    pexels:  { label: 'Pexels', color: '#fbbf24', emoji: '🎬' },
+    backend: { label: 'Railway MP4', color: '#f472b6', emoji: '🎥' }
+  };
+
+  if (Object.keys(byType).length === 0) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">Sin llamadas registradas aún</div>';
+    return;
+  }
+
+  el.innerHTML = Object.entries(byType)
+    .sort((a, b) => b[1].cost - a[1].cost)
+    .map(([type, data]) => {
+      const cfg = typeConfig[type] || { label: type, color: '#94a3b8', emoji: '🔗' };
+      const pct = Math.round((data.cost / total) * 100);
+      return `<div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:12px">${cfg.emoji} ${cfg.label}</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:11px;color:var(--text3);font-family:var(--mono)">${data.calls} calls</span>
+            <span style="font-size:12px;font-weight:600;color:${cfg.color};font-family:var(--mono)">$${data.cost.toFixed(4)}</span>
+          </div>
+        </div>
+        <div style="background:var(--bg3);border-radius:99px;height:5px;overflow:hidden">
+          <div style="background:${cfg.color};height:100%;width:${pct}%;border-radius:99px;transition:width .5s"></div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// ── PRODUCTION BY MODULE ──
+function renderProductionByModule() {
+  const el = document.getElementById('an-production-by-module');
+  if (!el) return;
+
+  const drafts = getDrafts();
+  const modules = {
+    'pipeline':    { label: 'Pipeline faceless', emoji: '🎬', count: 0, color: '#00e87a' },
+    'tiktokshop':  { label: 'TikTok Shop UGC', emoji: '🛍️', count: 0, color: '#ff004f' },
+    'clipping':    { label: 'Clipping', emoji: '✂️', count: 0, color: '#a78bfa' }
+  };
+
+  drafts.forEach(d => {
+    if (d.niche === 'tiktokshop') modules.tiktokshop.count++;
+    else if (d.niche === 'clipping') modules.clipping.count++;
+    else modules.pipeline.count++;
+  });
+
+  const total = drafts.length || 1;
+  const channels = getChannels().length;
+  const clipChannelsCount = clipChannels?.length || 0;
+
+  el.innerHTML = `
+    ${Object.values(modules).map(m => `
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:12px">${m.emoji} ${m.label}</span>
+          <span style="font-size:12px;font-weight:600;color:${m.color};font-family:var(--mono)">${m.count} vídeos</span>
+        </div>
+        <div style="background:var(--bg3);border-radius:99px;height:5px;overflow:hidden">
+          <div style="background:${m.color};height:100%;width:${Math.round((m.count/total)*100)}%;border-radius:99px"></div>
+        </div>
+      </div>
+    `).join('')}
+    <div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2)">
+        <span>📺 Canales faceless</span><span style="font-weight:600;font-family:var(--mono)">${channels}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-top:4px">
+        <span>✂️ Canales clipping</span><span style="font-weight:600;font-family:var(--mono)">${clipChannelsCount}</span>
+      </div>
+    </div>`;
+}
+
+// ── COSTS TAB ──
+function renderAnalyticsCosts() {
+  const today = new Date().toDateString();
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const todayEntries = aiLog.filter(e => new Date(e.ts).toDateString() === today);
+  const weekEntries = aiLog.filter(e => new Date(e.ts) >= weekAgo);
+
+  const todayCost = todayEntries.reduce((s, e) => s + e.cost, 0);
+  const weekCost = weekEntries.reduce((s, e) => s + e.cost, 0);
+  const dailyAvg = weekCost / 7;
+  const monthProjection = dailyAvg * 30;
+
+  const setEl = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+  setEl('an-cost-today', '$' + todayCost.toFixed(4));
+  setEl('an-calls-today', todayEntries.length + ' llamadas');
+  setEl('an-cost-week', '$' + weekCost.toFixed(4));
+  setEl('an-calls-week', weekEntries.length + ' llamadas');
+  setEl('an-cost-projection', '$' + monthProjection.toFixed(2));
+
+  // Breakdown rows
+  const byType = {};
+  aiLog.forEach(e => {
+    if (!byType[e.type]) byType[e.type] = { cost: 0, calls: 0 };
+    byType[e.type].cost += e.cost;
+    byType[e.type].calls++;
+  });
+  const totalCost = Object.values(byType).reduce((s, v) => s + v.cost, 0) || 1;
+  const typeConfig = {
+    claude:  { label: 'Claude (ideas, scripts, scores...)', color: '#a78bfa', emoji: '🤖' },
+    tts:     { label: 'OpenAI TTS (audio MP3)', color: '#38bdf8', emoji: '🎤' },
+    whisper: { label: 'Whisper (transcripción clipping)', color: '#00e87a', emoji: '🎙️' },
+    pexels:  { label: 'Pexels (clips de vídeo)', color: '#fbbf24', emoji: '🎬' },
+    backend: { label: 'Railway (generación MP4)', color: '#f472b6', emoji: '🎥' }
+  };
+
+  const rowsEl = document.getElementById('an-breakdown-rows');
+  if (rowsEl) {
+    rowsEl.innerHTML = Object.entries(byType).length ? Object.entries(byType)
+      .sort((a, b) => b[1].cost - a[1].cost)
+      .map(([type, data]) => {
+        const cfg = typeConfig[type] || { label: type, color: '#94a3b8', emoji: '🔗' };
+        const pct = Math.round((data.cost / totalCost) * 100);
+        return `<div style="display:grid;grid-template-columns:auto 1fr 80px 80px;gap:10px;align-items:center">
+          <span style="font-size:13px">${cfg.emoji} ${cfg.label}</span>
+          <div style="background:var(--bg3);border-radius:99px;height:6px;overflow:hidden">
+            <div style="background:${cfg.color};height:100%;width:${pct}%"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text3);font-family:var(--mono);text-align:right">${data.calls}x</span>
+          <span style="font-size:12px;font-weight:700;color:${cfg.color};font-family:var(--mono);text-align:right">$${data.cost.toFixed(4)}</span>
+        </div>`;
+      }).join('')
+    : '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">Sin datos aún</div>';
+  }
+
+  // Savings comparison
+  const savingsEl = document.getElementById('an-savings-comparison');
+  if (savingsEl) {
+    const totalSpent = Object.values(byType).reduce((s, v) => s + v.cost, 0);
+    const comparisons = [
+      { tool: 'Jasper (scripts IA)', monthly: 49, our: totalSpent * 0.4 },
+      { tool: 'Synthesia (vídeos)', monthly: 90, our: totalSpent * 0.5 },
+      { tool: 'ElevenLabs Pro (TTS)', monthly: 22, our: (byType.tts?.cost || 0) },
+      { tool: 'Descript (edición)', monthly: 24, our: 0 }
+    ];
+    savingsEl.innerHTML = comparisons.map(c => {
+      const saving = c.monthly - c.our;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--text2)">${c.tool}</span>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span style="font-size:11px;color:var(--text3);text-decoration:line-through;font-family:var(--mono)">$${c.monthly}/mes</span>
+          <span style="font-size:12px;font-family:var(--mono);color:var(--text2)">$${c.our.toFixed(2)}</span>
+          <span style="font-size:12px;font-weight:700;color:#00e87a;font-family:var(--mono)">Ahorro: $${Math.max(0,saving).toFixed(0)}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── LOG TAB ──
+function renderAnalyticsLog() {
+  const typeFilter = document.getElementById('an-log-filter-type')?.value || 'all';
+  const daysFilter = document.getElementById('an-log-filter-days')?.value || '7';
+  const rowsEl = document.getElementById('an-log-rows');
+  const totalEl = document.getElementById('an-log-total-shown');
+  if (!rowsEl) return;
+
+  let filtered = aiLog;
+  if (typeFilter !== 'all') filtered = filtered.filter(e => e.type === typeFilter);
+  if (daysFilter !== 'all') {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - parseInt(daysFilter));
+    filtered = filtered.filter(e => new Date(e.ts) >= cutoff);
+  }
+
+  if (totalEl) totalEl.textContent = filtered.length + ' registros';
+
+  if (!filtered.length) {
+    rowsEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">Sin registros para este filtro</div>';
+    return;
+  }
+
+  const typeColors = { claude:'#a78bfa', tts:'#38bdf8', whisper:'#00e87a', pexels:'#fbbf24', backend:'#f472b6' };
+  const typeLabels = { claude:'Claude', tts:'TTS', whisper:'Whisper', pexels:'Pexels', backend:'Railway' };
+
+  rowsEl.innerHTML = filtered.slice(0, 100).map(e => {
+    const dt = new Date(e.ts);
+    const time = dt.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+    const date = dt.toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit' });
+    const color = typeColors[e.type] || '#94a3b8';
+    return `<div style="display:grid;grid-template-columns:120px 100px 1fr 80px 70px;gap:0;font-size:12px;padding:9px 14px;border-bottom:1px solid var(--border);align-items:center" class="log-row">
+      <span style="font-family:var(--mono);color:var(--text3);font-size:11px">${date} ${time}</span>
+      <span style="padding:2px 8px;border-radius:99px;background:${color}20;color:${color};font-family:var(--mono);font-size:10px;font-weight:700;width:fit-content">${typeLabels[e.type]||e.type}</span>
+      <span style="color:var(--text2);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.description}</span>
+      <span style="font-family:var(--mono);color:var(--text3);font-size:11px;text-align:right">${e.inputTokens ? (e.inputTokens+'+'+e.outputTokens) : '—'}</span>
+      <span style="font-family:var(--mono);font-weight:700;color:${e.cost > 0 ? color : 'var(--text3)'};text-align:right">$${e.cost.toFixed(4)}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── EXPORT CSV ──
+function exportAnalyticsCSV() {
+  if (!aiLog.length) { showToast('⚠ No hay datos para exportar'); return; }
+  const headers = ['Fecha', 'Tipo', 'Modelo', 'Descripción', 'Tokens entrada', 'Tokens salida', 'Coste ($)'];
+  const rows = aiLog.map(e => [
+    new Date(e.ts).toLocaleString('es-ES'),
+    e.type, e.model, '"' + e.description.replace(/"/g, "'") + '"',
+    e.inputTokens, e.outputTokens, e.cost.toFixed(6)
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'facelessai_analytics_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  showToast('⬇ CSV exportado');
+}
 // ═══════════════════════════════════════════════
 let affiliates = [];
 try { affiliates = JSON.parse(localStorage.getItem('fai_affiliates') || '[]'); } catch(e) {}
@@ -7036,6 +7555,11 @@ async function callClaude(prompt, model, maxTokens) {
       throw new Error(err.error?.message || 'Error ' + resp.status);
     }
     const data = await resp.json();
+    // Log the call
+    const inputT = data.usage?.input_tokens || Math.round(prompt.length / 4);
+    const outputT = data.usage?.output_tokens || Math.round((data.content[0]?.text?.length || 0) / 4);
+    const desc = prompt.slice(0, 80).replace(/\n/g, ' ');
+    logAICall('claude', useModel, desc, inputT, outputT);
     return data.content[0].text;
   } catch(e) {
     clearTimeout(timeout);

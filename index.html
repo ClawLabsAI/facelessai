@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.88 — Content Engine</title>
+<title>FacelessAI v3.90 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.88</div>
+    <div class="logo-sub">Content Engine v3.90</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -1505,13 +1505,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:200px 1fr;gap:20px">
+    <div style="display:grid;grid-template-columns:180px 1fr;gap:16px;min-width:0">
 
       <!-- Left: video preview -->
       <div>
         <div class="lbl mb6">Vista previa</div>
         <!-- Simulated video preview -->
-        <div style="background:linear-gradient(180deg,#0f1e38,#1a3a5c,#0f1e38);border-radius:var(--rl);aspect-ratio:9/16;max-height:340px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:1px solid var(--border)">
+        <div style="background:linear-gradient(180deg,#0f1e38,#1a3a5c,#0f1e38);border-radius:var(--rl);aspect-ratio:9/16;max-height:260px;width:100%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:1px solid var(--border)">
           <div style="position:absolute;bottom:38px;left:0;right:0;text-align:center;padding:0 8px">
             <div id="apv-subtitle" style="background:rgba(0,0,0,.85);display:inline-block;padding:5px 10px;border-radius:4px;font-size:12px;font-weight:700;color:#fff">¿ESTÁS PERDIENDO <span style="color:#00e87a">$300</span> AL MES?</div>
           </div>
@@ -1535,7 +1535,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       </div>
 
       <!-- Right: metadata editing -->
-      <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0;overflow:hidden">
 
         <!-- Title editing -->
         <div>
@@ -1573,7 +1573,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         <div>
           <label class="lbl">Publicar en</label>
           <div class="flex g8">
-            <div class="plat-btn p-yt" id="apv-yt" onclick="this.classList.toggle('p-yt')" style="flex:1;padding:10px"><div style="font-size:18px">▶️</div><div style="font-size:11px;font-weight:600;color:#ff4444">YouTube</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Shorts</div></div>
+            <div class="plat-btn p-yt" id="apv-yt" onclick="this.classList.toggle('p-yt')" style="flex:1;padding:8px;min-width:0"><div style="font-size:18px">▶️</div><div style="font-size:11px;font-weight:600;color:#ff4444">YouTube</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Shorts</div></div>
             <div class="plat-btn p-tt" id="apv-tt" onclick="this.classList.toggle('p-tt')" style="flex:1;padding:10px"><div style="font-size:18px">🎵</div><div style="font-size:11px;font-weight:600;color:#00d4c4">TikTok</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Feed</div></div>
             <div class="plat-btn p-ig" id="apv-ig" onclick="this.classList.toggle('p-ig')" style="flex:1;padding:10px"><div style="font-size:18px">📷</div><div style="font-size:11px;font-weight:600;color:#e1306c">Instagram</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Reels</div></div>
           </div>
@@ -1590,7 +1590,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
         </div>
 
         <!-- Action buttons -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;min-width:0">
           <button class="btn btn-g" onclick="rejectVideo()" style="border-color:var(--red);color:var(--red)">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="2" x2="14" y2="14"/><line x1="14" y1="2" x2="2" y2="14"/></svg>
             Rechazar
@@ -4310,6 +4310,7 @@ async function generateRealVideo() {
 
     const payload = {
       audio_b64: audioB64Clean,
+      audio_url: '',
       pexels_clips: clipUrls,
       script: currentScript || '',
       title: idea?.hook || 'FacelessAI Video',
@@ -8377,6 +8378,7 @@ async function generateVideoShop() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         audio_b64: audioB64,
+        audio_url: '',
         pexels_clips: clipUrls,
         script: ttsSelectedScript,
         title: document.getElementById('ts-prod-name')?.value || 'TikTok Shop UGC',

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.29 — Content Engine</title>
+<title>FacelessAI v3.30 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -319,12 +319,34 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg0);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
 </style>
 </head>
+<style>
+#debug-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#f87171;color:#fff;font-family:monospace;font-size:12px;padding:8px 16px;z-index:9999;word-break:break-all}
+</style>
+<script>
+// Early error catcher — shows JS errors visually on the page
+window.onerror = function(msg, src, line, col, err) {
+  var bar = document.getElementById('debug-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'debug-bar';
+    document.body.appendChild(bar);
+  }
+  bar.style.display = 'block';
+  bar.textContent = '⚠ JS Error: ' + msg + ' (line ' + line + ')';
+  return false;
+};
+window.addEventListener('unhandledrejection', function(e) {
+  var bar = document.getElementById('debug-bar');
+  if (bar) { bar.style.display='block'; bar.textContent = '⚠ Promise Error: ' + (e.reason?.message || e.reason); }
+});
+</script>
 <body>
+<div id="debug-bar"></div>
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.29</div>
+    <div class="logo-sub">Content Engine v3.30</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -3527,6 +3549,8 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <span id="toast-msg">Acción completada</span>
 </div>
 
+
+
 <script>
 // ── GLOBALS — must be first to avoid ReferenceError anywhere in script ──
 const KEYS = {};
@@ -3622,29 +3646,32 @@ const TITLES = {
 };
 
 function nav(id) {
-  VIEWS.forEach(v => {
-    const el = document.getElementById('view-' + v);
-    if (el) el.classList.toggle('active', v === id);
-  });
-  document.querySelectorAll('.ni[data-view]').forEach(el => {
-    el.classList.toggle('active', el.dataset.view === id);
-  });
-  const titleEl = document.getElementById('page-title');
-  if (titleEl) titleEl.textContent = TITLES[id] || id;
-  window.scrollTo(0, 0);
+  try {
+    VIEWS.forEach(v => {
+      const el = document.getElementById('view-' + v);
+      if (el) el.classList.toggle('active', v === id);
+    });
+    document.querySelectorAll('.ni[data-view]').forEach(el => {
+      el.classList.toggle('active', el.dataset.view === id);
+    });
+    const titleEl = document.getElementById('page-title');
+    if (titleEl) titleEl.textContent = TITLES[id] || id;
+    window.scrollTo(0, 0);
+  } catch(e) {
+    console.error('nav() base error:', e);
+  }
 
-  // Refresh settings display after DOM is visible
-  if (id === 'analytics') { renderAnalytics(); switchAnalyticsTab('summary'); }
-  if (id === 'affiliates') renderAffiliates();
-  if (id === 'dashboard') renderDashboard();
-  if (id === 'channels') renderChannels();
-  if (id === 'clipping') renderClipChannels();
-  if (id === 'clippipeline') setCPStep(0);
-  if (id === 'tiktokshop') renderTTSChannels();
-  if (id === 'tiktokproduct') setTSStep(0);
-  if (id === 'settings') setTimeout(() => { refreshSettingsDisplay(); initPreferences(); }, 50);
-  // Render drafts when navigating to drafts view
-  if (id === 'drafts') renderDrafts();
+  // Per-view render calls — each wrapped separately
+  try { if (id === 'analytics') { renderAnalytics(); switchAnalyticsTab('summary'); } } catch(e) { console.error('analytics render:', e); }
+  try { if (id === 'affiliates') renderAffiliates(); } catch(e) { console.error('affiliates render:', e); }
+  try { if (id === 'dashboard') renderDashboard(); } catch(e) { console.error('dashboard render:', e); }
+  try { if (id === 'channels') renderChannels(); } catch(e) { console.error('channels render:', e); }
+  try { if (id === 'clipping') renderClipChannels(); } catch(e) { console.error('clipping render:', e); }
+  try { if (id === 'clippipeline') setCPStep(0); } catch(e) { console.error('clippipeline render:', e); }
+  try { if (id === 'tiktokshop') renderTTSChannels(); } catch(e) { console.error('tiktokshop render:', e); }
+  try { if (id === 'tiktokproduct') setTSStep(0); } catch(e) { console.error('tiktokproduct render:', e); }
+  try { if (id === 'settings') setTimeout(() => { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); } catch(e) {}
+  try { if (id === 'drafts') renderDrafts(); } catch(e) { console.error('drafts render:', e); }
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -5392,15 +5419,20 @@ document.addEventListener('click', e => {
 });
 
 // ── INIT ──
-renderSpikes();
-loadKeys();
-setTier(activeTier);
-updateCostEstimate();
-initLangVoice();
-initPreferences();
-renderDrafts();
-renderDashboard();
-renderChannels();
+const _initFns = [
+  ['renderSpikes', renderSpikes],
+  ['loadKeys', loadKeys],
+  ['setTier', () => setTier(activeTier)],
+  ['updateCostEstimate', updateCostEstimate],
+  ['initLangVoice', initLangVoice],
+  ['initPreferences', initPreferences],
+  ['renderDrafts', renderDrafts],
+  ['renderDashboard', renderDashboard],
+  ['renderChannels', renderChannels],
+];
+_initFns.forEach(([name, fn]) => {
+  try { fn(); } catch(e) { console.error('Init error in ' + name + ':', e.message, e); }
+});
 // Live preview for channel name in modal
 document.addEventListener('input', e => {
   if (e.target && e.target.id === 'ch-name') updateChPreview();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.87 — Content Engine</title>
+<title>FacelessAI v3.88 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.87</div>
+    <div class="logo-sub">Content Engine v3.88</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -3487,6 +3487,7 @@ function setPStep(n) {
     document.getElementById('ps-' + i)?.classList.toggle('act', i === n);
     document.getElementById('p-' + i)?.classList.toggle('act', i === n);
   }
+  if (n === 5) { try { populateStep5(); } catch(e) { console.warn('populateStep5:', e); } }
   // When entering video step, auto-suggest Pexels query and check keys
   // When entering score step, pre-fill selected idea
   if (n === 2) {
@@ -4723,9 +4724,45 @@ function saveChannels(channels) {
   try { localStorage.setItem('fai_channels', JSON.stringify(channels)); } catch(e) {}
 }
 function approveAndPublish() {
-  const title = document.getElementById('apv-title')?.value || '';
-  showToast('🚀 Aprobado — se publicará en YouTube/TikTok/IG cuando esté conectada la API');
-  setTimeout(() => nav('dashboard'), 1500);
+  const title  = document.getElementById('apv-title')?.value.trim() || '';
+  const desc   = document.getElementById('apv-desc')?.value.trim()  || '';
+  const idea   = generatedIdeas?.[selectedIdeaIndex];
+  const audio  = window._generatedAudio;
+  const channel = workingChannel || '';
+
+  // Build draft object
+  const draft = {
+    hook:        title || idea?.hook || 'Sin título',
+    title:       title || idea?.hook || 'Sin título',
+    script:      currentScript || '',
+    niche:       selectedNiche,
+    lang:        activeLang,
+    gender:      activeGender,
+    voice:       getVoice(),
+    score:       window._lastScore || idea?.viralScore || null,
+    cost:        audio?.cost || null,
+    audioUrl:    audio?.url  || null,
+    duration:    audio?.duration || null,
+    description: desc,
+    channel:     channel,
+    status:      'approved',
+    approvedAt:  Date.now(),
+    source:      'pipeline',
+  };
+
+  addDraft(draft);
+  renderDashboard();
+
+  // Try YouTube publish if connected
+  const ytKey = localStorage.getItem('fai_key_youtube') || KEYS.youtube;
+  if (audio?.url && ytKey) {
+    showToast('✓ Aprobado y guardado · Publicando en YouTube...');
+    window.open('https://studio.youtube.com/channel/upload', '_blank');
+  } else {
+    showToast('✓ Aprobado y guardado en Borradores');
+  }
+
+  setTimeout(() => nav('drafts'), 1000);
 }
 
 function saveDraft() {
@@ -4757,11 +4794,89 @@ function rejectVideo() {
   }
 }
 
+
+// ── Populate step 5 with real data when entering it ──
+function populateStep5() {
+  const idea     = generatedIdeas?.[selectedIdeaIndex];
+  const audio    = window._generatedAudio;
+  const niche    = selectedNiche || idea?.niche || '';
+  const channel  = workingChannel || '';
+
+  // Title — from idea hook or currentIdea
+  const titleEl = document.getElementById('apv-title');
+  if (titleEl) {
+    const hook = idea?.hook || currentIdea || '';
+    titleEl.value = hook ? hook.slice(0,100) : '';
+  }
+
+  // Description — from script first paragraph or idea
+  const descEl = document.getElementById('apv-desc');
+  if (descEl && currentScript) {
+    const firstPara = currentScript.split('\n')[0].slice(0,200);
+    const affiliates = getAffiliates().slice(0,2).map(a => '🔗 ' + a.name + ': ' + a.link).join('\n');
+    descEl.value = firstPara + (affiliates ? '\n\n' + affiliates : '') + '\n\n💡 Sígueme para más contenido';
+  }
+
+  // Hashtags — based on niche
+  const nicheHashtags = {
+    finanzas:    '#finanzas #dinero #ahorrar #shorts #finanzaspersonales #invertsion',
+    motivacion:  '#motivacion #exito #mentalidad #shorts #desarrollo #psicologia',
+    tecnologia:  '#tecnologia #ia #inteligenciaartificial #shorts #tech #futuro',
+    salud:       '#salud #bienestar #fitness #shorts #habitos #vidanatural',
+    negocios:    '#negocios #emprender #marketing #shorts #emprendimiento',
+    gaming:      '#gaming #videojuegos #gamer #shorts #gameplay',
+    historia:    '#historia #curiosidades #cultura #shorts #aprender',
+    curiosidades:'#curiosidades #ciencia #datos #shorts #aprender #fascinante',
+  };
+  const tagsEl = document.getElementById('apv-tags');
+  if (tagsEl) tagsEl.value = nicheHashtags[niche] || '#shorts #viral #contenido';
+
+  // Cost — accumulated from pipeline
+  const totalCost = ((window._pipelineCost || 0) + parseFloat(audio?.cost || 0)).toFixed(4);
+  const costEl = document.querySelector('#p-5 .score-val, #p-5 [style*="$0.019"]');
+  // Try to find and update cost display
+  const costEls = document.querySelectorAll('#p-5 *');
+  costEls.forEach(el => { if (el.textContent.trim() === '$0.019' && el.children.length === 0) el.textContent = '$' + totalCost; });
+
+  // Connect audio player in step 5
+  if (audio?.url) {
+    const wrap   = document.getElementById('apv-audio-wrap');
+    const player = document.getElementById('apv-audio-player');
+    const dl     = document.getElementById('apv-audio-dl');
+    const sub    = document.getElementById('apv-subtitle');
+    if (wrap)   wrap.style.display = 'block';
+    if (player) { player.src = audio.url; player.load(); }
+    if (dl)     { dl.href = audio.url; dl.download = 'audio-facelessai.mp3'; }
+    if (sub)    sub.textContent = (idea?.hook || currentIdea || 'AUDIO LISTO').toUpperCase().slice(0,40);
+  }
+
+  // Best time — auto-set to next good slot
+  setBestTime();
+
+  // Update header cost
+  const costDisplay = document.querySelector('#p-5 [style*="font-size:18px"]');
+  if (costDisplay && totalCost !== '0.0000') costDisplay.textContent = '$' + totalCost;
+}
 function setBestTime() {
   const langCfg = getLangCfg();
-  document.getElementById('apv-schedule').value = '2026-03-19T18:00';
-  document.getElementById('apv-time-tip').textContent = '⚡ Mejor hora para ' + langCfg.label + ': ' + langCfg.bestTime;
-  showToast('💡 Mejor hora seleccionada: ' + langCfg.bestTime);
+  // Pick next Tuesday/Wednesday/Thursday at 18:00 (best engagement days)
+  const now = new Date();
+  const d = new Date(now);
+  const goodDays = [2,3,4]; // Tue, Wed, Thu
+  let daysAhead = 1;
+  while (!goodDays.includes(new Date(d.getTime() + daysAhead*86400000).getDay())) {
+    daysAhead++;
+    if (daysAhead > 7) break;
+  }
+  d.setDate(d.getDate() + daysAhead);
+  d.setHours(18, 0, 0, 0);
+  const pad = n => String(n).padStart(2,'0');
+  const val = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + 'T18:00';
+  const el = document.getElementById('apv-schedule');
+  if (el) el.value = val;
+  const tip = document.getElementById('apv-time-tip');
+  if (tip) tip.textContent = '⚡ Mejor hora: ' + d.toLocaleDateString('es-ES',{weekday:'long'}) + ' 18:00 · +43% engagement · YT → TT +15min → IG +30min';
+  showToast('💡 Mejor hora: ' + d.toLocaleDateString('es-ES',{weekday:'long'}) + ' a las 18:00');
 }
 
 // ── DRAFT MANAGEMENT ──

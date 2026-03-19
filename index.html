@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.00 — Content Engine</title>
+<title>FacelessAI v4.02 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.00</div>
+    <div class="logo-sub">Content Engine v4.02</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -1224,10 +1224,25 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <div class="view" id="view-pipeline">
   <div class="sh mb8">
     <h2>Pipeline de creación</h2>
-    <div class="flex g8 fic">
-      <span class="tag tb" id="pipe-channel-tag">FinanceFacts ES</span>
+    <div class="flex g8 fic" style="flex-wrap:wrap">
+      <span class="tag tb" id="pipe-channel-tag">—</span>
       <span class="tag tg" id="pipe-score-tag" style="display:none">Score: 85/100</span>
+      <span class="tag" id="pipe-tier-tag" style="font-size:10px;cursor:pointer;border-color:var(--amber);color:var(--amber)" onclick="nav('models')" title="Cambiar tier">⚡ OPTIMIZADO</span>
     </div>
+  </div>
+
+  <!-- TIER INFO BAR -->
+  <div id="pipe-tier-bar" style="background:var(--bg2);border-radius:var(--r);padding:8px 14px;margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:11px">
+    <span style="color:var(--text3);font-weight:600" id="ptb-tier">OPTIMIZADO</span>
+    <span style="color:var(--border)">│</span>
+    <span style="color:var(--text3)">💡</span><span id="ptb-ideas" style="color:var(--text2)">Claude Sonnet</span>
+    <span style="color:var(--border)">│</span>
+    <span style="color:var(--text3)">✍️</span><span id="ptb-script" style="color:var(--text2)">Claude Sonnet</span>
+    <span style="color:var(--border)">│</span>
+    <span style="color:var(--text3)">🎤</span><span id="ptb-tts" style="color:var(--text2)">TTS-1 HD</span>
+    <span style="color:var(--border)">│</span>
+    <span style="color:var(--text3)">💰</span><span id="ptb-cost" style="color:var(--amber);font-weight:700">~$0.06/vídeo</span>
+    <button onclick="nav('models')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:99px;padding:2px 10px;font-size:10px;color:var(--text3);cursor:pointer">Cambiar tier →</button>
   </div>
 
   <div class="pipe">
@@ -1257,7 +1272,9 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <div class="pc" id="p-1">
     <div class="sh">
       <h2>Ideas virales — generadas con Claude</h2>
-      <button class="btn btn-p btn-sm" id="ideas-gen-btn" onclick="generateIdeasReal()">🤖 Generar con Claude</button>
+      <button class="btn btn-p btn-sm" id="ideas-gen-btn" onclick="generateIdeasReal()">🤖 Generar ideas</button>
+      <div id="pipe-step1-model" style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:6px;text-align:right">Claude Sonnet · ~$0.003</div>
+      <div id="pipe-step1-model" style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:4px">Claude Sonnet · ~$0.003</div>
     </div>
     <div id="ideas-container">
       <div style="text-align:center;padding:32px;color:var(--text3)">
@@ -1277,7 +1294,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <div class="pc" id="p-2">
     <div class="sh">
       <h2>Score predictivo</h2>
-      <button class="btn btn-p btn-sm" id="score-pipe-btn" onclick="runPipelineScore()">🤖 Analizar con Claude</button>
+      <button class="btn btn-p btn-sm" id="score-pipe-btn" onclick="runPipelineScore()">🤖 Analizar score</button>
     </div>
 
     <!-- Selected idea preview -->
@@ -1337,7 +1354,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <button class="sty-btn" data-style="story" onclick="scriptStyle='story'">Storytelling</button>
       <button class="sty-btn" data-style="lista" onclick="scriptStyle='lista'">Lista / Top</button>
       <div style="margin-left:auto;display:flex;gap:6px">
-        <button class="btn btn-p btn-sm" id="script-gen-btn" onclick="generateScriptReal()">🤖 Generar con Claude</button>
+        <button class="btn btn-p btn-sm" id="script-gen-btn" onclick="generateScriptReal()">🤖 Generar script</button>
         <button class="btn btn-g btn-sm" onclick="pasteScript()" title="Pegar script desde portapapeles">📥 Pegar</button>
         <button class="btn btn-g btn-sm" onclick="toggleScriptEdit()" id="script-edit-btn" title="Editar manualmente">✏️</button>
         <button class="btn btn-g btn-sm" onclick="copyScript()">📋 Copiar</button>
@@ -10556,6 +10573,40 @@ Recomienda el tier óptimo (free/eco/opt/prem/ultra) y explica por qué en 2 fra
 function applyTierToPipeline() {
   const tier = activeTier || 'opt';
   const cfg  = MODEL_CONFIG[tier];
+  const tInfo = TIERS[tier] || TIERS['opt'];
+
+  // ── Update tier info bar ──
+  const tierNames = { free:'GRATIS', eco:'ECONÓMICO', opt:'OPTIMIZADO', prem:'PREMIUM', ultra:'ULTRA' };
+  const tierColors = { free:'var(--green)', eco:'var(--blue)', opt:'var(--amber)', prem:'var(--purple)', ultra:'#ff6b35' };
+  const col = tierColors[tier] || 'var(--amber)';
+
+  const setEl = (id,v,c) => { const el=document.getElementById(id); if(el){el.textContent=v; if(c) el.style.color=c;} };
+  setEl('pipe-tier-tag', '⚡ ' + (tierNames[tier]||tier), col);
+  setEl('pipe-model-info', (cfg?.ideas?.model||'Claude Haiku') + ' · ' + (tInfo?.cost||'~$0.06') + '/vídeo', 'var(--text3)');
+  setEl('ptb-tier',   tierNames[tier]||tier, col);
+  setEl('ptb-ideas',  cfg?.ideas?.model  || 'Claude Haiku');
+  setEl('ptb-script', cfg?.script?.model || 'Claude Haiku');
+  setEl('ptb-tts',    cfg?.tts?.model    || 'OpenAI TTS-1');
+  setEl('ptb-cost',   tInfo?.cost        || '~$0.06', col);
+
+  // Step 1 model badge
+  const s1model = document.getElementById('pipe-step1-model');
+  if (s1model && cfg?.ideas) {
+    s1model.textContent = cfg.ideas.model + ' · ~$' + (cfg.ideas.cost||0).toFixed(3);
+    s1model.style.color = tier==='free' ? 'var(--red)' : 'var(--text3)';
+  }
+
+  // Free tier warning
+  if (tier === 'free') {
+    const bar = document.getElementById('pipe-tier-bar');
+    if (bar) bar.style.borderLeft = '3px solid var(--amber)';
+    setEl('ptb-ideas',  '⚠ Llama local (requiere Ollama)', 'var(--amber)');
+    setEl('ptb-script', '⚠ Llama local (requiere Ollama)', 'var(--amber)');
+  } else {
+    const bar = document.getElementById('pipe-tier-bar');
+    if (bar) bar.style.borderLeft = '';
+  }
+
   if (!cfg) return;
 
   // Step 3 (script) — update model tag
@@ -11626,8 +11677,17 @@ async function testKey(name) {
 async function callClaude(prompt, model, maxTokens) {
   if (!KEYS.anthropic) throw new Error('Configura tu Anthropic API key en ⚙️ Configuración');
   if (typeof checkBudgetAlert !== 'undefined' && !checkBudgetAlert()) throw new Error('Límite de presupuesto alcanzado');
-  const cfg = TIER_CONFIG[activeTier];
-  const useModel = model || cfg.llmModel;
+  // Map activeTier to TIER_CONFIG key
+  const tierKey = activeTier === 'prem' ? 'premium' : activeTier === 'ultra' ? 'premium' : (activeTier || 'eco');
+  const cfg = TIER_CONFIG[tierKey] || TIER_CONFIG['eco'];
+  const isFreeTier = activeTier === 'free';
+  const VALID_CLAUDE = ['claude-haiku-4-5-20251001','claude-sonnet-4-6','claude-opus-4-6'];
+  const cfgModel = (cfg.llmModel && cfg.llmModel.includes('claude')) ? cfg.llmModel : 'claude-haiku-4-5-20251001';
+  const useModel = model || cfgModel;
+  // For free tier: try Ollama, warn if unavailable
+  if (isFreeTier && !model) {
+    throw new Error('El tier GRATIS requiere Ollama corriendo localmente (localhost:11434). Instala Ollama o cambia a tier ECO en Modelos IA.');
+  }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000);
   try {

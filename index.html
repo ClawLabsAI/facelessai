@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.20 — Content Engine</title>
+<title>FacelessAI v3.23 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -324,7 +324,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.20</div>
+    <div class="logo-sub">Content Engine v3.23</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -350,6 +350,14 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     </div>
     <div class="ni" data-view="url2video">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3H3a2 2 0 00-2 2v6a2 2 0 002 2h3M10 3h3a2 2 0 012 2v6a2 2 0 01-2 2h-3M5 8h6"/></svg>URL → Vídeo
+    </div>
+
+    <div class="nsl" style="margin-top:6px">Clipping</div>
+    <div class="ni" data-view="clipping">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h5"/><path d="M11 10l4 4M15 10l-4 4"/></svg>Canales Clipping<span class="nb" style="background:#a78bfa20;color:#a78bfa;border:1px solid #a78bfa44;font-size:9px;padding:1px 5px;border-radius:99px;font-family:monospace">NEW</span>
+    </div>
+    <div class="ni" data-view="clippipeline">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><polygon points="6,5 12,8 6,11"/></svg>Pipeline Clipping
     </div>
 
     <div class="nsl" style="margin-top:6px">Biblioteca</div>
@@ -489,67 +497,89 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <div class="content">
 <!-- ════════════════ DASHBOARD ════════════════ -->
 <div class="view active" id="view-dashboard">
+  <!-- STATS ROW — real data from localStorage -->
   <div class="g4 mb16">
-    <div class="sc"><div class="sc-label">Vídeos / mes</div><div class="sc-val">127</div><span class="du">↑ 23% vs anterior</span></div>
-    <div class="sc"><div class="sc-label">Coste IA total</div><div class="sc-val" style="color:var(--green)">$2.47</div><span class="du">↓ 64% ahorro</span></div>
-    <div class="sc"><div class="sc-label">Views totales</div><div class="sc-val">4.8M</div><span class="du">↑ 112%</span></div>
-    <div class="sc"><div class="sc-label">Ingresos estimados</div><div class="sc-val" style="color:var(--amber)">$1,174</div><span class="du">↑ 89%</span></div>
+    <div class="sc"><div class="sc-label">Borradores creados</div><div class="sc-val" id="dash-stat-drafts">0</div><span class="du" id="dash-stat-drafts-sub">en total</span></div>
+    <div class="sc"><div class="sc-label">Coste IA acumulado</div><div class="sc-val" style="color:var(--green)" id="dash-stat-cost">$0.00</div><span class="du" id="dash-stat-cost-sub">desde el inicio</span></div>
+    <div class="sc"><div class="sc-label">Canales activos</div><div class="sc-val" id="dash-stat-channels">0</div><span class="du" id="dash-stat-channels-sub">configurados</span></div>
+    <div class="sc"><div class="sc-label">Vídeos aprobados</div><div class="sc-val" style="color:var(--amber)" id="dash-stat-approved">0</div><span class="du" id="dash-stat-approved-sub">listos para publicar</span></div>
   </div>
 
-  <!-- AutoPilot quick status -->
-  <div class="card mb12" style="background:linear-gradient(135deg,#00e87a07,transparent);border-color:var(--gsoft);padding:13px 18px">
+  <!-- Quick status bar -->
+  <div class="card mb12" style="padding:13px 18px" id="dash-status-bar">
     <div class="flex fic g16">
-      <div class="ap-dot ap-dot-on"></div>
+      <div class="ap-dot ap-dot-off" id="dash-ap-dot"></div>
       <div style="flex:1">
-        <div style="font-size:13px;font-weight:700;color:var(--green);font-family:var(--mono)">AUTOPILOT ACTIVO</div>
-        <div style="font-size:12px;color:var(--text3)">3 vídeos/día · límite $2/día · próximo en 4h 12m · score mínimo: 72</div>
+        <div style="font-size:13px;font-weight:700;font-family:var(--mono)" id="dash-status-title">MODO MANUAL</div>
+        <div style="font-size:12px;color:var(--text3)" id="dash-status-sub">Genera tu primer vídeo en el Pipeline</div>
       </div>
-      <span class="tag tg">2 en cola</span>
-      <button class="btn btn-g btn-sm" onclick="nav('autopilot')">Configurar →</button>
+      <span class="tag" id="dash-queue-tag" style="display:none"></span>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">▶ Pipeline →</button>
     </div>
   </div>
 
-  <!-- Trend alert -->
-  <div class="mb14" style="background:var(--rdim);border:1px solid #f8717133;border-radius:var(--rl);padding:12px 16px">
+  <!-- Pending drafts alert -->
+  <div id="dash-drafts-alert" style="display:none;margin-bottom:14px;background:#fbbf2415;border:1px solid #fbbf2433;border-radius:var(--rl);padding:12px 16px">
     <div class="flex fic g12">
-      <span style="font-size:18px">🔥</span>
+      <span style="font-size:18px">📋</span>
       <div style="flex:1">
-        <div style="font-size:13px;font-weight:600">"Despidos en IA" — tendencia +620% · ventana de 18h</div>
-        <div style="font-size:12px;color:var(--text3)">Detectado: YT Shorts + TikTok + Google Trends · pico máximo</div>
+        <div style="font-size:13px;font-weight:600" id="dash-drafts-alert-text">Tienes borradores pendientes de aprobar</div>
+        <div style="font-size:12px;color:var(--text3)">Revísalos antes de publicar</div>
       </div>
-      <button class="btn btn-p btn-sm" onclick="nav('url2video')" style="flex-shrink:0">Crear ahora →</button>
+      <button class="btn btn-p btn-sm" onclick="nav('drafts')">Ver borradores →</button>
     </div>
   </div>
 
   <div class="g2 mb20">
+    <!-- Canales activos — real -->
     <div class="card">
-      <div class="sh"><h2>Canales activos</h2><button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos →</button></div>
-      <div class="chrow">
-        <div class="ch-icon" style="background:var(--bdim);color:var(--blue)">💰</div>
-        <div style="flex:1"><div style="font-size:13px;font-weight:600">FinanceFacts ES</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS</div></div>
-        <div class="dot-on"></div><span style="font-size:12px;font-family:var(--mono);color:var(--green)">48K hoy</span>
-      </div>
-      <div class="chrow">
-        <div class="ch-icon" style="background:var(--pdim);color:var(--purple)">🧠</div>
-        <div style="flex:1"><div style="font-size:13px;font-weight:600">MindHacks Daily</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">MOTIVACIÓN</div></div>
-        <div class="dot-on"></div><span style="font-size:12px;font-family:var(--mono);color:var(--green)">31K hoy</span>
-      </div>
-      <div class="chrow">
-        <div class="ch-icon" style="background:var(--adim);color:var(--amber)">🌍</div>
-        <div style="flex:1"><div style="font-size:13px;font-weight:600">CurioMundo</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">CURIOSIDADES</div></div>
-        <div class="dot-off"></div><span style="font-size:12px;font-family:var(--mono);color:var(--text3)">Pausado</span>
+      <div class="sh"><h2>Mis canales</h2><button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos →</button></div>
+      <div id="dash-channels-list">
+        <div style="text-align:center;padding:24px;color:var(--text3)">
+          <div style="font-size:28px;margin-bottom:8px">📺</div>
+          <div style="font-size:13px;margin-bottom:10px">Aún no tienes canales</div>
+          <button class="btn btn-p btn-sm" onclick="openModal()">+ Crear canal</button>
+        </div>
       </div>
     </div>
+
+    <!-- Borradores recientes — real -->
     <div class="card">
-      <div class="sh"><h2>Actividad reciente</h2></div>
-      <div class="ai"><div class="ad" style="background:var(--green)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">AutoPilot</strong> publicó "5 errores financieros" — YT+TT+IG</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">2m</span></div>
-      <div class="ai"><div class="ad" style="background:var(--red)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Tendencia</strong> "Despidos IA" +620% — 18h de ventana</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">14m</span></div>
-      <div class="ai"><div class="ad" style="background:var(--blue)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Score IA</strong> rechazó idea (42/100) — $0.02 ahorrado</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">1h</span></div>
-      <div class="ai"><div class="ad" style="background:var(--amber)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Reutilización</strong> generó 4 clips de "Top 10 misterios"</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">3h</span></div>
-      <div class="ai"><div class="ad" style="background:var(--green)"></div><div style="font-size:13px;color:var(--text2);flex:1"><strong style="color:var(--text1)">Afiliación</strong> Revolut: +3 registros hoy = +$120</div><span style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap">5h</span></div>
+      <div class="sh"><h2>Borradores recientes</h2><button class="btn btn-g btn-sm" onclick="nav('drafts')">Ver todos →</button></div>
+      <div id="dash-drafts-list">
+        <div style="text-align:center;padding:24px;color:var(--text3)">
+          <div style="font-size:28px;margin-bottom:8px">📭</div>
+          <div style="font-size:13px;margin-bottom:10px">Sin borradores aún</div>
+          <button class="btn btn-p btn-sm" onclick="nav('pipeline')">▶ Generar vídeo</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- Quick actions -->
+  <div class="stl mb12">Acciones rápidas</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+    <button class="card" style="cursor:pointer;text-align:center;padding:16px;border:none;background:var(--bg1)" onclick="nav('pipeline')">
+      <div style="font-size:24px;margin-bottom:6px">🎬</div>
+      <div style="font-size:13px;font-weight:600">Nuevo vídeo</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">Pipeline completo</div>
+    </button>
+    <button class="card" style="cursor:pointer;text-align:center;padding:16px;border:none;background:var(--bg1)" onclick="nav('tiktokshop')">
+      <div style="font-size:24px;margin-bottom:6px">🛍️</div>
+      <div style="font-size:13px;font-weight:600">TikTok Shop</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">Vídeos UGC</div>
+    </button>
+    <button class="card" style="cursor:pointer;text-align:center;padding:16px;border:none;background:var(--bg1)" onclick="nav('trends')">
+      <div style="font-size:24px;margin-bottom:6px">📈</div>
+      <div style="font-size:13px;font-weight:600">Tendencias</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">Ventana 48h</div>
+    </button>
+    <button class="card" style="cursor:pointer;text-align:center;padding:16px;border:none;background:var(--bg1)" onclick="nav('settings')">
+      <div style="font-size:24px;margin-bottom:6px">⚙️</div>
+      <div style="font-size:13px;font-weight:600">Configuración</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">Keys y backend</div>
+    </button>
+  </div>
 <!-- ════════════════ BORRADORES ════════════════ -->
 <div class="view" id="view-drafts">
   <div class="sh mb16">
@@ -587,70 +617,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     </div>
   </div>
 
-  <!-- ACTIVE CHANNELS -->
-  <div class="stl mb12">Canales activos</div>
+  <!-- ACTIVE CHANNELS — real from localStorage -->
+  <div class="stl mb12" id="channels-count-label">Canales activos</div>
   <div class="g3 mb24" id="channels-grid">
-
-    <!-- Channel 1 -->
-    <div class="card" style="cursor:pointer" onclick="selectChannel('FinanceFacts ES','es','m','finanzas')">
-      <div class="flex fic g10 mb10">
-        <div class="ch-icon" style="background:var(--bdim);color:var(--blue)">💰</div>
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:600">FinanceFacts ES</div>
-          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS BÁSICAS</div>
-        </div>
-        <div class="dot-on"></div>
-      </div>
-      <!-- Lang + Voice badges -->
-      <div class="flex g6 mb10">
-        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">🇪🇸 Español</span>
-        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">♂ onyx</span>
-        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">Score 91</span>
-      </div>
-      <div class="flex g16 mb10">
-        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">124K</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">SUBS</div></div>
-        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">4.2M</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">VIEWS/MES</div></div>
-        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--amber)">$890</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">EST/MES</div></div>
-      </div>
-      <div class="flex g6 mb10"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span><span class="pt pt-ig">Instagram</span></div>
-      <button class="btn btn-g btn-sm" style="width:100%;font-size:11px" onclick="event.stopPropagation();selectChannel('FinanceFacts ES','es','m','finanzas')">▶ Trabajar en este canal</button>
-    </div>
-
-    <!-- Channel 2 -->
-    <div class="card" style="cursor:pointer" onclick="selectChannel('MindHacks Daily','en','f','motivacion')">
-      <div class="flex fic g10 mb10">
-        <div class="ch-icon" style="background:var(--pdim);color:var(--purple)">🧠</div>
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:600">MindHacks Daily</div>
-          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">MOTIVACIÓN / PSICOLOGÍA</div>
-        </div>
-        <div class="dot-on"></div>
-      </div>
-      <div class="flex g6 mb10">
-        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">🇺🇸 English</span>
-        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">♀ alloy</span>
-        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#00e87a15;color:#00e87a;border:1px solid #00e87a44;font-family:monospace">Score 87</span>
-      </div>
-      <div class="flex g16 mb10">
-        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">89K</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">SUBS</div></div>
-        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">2.1M</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">VIEWS/MES</div></div>
-        <div><div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--amber)">$340</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">EST/MES</div></div>
-      </div>
-      <div class="flex g6 mb10"><span class="pt pt-yt">YouTube</span><span class="pt pt-tt">TikTok</span></div>
-      <button class="btn btn-g btn-sm" style="width:100%;font-size:11px" onclick="event.stopPropagation();selectChannel('MindHacks Daily','en','f','motivacion')">▶ Trabajar en este canal</button>
-    </div>
-
-    <!-- Add channel card -->
-    <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:180px;cursor:pointer" onclick="openModal()">
-      <div style="text-align:center;color:var(--text3)">
-        <div style="font-size:28px;margin-bottom:6px">+</div>
-        <div style="font-size:13px">Crear nuevo canal</div>
-        <div style="font-size:11px;margin-top:4px;font-family:var(--mono)">o descubrir con IA →</div>
-      </div>
-    </div>
+    <!-- rendered by renderChannels() -->
   </div>
 
-  <!-- AI CHANNEL DISCOVERY -->
+    <!-- AI CHANNEL DISCOVERY -->
   <div class="stl mb12">🔍 Descubrir oportunidades de canal con IA</div>
   <div class="card mb14">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px">
@@ -1941,6 +1914,396 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   </div>
 </div>
 
+<!-- ════════ CLIPPING ════════ -->
+<div class="view" id="view-clipping">
+  <div class="sh mb20">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#a78bfa,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✂️</div>
+      <div>
+        <h2 style="font-size:17px">Clipping — Canales automáticos</h2>
+        <div style="font-size:12px;color:var(--text3)">Convierte vídeos largos de YouTube en clips virales para Instagram y TikTok · Con IA</div>
+      </div>
+    </div>
+    <button class="btn btn-p btn-sm" onclick="openClipModal()">+ Crear canal</button>
+  </div>
+
+  <!-- STATS -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+    <div style="background:#a78bfa10;border:1px solid #a78bfa33;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:#a78bfa" id="clip-stat-channels">0</div>
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">CANALES</div>
+    </div>
+    <div style="background:#38bdf810;border:1px solid #38bdf833;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:#38bdf8" id="clip-stat-clips">0</div>
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">CLIPS GENERADOS</div>
+    </div>
+    <div style="background:#00e87a15;border:1px solid #00e87a44;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:#00e87a">$0.01</div>
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">COSTE/CLIP</div>
+    </div>
+    <div style="background:#fbbf2415;border:1px solid #fbbf2444;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:#fbbf24">9:16</div>
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">FORMATO VIRAL</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div style="background:linear-gradient(135deg,#a78bfa10,#38bdf808);border:1px solid #a78bfa33;border-radius:10px;padding:16px;margin-bottom:20px">
+    <div style="font-size:13px;font-weight:600;color:#a78bfa;margin-bottom:10px">⚡ Cómo funciona el Clipping automático</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center">
+      <div style="background:#a78bfa15;border-radius:8px;padding:10px">
+        <div style="font-size:20px;margin-bottom:4px">🔗</div>
+        <div style="font-size:11px;font-weight:600">URL YouTube</div>
+        <div style="font-size:10px;color:#475569">Pegas el link del vídeo largo</div>
+      </div>
+      <div style="font-size:18px;display:flex;align-items:center;justify-content:center;color:#475569">→</div>
+      <div style="background:#38bdf810;border-radius:8px;padding:10px">
+        <div style="font-size:20px;margin-bottom:4px">🎙️</div>
+        <div style="font-size:11px;font-weight:600">Transcripción</div>
+        <div style="font-size:10px;color:#475569">Whisper convierte audio a texto</div>
+      </div>
+      <div style="font-size:18px;display:flex;align-items:center;justify-content:center;color:#475569">→</div>
+      <div style="background:#00e87a15;border-radius:8px;padding:10px">
+        <div style="font-size:20px;margin-bottom:4px">🤖</div>
+        <div style="font-size:11px;font-weight:600">Claude selecciona</div>
+        <div style="font-size:10px;color:#475569">Los momentos más virales</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin-top:8px">
+      <div style="background:#fbbf2415;border-radius:8px;padding:10px">
+        <div style="font-size:20px;margin-bottom:4px">✂️</div>
+        <div style="font-size:11px;font-weight:600">FFmpeg corta</div>
+        <div style="font-size:10px;color:#475569">Recorta y convierte a 9:16</div>
+      </div>
+      <div style="background:#f472b615;border-radius:8px;padding:10px">
+        <div style="font-size:20px;margin-bottom:4px">📝</div>
+        <div style="font-size:11px;font-weight:600">Subtítulos virales</div>
+        <div style="font-size:10px;color:#475569">Estilo Impact automático</div>
+      </div>
+      <div style="background:#00e87a15;border-radius:8px;padding:10px">
+        <div style="font-size:20px;margin-bottom:4px">⬇️</div>
+        <div style="font-size:11px;font-weight:600">Descargar MP4</div>
+        <div style="font-size:10px;color:#475569">Listo para publicar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NICHES IDEAS -->
+  <div class="stl mb12">💡 Nichos más rentables para Clipping</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+    <div class="card" style="cursor:pointer;border-top:2px solid #a78bfa" onclick="openClipModalWithNiche('podcasts-negocios')">
+      <div style="font-size:22px;margin-bottom:6px">🎙️</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Podcasts de negocios</div>
+      <div style="font-size:11px;color:#475569;margin-bottom:8px">Lex Fridman, Hormozi, Naval...</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $8-15</span>
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#a78bfa15;color:#a78bfa;font-family:monospace">Baja saturación ES</span>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer;border-top:2px solid #38bdf8" onclick="openClipModalWithNiche('divulgacion')">
+      <div style="font-size:22px;margin-bottom:6px">🧬</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Divulgación científica</div>
+      <div style="font-size:11px;color:#475569;margin-bottom:8px">Veritasium, Kurzgesagt traducido...</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $6-12</span>
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#38bdf815;color:#38bdf8;font-family:monospace">Alta retención</span>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer;border-top:2px solid #00e87a" onclick="openClipModalWithNiche('entrevistas')">
+      <div style="font-size:22px;margin-bottom:6px">🎤</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Entrevistas y debates</div>
+      <div style="font-size:11px;color:#475569;margin-bottom:8px">Momentos polémicos, frases potentes...</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $5-10</span>
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#fbbf2415;color:#fbbf24;font-family:monospace">Viral fácil</span>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer;border-top:2px solid #fbbf24" onclick="openClipModalWithNiche('finanzas')">
+      <div style="font-size:22px;margin-bottom:6px">💰</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Finanzas e inversión</div>
+      <div style="font-size:11px;color:#475569;margin-bottom:8px">Graham Stephan, Meet Kevin, Andrei...</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $12-25</span>
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#fbbf2415;color:#fbbf24;font-family:monospace">CPM más alto</span>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer;border-top:2px solid #f472b6" onclick="openClipModalWithNiche('motivacion')">
+      <div style="font-size:22px;margin-bottom:6px">🔥</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Motivación y mindset</div>
+      <div style="font-size:11px;color:#475569;margin-bottom:8px">Goggins, Tate clips, Jordan Peterson...</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $4-8</span>
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#f472b615;color:#f472b6;font-family:monospace">Muy viral</span>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer;border-top:2px solid #2dd4bf" onclick="openClipModalWithNiche('deporte')">
+      <div style="font-size:22px;margin-bottom:6px">⚽</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Deporte y fitness</div>
+      <div style="font-size:11px;color:#475569;margin-bottom:8px">Análisis tácticos, momentos épicos...</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#00e87a15;color:#00e87a;font-family:monospace">CPM $3-7</span>
+        <span style="font-size:10px;padding:2px 6px;border-radius:99px;background:#2dd4bf15;color:#2dd4bf;font-family:monospace">Audiencia masiva</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANNELS GRID -->
+  <div class="stl mb12">Mis canales de Clipping</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="clip-channels-grid">
+    <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:160px;cursor:pointer" onclick="openClipModal()">
+      <div style="text-align:center;color:var(--text3)">
+        <div style="font-size:32px;margin-bottom:8px">+</div>
+        <div style="font-size:13px">Crear canal de clipping</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ CLIPPING PIPELINE ════════ -->
+<div class="view" id="view-clippipeline">
+  <div class="sh mb20">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#a78bfa,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:18px">✂️</div>
+      <div>
+        <h2 style="font-size:17px">Pipeline Clipping</h2>
+        <div style="font-size:12px;color:var(--text3)">URL YouTube → Transcripción → IA selecciona → Clips 9:16 listos</div>
+      </div>
+    </div>
+    <span class="tag" style="background:#a78bfa15;color:#a78bfa;border:1px solid #a78bfa44">yt-dlp + Whisper + Claude</span>
+  </div>
+
+  <!-- PIPELINE STEPS -->
+  <div class="pipe" style="margin-bottom:20px">
+    <div class="pipe-step act" id="cpsp-0" onclick="setCPStep(0)"><div class="ps-num">01</div><div class="ps-name">URL</div><div class="ps-cost">gratis</div></div>
+    <div class="pipe-step" id="cpsp-1" onclick="setCPStep(1)"><div class="ps-num">02</div><div class="ps-name">Transcribir</div><div class="ps-cost">~$0.006</div></div>
+    <div class="pipe-step" id="cpsp-2" onclick="setCPStep(2)"><div class="ps-num">03</div><div class="ps-name">Selección IA</div><div class="ps-cost">~$0.004</div></div>
+    <div class="pipe-step" id="cpsp-3" onclick="setCPStep(3)"><div class="ps-num">04</div><div class="ps-name">Cortar clips</div><div class="ps-cost">~$0.02</div></div>
+    <div class="pipe-step" id="cpsp-4" onclick="setCPStep(4)"><div class="ps-num">05</div><div class="ps-name">Descargar</div><div class="ps-cost">gratis</div></div>
+  </div>
+
+  <!-- STEP 0: URL -->
+  <div class="pc act" id="cp-0">
+    <div class="sh mb14"><h2>Introduce el vídeo fuente</h2></div>
+    <div class="card mb14">
+      <label class="lbl mb8">URL de YouTube <span style="color:var(--text3);font-weight:400">(vídeo largo: podcast, entrevista, conferencia...)</span></label>
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <input class="inp" id="cp-yt-url" placeholder="https://www.youtube.com/watch?v=..." style="flex:1;font-family:var(--mono);font-size:13px">
+        <button class="btn btn-p" id="cp-info-btn" onclick="loadYTInfo()">🔍 Cargar info</button>
+      </div>
+      <div id="cp-video-info" style="display:none;background:#a78bfa15;border:1px solid #a78bfa33;border-radius:8px;padding:12px">
+        <div style="font-size:13px;font-weight:600" id="cp-video-title">—</div>
+        <div style="font-size:11px;color:#475569;font-family:monospace;margin-top:4px" id="cp-video-meta">—</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+      <div>
+        <label class="lbl mb6">Idioma del vídeo</label>
+        <select class="sel" id="cp-lang">
+          <option value="es">🇪🇸 Español</option>
+          <option value="en" selected>🇺🇸 English</option>
+          <option value="lat">🌎 Latino</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl mb6">Número de clips a generar</label>
+        <select class="sel" id="cp-num-clips">
+          <option value="3">3 clips</option>
+          <option value="5" selected>5 clips</option>
+          <option value="8">8 clips</option>
+          <option value="10">10 clips</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl mb6">Duración de cada clip</label>
+        <select class="sel" id="cp-clip-duration">
+          <option value="30">30 segundos</option>
+          <option value="45">45 segundos</option>
+          <option value="60" selected>60 segundos</option>
+          <option value="90">90 segundos</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="lbl mb6">Criterio de selección (opcional)</label>
+      <input class="inp" id="cp-criteria" placeholder="Ej: momentos de máximo impacto emocional, frases potentes, consejos accionables..." style="font-size:13px">
+    </div>
+    <div class="flex mt14" style="justify-content:flex-end">
+      <button class="btn btn-p" onclick="setCPStep(1)">Transcribir →</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: Transcription -->
+  <div class="pc" id="cp-1">
+    <div class="sh mb14"><h2>Transcripción con Whisper</h2><span class="tag ta">OpenAI Whisper · ~$0.006/min</span></div>
+
+    <!-- API key needed -->
+    <div id="cp-key-warning" style="display:none;background:#fbbf2415;border:1px solid #fbbf2433;border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px">
+      ⚠️ Necesitas la <strong>OpenAI API key</strong> configurada en ⚙️ Configuración para usar Whisper.
+    </div>
+
+    <div class="card mb14">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px">📋 Vídeo a transcribir</div>
+      <div style="font-size:13px;color:var(--text2)" id="cp-transcribe-info">—</div>
+    </div>
+
+    <div id="cp-transcribe-progress" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:600;color:#a78bfa;margin-bottom:8px" id="cp-transcribe-status">⏳ Procesando...</div>
+      <div style="background:var(--bg3);border-radius:99px;height:6px;overflow:hidden;margin-bottom:8px">
+        <div id="cp-transcribe-bar" style="background:#a78bfa;height:100%;width:0%;transition:width .5s;border-radius:99px"></div>
+      </div>
+      <div style="font-size:11px;color:#475569;font-family:monospace" id="cp-transcribe-msg">—</div>
+    </div>
+
+    <div id="cp-transcript-preview" style="display:none" class="card mb14">
+      <div style="font-size:13px;font-weight:600;color:#00e87a;margin-bottom:8px">✅ Transcripción completada</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px" id="cp-transcript-stats">—</div>
+      <div style="background:var(--bg2);border-radius:8px;padding:10px;max-height:150px;overflow-y:auto;font-size:12px;color:var(--text2);line-height:1.7;font-family:var(--sans)" id="cp-transcript-text">—</div>
+    </div>
+
+    <div class="flex g8 mt14" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="setCPStep(0)">← Atrás</button>
+      <button class="btn btn-p" id="cp-transcribe-btn" onclick="startTranscription()">🎙️ Transcribir con Whisper</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: AI Selection -->
+  <div class="pc" id="cp-2">
+    <div class="sh mb14"><h2>Selección de momentos virales</h2><span class="tag tg">Claude · ~$0.004</span></div>
+    <div class="card mb14">
+      <div style="font-size:13px;color:var(--text3);margin-bottom:12px">Claude analiza la transcripción completa y selecciona los momentos con mayor potencial viral basándose en impacto emocional, claridad, gancho y aplicabilidad.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label class="lbl mb6">Foco del análisis</label>
+          <select class="sel" id="cp-focus">
+            <option value="viral">🔥 Máximo potencial viral</option>
+            <option value="educational">📚 Educativo y útil</option>
+            <option value="emotional">❤️ Impacto emocional</option>
+            <option value="controversial">💥 Polémico / provocador</option>
+            <option value="actionable">⚡ Consejos accionables</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl mb6">Plataforma objetivo</label>
+          <select class="sel" id="cp-platform">
+            <option value="tiktok">TikTok (60s max)</option>
+            <option value="reels" selected>Instagram Reels (90s max)</option>
+            <option value="shorts">YouTube Shorts (60s max)</option>
+            <option value="all">Todas las plataformas</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-p" id="cp-select-btn" onclick="selectViralMoments()">🤖 Analizar y seleccionar con Claude</button>
+    </div>
+
+    <div id="cp-moments-container" style="display:none">
+      <div class="stl mb12" id="cp-moments-title">Momentos seleccionados</div>
+      <div id="cp-moments-list" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+
+    <div class="flex g8 mt14" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="setCPStep(1)">← Atrás</button>
+      <button class="btn btn-p" onclick="setCPStep(3)">Generar clips →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Generate clips -->
+  <div class="pc" id="cp-3">
+    <div class="sh mb14"><h2>Generar clips MP4</h2><span class="tag ta">Railway + FFmpeg</span></div>
+
+    <div id="cp-gen-moments-summary" class="card mb14">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">📋 Clips a generar</div>
+      <div id="cp-gen-summary-list" style="font-size:12px;color:var(--text2);line-height:2">—</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div>
+        <label class="lbl mb6">Formato de salida</label>
+        <select class="sel" id="cp-out-format">
+          <option value="9:16" selected>9:16 Vertical (TikTok/Reels)</option>
+          <option value="16:9">16:9 Horizontal (YouTube)</option>
+          <option value="1:1">1:1 Cuadrado (Instagram)</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl mb6">Estilo subtítulos</label>
+        <select class="sel" id="cp-subs-style">
+          <option value="viral" selected>Impact viral (blanco + sombra)</option>
+          <option value="minimal">Minimal (limpio)</option>
+          <option value="classic">Classic (amarillo)</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="cp-generate-log" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:var(--mono);font-size:11px;line-height:2;max-height:180px;overflow-y:auto;margin-bottom:14px"></div>
+
+    <div class="flex g8 mt14" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="setCPStep(2)">← Atrás</button>
+      <button class="btn btn-p" id="cp-gen-btn" onclick="generateClips()">✂️ Generar clips MP4</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Download -->
+  <div class="pc" id="cp-4">
+    <div class="sh mb14"><h2>Clips listos para publicar</h2></div>
+    <div id="cp-clips-ready" style="display:flex;flex-direction:column;gap:10px">
+      <div style="text-align:center;padding:32px;color:var(--text3)">Los clips aparecerán aquí cuando se generen</div>
+    </div>
+    <div class="flex g8 mt14" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="setCPStep(0)">Nuevo vídeo →</button>
+      <button class="btn btn-g btn-sm" onclick="saveClipsToDrafts()">💾 Guardar en borradores</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIPPING CHANNEL MODAL -->
+<div id="clip-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center">
+  <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-width:95vw">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">✂️ Crear canal de Clipping</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal — el nicho define qué tipo de vídeos largos buscar</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div><label class="lbl">Nombre del canal</label><input class="inp" id="clip-ch-name" placeholder="Ej: BizClips ES"></div>
+      <div>
+        <label class="lbl">Nicho / fuente</label>
+        <select class="sel" id="clip-ch-niche">
+          <option value="podcasts-negocios">🎙️ Podcasts de negocios</option>
+          <option value="divulgacion">🧬 Divulgación científica</option>
+          <option value="entrevistas">🎤 Entrevistas</option>
+          <option value="finanzas">💰 Finanzas e inversión</option>
+          <option value="motivacion">🔥 Motivación y mindset</option>
+          <option value="deporte">⚽ Deporte y fitness</option>
+          <option value="tecnologia">💻 Tecnología y IA</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <label class="lbl">Idioma de contenido</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div id="clip-lang-en" onclick="clipChannelLang='en';updateClipLangBtns()" style="border:2px solid #00e87a;background:#00e87a15;border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+          <div style="font-size:18px">🇺🇸</div><div style="font-size:11px;font-weight:600;margin-top:3px">English</div>
+        </div>
+        <div id="clip-lang-es" onclick="clipChannelLang='es';updateClipLangBtns()" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+          <div style="font-size:18px">🇪🇸</div><div style="font-size:11px;font-weight:600;margin-top:3px">Español</div>
+        </div>
+        <div id="clip-lang-lat" onclick="clipChannelLang='lat';updateClipLangBtns()" style="border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;text-align:center">
+          <div style="font-size:18px">🌎</div><div style="font-size:11px;font-weight:600;margin-top:3px">Latino</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <label class="lbl">Plataformas objetivo</label>
+      <div style="display:flex;gap:8px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" id="clip-pt-tt" checked> TikTok</label>
+        <label style="display:flex;align-items:center;gap-6px;cursor:pointer;font-size:13px"><input type="checkbox" id="clip-pt-ig" checked> Instagram</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" id="clip-pt-yt"> YouTube Shorts</label>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="closeClipModal()">Cancelar</button>
+      <button class="btn btn-p" onclick="createClipChannel()">✨ Crear canal →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════ TIKTOK SHOP ════════ -->
 <div class="view" id="view-tiktokshop">
   <div class="sh mb20">
@@ -2855,12 +3218,13 @@ function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
 function getVoice()   { return getLangCfg().voices[activeGender]; }
 
 // ── NAVIGATION ──
-const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','monetization','settings'];
+const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','monetization','settings'];
 const TITLES = {
   dashboard:'Dashboard', channels:'Mis canales', drafts:'Borradores',
   trends:'Tendencias — ventana 48h', score:'Score predictivo IA', pipeline:'Pipeline de creación',
-  url2video:'URL → Vídeo', templates:'Plantillas virales', clone:'Clonar canal viral',
-  reuse:'Reutilizar contenido',
+  url2video:'URL → Vídeo',
+  clipping:'✂️ Clipping — Canales', clippipeline:'✂️ Pipeline Clipping',
+  templates:'Plantillas virales', clone:'Clonar canal viral', reuse:'Reutilizar contenido',
   tiktokshop:'🛍️ TikTok Shop — Canales y productos', tiktokproduct:'🛍️ Pipeline de producto UGC', tiktokauto:'🛍️ AutoPost TikTok Shop',
   autopilot:'AutoPilot', models:'Modelos IA',
   budget:'Presupuesto', monetization:'Monetización', settings:'⚙️ Configuración'
@@ -2879,6 +3243,10 @@ function nav(id) {
   window.scrollTo(0, 0);
 
   // Refresh settings display after DOM is visible
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'channels') renderChannels();
+  if (id === 'clipping') renderClipChannels();
+  if (id === 'clippipeline') setCPStep(0);
   if (id === 'tiktokshop') renderTTSChannels();
   if (id === 'tiktokproduct') setTSStep(0);
   if (id === 'settings') setTimeout(() => { refreshSettingsDisplay(); initPreferences(); }, 50);
@@ -3718,6 +4086,7 @@ async function generateRealVideo() {
 
     const payload = {
       audio_b64: audioB64Clean,
+      audio_url: '',
       pexels_clips: clipUrls,
       script: currentScript || '',
       title: idea?.hook || 'FacelessAI Video',
@@ -3812,6 +4181,7 @@ function addDraft(draft) {
   drafts.unshift(draft);
   saveDrafts(drafts);
   renderDrafts();
+  renderDashboard();
   updateDraftBadge(drafts.length);
   showToast('📋 Guardado en Borradores — revísalo cuando quieras');
 }
@@ -4216,6 +4586,8 @@ function createChannel() {
   closeModal();
   setLang(chLang);
   setVoiceGender(chGender);
+  renderChannels();
+  renderDashboard();
   showToast('✓ Canal "' + fullName + '" creado · Voz: ' + voice + ' · Guardado');
 }
 
@@ -4632,6 +5004,8 @@ updateCostEstimate();
 initLangVoice();
 initPreferences();
 renderDrafts();
+renderDashboard();
+renderChannels();
 // Live preview for channel name in modal
 document.addEventListener('input', e => {
   if (e.target && e.target.id === 'ch-name') updateChPreview();
@@ -4755,7 +5129,455 @@ function refreshSettingsDisplay() {
 }
 
 // ═══════════════════════════════════════════════
-// TIKTOK SHOP MODULE
+// DASHBOARD — real data rendering
+// ═══════════════════════════════════════════════
+function renderDashboard() {
+  const drafts = getDrafts();
+  const channels = getChannels();
+  const pending = drafts.filter(d => d.status === 'pending');
+  const approved = drafts.filter(d => d.status === 'approved');
+
+  // Stats
+  const setEl = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+  setEl('dash-stat-drafts', drafts.length);
+  setEl('dash-stat-drafts-sub', drafts.length === 1 ? 'borrador guardado' : 'borradores guardados');
+  setEl('dash-stat-channels', channels.length);
+  setEl('dash-stat-channels-sub', channels.length === 1 ? 'canal configurado' : 'canales configurados');
+  setEl('dash-stat-approved', approved.length);
+  setEl('dash-stat-approved-sub', approved.length === 1 ? 'listo para publicar' : 'listos para publicar');
+
+  // Cost — sum from drafts
+  const totalCost = drafts.reduce((sum, d) => sum + (parseFloat(d.cost) || 0), 0);
+  const sym = { EUR:'€', USD:'$', GBP:'£' }[activeCurrency] || '$';
+  setEl('dash-stat-cost', sym + totalCost.toFixed(3));
+  setEl('dash-stat-cost-sub', 'en ' + drafts.length + ' vídeos generados');
+
+  // Status bar
+  const apDot = document.getElementById('dash-ap-dot');
+  const apTitle = document.getElementById('dash-status-title');
+  const apSub = document.getElementById('dash-status-sub');
+  if (currentMode === 'auto') {
+    if (apDot) { apDot.className = 'ap-dot ap-dot-on'; }
+    if (apTitle) { apTitle.textContent = 'AUTOPILOT ACTIVO'; apTitle.style.color = 'var(--green)'; }
+    if (apSub) apSub.textContent = 'Los vídeos se publicarán automáticamente';
+  } else {
+    if (apDot) { apDot.className = 'ap-dot ap-dot-off'; }
+    if (apTitle) { apTitle.textContent = 'MODO MANUAL'; apTitle.style.color = 'var(--text2)'; }
+    if (apSub) apSub.textContent = channels.length > 0
+      ? channels.length + ' canal' + (channels.length > 1 ? 'es' : '') + ' · ' + drafts.length + ' vídeo' + (drafts.length !== 1 ? 's' : '') + ' generado' + (drafts.length !== 1 ? 's' : '')
+      : 'Crea tu primer canal y genera un vídeo';
+  }
+
+  // Drafts alert
+  const alert = document.getElementById('dash-drafts-alert');
+  const alertText = document.getElementById('dash-drafts-alert-text');
+  if (alert) {
+    alert.style.display = pending.length > 0 ? 'block' : 'none';
+    if (alertText) alertText.textContent = pending.length + ' borrador' + (pending.length !== 1 ? 'es' : '') + ' pendiente' + (pending.length !== 1 ? 's' : '') + ' de aprobar';
+  }
+
+  // Channels list
+  const chList = document.getElementById('dash-channels-list');
+  if (chList) {
+    if (channels.length === 0) {
+      chList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📺</div><div style="font-size:13px;margin-bottom:10px">Aún no tienes canales</div><button class="btn btn-p btn-sm" onclick="openModal()">+ Crear canal</button></div>';
+    } else {
+      const langFlag = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' };
+      const genderIcon = { m:'♂', f:'♀' };
+      chList.innerHTML = channels.slice(0, 4).map(ch => `
+        <div class="chrow" style="cursor:pointer" onclick="selectChannel('${ch.name}','${ch.lang}','${ch.gender}','${ch.niche}')">
+          <div class="ch-icon" style="background:var(--bdim);color:var(--blue);font-size:16px">${langFlag[ch.lang]||'🌍'}</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600">${ch.name}</div>
+            <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${ch.niche?.toUpperCase()||''} · ${genderIcon[ch.gender]||''} ${ch.voice||''}</div>
+          </div>
+          <div class="dot-on"></div>
+        </div>
+      `).join('') + (channels.length > 4 ? `<div style="text-align:center;margin-top:8px"><button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos (${channels.length}) →</button></div>` : '');
+    }
+  }
+
+  // Recent drafts
+  const draftList = document.getElementById('dash-drafts-list');
+  if (draftList) {
+    if (drafts.length === 0) {
+      draftList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📭</div><div style="font-size:13px;margin-bottom:10px">Sin borradores aún</div><button class="btn btn-p btn-sm" onclick="nav(\'pipeline\')">▶ Generar vídeo</button></div>';
+    } else {
+      const statusColor = { pending:'#fbbf24', approved:'#00e87a', rejected:'#f87171' };
+      const statusLabel = { pending:'⏳ Pendiente', approved:'✓ Aprobado', rejected:'✕ Rechazado' };
+      draftList.innerHTML = drafts.slice(0, 4).map(d => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:600;color:var(--text1)">${(d.hook||d.title||'Sin título').slice(0,45)}</div>
+            <div style="font-size:10px;color:#475569;font-family:monospace">${getTimeAgo(d.createdAt)}</div>
+          </div>
+          <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:${statusColor[d.status]||'#fbbf24'}15;color:${statusColor[d.status]||'#fbbf24'};border:1px solid ${statusColor[d.status]||'#fbbf24'}44;font-family:monospace">${statusLabel[d.status]||'⏳'}</span>
+        </div>
+      `).join('') + (drafts.length > 4 ? `<div style="text-align:center;margin-top:8px"><button class="btn btn-g btn-sm" onclick="nav('drafts')">Ver todos (${drafts.length}) →</button></div>` : '');
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CHANNELS VIEW — real from localStorage
+// ═══════════════════════════════════════════════
+function renderChannels() {
+  const channels = getChannels();
+  const grid = document.getElementById('channels-grid');
+  const label = document.getElementById('channels-count-label');
+  if (!grid) return;
+
+  if (label) label.textContent = 'Canales activos (' + channels.length + ')';
+
+  const langFlag = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' };
+  const langLabel = { es:'Español ES', en:'English US', lat:'Latino' };
+  const genderIcon = { m:'♂', f:'♀' };
+  const nicheEmoji = { finanzas:'💰', motivacion:'🧠', curiosidades:'🌍', tecnologia:'💻', salud:'💪', lifestyle:'✨', humor:'😄', noticias:'📰' };
+
+  let html = channels.map(ch => `
+    <div class="card" style="cursor:pointer;border-top:2px solid var(--green)" onclick="selectChannel('${ch.name}','${ch.lang}','${ch.gender}','${ch.niche}')">
+      <div class="flex fic g10 mb10">
+        <div class="ch-icon" style="background:var(--gdim);color:var(--green);font-size:18px">${nicheEmoji[ch.niche]||'📺'}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600">${ch.name}</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${(ch.niche||'').toUpperCase()}</div>
+        </div>
+        <div class="dot-on"></div>
+      </div>
+      <div class="flex g6 mb10" style="flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">${langFlag[ch.lang]||'🌍'} ${langLabel[ch.lang]||ch.lang}</span>
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#1a2236;color:#94a3b8;border:1px solid #1e2d44;font-family:monospace">${genderIcon[ch.gender]||''} ${ch.voice||''}</span>
+      </div>
+      <div style="font-size:11px;color:#475569;font-family:monospace;margin-bottom:10px">Creado ${getTimeAgo(ch.createdAt)}</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-p btn-sm" style="flex:1;font-size:11px" onclick="event.stopPropagation();selectChannel('${ch.name}','${ch.lang}','${ch.gender}','${ch.niche}')">▶ Trabajar aquí</button>
+        <button class="btn btn-g btn-sm" style="font-size:11px" onclick="event.stopPropagation();deleteChannel(${ch.id})" title="Eliminar canal">✕</button>
+      </div>
+    </div>
+  `).join('');
+
+  html += `<div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:180px;cursor:pointer" onclick="openModal()">
+    <div style="text-align:center;color:var(--text3)">
+      <div style="font-size:28px;margin-bottom:6px">+</div>
+      <div style="font-size:13px">Crear nuevo canal</div>
+      <div style="font-size:11px;margin-top:4px;font-family:var(--mono)">o descubrir con IA →</div>
+    </div>
+  </div>`;
+
+  grid.innerHTML = html;
+}
+
+function deleteChannel(id) {
+  if (!confirm('¿Eliminar este canal?')) return;
+  const channels = getChannels().filter(c => c.id !== id);
+  saveChannels(channels);
+  renderChannels();
+  renderDashboard();
+  showToast('✕ Canal eliminado');
+}
+  showToast('✕ Canal eliminado');
+}
+// ═══════════════════════════════════════════════
+// CLIPPING MODULE
+// ═══════════════════════════════════════════════
+let clipChannelLang = 'en';
+let clipChannels = [];
+let cpTranscript = null;
+let cpMoments = [];
+let cpYTUrl = '';
+let cpDuration = 0;
+
+try { clipChannels = JSON.parse(localStorage.getItem('fai_clip_channels') || '[]'); } catch(e) {}
+
+function openClipModal() { document.getElementById('clip-modal').style.display = 'flex'; }
+function openClipModalWithNiche(niche) {
+  openClipModal();
+  setTimeout(() => { const el = document.getElementById('clip-ch-niche'); if (el) el.value = niche; }, 50);
+}
+function closeClipModal() { document.getElementById('clip-modal').style.display = 'none'; }
+function updateClipLangBtns() {
+  ['en','es','lat'].forEach(l => {
+    const el = document.getElementById('clip-lang-' + l);
+    if (!el) return;
+    el.style.border = l === clipChannelLang ? '2px solid var(--green)' : '1px solid var(--border)';
+    el.style.background = l === clipChannelLang ? 'var(--gdim)' : 'transparent';
+  });
+}
+
+function createClipChannel() {
+  const name = document.getElementById('clip-ch-name')?.value.trim() || 'ClipChannel';
+  const niche = document.getElementById('clip-ch-niche')?.value || 'podcasts-negocios';
+  const nicheLabels = {'podcasts-negocios':'🎙️ Podcasts Negocios','divulgacion':'🧬 Divulgación','entrevistas':'🎤 Entrevistas','finanzas':'💰 Finanzas','motivacion':'🔥 Motivación','deporte':'⚽ Deporte','tecnologia':'💻 Tech'};
+  const langLabels = { en:'🇺🇸 EN', es:'🇪🇸 ES', lat:'🌎 LAT' };
+  const ch = { id: Date.now(), name, niche, nicheLabel: nicheLabels[niche]||niche, lang: clipChannelLang, langLabel: langLabels[clipChannelLang], platforms: { tt: document.getElementById('clip-pt-tt')?.checked, ig: document.getElementById('clip-pt-ig')?.checked, yt: document.getElementById('clip-pt-yt')?.checked }, clips: 0, createdAt: new Date().toISOString() };
+  clipChannels.push(ch);
+  try { localStorage.setItem('fai_clip_channels', JSON.stringify(clipChannels)); } catch(e) {}
+  closeClipModal();
+  renderClipChannels();
+  showToast('✓ Canal "' + name + '" creado · ' + (nicheLabels[niche]||niche));
+}
+
+function renderClipChannels() {
+  const grid = document.getElementById('clip-channels-grid');
+  if (!grid) return;
+  const colors = {'podcasts-negocios':'#a78bfa','divulgacion':'#38bdf8','entrevistas':'#00e87a','finanzas':'#fbbf24','motivacion':'#f472b6','deporte':'#2dd4bf','tecnologia':'#a78bfa'};
+  const statEl = document.getElementById('clip-stat-channels');
+  if (statEl) statEl.textContent = clipChannels.length;
+
+  let html = clipChannels.map(ch => {
+    const color = colors[ch.niche] || '#a78bfa';
+    return `<div class="card" style="border-top:2px solid ${color}">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">${ch.name}</div>
+      <div style="font-size:11px;color:#475569;font-family:monospace;margin-bottom:8px">${ch.nicheLabel} · ${ch.langLabel}</div>
+      <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:${color};margin-bottom:4px">${ch.clips}</div>
+      <div style="font-size:10px;color:#475569;font-family:monospace;margin-bottom:10px">CLIPS GENERADOS</div>
+      <button class="btn btn-p btn-sm" style="width:100%" onclick="nav('clippipeline');setCPStep(0)">▶ Crear clips</button>
+    </div>`;
+  }).join('');
+
+  html += `<div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:160px;cursor:pointer" onclick="openClipModal()"><div style="text-align:center;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">+</div><div style="font-size:13px">Crear canal</div></div></div>`;
+  grid.innerHTML = html;
+}
+
+function setCPStep(n) {
+  document.querySelectorAll('.pc[id^="cp-"]').forEach(el => { el.style.display = 'none'; el.classList.remove('act'); });
+  const active = document.getElementById('cp-' + n);
+  if (active) { active.style.display = 'block'; active.classList.add('act'); }
+  document.querySelectorAll('[id^="cpsp-"]').forEach((el, i) => el.classList.toggle('act', i === n));
+
+  if (n === 1) {
+    const info = document.getElementById('cp-transcribe-info');
+    const url = document.getElementById('cp-yt-url')?.value || '';
+    if (info) info.textContent = url || '— Introduce una URL en el paso anterior —';
+    cpYTUrl = url;
+    const keyWarn = document.getElementById('cp-key-warning');
+    if (keyWarn) keyWarn.style.display = KEYS.openai ? 'none' : 'block';
+  }
+  if (n === 3) {
+    const summaryList = document.getElementById('cp-gen-summary-list');
+    if (summaryList && cpMoments.length > 0) {
+      summaryList.innerHTML = cpMoments.map((m,i) => `<div style="display:flex;align-items:center;gap:8px"><span style="color:#a78bfa;font-family:monospace">${i+1}.</span><span style="font-weight:600">${m.title}</span><span style="color:#475569;font-family:monospace">${formatSeconds(m.start)} → ${formatSeconds(m.end)}</span></div>`).join('');
+    } else if (summaryList) { summaryList.textContent = '— Selecciona momentos en el paso anterior —'; }
+  }
+}
+
+function formatSeconds(s) {
+  const m = Math.floor(s/60), sec = Math.floor(s%60);
+  return m + ':' + sec.toString().padStart(2,'0');
+}
+
+async function loadYTInfo() {
+  const url = document.getElementById('cp-yt-url')?.value.trim();
+  if (!url || !url.includes('youtube') && !url.includes('youtu.be')) { showToast('⚠ Introduce una URL de YouTube válida'); return; }
+  cpYTUrl = url;
+  const match = url.match(/[?&]v=([^&]+)/) || url.match(/youtu\.be\/([^?]+)/);
+  const videoId = match ? match[1] : 'desconocido';
+  const infoEl = document.getElementById('cp-video-info');
+  const titleEl = document.getElementById('cp-video-title');
+  const metaEl = document.getElementById('cp-video-meta');
+  if (infoEl) infoEl.style.display = 'block';
+  if (titleEl) titleEl.textContent = '✓ URL válida · ID: ' + videoId;
+  if (metaEl) metaEl.textContent = url;
+  showToast('✓ URL cargada · Procede a transcribir');
+}
+
+async function startTranscription() {
+  const backendUrl = BACKEND_URL || localStorage.getItem('fai_backend_url') || '';
+  if (!backendUrl) { showToast('⚠ Configura la URL del backend'); return; }
+  if (!KEYS.openai) { showToast('⚠ Necesitas la OpenAI API key para Whisper'); return; }
+  if (!cpYTUrl) { cpYTUrl = document.getElementById('cp-yt-url')?.value.trim() || ''; }
+  if (!cpYTUrl) { showToast('⚠ Introduce una URL de YouTube'); return; }
+
+  const btn = document.getElementById('cp-transcribe-btn');
+  const progress = document.getElementById('cp-transcribe-progress');
+  const preview = document.getElementById('cp-transcript-preview');
+  const bar = document.getElementById('cp-transcribe-bar');
+  const statusEl = document.getElementById('cp-transcribe-status');
+  const msgEl = document.getElementById('cp-transcribe-msg');
+
+  if (btn) { btn.textContent = '⏳ Transcribiendo...'; btn.disabled = true; }
+  if (progress) progress.style.display = 'block';
+  if (preview) preview.style.display = 'none';
+
+  try {
+    const lang = document.getElementById('cp-lang')?.value || 'en';
+    const r = await fetch(backendUrl + '/transcribe', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ youtube_url: cpYTUrl, openai_api_key: KEYS.openai, lang })
+    });
+    if (!r.ok) { const t = await r.text(); throw new Error('Error ' + r.status + ': ' + t.slice(0,150)); }
+    const { job_id } = await r.json();
+
+    let attempts = 0;
+    while (attempts < 120) {
+      await new Promise(res => setTimeout(res, 3000));
+      attempts++;
+      const statusR = await fetch(backendUrl + '/transcribe/status/' + job_id);
+      const status = await statusR.json();
+      if (bar) bar.style.width = status.progress + '%';
+      if (statusEl) statusEl.textContent = status.progress + '% · ' + status.message;
+      if (msgEl) msgEl.textContent = status.message;
+
+      if (status.status === 'done') {
+        cpTranscript = status.transcript || [];
+        cpDuration = status.duration || 0;
+        if (preview) preview.style.display = 'block';
+        const statsEl = document.getElementById('cp-transcript-stats');
+        const textEl = document.getElementById('cp-transcript-text');
+        if (statsEl) statsEl.textContent = cpTranscript.length + ' segmentos · ' + Math.floor(cpDuration/60) + 'min ' + (cpDuration%60) + 's';
+        if (textEl) textEl.textContent = (status.full_text || '').slice(0, 500) + '...';
+        if (btn) { btn.textContent = '✓ Transcrito → Continuar'; btn.disabled = false; btn.onclick = () => setCPStep(2); }
+        showToast('✓ Transcripción completada · ' + cpTranscript.length + ' segmentos');
+        return;
+      }
+      if (status.status === 'error') throw new Error(status.message);
+    }
+    throw new Error('Timeout');
+  } catch(e) {
+    if (btn) { btn.textContent = '🎙️ Transcribir con Whisper'; btn.disabled = false; }
+    if (statusEl) statusEl.textContent = '✕ Error: ' + e.message;
+    showToast('✕ Error: ' + e.message);
+  }
+}
+
+async function selectViralMoments() {
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
+  if (!cpTranscript?.length) { showToast('⚠ Transcribe el vídeo primero'); return; }
+
+  const btn = document.getElementById('cp-select-btn');
+  if (btn) { btn.textContent = '⏳ Analizando...'; btn.disabled = true; }
+
+  const numClips = parseInt(document.getElementById('cp-num-clips')?.value || '5');
+  const clipDuration = parseInt(document.getElementById('cp-clip-duration')?.value || '60');
+  const focus = document.getElementById('cp-focus')?.value || 'viral';
+  const platform = document.getElementById('cp-platform')?.value || 'reels';
+  const criteria = document.getElementById('cp-criteria')?.value || '';
+
+  const focusMap = { viral:'máximo potencial viral, frases impactantes', educational:'información más útil, consejos accionables', emotional:'momentos de mayor impacto emocional', controversial:'declaraciones polémicas y sorprendentes', actionable:'consejos prácticos y pasos concretos' };
+  const transcriptText = cpTranscript.slice(0, 200).map(s => `[${formatSeconds(s.start)}-${formatSeconds(s.end)}] ${s.text}`).join('\n');
+
+  const prompt = `You are an expert viral content curator. Analyze this transcript and select the ${numClips} best moments for ${platform} clips.
+Focus: ${focusMap[focus]}
+Clip duration: ~${clipDuration}s each
+${criteria ? 'Criteria: ' + criteria : ''}
+Video duration: ${Math.floor(cpDuration/60)}min
+
+TRANSCRIPT:
+${transcriptText}
+
+Respond ONLY in valid JSON:
+{"moments":[{"title":"Catchy title max 8 words","start":123,"end":183,"hook":"First sentence","why":"Why viral","viralScore":87,"category":"insight"}]}
+Only JSON.`;
+
+  try {
+    const raw = await callClaude(prompt, null, 1000);
+    const data = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    cpMoments = data.moments || [];
+
+    const container = document.getElementById('cp-moments-container');
+    const list = document.getElementById('cp-moments-list');
+    const title = document.getElementById('cp-moments-title');
+    if (container) container.style.display = 'block';
+    if (title) title.textContent = cpMoments.length + ' momentos seleccionados';
+    if (list) {
+      list.innerHTML = cpMoments.map((m,i) => `
+        <div class="card" style="border-left:3px solid #a78bfa">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="background:#a78bfa20;color:#a78bfa;border-radius:99px;padding:2px 8px;font-size:11px;font-weight:700;font-family:monospace">#${i+1}</span>
+              <span style="font-size:13px;font-weight:700">${m.title}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:11px;color:#475569;font-family:monospace">${formatSeconds(m.start)} → ${formatSeconds(m.end)}</span>
+              <span style="font-size:11px;font-family:monospace;color:#00e87a">🔥 ${m.viralScore}%</span>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:4px">Hook: <em>"${m.hook}"</em></div>
+          <div style="font-size:11px;color:#475569">${m.why}</div>
+        </div>`).join('');
+    }
+    showToast('✓ ' + cpMoments.length + ' momentos seleccionados');
+  } catch(e) {
+    showToast('✕ Error: ' + e.message);
+  } finally {
+    if (btn) { btn.textContent = '🤖 Analizar y seleccionar con Claude'; btn.disabled = false; }
+  }
+}
+
+async function generateClips() {
+  const backendUrl = BACKEND_URL || localStorage.getItem('fai_backend_url') || '';
+  if (!backendUrl) { showToast('⚠ Configura la URL del backend'); return; }
+  if (!cpMoments.length) { showToast('⚠ Selecciona momentos primero'); return; }
+  if (!cpYTUrl) { showToast('⚠ Introduce una URL de YouTube'); return; }
+
+  const btn = document.getElementById('cp-gen-btn');
+  const log = document.getElementById('cp-generate-log');
+  if (btn) { btn.textContent = '⏳ Generando...'; btn.disabled = true; }
+  if (log) { log.style.display = 'block'; log.innerHTML = ''; }
+
+  const addLog = (msg) => { if (!log) return; log.innerHTML += '<div>' + new Date().toLocaleTimeString('es-ES') + ' ' + msg + '</div>'; log.scrollTop = log.scrollHeight; };
+
+  try {
+    const format = document.getElementById('cp-out-format')?.value || '9:16';
+    const subsStyle = document.getElementById('cp-subs-style')?.value || 'viral';
+
+    addLog('🚀 Enviando a Railway · ' + cpMoments.length + ' clips · ' + format);
+    const r = await fetch(backendUrl + '/clip', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ youtube_url: cpYTUrl, openai_api_key: KEYS.openai || '', moments: cpMoments.map(m => ({start:m.start,end:m.end,title:m.title})), subtitle_style: subsStyle, format })
+    });
+    if (!r.ok) { const t = await r.text(); throw new Error('Error ' + r.status + ': ' + t.slice(0,150)); }
+    const { job_id } = await r.json();
+    addLog('✓ Job: ' + job_id + ' · Descargando vídeo (~2-3min)...');
+
+    let attempts = 0;
+    while (attempts < 120) {
+      await new Promise(res => setTimeout(res, 4000));
+      attempts++;
+      const statusR = await fetch(backendUrl + '/clip/status/' + job_id);
+      const status = await statusR.json();
+      addLog('[' + status.progress + '%] ' + status.message);
+      if (status.status === 'done') {
+        addLog('✅ ' + status.clips.length + ' clips listos');
+        renderReadyClips(status.clips, backendUrl);
+        if (btn) { btn.textContent = '✓ Clips generados'; btn.disabled = false; }
+        setCPStep(4);
+        showToast('🎬 ' + status.clips.length + ' clips listos para descargar');
+        return;
+      }
+      if (status.status === 'error') throw new Error(status.message);
+    }
+    throw new Error('Timeout');
+  } catch(e) {
+    addLog('✕ Error: ' + e.message);
+    if (btn) { btn.textContent = '✂️ Generar clips MP4'; btn.disabled = false; }
+    showToast('✕ Error: ' + e.message);
+  }
+}
+
+function renderReadyClips(clips, backendUrl) {
+  const container = document.getElementById('cp-clips-ready');
+  if (!container) return;
+  const statEl = document.getElementById('clip-stat-clips');
+  if (statEl) statEl.textContent = parseInt(statEl.textContent||'0') + clips.length;
+  container.innerHTML = clips.map((clip,i) => `
+    <div class="card" style="border-left:3px solid #a78bfa">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:13px;font-weight:700">${clip.title}</div>
+          <div style="font-size:11px;color:#475569;font-family:monospace">${clip.duration}s · ${clip.size_mb}MB · ${formatSeconds(clip.start)} → ${formatSeconds(clip.end)}</div>
+        </div>
+        <a href="${backendUrl}${clip.download_url}" download="clip_${i+1}.mp4" class="btn btn-p btn-sm" style="text-decoration:none">⬇ Descargar</a>
+      </div>
+      <div style="font-size:11px;color:#38bdf8">✓ Formato 9:16 · Subtítulos viral · Listo para TikTok / Reels</div>
+    </div>`).join('');
+}
+
+function saveClipsToDrafts() {
+  cpMoments.forEach(m => addDraft({ hook: m.title, script: m.hook + '\n' + m.why, niche: 'clipping', lang: document.getElementById('cp-lang')?.value||'en', cost: '$0.01' }));
+  showToast('💾 ' + cpMoments.length + ' clips guardados en Borradores');
+}
+
 // ═══════════════════════════════════════════════
 let ttsActiveLang = 'en';
 let ttsActiveStyle = 'review';
@@ -5198,6 +6020,7 @@ async function generateVideoShop() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         audio_b64: audioB64,
+        audio_url: '',
         pexels_clips: clipUrls,
         script: ttsSelectedScript,
         title: document.getElementById('ts-prod-name')?.value || 'TikTok Shop UGC',

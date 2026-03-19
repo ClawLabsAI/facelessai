@@ -40,12 +40,13 @@ TEMP_DIR.mkdir(exist_ok=True)
 # ─────────────────────────────────────────
 
 class VideoRequest(BaseModel):
-    audio_b64: str                     # Base64 encoded audio from browser
-    pexels_clips: list[str] = []       # List of Pexels video URLs
-    script: str = ""                   # Full script text for subtitles
-    title: str = "FacelessAI Video"   # Video title
-    lang: str = "es"                   # Language: es, en, lat
-    subtitle_style: str = "viral"      # viral, minimal, classic
+    audio_b64: str                      # Base64 encoded audio from browser
+    audio_url: str = ""                 # Legacy field — kept for compatibility, ignored
+    pexels_clips: list[str] = []        # List of Pexels video URLs
+    script: str = ""
+    title: str = "FacelessAI Video"
+    lang: str = "es"
+    subtitle_style: str = "viral"
 
 
 class StatusResponse(BaseModel):
@@ -353,3 +354,230 @@ def get_subtitle_filter(srt_path: str, style: str) -> str:
             "OutlineColour=&H00000000,Outline=2,"
             "Alignment=2,MarginV=50'"
         )
+
+
+# ─────────────────────────────────────────
+# CLIPPING ENDPOINTS
+# ─────────────────────────────────────────
+
+class ClipRequest(BaseModel):
+    youtube_url: str
+    openai_api_key: str
+    moments: list[dict] = []   # [{start, end, title}] — if empty, auto-detect
+    subtitle_style: str = "viral"
+    format: str = "9:16"       # 9:16 vertical or 16:9 horizontal
+
+class TranscribeRequest(BaseModel):
+    youtube_url: str
+    openai_api_key: str
+    lang: str = "es"
+
+# Transcription jobs store
+transcribe_jobs: dict = {}
+clip_jobs: dict = {}
+
+@app.post("/transcribe")
+async def transcribe_video(req: TranscribeRequest, background_tasks: BackgroundTasks):
+    """Download YouTube video and transcribe with Whisper"""
+    job_id = str(uuid.uuid4())[:8]
+    transcribe_jobs[job_id] = {"status": "pending", "progress": 0, "message": "Iniciando...", "transcript": None, "duration": 0}
+    background_tasks.add_task(do_transcribe, job_id, req)
+    return {"job_id": job_id, "status": "pending"}
+
+@app.get("/transcribe/status/{job_id}")
+async def transcribe_status(job_id: str):
+    if job_id not in transcribe_jobs:
+        raise HTTPException(status_code=404, detail="Job no encontrado")
+    return transcribe_jobs[job_id]
+
+@app.post("/clip")
+async def create_clip(req: ClipRequest, background_tasks: BackgroundTasks):
+    """Create vertical clips from YouTube video"""
+    job_id = str(uuid.uuid4())[:8]
+    clip_jobs[job_id] = {"status": "pending", "progress": 0, "message": "Iniciando...", "clips": []}
+    background_tasks.add_task(do_clip, job_id, req)
+    return {"job_id": job_id, "status": "pending"}
+
+@app.get("/clip/status/{job_id}")
+async def clip_status(job_id: str):
+    if job_id not in clip_jobs:
+        raise HTTPException(status_code=404, detail="Job no encontrado")
+    return clip_jobs[job_id]
+
+@app.get("/clip/download/{job_id}/{clip_index}")
+async def download_clip(job_id: str, clip_index: int):
+    filepath = TEMP_DIR / f"{job_id}_clip_{clip_index}.mp4"
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="Clip no encontrado")
+    return FileResponse(str(filepath), media_type="video/mp4", filename=f"clip_{job_id}_{clip_index}.mp4")
+
+async def do_transcribe(job_id: str, req: TranscribeRequest):
+    job_dir = TEMP_DIR / f"tr_{job_id}"
+    job_dir.mkdir(exist_ok=True)
+
+    def update(status, progress, message, **kwargs):
+        transcribe_jobs[job_id] = {"status": status, "progress": progress, "message": message, **kwargs}
+
+    try:
+        update("processing", 10, "Descargando audio de YouTube...")
+        audio_path = str(job_dir / "audio.mp3")
+
+        # Download audio only with yt-dlp
+        result = subprocess.run([
+            "yt-dlp",
+            "--extract-audio",
+            "--audio-format", "mp3",
+            "--audio-quality", "0",
+            "--output", audio_path.replace(".mp3", ".%(ext)s"),
+            "--no-playlist",
+            "--max-filesize", "200m",
+            req.youtube_url
+        ], capture_output=True, text=True, timeout=300)
+
+        if result.returncode != 0:
+            raise ValueError(f"yt-dlp error: {result.stderr[-300:]}")
+
+        # Find the downloaded file
+        import glob
+        files = glob.glob(str(job_dir / "audio.*"))
+        if not files:
+            raise ValueError("No se pudo descargar el audio")
+        audio_file = files[0]
+
+        update("processing", 40, "Obteniendo duración del vídeo...")
+        duration = get_audio_duration(audio_file)
+        update("processing", 45, f"Duración: {int(duration//60)}min {int(duration%60)}s · Transcribiendo con Whisper...")
+
+        # Transcribe with OpenAI Whisper
+        from openai import OpenAI
+        client = OpenAI(api_key=req.openai_api_key)
+
+        with open(audio_file, "rb") as f:
+            transcript = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=f,
+                language=req.lang if req.lang != "lat" else "es",
+                response_format="verbose_json",
+                timestamp_granularities=["segment"]
+            )
+
+        # Format segments
+        segments = []
+        for seg in (transcript.segments or []):
+            segments.append({
+                "start": round(seg.start, 2),
+                "end": round(seg.end, 2),
+                "text": seg.text.strip()
+            })
+
+        update("done", 100, f"✅ Transcripción completa · {len(segments)} segmentos · {int(duration//60)}min",
+               transcript=segments, duration=round(duration), full_text=transcript.text)
+
+        import shutil
+        shutil.rmtree(str(job_dir), ignore_errors=True)
+
+    except Exception as e:
+        update("error", 0, f"Error: {str(e)}")
+
+
+async def do_clip(job_id: str, req: ClipRequest):
+    job_dir = TEMP_DIR / f"cl_{job_id}"
+    job_dir.mkdir(exist_ok=True)
+
+    def update(status, progress, message, **kwargs):
+        clip_jobs[job_id] = {"status": status, "progress": progress, "message": message, "clips": clip_jobs[job_id].get("clips", []), **kwargs}
+
+    try:
+        update("processing", 5, "Descargando vídeo de YouTube...")
+
+        video_path = str(job_dir / "video.mp4")
+        result = subprocess.run([
+            "yt-dlp",
+            "--format", "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best",
+            "--output", video_path,
+            "--no-playlist",
+            "--max-filesize", "500m",
+            "--merge-output-format", "mp4",
+            req.youtube_url
+        ], capture_output=True, text=True, timeout=600)
+
+        if result.returncode != 0:
+            raise ValueError(f"yt-dlp error: {result.stderr[-300:]}")
+
+        # Find downloaded video
+        import glob
+        files = glob.glob(str(job_dir / "video.*"))
+        if not files:
+            raise ValueError("No se pudo descargar el vídeo")
+        video_file = files[0]
+
+        update("processing", 30, f"Vídeo descargado · Procesando {len(req.moments)} momentos...")
+
+        clips_created = []
+        for i, moment in enumerate(req.moments):
+            start = moment.get("start", 0)
+            end = moment.get("end", start + 60)
+            title = moment.get("title", f"Clip {i+1}")
+            duration_clip = end - start
+
+            update("processing", 30 + int(i * 60 / max(len(req.moments), 1)),
+                   f"Procesando clip {i+1}/{len(req.moments)}: {title[:40]}...")
+
+            out_path = TEMP_DIR / f"{job_id}_clip_{i}.mp4"
+
+            # Cut + convert to 9:16 vertical
+            if req.format == "9:16":
+                vf = (
+                    "crop=ih*9/16:ih,"
+                    "scale=1080:1920:force_original_aspect_ratio=increase,"
+                    "crop=1080:1920"
+                )
+            else:
+                vf = "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2"
+
+            # Generate SRT for this clip
+            srt_path = job_dir / f"subs_{i}.srt"
+            # Simple subtitle: just show the title/topic
+            srt_content = f"1\n00:00:00,000 --> 00:00:{min(int(duration_clip), 59):02d},000\n{title.upper()}\n\n"
+            srt_path.write_text(srt_content)
+
+            safe_srt = str(srt_path).replace('\\', '/').replace(':', '\\:')
+            subtitle_filter = get_subtitle_filter(str(srt_path), req.subtitle_style)
+
+            cmd = [
+                "ffmpeg", "-y",
+                "-ss", str(start),
+                "-i", video_file,
+                "-t", str(duration_clip),
+                "-vf", f"{vf},{subtitle_filter.split(',', 1)[-1] if ',' in subtitle_filter else subtitle_filter}",
+                "-c:v", "libx264",
+                "-preset", "fast",
+                "-crf", "22",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-movflags", "+faststart",
+                str(out_path)
+            ]
+
+            subprocess.run(cmd, capture_output=True, timeout=300)
+
+            if out_path.exists():
+                size_mb = round(out_path.stat().st_size / 1024 / 1024, 1)
+                clips_created.append({
+                    "index": i,
+                    "title": title,
+                    "start": start,
+                    "end": end,
+                    "duration": duration_clip,
+                    "size_mb": size_mb,
+                    "download_url": f"/clip/download/{job_id}/{i}"
+                })
+
+        clip_jobs[job_id]["clips"] = clips_created
+        update("done", 100, f"✅ {len(clips_created)} clips generados · Listos para descargar", clips=clips_created)
+
+        import shutil
+        shutil.rmtree(str(job_dir), ignore_errors=True)
+
+    except Exception as e:
+        update("error", 0, f"Error: {str(e)}")

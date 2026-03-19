@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v3.92 — Content Engine</title>
+<title>FacelessAI v3.95 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v3.92</div>
+    <div class="logo-sub">Content Engine v3.95</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -2060,40 +2060,1533 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 </div>
 
 <!-- ════════════════ MODELS ════════════════ -->
+
+
 <div class="view" id="view-models">
-  <div class="sh mb16"><h2>Configuración de modelos IA</h2><span class="tag tg">$0.027 / vídeo · ahorro 96.8% vs premium</span></div>
-  <div class="flex g8 mb14">
-    <button class="btn btn-g btn-sm" onclick="showToast('Preset \'Todo Gratis\' — $0.00/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span> Todo Gratis</button>
-    <button class="btn btn-g btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="showToast('Preset \'Económico\' aplicado — $0.027/vídeo')"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span> Económico (actual)</button>
-    <button class="btn btn-g btn-sm" style="border-color:var(--blue);color:var(--blue)" onclick="showToast('Preset \'Optimizado\' — $0.14/vídeo, calidad máxima')"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block"></span> Optimizado</button>
-    <button class="btn btn-g btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="showToast('Preset \'Premium\' — $0.84/vídeo con GPT-4+ElevenLabs')"><span style="width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block"></span> Premium</button>
+  <div class="sh mb16">
+    <h2>⚡ Modelos IA</h2>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="font-size:12px;color:var(--text3)">Tier activo:</span>
+      <span id="models-active-tier-badge" style="font-size:12px;font-weight:700;color:var(--amber)">—</span>
+      <span id="models-active-cost-badge" class="tag ta" style="font-size:10px">—</span>
+    </div>
   </div>
-  <div class="card" style="padding:0;overflow:hidden">
-    <table class="models-tbl">
-      <thead><tr><th style="width:150px">Etapa</th><th>Modelo activo</th><th>Alternativas</th><th>Coste</th><th>Tier</th></tr></thead>
-      <tbody>
-        <tr><td style="color:var(--text1);font-weight:600">💡 Ideas</td><td><select class="sel" style="width:auto"><option>Claude Haiku 3.5</option><option>GPT-4o mini</option><option>Llama 3.1 8B (local)</option></select></td><td style="color:var(--text3);font-size:12px">Claude Sonnet, GPT-4o</td><td><span class="tag ta">$0.001</span></td><td><span class="tag ta" style="font-size:10px">ECON.</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">✍️ Script</td><td><select class="sel" style="width:auto"><option selected>Claude Haiku 3.5</option><option>Llama 3.1 8B (local)</option><option>GPT-4o mini</option></select></td><td style="color:var(--text3);font-size:12px">Claude Sonnet, GPT-4o</td><td><span class="tag ta">$0.004</span></td><td><span class="tag ta" style="font-size:10px">ECON.</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">🎯 Score IA</td><td><select class="sel" style="width:auto"><option>Clasificador local (reglas)</option><option>Claude Haiku 3.5</option></select></td><td style="color:var(--text3);font-size:12px">Heurísticas + datos históricos</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">🎤 TTS Voz</td><td><select class="sel" style="width:auto"><option>Kokoro TTS (local)</option><option>Coqui TTS (local)</option><option>ElevenLabs Turbo</option></select></td><td style="color:var(--text3);font-size:12px">ElevenLabs HD, Azure TTS</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">🖼️ Imágenes</td><td><select class="sel" style="width:auto"><option>Pexels / Pixabay API</option><option>SDXL local (gen IA)</option><option>DALL-E 3</option></select></td><td style="color:var(--text3);font-size:12px">Flux Pro, Midjourney</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">📝 Subtítulos</td><td><select class="sel" style="width:auto"><option>Whisper (local)</option><option>AssemblyAI</option></select></td><td style="color:var(--text3);font-size:12px">Deepgram, Rev.ai</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">🔍 Tendencias</td><td><select class="sel" style="width:auto"><option>Scraping + clasificador local</option><option>Gemini Flash 2.0</option></select></td><td style="color:var(--text3);font-size:12px">Perplexity API</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">📄 URL parser</td><td><select class="sel" style="width:auto"><option>Claude Haiku 3.5</option><option>Llama 3.1 8B (local)</option></select></td><td style="color:var(--text3);font-size:12px">GPT-4o mini</td><td><span class="tag ta">$0.022</span></td><td><span class="tag ta" style="font-size:10px">ECON.</span></td></tr>
-        <tr><td style="color:var(--text1);font-weight:600">🔗 Afiliados</td><td><select class="sel" style="width:auto"><option>Reglas basadas en tema (local)</option></select></td><td style="color:var(--text3);font-size:12px">Detección semántica</td><td><span class="tag tg">GRATIS</span></td><td><span class="tag tg" style="font-size:10px">GRATIS</span></td></tr>
+
+  <!-- TIER CARDS -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px" id="models-tier-grid">
+    <!-- rendered by renderModels() -->
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="card mb16" style="padding:0;overflow:hidden">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2)">📊 Comparativa de tiers</div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="background:var(--bg2)">
+            <th style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:600;width:110px">Etapa</th>
+            <th style="padding:8px 12px;text-align:center;color:var(--green);font-weight:700">GRATIS</th>
+            <th style="padding:8px 12px;text-align:center;color:var(--blue);font-weight:700">ECONÓMICO</th>
+            <th style="padding:8px 12px;text-align:center;color:var(--amber);font-weight:700">OPTIMIZADO</th>
+            <th style="padding:8px 12px;text-align:center;color:var(--purple);font-weight:700">PREMIUM</th>
+            <th style="padding:8px 12px;text-align:center;color:#ff6b35;font-weight:700">ULTRA</th>
+          </tr>
+        </thead>
+        <tbody id="models-comparison-tbody"><!-- rendered --></tbody>
+        <tfoot>
+          <tr style="background:var(--bg2);font-weight:700">
+            <td style="padding:8px 12px;color:var(--text2)">💰 Coste/vídeo</td>
+            <td id="cmp-cost-free"  style="padding:8px 12px;text-align:center;color:var(--green)">$0.00</td>
+            <td id="cmp-cost-eco"   style="padding:8px 12px;text-align:center;color:var(--blue)">—</td>
+            <td id="cmp-cost-opt"   style="padding:8px 12px;text-align:center;color:var(--amber)">—</td>
+            <td id="cmp-cost-prem"  style="padding:8px 12px;text-align:center;color:var(--purple)">—</td>
+            <td id="cmp-cost-ultra" style="padding:8px 12px;text-align:center;color:#ff6b35">—</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- AI RECOMMENDATION -->
+  <div class="card mb16" id="models-ai-rec" style="background:linear-gradient(135deg,var(--bdim),transparent);border-color:var(--blue)">
+    <div class="flex fic g10">
+      <span style="font-size:20px">🤖</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:3px">Recomendación IA</div>
+        <div style="font-size:12px;color:var(--text3)" id="models-rec-text">Selecciona un tier para ver el análisis</div>
+      </div>
+      <button class="btn btn-g btn-sm" onclick="getModelsAIRecommendation()">🤖 Analizar mi uso</button>
+    </div>
+  </div>
+
+  <!-- MODEL TABLE -->
+  <div class="card mb16" style="padding:0;overflow:hidden">
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;font-weight:600;color:var(--text2)">🔍 Modelos del tier activo:</span>
+      <span id="models-table-tier-label" style="font-size:12px;font-weight:700">—</span>
+    </div>
+    <table class="models-tbl" id="models-table">
+      <thead>
+        <tr>
+          <th style="width:140px">Etapa</th>
+          <th>Modelo</th>
+          <th>Descripción</th>
+          <th>Coste/vídeo</th>
+          <th>Calidad</th>
+        </tr>
+      </thead>
+      <tbody id="models-tbody">
+        <!-- rendered by renderModels() -->
       </tbody>
     </table>
   </div>
-  <div class="card mt14">
-    <div class="stl mb10">Optimización automática de costes</div>
-    <div style="display:flex;flex-direction:column;gap:9px">
-      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Caché de outputs — no regenerar si existe (scripts, voces, clips)</span></div>
-      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Batch processing — 10× más barato en APIs con lotes</span></div>
-      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Fallback automático: si modelo local falla → API económica</span></div>
-      <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Usar modelos premium solo si Score IA > 90/100</span></div>
+
+  <!-- COST CALCULATOR -->
+  <div class="g2 mb16">
+    <div class="card">
+      <div class="stl mb12">💰 Calculadora de costes</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <label class="lbl" style="margin:0">Vídeos al mes</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="range" id="calc-videos" min="1" max="200" value="30" style="width:120px" oninput="updateCostCalc()">
+            <span id="calc-videos-val" style="font-family:var(--mono);font-size:13px;width:30px">30</span>
+          </div>
+        </div>
+        <div style="padding:12px;background:var(--bg2);border-radius:var(--r)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+            <div>Coste/vídeo: <strong id="calc-per-video" style="color:var(--amber)">—</strong></div>
+            <div>Total/mes: <strong id="calc-total" style="color:var(--green)">—</strong></div>
+            <div>Total/año: <strong id="calc-yearly">—</strong></div>
+            <div>vs Premium: <strong id="calc-vs-premium" style="color:var(--green)">—</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stl mb12">⚙️ Optimización automática</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-cache" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Caché de outputs (no regenerar si existe)</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-batch" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Batch processing — 10× más barato en lotes</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-fallback" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Fallback automático si modelo local falla</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-score-gate"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Premium solo si Score IA &gt; 90/100</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API STATUS -->
+  <div class="card">
+    <div class="stl mb12">🔌 Estado de APIs configuradas</div>
+    <div id="models-api-status" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <!-- rendered by renderModels() -->
     </div>
   </div>
 </div>
+<div class="view" id="view-drafts">
+  <div class="sh mb12">
+    <h2>Borradores</h2>
+    <div class="flex g8">
+      <button class="btn btn-g btn-sm" onclick="approveAll()">✓ Aprobar todos pendientes</button>
+      <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="clearAllDrafts()">🗑 Limpiar rechazados</button>
+    </div>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="g4 mb14">
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('pending')">
+      <div class="sc-label">Pendientes</div>
+      <div class="sc-val" style="color:var(--amber)" id="dr-stat-pending">0</div>
+      <span class="du">esperando revisión</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('approved')">
+      <div class="sc-label">Aprobados</div>
+      <div class="sc-val" style="color:var(--green)" id="dr-stat-approved">0</div>
+      <span class="du">listos para publicar</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('rejected')">
+      <div class="sc-label">Rechazados</div>
+      <div class="sc-val" style="color:var(--red)" id="dr-stat-rejected">0</div>
+      <span class="du">descartados</span>
+    </div>
+    <div class="sc" style="cursor:pointer" onclick="setDraftsFilter('all')">
+      <div class="sc-label">Total</div>
+      <div class="sc-val" id="dr-stat-total">0</div>
+      <span class="du">borradores</span>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+    <div class="flex g4">
+      <button class="sty-btn act" id="dr-filter-all"      onclick="setDraftsFilter('all')">Todos</button>
+      <button class="sty-btn"     id="dr-filter-pending"   onclick="setDraftsFilter('pending')">⏳ Pendientes</button>
+      <button class="sty-btn"     id="dr-filter-approved"  onclick="setDraftsFilter('approved')">✓ Aprobados</button>
+      <button class="sty-btn"     id="dr-filter-rejected"  onclick="setDraftsFilter('rejected')">✕ Rechazados</button>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <select class="sel" id="dr-filter-channel" onchange="renderDrafts()" style="font-size:12px;padding:5px 8px">
+        <option value="">Todos los canales</option>
+      </select>
+      <select class="sel" id="dr-sort" onchange="renderDrafts()" style="font-size:12px;padding:5px 8px">
+        <option value="date-desc">Más recientes</option>
+        <option value="date-asc">Más antiguos</option>
+        <option value="score-desc">Mayor score</option>
+        <option value="score-asc">Menor score</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- INFO BANNER -->
+  <div id="dr-mode-banner" style="background:var(--bdim);border:1px solid #38bdf822;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--text3)">
+    <strong style="color:var(--blue)">Modo manual activo:</strong> Cada vídeo generado llega aquí antes de publicarse. Aprueba, edita el título, descarga el audio o publica en YouTube.
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px" id="drafts-list"></div>
+
+  <div id="drafts-empty" style="display:none;text-align:center;padding:48px;color:var(--text3)">
+    <div style="font-size:48px;margin-bottom:14px">📭</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:8px">Sin borradores</div>
+    <div style="font-size:13px;margin-bottom:16px">Genera un vídeo en el pipeline para que aparezca aquí</div>
+    <button class="btn btn-p" onclick="nav('pipeline')">▶ Ir al pipeline</button>
+  </div>
+</div>
+
+<!-- ════════════════ CHANNELS ════════════════ -->
+
+<div class="view" id="view-channels">
+  <div class="sh mb16">
+    <h2>Mis canales</h2>
+    <div class="flex g8">
+      <button class="btn btn-g btn-sm" id="ch-yt-refresh-btn" onclick="fetchAllYouTubeStats().then(()=>renderChannels())" title="Actualizar datos YouTube">↻ YouTube</button>
+      <button class="btn btn-g btn-sm" onclick="discoverChannelsAI()">🔍 Descubrir con IA</button>
+      <button class="btn btn-p btn-sm" onclick="openModal()">+ Crear canal</button>
+    </div>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Canales activos</div><div class="sc-val" id="ch-stat-total">0</div><span class="du">configurados</span></div>
+    <div class="sc"><div class="sc-label">Views totales YT</div><div class="sc-val" id="ch-stat-views">—</div><span class="du">acumuladas</span></div>
+    <div class="sc"><div class="sc-label">Suscriptores YT</div><div class="sc-val" id="ch-stat-subs">—</div><span class="du">totales</span></div>
+    <div class="sc"><div class="sc-label">Vídeos este mes</div><div class="sc-val" id="ch-stat-drafts">0</div><span class="du">todos los canales</span></div>
+  </div>
+
+  <!-- CHANNELS GRID -->
+  <div class="stl mb10" id="channels-count-label">Canales activos</div>
+  <div class="g3 mb24" id="channels-grid"><!-- rendered by renderChannels() --></div>
+
+  <!-- EDIT CHANNEL MODAL — full settings -->
+  <div id="edit-channel-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0">
+    <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:520px;max-width:95vw;margin:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <div style="font-size:16px;font-weight:700" id="edit-ch-title">✏️ Configuración del canal</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px" id="edit-ch-subtitle">Edita los parámetros del canal</div>
+        </div>
+        <button onclick="closeEditChannelModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px">×</button>
+      </div>
+      <input type="hidden" id="edit-ch-idx">
+
+      <!-- STATS STRIP -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;padding:12px;background:var(--bg2);border-radius:var(--r)">
+        <div style="text-align:center"><div style="font-size:10px;color:var(--text3)">BORRADORES</div><div style="font-weight:700;font-family:var(--mono)" id="edit-ch-stat-drafts">0</div></div>
+        <div style="text-align:center"><div style="font-size:10px;color:var(--text3)">SCORE MEDIO</div><div style="font-weight:700;font-family:var(--mono);color:var(--amber)" id="edit-ch-stat-score">—</div></div>
+        <div style="text-align:center"><div style="font-size:10px;color:var(--text3)">COSTE IA</div><div style="font-weight:700;font-family:var(--mono);color:var(--green)" id="edit-ch-stat-cost">$0</div></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- Identidad -->
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px">Identidad del canal</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="lbl">Nicho</label>
+            <select class="sel" id="edit-ch-niche">
+              <option value="finanzas">💰 Finanzas</option><option value="motivacion">🔥 Motivación</option>
+              <option value="tecnologia">💻 Tech / IA</option><option value="salud">🏃 Salud</option>
+              <option value="negocios">📈 Negocios</option><option value="gaming">🎮 Gaming</option>
+              <option value="historia">📚 Historia</option><option value="curiosidades">🤔 Curiosidades</option>
+            </select>
+          </div>
+          <div><label class="lbl">Idioma</label>
+            <select class="sel" id="edit-ch-lang">
+              <option value="es">🇪🇸 Español</option>
+              <option value="lat">🌎 Latino</option>
+              <option value="en">🇺🇸 English</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="lbl">Género de voz</label>
+            <select class="sel" id="edit-ch-gender">
+              <option value="m">♂ Hombre</option>
+              <option value="f">♀ Mujer</option>
+            </select>
+          </div>
+          <div><label class="lbl">Plataformas</label>
+            <div style="display:flex;gap:12px;padding:8px 0">
+              <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="edit-ch-yt"> YT</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="edit-ch-tt"> TT</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="edit-ch-ig"> IG</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics -->
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:4px">Analytics y monetización</div>
+        <div><label class="lbl">YouTube Channel ID</label>
+          <input class="inp" id="edit-ch-yt-id" placeholder="UC..." style="font-family:var(--mono);font-size:12px">
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">YouTube Studio → Configuración → Canal → Información básica · <a href="https://www.youtube.com/account_advanced" target="_blank" style="color:var(--blue)">Abrir ↗</a></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="lbl">RPM estimado ($/1000 views)</label>
+            <input class="inp" id="edit-ch-rpm" type="number" step="0.5" placeholder="ej. 4.5">
+            <div style="font-size:10px;color:var(--text3);margin-top:3px">Finanzas ~$4-8 · Tech ~$3-6 · Motivación ~$2-4</div>
+          </div>
+          <div><label class="lbl">Score mínimo para AutoPilot</label>
+            <input class="inp" id="edit-ch-min-score" type="number" step="1" min="0" max="100" placeholder="ej. 75">
+            <div style="font-size:10px;color:var(--text3);margin-top:3px">AutoPilot descarta ideas con score menor</div>
+          </div>
+        </div>
+
+        <!-- Notas -->
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:4px">Notas del canal</div>
+        <div>
+          <textarea class="inp" id="edit-ch-notes" rows="2" placeholder="Instrucciones especiales para Claude, tono de voz, temas a evitar..." style="resize:vertical;font-size:13px"></textarea>
+        </div>
+
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:20px;justify-content:space-between">
+        <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="if(confirm('¿Eliminar este canal?')){deleteChannelFromModal()}">🗑 Eliminar canal</button>
+        <div class="flex g8">
+          <button class="btn btn-g btn-sm" onclick="closeEditChannelModal()">Cancelar</button>
+          <button class="btn btn-p" onclick="saveEditChannel()">💾 Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI DISCOVERY -->
+  <div class="stl mb10">🔍 Descubrir oportunidades de canal con IA</div>
+  <div class="card mb14">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">
+      <div><label class="lbl">Idioma objetivo</label>
+        <select class="sel" id="disc-market">
+          <option value="all">🌍 Todos los mercados</option>
+          <option value="es">🇪🇸 Español España</option>
+          <option value="latam">🌎 Español Latino</option>
+          <option value="us">🇺🇸 English US</option>
+        </select>
+      </div>
+      <div><label class="lbl">Inversión por vídeo</label>
+        <select class="sel" id="disc-budget">
+          <option value="free">🟢 Gratis — $0.00</option>
+          <option value="eco" selected>🟡 Económico — ~$0.01</option>
+          <option value="opt">🔵 Optimizado — ~$0.06</option>
+          <option value="prem">🔴 Premium — ~$0.25</option>
+        </select>
+      </div>
+      <div><label class="lbl">Objetivo principal</label>
+        <select class="sel" id="disc-goal">
+          <option value="monetize">💰 Monetizar rápido</option>
+          <option value="grow">📈 Crecer audiencia</option>
+          <option value="diversify">🔀 Diversificar canales</option>
+          <option value="affiliate">⭐ Ingresos afiliados</option>
+          <option value="brand">🏷️ Marca personal</option>
+        </select>
+      </div>
+      <div><label class="lbl">Plataforma principal</label>
+        <select class="sel" id="disc-platform">
+          <option value="youtube">▶ YouTube Shorts</option>
+          <option value="tiktok">♪ TikTok</option>
+          <option value="instagram">◈ Instagram Reels</option>
+          <option value="all">🌐 Multiplataforma</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div><label class="lbl">Nichos a evitar <span style="color:var(--text3);font-weight:400">(opcional)</span></label>
+        <input class="inp" id="disc-avoid" placeholder="ej: política, religión, criptos..."></div>
+      <div><label class="lbl">Nichos de interés <span style="color:var(--text3);font-weight:400">(deja libre para sugerencias IA)</span></label>
+        <input class="inp" id="disc-niche" placeholder="ej: finanzas, salud, tecnología..."></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <button class="btn btn-p" id="disc-btn" onclick="discoverChannelsAI()" style="padding:10px 20px">🤖 Analizar mercado y sugerir canales</button>
+      <span style="font-size:12px;color:var(--text3)">~$0.005 · Claude analiza tendencias reales del mercado</span>
+    </div>
+    <div id="disc-results" style="display:none;margin-top:14px"></div>
+  </div>
+</div>
+
+<!-- ════════════════ 3 · AUTOPILOT ════════════════ -->
+<div class="view" id="view-autopilot">
+  <div class="sh mb16">
+    <h2>🤖 AutoPilot</h2>
+    <button class="btn btn-p" id="ap-toggle-btn" onclick="toggleAutopilot()">▶ Activar AutoPilot</button>
+  </div>
+
+  <!-- Status -->
+  <div id="ap-status-card" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+    <div style="width:10px;height:10px;border-radius:50%;background:var(--text3);flex-shrink:0" id="ap-dot"></div>
+    <div style="flex:1" id="ap-status">⏸ AutoPilot pausado — actívalo para automatizar la creación de borradores</div>
+  </div>
+
+  <!-- Config -->
+  <div class="card mb16">
+    <div class="stl mb12">⚙️ Configuración del AutoPilot</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <label class="lbl">Frecuencia de ejecución</label>
+        <select class="sel" id="ap-interval" onchange="localStorage.setItem('fai_ap_interval', this.value)">
+          <option value="1">Cada hora</option>
+          <option value="2">Cada 2 horas</option>
+          <option value="4">Cada 4 horas</option>
+          <option value="6" selected>Cada 6 horas</option>
+          <option value="12">Cada 12 horas</option>
+          <option value="24">1 vez al día</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Vídeos por ciclo</label>
+        <select class="sel" id="ap-per-cycle">
+          <option value="1" selected>1 borrador</option>
+          <option value="2">2 borradores</option>
+          <option value="3">3 borradores</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:var(--bdim);border-radius:var(--r);font-size:12px;color:var(--text2)">
+      💡 El AutoPilot genera ideas → scripts → guarda como borradores pendientes de aprobar. No publica directamente (modo manual activo).
+    </div>
+  </div>
+
+  <!-- Run log -->
+  <div class="card">
+    <div class="stl mb8">📋 Log de ejecuciones</div>
+    <div id="ap-run-log" style="max-height:250px;overflow-y:auto;display:flex;flex-direction:column;gap:4px">
+      <div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Sin ejecuciones aún. Activa el AutoPilot para comenzar.</div>
+    </div>
+    <button class="btn btn-g btn-sm" style="margin-top:10px" onclick="runAutopilotCycle()">▶ Ejecutar ciclo ahora (manual)</button>
+  </div>
+</div>
+<div class="view" id="view-trends">
+  <div class="sh mb14">
+    <h2>🔥 Tendencias</h2>
+    <div class="flex g8">
+      <button class="btn btn-g btn-sm" id="trends-refresh-btn" onclick="refreshActiveTrendsTab()">🤖 Analizar</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="flex g6 mb16">
+    <button class="sty-btn act" id="trends-tab-videos"   onclick="switchTrendsTab('videos')">🎬 Tendencias de vídeos</button>
+    <button class="sty-btn"     id="trends-tab-channels" onclick="switchTrendsTab('channels')">📺 Oportunidades de canal</button>
+  </div>
+
+  <!-- ══ TAB: VÍDEOS ══ -->
+  <div id="trends-panel-videos">
+    <!-- Filters -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+      <select class="sel" id="trends-channel" style="width:160px;font-size:12px" onchange="applyTrendsChannelContext()">
+        <option value="">🌐 Sin canal (manual)</option>
+      </select>
+      <div style="display:flex;gap:6px;align-items:center">
+        <select class="sel" id="trends-niche" style="width:170px;font-size:12px" onchange="toggleTrendsCustomNiche()">
+          <option value="global">🔥 Top tendencias globales</option>
+          <option value="finanzas">💰 Finanzas personales</option>
+          <option value="motivacion">🔥 Motivación / Mindset</option>
+          <option value="tecnologia">💻 Tech / IA</option>
+          <option value="salud">🏃 Salud y bienestar</option>
+          <option value="negocios">📈 Negocios / Emprender</option>
+          <option value="curiosidades">🤔 Curiosidades / Ciencia</option>
+          <option value="historia">📚 Historia y cultura</option>
+          <option value="gaming">🎮 Gaming</option>
+          <option value="cocina">🍳 Cocina / Recetas</option>
+          <option value="deporte">⚽ Deporte</option>
+          <option value="cripto">₿ Cripto / Inversión</option>
+          <option value="custom">✏️ Nicho personalizado...</option>
+        </select>
+        <input class="inp" id="trends-custom-niche" placeholder="ej: decoración, mascotas..." style="display:none;width:160px;font-size:12px">
+      </div>
+      <select class="sel" id="trends-market" style="width:130px;font-size:12px">
+        <option value="es">🇪🇸 España</option>
+        <option value="lat">🌎 LATAM</option>
+        <option value="us">🇺🇸 English</option>
+      </select>
+      <select class="sel" id="trends-platform" style="width:130px;font-size:12px">
+        <option value="youtube">▶ YouTube Shorts</option>
+        <option value="tiktok">♪ TikTok</option>
+        <option value="instagram">◈ Instagram</option>
+        <option value="all">🌐 Todos</option>
+      </select>
+    </div>
+    <div id="trends-channel-ctx" style="display:none;font-size:11px;color:var(--green);font-family:var(--mono);margin-bottom:10px"></div>
+    <div id="trends-last-info" style="display:none;font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:12px"></div>
+
+    <!-- Sources -->
+    <div class="card-d mb14" style="padding:10px 14px">
+      <div class="flex fic g16 fw">
+        <span style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px">Fuentes:</span>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-yt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">YouTube</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-tt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">TikTok</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-gt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Google Trends</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-reddit"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Reddit</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" id="src-twitter"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Twitter/X</span></div>
+        <span style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto">Claude analiza el momento actual</span>
+      </div>
+    </div>
+
+    <!-- AI results -->
+    <div id="trends-ai-container" style="display:none;margin-bottom:16px"></div>
+
+    <!-- Fallback -->
+    <div id="trends-fallback">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;font-family:var(--mono)">💡 Ejemplos — pulsa "🤖 Analizar" para tendencias reales de tu nicho</div>
+      <div class="g3">
+        <div class="tc hot">
+          <div class="flex fic g8 mb8"><span style="font-size:17px">🤖</span><div><div style="font-size:13px;font-weight:700">IA reemplazando empleos</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">TECNOLOGÍA · TRABAJO</div></div></div>
+          <div class="spike" id="sp-1"></div>
+          <div class="flex fic g8 mt8"><span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--red)">+620%</span><div class="flex g4"><span class="src-tag" style="background:var(--rdim);color:var(--red)">YT</span><span class="src-tag" style="background:#00f2ea22;color:#00d4c4">TT</span></div><span style="font-size:10px;color:var(--red);font-family:var(--mono);margin-left:auto">⏱ 18h</span></div>
+          <button class="btn btn-p btn-sm btn-w mt8" onclick="setTrendAndNav('IA reemplazando empleos en 2026')">Evaluar score →</button>
+        </div>
+        <div class="tc">
+          <div class="flex fic g8 mb8"><span style="font-size:17px">💰</span><div><div style="font-size:13px;font-weight:700">Ahorro en el supermercado</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS · CONSUMO</div></div></div>
+          <div class="spike" id="sp-2"></div>
+          <div class="flex fic g8 mt8"><span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--amber)">+340%</span><div class="flex g4"><span class="src-tag" style="background:var(--adim);color:var(--amber)">GT</span><span class="src-tag" style="background:#e1306c22;color:#e1306c">IG</span></div><span style="font-size:10px;color:var(--amber);font-family:var(--mono);margin-left:auto">⏱ 36h</span></div>
+          <button class="btn btn-a btn-sm btn-w mt8" onclick="setTrendAndNav('Trucos para ahorrar en el supermercado')">Evaluar score →</button>
+        </div>
+        <div class="tc">
+          <div class="flex fic g8 mb8"><span style="font-size:17px">🧠</span><div><div style="font-size:13px;font-weight:700">Psicología del dinero</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">FINANZAS · MINDSET</div></div></div>
+          <div class="spike" id="sp-3"></div>
+          <div class="flex fic g8 mt8"><span style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--blue)">+210%</span><div class="flex g4"><span class="src-tag" style="background:var(--bdim);color:var(--blue)">YT</span><span class="src-tag" style="background:#00f2ea22;color:#00d4c4">TT</span></div><span style="font-size:10px;color:var(--blue);font-family:var(--mono);margin-left:auto">⏱ 48h</span></div>
+          <button class="btn btn-b btn-sm btn-w mt8" onclick="setTrendAndNav('Psicología del dinero: por qué tomamos malas decisiones')">Evaluar score →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: CANALES ══ -->
+  <div id="trends-panel-channels" style="display:none">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+      <select class="sel" id="tch-market" style="width:150px;font-size:12px">
+        <option value="all">🌍 Todos los mercados</option>
+        <option value="es">🇪🇸 España</option>
+        <option value="lat">🌎 LATAM</option>
+        <option value="us">🇺🇸 English US</option>
+      </select>
+      <select class="sel" id="tch-platform" style="width:140px;font-size:12px">
+        <option value="all">🌐 Multiplataforma</option>
+        <option value="youtube">▶ YouTube Shorts</option>
+        <option value="tiktok">♪ TikTok</option>
+        <option value="instagram">◈ Instagram Reels</option>
+      </select>
+      <select class="sel" id="tch-focus" style="width:160px;font-size:12px">
+        <option value="cpm">💰 Mayor CPM</option>
+        <option value="growth">📈 Mayor crecimiento</option>
+        <option value="low_sat">🎯 Menor saturación</option>
+        <option value="affiliate">⭐ Potencial afiliados</option>
+      </select>
+    </div>
+    <div id="tch-last-info" style="display:none;font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:12px"></div>
+    <div id="trends-channels-container">
+      <div style="text-align:center;padding:40px;color:var(--text3)">
+        <div style="font-size:40px;margin-bottom:12px">📺</div>
+        <p style="font-size:13px;margin-bottom:16px">Claude analiza qué nichos y canales tienen más potencial ahora mismo</p>
+        <button class="btn btn-p" onclick="fetchChannelTrends()">🤖 Analizar oportunidades de canal</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════ PIPELINE ════════════════ -->
+<div class="view" id="view-score">
+  <div class="sh mb14">
+    <h2>🎯 Score IA</h2>
+    <span style="font-size:12px;color:var(--text3)">Analiza cualquier idea, contenido o canal</span>
+  </div>
+
+  <!-- TABS -->
+  <div class="flex g6 mb16" style="flex-wrap:wrap">
+    <button class="sty-btn act" id="score-tab-idea"     onclick="switchScoreTab('idea')">💡 Idea</button>
+    <button class="sty-btn"     id="score-tab-canal"    onclick="switchScoreTab('canal')">📺 Mi canal</button>
+    <button class="sty-btn"     id="score-tab-borrador" onclick="switchScoreTab('borrador')">📋 Mi borrador</button>
+    <button class="sty-btn"     id="score-tab-url"      onclick="switchScoreTab('url')">🔗 URL externa</button>
+    <button class="sty-btn"     id="score-tab-extcanal" onclick="switchScoreTab('extcanal')">🔍 Canal externo</button>
+  </div>
+
+  <!-- ══ TAB: IDEA ══ -->
+  <div id="score-panel-idea">
+    <div class="card mb14">
+      <label class="lbl mb8">💡 Idea o tema a evaluar</label>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <input class="inp" id="score-input" placeholder="ej: 5 errores que cometen los jóvenes con el dinero" style="flex:1;font-size:14px">
+        <button class="btn btn-p" id="score-run-btn" onclick="runScoreReal()">🤖 Analizar</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><label class="lbl">Canal</label>
+          <select class="sel" id="score-channel" style="font-size:12px" onchange="scoreChannelChanged()">
+            <option value="">🌐 Sin canal</option>
+          </select>
+        </div>
+        <div><label class="lbl">Mercado</label>
+          <select class="sel" id="score-market" style="font-size:12px">
+            <option value="es">🇪🇸 España</option><option value="lat">🌎 LATAM</option><option value="us">🇺🇸 English</option>
+          </select>
+        </div>
+        <div><label class="lbl">Plataforma</label>
+          <select class="sel" id="score-platform" style="font-size:12px">
+            <option value="youtube">▶ YouTube Shorts</option><option value="tiktok">♪ TikTok</option><option value="instagram">◈ Instagram</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="score-trend-bar" style="display:none;background:var(--rdim);border:1px solid #f8717133;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:13px">
+      <div class="flex fic g8"><span style="font-size:16px">🔥</span><span style="color:var(--text2)">Idea cargada desde <strong style="color:var(--text1)">Tendencias</strong></span>
+        <button class="btn btn-g btn-sm" style="margin-left:auto" onclick="document.getElementById('score-trend-bar').style.display='none'">×</button>
+      </div>
+    </div>
+    <div id="score-placeholder" style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:48px;margin-bottom:12px">🎯</div>
+      <div style="font-weight:600;margin-bottom:6px">Introduce una idea para evaluarla</div>
+      <p style="font-size:13px;margin-bottom:8px">Claude analiza viral, CPM, saturación, retención y te da recomendación clara</p>
+      <div style="font-size:11px;font-family:var(--mono);color:var(--text3)">~$0.002 por análisis</div>
+    </div>
+    <div id="score-results" style="display:none"></div>
+    <div id="score-saved-section" style="margin-top:20px;display:none">
+      <div class="stl mb8">💾 Ideas guardadas</div>
+      <div id="score-saved-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: MI CANAL ══ -->
+  <div id="score-panel-canal" style="display:none">
+    <div class="card mb14">
+      <label class="lbl mb8">📺 Selecciona un canal para analizar</label>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <select class="sel" id="score-mycanal" style="flex:1">
+          <option value="">— Selecciona un canal —</option>
+        </select>
+        <button class="btn btn-p" onclick="runCanalScore()">🤖 Analizar canal</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3)">Claude analiza tu nicho, RPM, borradores, score medio y da recomendaciones de optimización. ~$0.003</div>
+    </div>
+    <div id="score-canal-results" style="display:none"></div>
+    <div id="score-canal-placeholder" style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:12px">📺</div>
+      <p style="font-size:13px">Selecciona un canal para obtener un diagnóstico completo con recomendaciones de mejora</p>
+    </div>
+  </div>
+
+  <!-- ══ TAB: MI BORRADOR ══ -->
+  <div id="score-panel-borrador" style="display:none">
+    <div class="card mb14">
+      <label class="lbl mb8">📋 Selecciona un borrador para evaluar</label>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <select class="sel" id="score-draft-sel" style="flex:1">
+          <option value="">— Selecciona un borrador —</option>
+        </select>
+        <button class="btn btn-p" onclick="runDraftScore()">🤖 Analizar borrador</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3)">Claude analiza el hook y script del borrador antes de aprobarlo. ~$0.003</div>
+    </div>
+    <div id="score-draft-preview" style="display:none;background:var(--bg2);border-radius:var(--r);padding:12px;margin-bottom:14px;font-size:12px;color:var(--text2)"></div>
+    <div id="score-borrador-results" style="display:none"></div>
+    <div id="score-borrador-placeholder" style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:12px">📋</div>
+      <p style="font-size:13px">Selecciona un borrador pendiente para obtener un score antes de aprobarlo o rechazarlo</p>
+    </div>
+  </div>
+
+  <!-- ══ TAB: URL EXTERNA ══ -->
+  <div id="score-panel-url" style="display:none">
+    <div class="card mb14">
+      <label class="lbl mb8">🔗 URL de vídeo a analizar</label>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <input class="inp" id="score-url-input" placeholder="https://youtube.com/shorts/... o tiktok.com/... o instagram.com/reel/..." style="flex:1;font-size:13px">
+        <button class="btn btn-p" onclick="runUrlScore()">🤖 Analizar</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="lbl">Tu mercado objetivo</label>
+          <select class="sel" id="score-url-market" style="font-size:12px">
+            <option value="es">🇪🇸 España</option><option value="lat">🌎 LATAM</option><option value="us">🇺🇸 English</option>
+          </select>
+        </div>
+        <div><label class="lbl">Objetivo</label>
+          <select class="sel" id="score-url-goal" style="font-size:12px">
+            <option value="replicate">Replicar el estilo</option>
+            <option value="improve">Mejorar el concepto</option>
+            <option value="niche">Analizar el nicho</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px">⚠ Claude analiza los metadatos visibles de la URL. Para YouTube usa la API para obtener stats reales. ~$0.003</div>
+    </div>
+    <div id="score-url-results" style="display:none"></div>
+    <div id="score-url-placeholder" style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:12px">🔗</div>
+      <p style="font-size:13px">Introduce una URL de YouTube, TikTok o Instagram para analizar el vídeo y obtener insights accionables</p>
+    </div>
+  </div>
+
+  <!-- ══ TAB: CANAL EXTERNO ══ -->
+  <div id="score-panel-extcanal" style="display:none">
+    <div class="card mb14">
+      <label class="lbl mb8">🔍 URL del canal a analizar</label>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <input class="inp" id="score-extcanal-input" placeholder="https://youtube.com/@canal o tiktok.com/@usuario..." style="flex:1;font-size:13px">
+        <button class="btn btn-p" onclick="runExtCanalScore()">🤖 Analizar canal</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3)">Claude analiza el nicho, audiencia, formato y potencial. Si el score es alto podrás clonarlo. ~$0.004</div>
+    </div>
+    <div id="score-extcanal-results" style="display:none"></div>
+    <div id="score-extcanal-placeholder" style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:12px">🔍</div>
+      <p style="font-size:13px">Introduce la URL de un canal de YouTube, TikTok o Instagram para analizar su potencial y clonarlo</p>
+    </div>
+  </div>
+
+</div>
+<div class="view" id="view-pipeline">
+  <div class="sh mb8">
+    <h2>Pipeline de creación</h2>
+    <div class="flex g8 fic">
+      <span class="tag tb" id="pipe-channel-tag">FinanceFacts ES</span>
+      <span class="tag tg" id="pipe-score-tag" style="display:none">Score: 85/100</span>
+    </div>
+  </div>
+
+  <div class="pipe">
+    <div class="pipe-step act" id="ps-0" onclick="setPStep(0)"><div class="ps-num">01</div><div class="ps-name">Nicho</div><div class="ps-cost">gratis</div></div>
+    <div class="pipe-step" id="ps-1" onclick="setPStep(1)"><div class="ps-num">02</div><div class="ps-name">Ideas</div><div class="ps-cost">$0.001</div></div>
+    <div class="pipe-step" id="ps-2" onclick="setPStep(2)"><div class="ps-num">03</div><div class="ps-name">Score IA</div><div class="ps-cost">gratis</div></div>
+    <div class="pipe-step" id="ps-3" onclick="setPStep(3)"><div class="ps-num">04</div><div class="ps-name">Script</div><div class="ps-cost">$0.004</div></div>
+    <div class="pipe-step" id="ps-4" onclick="setPStep(4)"><div class="ps-num">05</div><div class="ps-name">Vídeo</div><div class="ps-cost">$0.019</div></div>
+    <div class="pipe-step" id="ps-5" onclick="setPStep(5)"><div class="ps-num">06</div><div class="ps-name">Publicar</div><div class="ps-cost">gratis</div></div>
+  </div>
+
+  <!-- Step 0: Nicho -->
+  <div class="pc act" id="p-0">
+    <div class="sh"><h2>Selecciona el nicho</h2><button class="btn btn-g btn-sm" onclick="showToast('Tendencias actualizadas ✓')">↻ Actualizar</button></div>
+    <div class="g3">
+      <div class="nc sel" style="--ac:var(--green)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">💰</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Finanzas básicas</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:92%;background:var(--green)"></div></div><div class="si-lbl">Viral 92</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:30%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 30</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:88%;background:var(--amber)"></div></div><div class="si-lbl">CPM $8.8</div></div></div></div>
+      <div class="nc" style="--ac:var(--purple)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🧠</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Motivación / psicología</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:87%;background:var(--green)"></div></div><div class="si-lbl">Viral 87</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:55%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 55</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:72%;background:var(--amber)"></div></div><div class="si-lbl">CPM $7.2</div></div></div></div>
+      <div class="nc" style="--ac:var(--amber)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🌍</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Curiosidades</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:94%;background:var(--green)"></div></div><div class="si-lbl">Viral 94</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:45%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 45</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:55%;background:var(--amber)"></div></div><div class="si-lbl">CPM $5.5</div></div></div></div>
+      <div class="nc" style="--ac:var(--blue)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🤖</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Tecnología / IA</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:96%;background:var(--green)"></div></div><div class="si-lbl">Viral 96</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:40%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 40</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:95%;background:var(--amber)"></div></div><div class="si-lbl">CPM $9.5</div></div></div></div>
+      <div class="nc" style="--ac:var(--red)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">📖</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Historias / Reddit</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:89%;background:var(--green)"></div></div><div class="si-lbl">Viral 89</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:68%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 68</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:48%;background:var(--amber)"></div></div><div class="si-lbl">CPM $4.8</div></div></div></div>
+      <div class="nc" style="--ac:var(--teal)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">💪</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Salud / bienestar</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:81%;background:var(--green)"></div></div><div class="si-lbl">Viral 81</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:72%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 72</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:62%;background:var(--amber)"></div></div><div class="si-lbl">CPM $6.2</div></div></div></div>
+    </div>
+    <div class="flex mt14" style="justify-content:flex-end"><button class="btn btn-p" onclick="setPStep(1)">Continuar →</button></div>
+  </div>
+
+  <!-- Step 1: Ideas -->
+  <div class="pc" id="p-1">
+    <div class="sh">
+      <h2>Ideas virales — generadas con Claude</h2>
+      <button class="btn btn-p btn-sm" id="ideas-gen-btn" onclick="generateIdeasReal()">🤖 Generar con Claude</button>
+    </div>
+    <div id="ideas-container">
+      <div style="text-align:center;padding:32px;color:var(--text3)">
+        <div style="font-size:32px;margin-bottom:12px">💡</div>
+        <div style="font-size:14px;margin-bottom:8px">Pulsa "Generar con Claude" para crear ideas reales</div>
+        <div style="font-size:12px;font-family:var(--mono);color:var(--text3)">Necesitas tu Anthropic API key configurada · ~$0.001 por llamada</div>
+        <button class="btn btn-g btn-sm" style="margin-top:12px" onclick="nav('settings')">⚙️ Configurar API keys</button>
+      </div>
+    </div>
+    <div class="flex mt14 g8" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="setPStep(0)">← Atrás</button>
+      <button class="btn btn-p" onclick="setPStep(2)">Evaluar con Score IA →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Score mini -->
+  <div class="pc" id="p-2">
+    <div class="sh">
+      <h2>Score predictivo</h2>
+      <button class="btn btn-p btn-sm" id="score-pipe-btn" onclick="runPipelineScore()">🤖 Analizar con Claude</button>
+    </div>
+
+    <!-- Selected idea preview -->
+    <div id="score-pipe-idea" style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#94a3b8">
+      <span style="color:#475569;font-size:11px;font-family:monospace">IDEA SELECCIONADA:</span><br>
+      <span id="score-pipe-idea-text" style="color:#e2e8f0;font-weight:600">— Selecciona una idea en el paso anterior —</span>
+    </div>
+
+    <!-- Results (hidden until run) -->
+    <div id="score-pipe-results" style="display:none">
+      <div class="g2">
+        <div style="text-align:center">
+          <div class="score-ring" style="margin:16px auto">
+            <svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;top:0;left:0;transform:rotate(-90deg)">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg3)" stroke-width="8"/>
+              <circle id="score-pipe-circle" cx="60" cy="60" r="50" fill="none" stroke="#00e87a" stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="47"/>
+            </svg>
+            <div class="score-val" id="score-pipe-number" style="color:#00e87a">85</div>
+            <div class="score-lbl">/ 100</div>
+          </div>
+          <div class="mb12" id="score-pipe-verdict"><span class="tag tg">✓ APROBADO</span></div>
+          <div style="font-size:13px;color:var(--text2);background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:10px;text-align:left" id="score-pipe-rec">Recomendación aparecerá aquí</div>
+        </div>
+        <div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Prob. +100K views</span><span class="smetric-v" id="sp-m1" style="color:#00e87a">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b1" style="width:0%;background:#00e87a"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">CPM estimado</span><span class="smetric-v" id="sp-m2" style="color:#fbbf24">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b2" style="width:0%;background:#fbbf24"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Saturación nicho</span><span class="smetric-v" id="sp-m3" style="color:#38bdf8">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b3" style="width:0%;background:#38bdf8"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Potencial afiliación</span><span class="smetric-v" id="sp-m4" style="color:#a78bfa">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b4" style="width:0%;background:#a78bfa"></div></div></div>
+          <div class="smetric"><div class="smetric-h"><span class="smetric-n">Retención estimada</span><span class="smetric-v" id="sp-m5" style="color:#2dd4bf">—</span></div><div class="sbar"><div class="sbar-f" id="sp-b5" style="width:0%;background:#2dd4bf"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholder before scoring -->
+    <div id="score-pipe-placeholder" style="text-align:center;padding:32px;color:var(--text3)">
+      <div style="font-size:32px;margin-bottom:12px">🎯</div>
+      <div style="font-size:14px;margin-bottom:6px">Pulsa "Analizar con Claude" para obtener el score real</div>
+      <div style="font-size:11px;font-family:var(--mono)">~$0.001 · Claude Haiku</div>
+    </div>
+
+    <div class="flex mt14 g8" style="justify-content:flex-end">
+      <button class="btn btn-g btn-sm" onclick="setPStep(1)">← Atrás</button>
+      <button class="btn btn-p" id="score-pipe-continue" onclick="setPStep(3)">Generar script →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Script -->
+  <div class="pc" id="p-3">
+    <div class="sh">
+      <h2>Generador de script</h2>
+      <span class="tag ta" id="script-model-tag">Claude Haiku · ~$0.003</span>
+    </div>
+    <div class="script-bar">
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px">Estilo:</span>
+      <button class="sty-btn act" data-style="shock" onclick="scriptStyle='shock'">Shock</button>
+      <button class="sty-btn" data-style="edu" onclick="scriptStyle='edu'">Educativo</button>
+      <button class="sty-btn" data-style="story" onclick="scriptStyle='story'">Storytelling</button>
+      <button class="sty-btn" data-style="lista" onclick="scriptStyle='lista'">Lista / Top</button>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn btn-p btn-sm" id="script-gen-btn" onclick="generateScriptReal()">🤖 Generar con Claude</button>
+        <button class="btn btn-g btn-sm" onclick="pasteScript()" title="Pegar script desde portapapeles">📥 Pegar</button>
+        <button class="btn btn-g btn-sm" onclick="toggleScriptEdit()" id="script-edit-btn" title="Editar manualmente">✏️</button>
+        <button class="btn btn-g btn-sm" onclick="copyScript()">📋 Copiar</button>
+        <button class="btn btn-g btn-sm" id="script-edit-btn" onclick="toggleEditScript()">✏️ Editar</button>
+      </div>
+    </div>
+    <div class="script-area" id="script-content" contenteditable="false" style="min-height:200px;outline:none">
+      <span style="color:var(--text3);font-family:var(--mono)">Pulsa "Generar con Claude" o "📥 Pegar" para introducir el script...</span>
+    </div>
+    <!-- Paste area (hidden by default) -->
+    <div id="script-paste-area" style="display:none;margin-top:8px">
+      <textarea id="script-paste-input" class="inp" rows="6" placeholder="Pega aquí tu script manualmente..." style="width:100%;font-size:13px;resize:vertical;font-family:var(--sans);line-height:1.7"></textarea>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="btn btn-p btn-sm" onclick="applyPastedScript()">✓ Usar este script</button>
+        <button class="btn btn-g btn-sm" onclick="document.getElementById('script-paste-area').style.display='none'">Cancelar</button>
+      </div>
+    </div>
+    <div class="flex g8 mt12 fic">
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono)" id="script-cost-info">Pendiente de generar · o pega tu propio script gratis</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g btn-sm" onclick="setPStep(2)">← Atrás</button>
+        <button class="btn btn-p" onclick="setPStep(4)">Generar vídeo →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Audio/Video generation -->
+  <div class="pc" id="p-4">
+    <div class="sh">
+      <h2>Generación de audio y vídeo</h2>
+      <span class="tag ta" id="vidgen-cost-tag">Coste estimado: $0.009</span>
+    </div>
+
+    <!-- Key status warning -->
+    <div id="vidgen-keys-warning" style="background:var(--adim);border:1px solid #fbbf2433;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-size:13px;display:none">
+      <strong style="color:var(--amber)">⚠ Keys necesarias para esta etapa:</strong>
+      <span id="vidgen-missing-keys" style="color:var(--text2)"></span>
+      <button class="btn btn-g btn-sm" style="margin-left:12px;font-size:11px" onclick="nav('settings')">⚙️ Configurar keys</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 200px;gap:14px">
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <!-- TTS Config -->
+        <div class="card-d" style="padding:14px">
+          <div class="lbl mb8">🎤 Voz TTS — genera el audio del script</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label class="lbl" style="font-size:10px">Motor de voz</label>
+              <select class="sel" id="tts-engine" onchange="updateTTSConfig()">
+                <option value="openai-tts1">OpenAI TTS-1 — $0.006/vídeo</option>
+                <option value="openai-tts1hd">OpenAI TTS-1 HD — $0.012/vídeo</option>
+                <option value="elevenlabs">ElevenLabs v3 — $0.05/vídeo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl" style="font-size:10px">Voz</label>
+              <select class="sel" id="tts-voice">
+                <option value="alloy">Alloy (neutra)</option>
+                <option value="echo">Echo (masculina)</option>
+                <option value="fable">Fable (narrativa)</option>
+                <option value="onyx">Onyx (grave)</option>
+                <option value="nova">Nova (femenina)</option>
+                <option value="shimmer">Shimmer (suave)</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text3)">
+            El script generado en el paso anterior se convierte en MP3. Puedes escucharlo y descargarlo antes de continuar.
+          </div>
+        </div>
+
+        <!-- Pexels Config -->
+        <div class="card-d" style="padding:14px">
+          <div class="lbl mb8">🎬 Clips de vídeo — Pexels API (GRATIS)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label class="lbl" style="font-size:10px">Búsqueda de clips</label>
+              <input class="inp" id="pexels-query" placeholder="Ej: money finance savings" style="font-size:12px">
+            </div>
+            <div>
+              <label class="lbl" style="font-size:10px">Número de clips</label>
+              <select class="sel" id="pexels-count">
+                <option value="3">3 clips</option>
+                <option value="5" selected>5 clips</option>
+                <option value="8">8 clips</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <div id="pexels-preview" style="display:flex;gap:6px;flex-wrap:wrap;min-height:40px">
+              <div style="font-size:12px;color:var(--text3)">Los clips aparecerán aquí después de buscar</div>
+            </div>
+            <button class="btn btn-g btn-sm" style="margin-top:8px" id="pexels-search-btn" onclick="searchPexels()">🔍 Buscar clips</button>
+          </div>
+        </div>
+
+        <!-- Generation log -->
+        <div id="gen-log" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.9;max-height:160px;overflow-y:auto">
+          <div id="gen-log-lines"></div>
+        </div>
+
+        <!-- Audio player (shown after TTS) -->
+        <div id="audio-player-wrap" style="display:none;background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:14px">
+          <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px">🎤 Audio generado — escucha antes de continuar</div>
+          <audio id="audio-player" controls style="width:100%;height:36px"></audio>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <a id="audio-download-link" class="btn btn-g btn-sm" download="audio.mp3">⬇ Descargar MP3</a>
+            <span id="audio-duration" style="font-size:11px;color:var(--text3);align-self:center;font-family:var(--mono)"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Preview panel -->
+      <div>
+        <div class="lbl mb6">PREVIEW</div>
+        <div class="vprev" id="vprev-box" style="max-height:320px">
+          <div class="vprev-bg"></div>
+          <div class="vprev-c" id="vprev-idle">
+            <div style="font-size:28px;margin-bottom:8px;opacity:.3">🎬</div>
+            <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-align:center;padding:0 12px">Genera el audio primero · luego los clips</div>
+          </div>
+          <div class="vprev-c" id="vprev-loading" style="display:none">
+            <div class="prog-ring" id="vprev-ring" style="display:block"></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:10px;font-family:var(--mono)" id="vprev-txt">Iniciando...</div>
+          </div>
+          <div id="vprev-done" style="display:none;position:relative;width:100%;height:100%">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#0f1e38,#1a3a5c,#0f1e38)"></div>
+            <div style="position:absolute;bottom:40px;left:0;right:0;text-align:center;padding:0 8px">
+              <div id="vprev-subtitle" style="background:rgba(0,0,0,.85);display:inline-block;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;color:#fff">AUDIO LISTO ✓</div>
+            </div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:24px;opacity:.7">🎵</div>
+            <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);padding:2px 6px;border-radius:4px;font-size:10px;font-family:var(--mono);color:#fff" id="vprev-dur">—</div>
+          </div>
+        </div>
+        <div id="vprev-meta" style="display:none;margin-top:10px;font-size:11px;color:var(--text3);font-family:var(--mono);line-height:2"></div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-top:12px;font-size:12px;color:var(--text2)">
+      <strong style="color:var(--amber)">ℹ️ Estado actual:</strong> Esta versión genera el <strong>audio real (MP3)</strong> con OpenAI TTS + busca <strong>clips reales en Pexels</strong>. El montaje de vídeo final (MP4) requiere un backend — próximo paso a implementar.
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div style="background:#1a2236;border:1px solid #1e2d44;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:#94a3b8">
+      <strong style="color:#e2e8f0">Flujo:</strong>
+      <span id="flow-step-1" style="color:#00e87a">① Genera audio TTS</span> →
+      <span id="flow-step-2" style="color:#475569">② Busca clips Pexels</span> →
+      <span id="flow-step-3" style="color:#475569">③ Genera MP4</span>
+    </div>
+
+    <div class="flex g8 mt12" style="justify-content:flex-end;align-items:center">
+      <button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button>
+      <div style="width:1px;height:20px;background:#1e2d44;margin:0 4px"></div>
+      <button class="btn btn-g btn-sm" id="tts-only-btn" onclick="runStep1TTS()">① 🎤 Generar audio</button>
+      <span id="flow-arrow-1" style="color:#475569;font-size:16px">→</span>
+      <button class="btn btn-g btn-sm" id="pexels-run-btn" onclick="runStep2Pexels()">② 🎬 Buscar clips</button>
+      <span id="flow-arrow-2" style="color:#475569;font-size:16px">→</span>
+      <button class="btn btn-p" id="gen-btn" onclick="runStep3Video()">③ 🎥 Generar MP4</button>
+    </div>
+  </div>
+
+  <!-- Step 5: APPROVAL SCREEN -->
+  <div class="pc" id="p-5">
+    <!-- Header with status -->
+    <div style="background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--rl);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✓</div>
+      <div style="flex:1">
+        <div style="font-size:16px;font-weight:700;color:var(--green)">Vídeo listo para revisión</div>
+        <div style="font-size:12px;color:var(--text3)">Revisa todo antes de publicar · Puedes editar, guardar como borrador o rechazar</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">COSTE GENERADO</div>
+        <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--green)">$0.019</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:180px 1fr;gap:16px;min-width:0">
+
+      <!-- Left: video preview -->
+      <div>
+        <div class="lbl mb6">Vista previa</div>
+        <!-- Simulated video preview -->
+        <div style="background:linear-gradient(180deg,#0f1e38,#1a3a5c,#0f1e38);border-radius:var(--rl);aspect-ratio:9/16;max-height:260px;width:100%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:1px solid var(--border)">
+          <div style="position:absolute;bottom:38px;left:0;right:0;text-align:center;padding:0 8px">
+            <div id="apv-subtitle" style="background:rgba(0,0,0,.85);display:inline-block;padding:5px 10px;border-radius:4px;font-size:12px;font-weight:700;color:#fff">¿ESTÁS PERDIENDO <span style="color:#00e87a">$300</span> AL MES?</div>
+          </div>
+          <div style="position:absolute;bottom:10px;left:10px;right:10px;height:3px;background:rgba(255,255,255,.2);border-radius:2px"><div style="width:35%;height:100%;background:var(--green);border-radius:2px"></div></div>
+          <div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);padding:2px 6px;border-radius:4px;font-size:10px;font-family:var(--mono);color:#fff">44.8s</div>
+          <div style="font-size:24px;opacity:.6">▶</div>
+        </div>
+
+        <!-- REAL Audio player (shown when audio is generated) -->
+        <div id="apv-audio-wrap" style="display:none;margin-top:10px;background:#00e87a15;border:1px solid #00e87a44;border-radius:var(--r);padding:12px">
+          <div style="font-size:11px;font-weight:600;color:#00e87a;margin-bottom:8px">🎤 Audio real generado</div>
+          <audio id="apv-audio-player" controls style="width:100%;height:34px"></audio>
+          <a id="apv-audio-dl" class="btn btn-g btn-sm" style="width:100%;margin-top:8px;text-align:center;display:block" download="audio-facelessai.mp3">⬇ Descargar MP3</a>
+        </div>
+
+        <!-- File info -->
+        <div style="margin-top:10px;font-size:11px;color:var(--text3);font-family:var(--mono);line-height:1.9">
+          Audio MP3 generado · OpenAI TTS<br>
+          <span style="color:var(--green)">MP4 = próximo paso (backend)</span>
+        </div>
+      </div>
+
+      <!-- Right: metadata editing -->
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0;overflow:hidden">
+
+        <!-- Title editing -->
+        <div>
+          <label class="lbl">Título — editable antes de publicar</label>
+          <input class="inp" id="apv-title" value="❌ El ERROR que te cuesta $300 al mes sin saberlo #shorts" style="font-size:13px">
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">💡 IA sugiere: incluir número + emoji + #shorts · max 100 chars</div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="lbl">Descripción / caption</label>
+          <textarea class="inp" id="apv-desc" rows="3" style="resize:vertical;font-size:12px;line-height:1.6">¿Sabías que probablemente estás pagando comisiones bancarias innecesarias? En este vídeo te explico cómo solucionarlo en 7 minutos.
+
+🔗 Cuenta sin comisiones: [link afiliado Revolut]
+💡 Más trucos financieros cada día → sígueme</textarea>
+        </div>
+
+        <!-- Hashtags -->
+        <div>
+          <label class="lbl">Hashtags</label>
+          <input class="inp" id="apv-tags" value="#finanzas #ahorrar #dinero #shorts #trucosfinanzas #españa #finanzaspersonales" style="font-size:12px">
+        </div>
+
+        <!-- Affiliates auto-inserted -->
+        <div style="background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:10px 14px">
+          <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:4px">🔗 Afiliados auto-detectados para este nicho</div>
+          <div style="font-size:12px;color:var(--text2)">Revolut (€40/registro) · DEGIRO (€30/cuenta) · Amazon Associates</div>
+          <div class="flex g6 mt8">
+            <label style="display:flex;gap:5px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> Insertar en descripción</label>
+            <label style="display:flex;gap:5px;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> Insertar en primer comentario</label>
+          </div>
+        </div>
+
+        <!-- Platform selector -->
+        <div>
+          <label class="lbl">Publicar en</label>
+          <div class="flex g8">
+            <div class="plat-btn p-yt" id="apv-yt" onclick="this.classList.toggle('p-yt')" style="flex:1;padding:8px;min-width:0"><div style="font-size:18px">▶️</div><div style="font-size:11px;font-weight:600;color:#ff4444">YouTube</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Shorts</div></div>
+            <div class="plat-btn p-tt" id="apv-tt" onclick="this.classList.toggle('p-tt')" style="flex:1;padding:10px"><div style="font-size:18px">🎵</div><div style="font-size:11px;font-weight:600;color:#00d4c4">TikTok</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Feed</div></div>
+            <div class="plat-btn p-ig" id="apv-ig" onclick="this.classList.toggle('p-ig')" style="flex:1;padding:10px"><div style="font-size:18px">📷</div><div style="font-size:11px;font-weight:600;color:#e1306c">Instagram</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Reels</div></div>
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div>
+          <label class="lbl">Programar publicación</label>
+          <div class="flex g10 fic">
+            <input type="datetime-local" class="inp" id="apv-schedule" value="2026-03-19T18:00" style="flex:1">
+            <button class="btn btn-g btn-sm" onclick="setBestTime()">💡 Mejor hora</button>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px" id="apv-time-tip">⚡ IA recomienda Martes 18:00 → +43% engagement · YT → TT +15min → IG +30min</div>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;min-width:0">
+          <button class="btn btn-g" onclick="rejectVideo()" style="border-color:var(--red);color:var(--red)">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="2" x2="14" y2="14"/><line x1="14" y1="2" x2="2" y2="14"/></svg>
+            Rechazar
+          </button>
+          <button class="btn btn-g" onclick="saveDraft()" style="border-color:var(--amber);color:var(--amber)">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H5L2 5v9a1 1 0 001 1h10a1 1 0 001-1V3a1 1 0 00-1-1z"/><polyline points="9 2 9 8 6 8"/></svg>
+            Borrador
+          </button>
+          <button class="btn btn-p" onclick="approveAndPublish()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 8 5 12 15 3"/></svg>
+            Aprobar y publicar
+          </button>
+        </div>
+
+        <div style="font-size:11px;color:var(--text3);text-align:center">
+          <strong style="color:var(--amber)">Rechazar</strong> descarta el vídeo ·
+          <strong style="color:var(--amber)">Borrador</strong> lo guarda sin publicar ·
+          <strong style="color:var(--green)">Aprobar</strong> publica según el horario
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ════════════════ 4 · URL→VIDEO ════════════════ -->
+<div class="view" id="view-url2video">
+  <div class="sh mb14"><h2>URL → Vídeo</h2><span class="tag tb">Convierte cualquier contenido en vídeo en segundos</span></div>
+
+  <div class="card mb14">
+    <label class="lbl mb8">Pega cualquier URL — artículo, Reddit, Wikipedia, tweet, estudio científico, noticia...</label>
+    <div class="flex g10">
+      <input class="inp inp-lg" id="url-input" placeholder="https://..." style="flex:1">
+      <button class="btn btn-p" onclick="analyzeURL()">Analizar URL</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:7px">Compatible con: artículos web · Reddit · Wikipedia · Twitter/X · YouTube (transcripción) · PDFs · blogs · noticias</div>
+  </div>
+
+  <!-- URL Preview (shown after analysis) -->
+  <div id="url-preview" class="card mb14" style="display:block">
+    <div class="stl mb12">Contenido extraído y analizado</div>
+    <div style="display:grid;grid-template-columns:1fr 260px;gap:16px">
+      <div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px" id="url-title">🤖 "Miles de empleados de IA pierden su trabajo mientras las empresas automatizan"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:12px">TECHCRUNCH.COM · hace 2 horas · 1,240 palabras</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px" id="url-summary">Más de 4,200 trabajadores del sector tecnológico han perdido su empleo en Q1 2026, mientras grandes empresas adoptan IA para automatizar tareas de soporte, análisis de datos y desarrollo de software básico. La tendencia se acelera en startups de Series B+.</div>
+        <div class="flex g6 fw">
+          <span class="tag tr">Trending +620%</span>
+          <span class="tag ta">Score predictivo: 91/100</span>
+          <span class="tag tb">Ventana: 18h restantes</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label class="lbl">Canal destino</label><select class="sel"><option>FinanceFacts ES</option><option>MindHacks Daily</option><option>CurioMundo</option></select></div>
+        <div><label class="lbl">Ángulo del vídeo</label>
+          <select class="sel" id="url-angle">
+            <option>Datos impactantes / shock</option>
+            <option>Análisis + solución práctica</option>
+            <option>Top 5 puntos clave</option>
+            <option>Historia narrativa</option>
+            <option>Educativo simplificado</option>
+          </select>
+        </div>
+        <div><label class="lbl">Duración objetivo</label>
+          <select class="sel">
+            <option>30s (máxima retención)</option>
+            <option selected>45s (equilibrado)</option>
+            <option>60s (más contexto)</option>
+          </select>
+        </div>
+        <button class="btn btn-p btn-w" onclick="generateFromURL()">Generar vídeo desde URL →</button>
+        <button class="btn btn-g btn-w btn-sm" onclick="nav('score')">Ver score antes de generar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent processed URLs -->
+  <div class="card-d">
+    <div class="stl mb12">URLs procesadas recientemente</div>
+    <div class="vrow">
+      <div class="vthumb">💰</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">BBC: "La inflación baja al 2.1%"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "¿Qué significa esto para tu bolsillo?" · 45s short · FinanceFacts</div>
+      </div>
+      <span class="tag tg">892K views</span>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🧠</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Reddit r/tifu: "I trusted my bank..."</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "Esta historia te va a FLIPAR" · MindHacks</div>
+      </div>
+      <span class="tag ta">341K views</span>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🌍</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Wikipedia: "Zona hadal del océano"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "10 misterios que la ciencia no explica" · CurioMundo</div>
+      </div>
+      <span class="tag tb">180K views</span>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">📊</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Estudio Harvard: "El sesgo cognitivo del ahorro"</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">→ "Por qué no puedes ahorrar (no es tu culpa)" · MindHacks</div>
+      </div>
+      <span class="tag tp">94K views</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ 1 · CLONE ════════════════ -->
+<div class="view" id="view-clone">
+  <div class="sh mb14"><h2>Clonar canal viral</h2><span class="tag tb">Extrae la fórmula de éxito sin copiar contenido</span></div>
+
+  <div class="card mb14">
+    <label class="lbl mb8">URL del canal de YouTube a analizar</label>
+    <div class="flex g10">
+      <input class="inp inp-lg" id="clone-url" placeholder="https://youtube.com/@canal o URL de vídeo..." style="flex:1">
+      <select class="sel" style="width:170px">
+        <option>Últimos 50 vídeos</option>
+        <option selected>Últimos 100 vídeos</option>
+        <option>Todo el canal</option>
+      </select>
+      <button class="btn btn-p" onclick="analyzeChannel()">Analizar canal</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:7px">Analiza títulos, duración, frecuencia, hooks y patrones de los vídeos más virales. No copia contenido, extrae la fórmula.</div>
+  </div>
+
+  <!-- Demo results always shown -->
+  <div style="background:var(--adim);border:1px solid #fbbf2422;border-radius:var(--rl);padding:11px 14px;margin-bottom:14px;font-size:13px">
+    <span style="color:var(--amber);font-weight:600">Analizando:</span> <span>@Graham Stephan — 4.8M subs · 312 vídeos procesados · datos extraídos</span>
+  </div>
+
+  <div class="g4 mb14">
+    <div class="clone-stat"><div class="cs-val">47s</div><div class="cs-lbl">Duración media viral</div></div>
+    <div class="clone-stat"><div class="cs-val">2.1×/sem</div><div class="cs-lbl">Frecuencia publicación</div></div>
+    <div class="clone-stat"><div class="cs-val">18:00h</div><div class="cs-lbl">Hora óptima de publicar</div></div>
+    <div class="clone-stat"><div class="cs-val">$8.7</div><div class="cs-lbl">CPM medio estimado</div></div>
+  </div>
+
+  <div class="g2 mb14">
+    <div class="card">
+      <div class="stl mb12">Top hooks virales adaptados a tu nicho</div>
+      <div class="hook-card">"¿Sabías que el [X%] de la gente comete este error...?"<span class="hook-score">96/100</span></div>
+      <div class="hook-card">"Nadie te enseña esto sobre el dinero..."<span class="hook-score">91/100</span></div>
+      <div class="hook-card">"Si ganas $[X]/mes, estás dejando ir $[Y]..."<span class="hook-score">88/100</span></div>
+      <div class="hook-card">"Este error te cuesta $[X] al año sin saberlo"<span class="hook-score">86/100</span></div>
+      <div class="hook-card">"La verdad sobre [tema] que los bancos ocultan"<span class="hook-score">84/100</span></div>
+      <div class="hook-card">"En [país] la gente más rica hace ESTO cada mañana"<span class="hook-score">81/100</span></div>
+      <button class="btn btn-g btn-sm btn-w mt8">Ver todos los hooks (24 extraídos) →</button>
+    </div>
+
+    <div class="card">
+      <div class="stl mb12">Patrones estructurales de vídeos +500K</div>
+      <table class="mtable">
+        <tr><td style="color:var(--text3)">Estructura ganadora</td><td style="color:var(--text1)">Hook → Dato shock → Solución → CTA</td></tr>
+        <tr><td style="color:var(--text3)">Palabras en título</td><td style="color:var(--text1)">6–9 palabras (óptimo: 7)</td></tr>
+        <tr><td style="color:var(--text3)">Emojis en título</td><td style="color:var(--text1)">1–2 al inicio (❌ 🤫 📊)</td></tr>
+        <tr><td style="color:var(--text3)">Subtítulos</td><td style="color:var(--text1)">Siempre · tamaño grande · colores vivos</td></tr>
+        <tr><td style="color:var(--text3)">Música de fondo</td><td style="color:var(--text1)">Lo-fi / trap suave · vol. 15–20%</td></tr>
+        <tr><td style="color:var(--text3)">CTA más efectivo</td><td style="color:var(--text1)">Pregunta en comentarios</td></tr>
+        <tr><td style="color:var(--text3)">Patrón de interrupción</td><td style="color:var(--text1)">Cada 7–10 segundos</td></tr>
+      </table>
+      <button class="btn btn-p btn-w mt12" onclick="showToast('✓ Perfil de canal aplicado al pipeline')">Aplicar perfil a mi pipeline →</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stl mb12">Temas más rentables del canal (ordenados por views medias)</div>
+    <div class="vrow">
+      <div class="vthumb">💰</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Errores financieros comunes</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">12 vídeos · media 840K views · CPM $9.2 · Afiliados: sí</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🏦</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Cuentas y bancos sin comisiones</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">8 vídeos · media 612K views · CPM $8.8</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">📈</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Inversión para principiantes</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">15 vídeos · media 498K views · CPM $10.1</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+    <div class="vrow">
+      <div class="vthumb">🧠</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">Psicología del dinero</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">6 vídeos · media 421K views · CPM $9.8</div></div>
+      <button class="btn btn-g btn-sm" onclick="nav('pipeline')">Crear vídeo similar</button>
+    </div>
+  </div>
+</div>
+<!-- ════════════════ 5 · AFILIACIÓN ════════════════ -->
+<!-- ════════════════ AFILIADOS ════════════════ -->
+<div class="view" id="view-affiliation">
+  <div class="sh mb16">
+    <h2>⭐ Afiliados</h2>
+    <button class="btn btn-p btn-sm" onclick="openAffModal()">+ Añadir link</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Afiliados activos</div><div class="sc-val" id="aff-count">0</div><span class="du">programas</span></div>
+    <div class="sc"><div class="sc-label">Comisión estimada</div><div class="sc-val" style="color:var(--green)" id="aff-commission">$0</div><span class="du">este mes</span></div>
+    <div class="sc"><div class="sc-label">Links insertados</div><div class="sc-val" id="aff-insertions">0</div><span class="du">en vídeos</span></div>
+    <div class="sc"><div class="sc-label">CTR promedio</div><div class="sc-val" id="aff-ctr">0%</div><span class="du">estimado</span></div>
+  </div>
+
+  <!-- SUGERENCIAS IA -->
+  <div class="stl mb8">🤖 Sugerencias IA de programas de afiliados</div>
+  <div class="card mb16">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end">
+      <div>
+        <label class="lbl">Nicho de tu canal</label>
+        <select class="sel" id="aff-sug-niche">
+          <option value="finanzas">💰 Finanzas</option><option value="tecnologia">💻 Tech / IA</option>
+          <option value="negocios">📈 Negocios</option><option value="salud">🏃 Salud</option>
+          <option value="motivacion">🔥 Motivación</option><option value="gaming">🎮 Gaming</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Mercado</label>
+        <select class="sel" id="aff-sug-market">
+          <option value="es">🇪🇸 España</option><option value="lat">🌎 LATAM</option><option value="us">🇺🇸 US</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Tipo</label>
+        <select class="sel" id="aff-sug-type">
+          <option value="recurrente">💎 Recurrente</option>
+          <option value="alto">💰 Alto valor</option>
+          <option value="facil">⚡ Fácil conversión</option>
+        </select>
+      </div>
+      <button class="btn btn-p" id="aff-sug-btn" onclick="suggestAffiliates()">🤖 Sugerir</button>
+    </div>
+    <div id="aff-sug-results" style="display:none;margin-top:14px"></div>
+  </div>
+
+  <!-- MIS AFILIADOS -->
+  <div class="stl mb8">Mis programas de afiliados</div>
+  <div id="aff-list">
+    <div style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:12px">⭐</div>
+      <div style="font-weight:600;margin-bottom:6px">Sin afiliados aún</div>
+      <p style="font-size:13px;margin-bottom:16px">Añade tus links de Amazon, Hotmart, o cualquier programa de afiliados.</p>
+      <button class="btn btn-p btn-sm" onclick="openAffModal()">+ Añadir primer afiliado</button>
+    </div>
+  </div>
+
+  <!-- MODAL añadir afiliado -->
+  <div id="aff-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center">
+    <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-width:95vw">
+      <div style="font-size:15px;font-weight:700;margin-bottom:16px">⭐ Nuevo afiliado</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label class="lbl">Nombre del programa</label><input class="inp" id="aff-name" placeholder="ej. Amazon Associates, Hotmart..."></div>
+        <div><label class="lbl">Link de afiliado</label><input class="inp" id="aff-link" placeholder="https://..."></div>
+        <div><label class="lbl">Comisión (%)</label><input class="inp" id="aff-comm" type="number" placeholder="5" style="width:120px"></div>
+        <div><label class="lbl">CTA sugerido para vídeos</label><input class="inp" id="aff-cta" placeholder="ej. Link en la descripción 👇"></div>
+      </div>
+      <div class="flex g8 mt16">
+        <button class="btn btn-g btn-sm" onclick="closeAffModal()">Cancelar</button>
+        <button class="btn btn-p btn-sm" onclick="saveAffiliate()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ════════════════ 9 · REUTILIZAR ════════════════ -->
+<div class="view" id="view-reuse">
+  <div class="sh mb14"><h2>Reutilizar contenido</h2><span class="tag tb">Multiplica el output sin multiplicar el coste</span></div>
+
+  <div class="g2 mb14">
+    <div class="card-d" style="padding:14px">
+      <div class="stl mb6">Adaptación cross-platform</div>
+      <div style="font-size:13px;color:var(--text2)">Un vídeo generado se adapta automáticamente para YT, TikTok e IG con ajustes de ritmo, ratio de texto y duración óptima para cada plataforma.</div>
+    </div>
+    <div class="card-d" style="padding:14px">
+      <div class="stl mb6">Extractor de clips virales</div>
+      <div style="font-size:13px;color:var(--text2)">Detecta los fragmentos de mayor retención y los convierte en Shorts independientes. 1 vídeo largo → hasta 6 clips listos para publicar.</div>
+    </div>
+  </div>
+
+  <div class="card mb16">
+    <div class="sh"><h2>Vídeos con potencial de reutilización</h2><button class="btn btn-g btn-sm" onclick="showToast('Analizando retención de todos los vídeos...')">Analizar todos</button></div>
+
+    <div class="vrow">
+      <div class="vthumb">💰</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">"Top 10 errores financieros más comunes" — 8:24 min</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">FinanceFacts ES · 892K views · Retención: 71%</div>
+        <div>
+          <span class="clip-chip">✂ Clip 1: 0:14–1:02</span>
+          <span class="clip-chip">✂ Clip 2: 2:30–3:15</span>
+          <span class="clip-chip">✂ Clip 3: 5:44–6:30</span>
+          <span class="clip-chip">+ 2 más</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 5 clips — coste: $0.00')">Generar 5 clips</button>
+        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok e IG...')">Cross-post</button>
+      </div>
+    </div>
+
+    <div class="vrow">
+      <div class="vthumb">🌍</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">"Los 20 misterios más inexplicables del océano" — 12:10 min</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">CurioMundo · 438K views · Retención: 68%</div>
+        <div>
+          <span class="clip-chip">✂ Clip 1: 0:30–1:10</span>
+          <span class="clip-chip">✂ Clip 2: 4:22–5:00</span>
+          <span class="clip-chip">✂ Clip 3: 8:15–9:00</span>
+          <span class="clip-chip">+ 4 más</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 7 clips — coste: $0.00')">Generar 7 clips</button>
+        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok...')">Cross-post</button>
+      </div>
+    </div>
+
+    <div class="vrow">
+      <div class="vthumb">🧠</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">"Guía completa: cómo invertir desde cero" — 15:44 min</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">MindHacks Daily · 341K views · Retención: 63%</div>
+        <div>
+          <span class="clip-chip">✂ Clip 1: 1:20–2:05</span>
+          <span class="clip-chip">✂ Clip 2: 6:10–7:00</span>
+          <span class="clip-chip">+ 5 más</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 7 clips — coste: $0.00')">Generar 7 clips</button>
+        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok + IG...')">Cross-post</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="g4">
+    <div class="sc"><div class="sc-label">Clips generados (mes)</div><div class="sc-val">43</div><div style="font-size:12px;color:var(--text3)">de 12 vídeos originales</div></div>
+    <div class="sc"><div class="sc-label">Views extra por clips</div><div class="sc-val" style="color:var(--green)">1.2M</div><div style="font-size:12px;color:var(--text3)">coste adicional: $0.00</div></div>
+    <div class="sc"><div class="sc-label">Cross-posts realizados</div><div class="sc-val">89</div><div style="font-size:12px;color:var(--text3)">YT + TT + IG combinado</div></div>
+    <div class="sc"><div class="sc-label">Ratio output/coste</div><div class="sc-val" style="color:var(--amber)">4.6×</div><div style="font-size:12px;color:var(--text3)">vs. generación nueva</div></div>
+  </div>
+</div>
+<!-- ════════════════ 10 · MONETIZACIÓN ════════════════ -->
+<div class="view" id="view-monetization">
+  <div class="sh mb16">
+    <h2>Monetización unificada</h2>
+    <div class="flex g8">
+      <button class="btn btn-g btn-sm">30 días</button>
+      <button class="btn btn-g btn-sm" style="border-color:var(--green);color:var(--green)">3 meses</button>
+      <button class="btn btn-g btn-sm">6 meses</button>
+    </div>
+  </div>
+
+  <!-- Income breakdown -->
+  <div class="g4 mb16">
+    <div class="money-card m-ads"><div class="sc-label">AdSense total</div><div class="sc-val" style="color:var(--green)">$890</div><div style="font-size:12px;color:var(--text3)">↑ 92% vs trimestre anterior</div><div class="proj-bar mt8"><div class="proj-fill" style="width:72%"></div></div></div>
+    <div class="money-card m-aff"><div class="sc-label">Afiliación total</div><div class="sc-val" style="color:var(--amber)">$284</div><div style="font-size:12px;color:var(--text3)">Revolut + Amazon + DEGIRO</div><div class="proj-bar mt8"><div class="proj-fill" style="width:23%;background:var(--amber)"></div></div></div>
+    <div class="money-card m-cost"><div class="sc-label">Coste IA total</div><div class="sc-val" style="color:var(--red)">-$2.47</div><div style="font-size:12px;color:var(--text3)">96.8% bajo vs modo premium</div><div class="proj-bar mt8"><div class="proj-fill" style="width:2%;background:var(--red)"></div></div></div>
+    <div class="money-card m-net"><div class="sc-label">Beneficio neto</div><div class="sc-val" style="color:var(--blue)">$1,172</div><div style="font-size:12px;color:var(--text3)">ROI: 47,449% sobre coste IA</div><div class="proj-bar mt8"><div class="proj-fill" style="width:95%;background:var(--blue)"></div></div></div>
+  </div>
+
+  <div class="g2 mb16">
+    <!-- Proyección 90 días -->
+    <div class="card">
+      <div class="sh"><h2>Proyección a 90 días</h2><span class="tag tb">Basada en curva actual</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+          <div class="flex fic"><div style="font-size:13px;color:var(--text2)">Mes 1 (actual)</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;margin-left:auto">$1,172</div></div>
+          <div class="proj-bar mt8"><div class="proj-fill" style="width:40%"></div></div>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+          <div class="flex fic"><div style="font-size:13px;color:var(--text2)">Mes 2 (proyección)</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green);margin-left:auto">~$1,840</div></div>
+          <div class="proj-bar mt8"><div class="proj-fill" style="width:63%"></div></div>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+          <div class="flex fic"><div style="font-size:13px;color:var(--text2)">Mes 3 (proyección)</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber);margin-left:auto">~$2,900</div></div>
+          <div class="proj-bar mt8"><div class="proj-fill" style="width:99%;background:var(--amber)"></div></div>
+        </div>
+      </div>
+      <div style="background:var(--gdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:11px 13px;margin-top:13px;font-size:13px">
+        <span style="color:var(--green);font-weight:600">💡 IA recomienda:</span> <span style="color:var(--text1)">Escalar FinanceFacts a 4 vídeos/día. Activar CurioMundo con nicho Kids (CPM $14+). Añadir afiliado broker auto-inserción.</span>
+      </div>
+    </div>
+
+    <!-- Por canal -->
+    <div class="card">
+      <div class="sh"><h2>Rendimiento por canal</h2></div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--bdim);color:var(--blue)">💰</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">FinanceFacts ES</div>
+          <div class="ch-bar-bg mt6"><div class="ch-bar-f" style="width:72%;background:var(--green)"></div></div>
+        </div>
+        <div style="text-align:right"><div style="font-family:var(--mono);font-weight:700;color:var(--green)">$890</div><div style="font-size:10px;color:var(--text3)">72% ingresos</div></div>
+      </div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--pdim);color:var(--purple)">🧠</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">MindHacks Daily</div>
+          <div class="ch-bar-bg mt6"><div class="ch-bar-f" style="width:23%;background:var(--amber)"></div></div>
+        </div>
+        <div style="text-align:right"><div style="font-family:var(--mono);font-weight:700;color:var(--amber)">$272</div><div style="font-size:10px;color:var(--text3)">23% ingresos</div></div>
+      </div>
+      <div class="chrow">
+        <div class="ch-icon" style="background:var(--adim);color:var(--amber)">🌍</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">CurioMundo <span style="font-size:10px;color:var(--amber)">(pausado)</span></div>
+          <div class="ch-bar-bg mt6"><div class="ch-bar-f" style="width:8%;background:var(--text3)"></div></div>
+        </div>
+        <div style="text-align:right"><div style="font-family:var(--mono);font-weight:700;color:var(--text3)">$10</div><div style="font-size:10px;color:var(--text3)">5% ingresos</div></div>
+      </div>
+      <div class="divider"></div>
+      <div style="background:var(--adim);border-radius:var(--r);padding:10px 13px;font-size:13px">
+        <span style="color:var(--amber);font-weight:600">Oportunidad:</span> <span style="color:var(--text1)">Reactivar CurioMundo con nicho Kids → CPM $14+ → potencial +$400/mes.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cost breakdown + limits -->
+  <div class="g2">
+    <div class="card">
+      <div class="stl mb12">Desglose de costes IA (mes actual)</div>
+      <table class="mtable">
+        <tr><td style="color:var(--text2)">💡 Ideas (Claude Haiku)</td><td style="text-align:right;font-family:var(--mono)">$0.12</td></tr>
+        <tr><td style="color:var(--text2)">✍️ Scripts (Claude Haiku)</td><td style="text-align:right;font-family:var(--mono)">$0.51</td></tr>
+        <tr><td style="color:var(--text2)">📄 URL parsing (Haiku)</td><td style="text-align:right;font-family:var(--mono)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">🎤 TTS (Kokoro — local)</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">🖼️ Imágenes (Pexels API)</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">🎵 Música (Pixabay)</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">$0.00</td></tr>
+        <tr><td style="color:var(--text2)">☁️ Almacenamiento (R2 CF)</td><td style="text-align:right;font-family:var(--mono)">$1.84</td></tr>
+        <tr style="border-top:2px solid var(--border2)"><td style="font-weight:700;color:var(--text1)">Total</td><td style="text-align:right;font-family:var(--mono);font-weight:700;color:var(--green)">$2.47</td></tr>
+      </table>
+      <div style="font-size:12px;color:var(--text3);margin-top:10px">Coste en modo premium (GPT-4+ElevenLabs): $84.00 · ahorro: $81.53 (97%)</div>
+    </div>
+
+    <div class="card">
+      <div class="stl mb12">Límites de presupuesto</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <label class="lbl">Límite mensual total ($)</label>
+          <input class="inp" type="number" value="50">
+          <div style="margin-top:5px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px"><span>$2.47 gastado</span><span>4.9%</span></div><div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden"><div style="width:4.9%;height:100%;background:var(--green);border-radius:3px"></div></div></div>
+        </div>
+        <div><label class="lbl">Límite diario AutoPilot ($)</label><input class="inp" type="number" value="2"></div>
+        <div><label class="lbl">Coste máximo por vídeo ($)</label><input class="inp" type="number" value="0.10" step="0.01"></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Pausar AutoPilot al alcanzar límite</span></div>
+        <button class="btn btn-p" style="align-self:flex-end" onclick="showToast('✓ Límites de presupuesto guardados')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ MODELS ════════════════ -->
 
 <!-- ════════ TIKTOK SHOP ════════ -->
 <div class="view" id="view-tiktokshop">
@@ -3896,6 +5389,8 @@ function setPStep(n) {
     document.getElementById('p-' + i)?.classList.toggle('act', i === n);
   }
   if (n === 5) { try { populateStep5(); } catch(e) { console.warn('populateStep5:', e); } }
+  if (n === 4) { try { applyTierToPipeline(); } catch(e) {} }
+  if (n === 3) { try { applyTierToPipeline(); } catch(e) {} }
   // When entering video step, auto-suggest Pexels query and check keys
   // When entering score step, pre-fill selected idea
   if (n === 2) {
@@ -6633,11 +8128,13 @@ var _navCallbacks = {
   analytics:     function() { try { renderAnalytics(); switchAnalyticsTab('log'); } catch(e) { console.error(e); } },
   clipping:      function() { try { renderClipChannels(); } catch(e) { console.error(e); } },
   clippipeline:  function() { try { setCPStep(0); } catch(e) {} },
-  pipeline:      function() { try { setPStep(0); } catch(e) {} },
+  pipeline:      function() { try { setPStep(0); applyTierToPipeline(); } catch(e) {} },
   affiliation:   function() { try { renderAffiliates(); } catch(e) { console.error(e); } },
   budget:        function() { try { renderBudget(); } catch(e) {} },
+  models:        function() { try { renderModels(); } catch(e) {} },
   autopilot:     function() { try { renderAutopilot(); } catch(e) {} },
   budget:        function() { try { renderBudget(); } catch(e) {} },
+  models:        function() { try { renderModels(); } catch(e) {} },
   autopilot:     function() { try { renderAutopilot(); } catch(e) {} },
   settings:      function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
 };
@@ -8249,11 +9746,25 @@ function renderTierSelector(containerId, context) {
 }
 
 function setActiveTier(tier, containerId) {
+  // ULTRA warning
+  if (tier === 'ultra') {
+    const videos = parseInt(localStorage.getItem('fai_ap_interval') ? '30' : '30');
+    const monthCost = (1.47 * videos).toFixed(0);
+    const hasHG = !!(localStorage.getItem('fai_key_heygen') || KEYS.heygen);
+    if (!hasHG) {
+      showToast('⚠ ULTRA requiere HeyGen API key. Configúrala primero en ⚙️ Configuración.');
+      // Still allow setting tier but warn
+    } else if (!confirm('⚡ Tier ULTRA: ~$1.47/vídeo · A 30 vídeos/mes = ~$' + monthCost + '/mes\n\nRequiere: Claude Opus + ElevenLabs + HeyGen/Runway/D-ID/Pika\n\n¿Activar ULTRA?')) {
+      return;
+    }
+  }
   activeTier = tier;
   localStorage.setItem('fai_active_tier', tier);
   renderTierSelector(containerId);
+  applyTierToPipeline();
+  if (containerId === '' || !containerId) renderModels();
   const t = TIERS[tier];
-  showToast('Tier: ' + t.label + ' · ' + t.cost + '/vídeo');
+  showToast('⚡ Tier ' + t.label + ' activado · ' + t.cost + '/vídeo');
 }
 
 function getAITierRecommendation(context) {
@@ -8791,6 +10302,297 @@ function saveInfluencerVideoAsDraft() {
   if (!url) return;
   addDraft({ hook:'Vídeo influencer IA', videoUrl:url, status:'approved', source:'influencer', createdAt:Date.now() });
   showToast('✓ Guardado como borrador aprobado');
+}
+
+// ══════════════════════════════════════════════════════════
+// MODELOS IA — render completo
+// ══════════════════════════════════════════════════════════
+const MODEL_CONFIG = {
+  free:  {
+    ideas: { model:'Llama local', desc:'Clasificador heurístico local', cost:0,      quality:2 },
+    script:{ model:'Kokoro TTS',  desc:'TTS local sin coste',           cost:0,      quality:2 },
+    score: { model:'Reglas local',desc:'Heurísticas + datos históricos', cost:0,      quality:2 },
+    tts:   { model:'Kokoro TTS',  desc:'Voz local, calidad básica',     cost:0,      quality:2 },
+    video: { model:'Pexels SD',   desc:'Clips stock SD',                cost:0,      quality:2 },
+    subs:  { model:'Whisper local',desc:'Transcripción local',          cost:0,      quality:3 },
+  },
+  eco: {
+    ideas: { model:'Claude Haiku',desc:'Rápido y económico',            cost:0.001,  quality:3 },
+    script:{ model:'Claude Haiku',desc:'Scripts buenos a bajo coste',   cost:0.004,  quality:3 },
+    score: { model:'Claude Haiku',desc:'Análisis básico de viral',      cost:0.001,  quality:3 },
+    tts:   { model:'OpenAI TTS-1',desc:'Voz natural, buena calidad',    cost:0.015,  quality:3 },
+    video: { model:'Pexels HD',   desc:'Clips stock HD',                cost:0,      quality:3 },
+    subs:  { model:'Whisper local',desc:'Transcripción local',          cost:0,      quality:3 },
+  },
+  opt: {
+    ideas: { model:'Claude Sonnet',desc:'Ideas más creativas y virales', cost:0.003, quality:4 },
+    script:{ model:'Claude Sonnet',desc:'Scripts de alta calidad',       cost:0.012, quality:4 },
+    score: { model:'Claude Sonnet',desc:'Score con contexto de mercado', cost:0.003, quality:4 },
+    tts:   { model:'OpenAI TTS-1 HD',desc:'Voz HD, muy natural',        cost:0.030, quality:4 },
+    video: { model:'Pexels HD + efectos',desc:'Clips con zoom/pan',     cost:0,      quality:4 },
+    subs:  { model:'Whisper local',desc:'Transcripción precisa',        cost:0,      quality:4 },
+  },
+  prem: {
+    ideas: { model:'Claude Opus', desc:'Ideas premium, máxima creatividad', cost:0.015, quality:5 },
+    script:{ model:'Claude Opus', desc:'Scripts broadcast-quality',         cost:0.060, quality:5 },
+    score: { model:'Claude Opus', desc:'Score profundo con análisis CPM',   cost:0.015, quality:5 },
+    tts:   { model:'ElevenLabs v3',desc:'Voz ultra-realista clonada',       cost:0.150, quality:5 },
+    video: { model:'Pexels HD + efectos',desc:'Clips premium',             cost:0,      quality:5 },
+    subs:  { model:'Whisper API', desc:'Transcripción en la nube',         cost:0.006,  quality:5 },
+  },
+  ultra: {
+    ideas: { model:'Claude Opus', desc:'Ideas premium + contexto influencer', cost:0.015, quality:5 },
+    script:{ model:'Claude Opus', desc:'Script con personalidad del avatar',  cost:0.060, quality:5 },
+    score: { model:'Claude Opus', desc:'Score profesional',                   cost:0.015, quality:5 },
+    tts:   { model:'ElevenLabs clonada',desc:'Voz clonada del personaje',     cost:0.200, quality:5 },
+    video: { model:'HeyGen / Runway / D-ID / Pika',desc:'Avatar IA real',    cost:1.200, quality:5 },
+    subs:  { model:'Whisper API', desc:'Transcripción profesional',           cost:0.006, quality:5 },
+  },
+};
+
+const STAGE_LABELS = {
+  ideas: '💡 Ideas virales',
+  script:'✍️ Generación de script',
+  score: '🎯 Score IA',
+  tts:   '🎤 Voz TTS',
+  video: '🎬 Vídeo / Clips',
+  subs:  '📝 Subtítulos',
+};
+
+function renderModels() {
+  const tier = activeTier || 'opt';
+  const t    = TIERS[tier];
+  if (!t) return;
+
+  // Header badges
+  const badge = document.getElementById('models-active-tier-badge');
+  const costBadge = document.getElementById('models-active-cost-badge');
+  if (badge) { badge.textContent = t.label; badge.style.color = t.color; }
+  if (costBadge) costBadge.textContent = t.cost + '/vídeo';
+
+  // Tier cards
+  const grid = document.getElementById('models-tier-grid');
+  if (grid) {
+    grid.innerHTML = Object.entries(TIERS).map(([key, ti]) => {
+      const active = key === tier;
+      const cfg = MODEL_CONFIG[key];
+      const totalCost = cfg ? Object.values(cfg).reduce((s,m)=>s+(m.cost||0),0) : 0;
+      return `<div onclick="setActiveTier('${key}','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid ${active?ti.color:'var(--border)'};background:${active?ti.color+'15':'var(--bg2)'};transition:all .2s">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:${ti.color}"></div>
+          <div style="font-size:11px;font-weight:700;color:${ti.color}">${ti.label}</div>
+        </div>
+        <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:${active?ti.color:'var(--text1)'}">$${totalCost.toFixed(2)}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
+        ${active?'<div style="font-size:9px;color:'+ti.color+';margin-top:4px;font-weight:700">✓ ACTIVO</div>':''}
+      </div>`;
+    }).join('');
+  }
+
+  // Table header label
+  const tblLabel = document.getElementById('models-table-tier-label');
+  if (tblLabel) { tblLabel.textContent = t.label + ' · ' + t.cost + '/vídeo'; tblLabel.style.color = t.color; }
+
+  // Table
+  const tbody = document.getElementById('models-tbody');
+  if (tbody) {
+    const cfg = MODEL_CONFIG[tier] || MODEL_CONFIG.opt;
+    tbody.innerHTML = Object.entries(STAGE_LABELS).map(([stage, label]) => {
+      const m = cfg[stage] || {};
+      const stars = '★'.repeat(m.quality||3) + '☆'.repeat(5-(m.quality||3));
+      const costTag = m.cost > 0
+        ? `<span class="tag ta" style="font-size:10px">$${m.cost.toFixed(3)}</span>`
+        : '<span class="tag tg" style="font-size:10px">GRATIS</span>';
+      return `<tr>
+        <td style="color:var(--text1);font-weight:600;font-size:13px">${label}</td>
+        <td><span style="font-size:13px;font-weight:600;color:${t.color}">${m.model||'—'}</span></td>
+        <td style="font-size:11px;color:var(--text3)">${m.desc||''}</td>
+        <td>${costTag}</td>
+        <td style="font-size:12px;color:var(--amber);letter-spacing:1px">${stars}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Update cost calc
+  updateCostCalc();
+  // Render comparison table
+  renderComparisonTable();
+
+  // API status
+  renderModelsApiStatus();
+
+  // Recommendation
+  updateModelsRecommendation();
+}
+
+function updateCostCalc() {
+  const videos = parseInt(document.getElementById('calc-videos')?.value || '30');
+  const tier = activeTier || 'opt';
+  const cfg = MODEL_CONFIG[tier] || MODEL_CONFIG.opt;
+  const perVideo = Object.values(cfg).reduce((s,m)=>s+(m.cost||0),0);
+  const monthly = perVideo * videos;
+  const yearly = monthly * 12;
+  const premPerVideo = Object.values(MODEL_CONFIG.prem).reduce((s,m)=>s+(m.cost||0),0);
+  const saving = (premPerVideo - perVideo) * videos;
+
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  setEl('calc-videos-val', videos);
+  setEl('calc-per-video', '$'+perVideo.toFixed(3));
+  setEl('calc-total', '$'+monthly.toFixed(2)+'/mes');
+  setEl('calc-yearly', '$'+yearly.toFixed(0)+'/año');
+  setEl('calc-vs-premium', saving > 0 ? 'Ahorras $'+saving.toFixed(0)+'/mes' : 'Máximo tier');
+}
+
+function renderModelsApiStatus() {
+  const el = document.getElementById('models-api-status');
+  if (!el) return;
+  const apis = [
+    { key:'anthropic',  label:'Anthropic Claude', icon:'🤖', required:true },
+    { key:'openai',     label:'OpenAI TTS',        icon:'🎤', required:false },
+    { key:'pexels',     label:'Pexels Clips',      icon:'🎬', required:false },
+    { key:'elevenlabs', label:'ElevenLabs',         icon:'🔊', required:false },
+    { key:'youtube',    label:'YouTube API',        icon:'▶',  required:false },
+    { key:'heygen',     label:'HeyGen (ULTRA)',     icon:'👤', required:false },
+    { key:'did',        label:'D-ID (ULTRA)',       icon:'🎭', required:false },
+    { key:'runway',     label:'Runway (ULTRA)',     icon:'🎨', required:false },
+    { key:'pika',       label:'Pika (ULTRA)',       icon:'✨', required:false },
+  ];
+  el.innerHTML = apis.map(a => {
+    const hasKey = !!(localStorage.getItem('fai_key_'+a.key) || KEYS[a.key]);
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg2);border-radius:var(--r)">
+      <span>${a.icon}</span>
+      <span style="font-size:12px;flex:1">${a.label}</span>
+      ${hasKey
+        ? '<span class="tag tg" style="font-size:9px">✓</span>'
+        : (a.required
+          ? '<span class="tag tr" style="font-size:9px">Requerida</span>'
+          : '<span style="font-size:9px;color:var(--text3)">—</span>')}
+    </div>`;
+  }).join('');
+}
+
+function updateModelsRecommendation() {
+  const el = document.getElementById('models-rec-text');
+  if (!el) return;
+  const log = getAnalyticsLog();
+  const drafts = getDrafts();
+  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+  const monthCost = log.filter(e=>e.ts>=monthStart.getTime()).reduce((s,e)=>s+(e.cost||0),0);
+  const monthDrafts = drafts.filter(d=>(d.createdAt||0)>=monthStart.getTime()).length;
+  const hasEL = !!(localStorage.getItem('fai_key_elevenlabs') || KEYS.elevenlabs);
+  const hasHG = !!(localStorage.getItem('fai_key_heygen') || KEYS.heygen);
+
+  let rec = '';
+  if (hasHG) rec = '⚡ Tienes HeyGen — el tier <strong style="color:#ff6b35">ULTRA</strong> está disponible para crear avatares IA reales.';
+  else if (monthDrafts > 20) rec = '📈 Produces muchos vídeos. El tier <strong style="color:var(--blue)">ECONÓMICO</strong> maximiza el volumen a bajo coste.';
+  else if (hasEL) rec = '🎤 Tienes ElevenLabs. El tier <strong style="color:var(--purple)">PREMIUM</strong> aprovecha tu voz al máximo.';
+  else if (monthCost > 5) rec = '💰 Tu gasto mensual es $'+monthCost.toFixed(2)+'. Considera el tier <strong style="color:var(--amber)">OPTIMIZADO</strong> para equilibrar calidad/coste.';
+  else rec = '✓ El tier <strong style="color:var(--amber)">OPTIMIZADO</strong> es ideal para la mayoría de creadores: Claude Sonnet + TTS HD a ~$0.06/vídeo.';
+
+  el.innerHTML = rec;
+}
+
+function getModelsAIRecommendation() {
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
+  const el = document.getElementById('models-rec-text');
+  if (el) el.textContent = '⏳ Claude analizando tu uso...';
+
+  const log = getAnalyticsLog();
+  const drafts = getDrafts();
+  const totalCost = log.reduce((s,e)=>s+(e.cost||0),0);
+  const hasEL = !!(localStorage.getItem('fai_key_elevenlabs'));
+  const hasHG = !!(localStorage.getItem('fai_key_heygen'));
+
+  const prompt = `Soy un creador de contenido faceless. Analiza mi situación y recomienda qué tier de IA debo usar:
+- Borradores creados: ${drafts.length} total, ${drafts.filter(d=>d.source==='autopilot').length} con AutoPilot
+- Coste IA acumulado: $${totalCost.toFixed(3)}
+- ElevenLabs disponible: ${hasEL}
+- HeyGen disponible: ${hasHG}
+- Tier actual: ${activeTier}
+
+Recomienda el tier óptimo (free/eco/opt/prem/ultra) y explica por qué en 2 frases máximo. Sé específico con los números.`;
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,messages:[{role:'user',content:prompt}]})
+  })
+  .then(r=>r.json())
+  .then(data=>{ if(el) el.innerHTML = '🤖 ' + (data.content?.[0]?.text||'Sin respuesta'); })
+  .catch(e=>{ if(el) el.textContent='Error: '+e.message; });
+}
+
+// ── Apply active tier to Pipeline ──
+function applyTierToPipeline() {
+  const tier = activeTier || 'opt';
+  const cfg  = MODEL_CONFIG[tier];
+  if (!cfg) return;
+
+  // Step 3 (script) — update model tag
+  const scriptModelTag = document.getElementById('script-model-tag');
+  if (scriptModelTag) scriptModelTag.textContent = cfg.script.model;
+
+  // Step 4 (audio) — update TTS engine selector
+  const ttsEngine = document.getElementById('tts-engine');
+  if (ttsEngine) {
+    if (tier === 'ultra' || tier === 'prem') {
+      // ElevenLabs
+      const elOpt = Array.from(ttsEngine.options).find(o => o.value.includes('elevenlabs'));
+      if (elOpt) ttsEngine.value = elOpt.value;
+    } else if (tier === 'eco' || tier === 'opt') {
+      const oaiOpt = Array.from(ttsEngine.options).find(o => o.value.includes('openai'));
+      if (oaiOpt) ttsEngine.value = oaiOpt.value;
+      if (tier === 'opt') {
+        const hdOpt = Array.from(ttsEngine.options).find(o => o.value === 'openai-tts1hd');
+        if (hdOpt) ttsEngine.value = 'openai-tts1hd';
+      }
+    }
+  }
+
+  // Step 1 (ideas) — show tier hint
+  const ideasBtn = document.getElementById('ideas-gen-btn');
+  if (ideasBtn) ideasBtn.title = 'Usando: ' + cfg.ideas.model + ' · ' + (cfg.ideas.cost > 0 ? '$'+cfg.ideas.cost.toFixed(3) : 'GRATIS');
+
+  // Show tier indicator in pipeline header if present
+  const pipeTag = document.getElementById('pipe-tier-tag');
+  if (pipeTag) {
+    const t = TIERS[tier];
+    pipeTag.textContent = t ? t.label + ' · ' + t.cost + '/vídeo' : '';
+    pipeTag.style.color = t ? t.color : '';
+  }
+}
+
+// ── Render comparison table ──
+function renderComparisonTable() {
+  const tbody = document.getElementById('models-comparison-tbody');
+  if (!tbody) return;
+
+  const tiers = ['free','eco','opt','prem','ultra'];
+  const tierColors = { free:'var(--green)', eco:'var(--blue)', opt:'var(--amber)', prem:'var(--purple)', ultra:'#ff6b35' };
+
+  tbody.innerHTML = Object.entries(STAGE_LABELS).map(([stage, label]) => {
+    const cells = tiers.map(t => {
+      const m = MODEL_CONFIG[t]?.[stage];
+      const isActive = t === activeTier;
+      const stars = m?.quality ? '★'.repeat(m.quality)+'☆'.repeat(5-m.quality) : '—';
+      return `<td style="padding:7px 12px;text-align:center;background:${isActive?tierColors[t]+'12':'transparent'};border-left:1px solid var(--border)">
+        <div style="font-size:10px;font-weight:600;color:${isActive?tierColors[t]:'var(--text2)'};line-height:1.3">${m?.model?.split(' ')[0]||'—'}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:1px">${stars}</div>
+      </td>`;
+    }).join('');
+    return `<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:7px 12px;color:var(--text2);font-weight:500">${label}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  // Footer costs
+  tiers.forEach(t => {
+    const cfg = MODEL_CONFIG[t];
+    const cost = cfg ? Object.values(cfg).reduce((s,m)=>s+(m.cost||0),0) : 0;
+    const el = document.getElementById('cmp-cost-'+t);
+    if (el) el.textContent = '$'+cost.toFixed(2);
+  });
 }
 // ── INIT ──
 renderDashboard();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.02 — Content Engine</title>
+<title>FacelessAI v4.03 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.02</div>
+    <div class="logo-sub">Content Engine v4.03</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -5241,6 +5241,33 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       Notificaciones por email cuando AutoPilot genera un vídeo · Zona horaria · Límite de gasto por canal · Backup y restauración de configuración · Acceso multiusuario (equipo)
     </div>
   </div>
+
+  <!-- EXPORT / IMPORT -->
+  <div class="card mt16">
+    <div class="stl mb12">💾 Exportar / Importar configuración</div>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:14px">Traslada tus API keys, canales, borradores y toda la configuración a otro navegador u ordenador.</p>
+    <div class="g2" style="gap:12px">
+      <div style="background:var(--bg2);border-radius:var(--r);padding:14px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px">📤 Exportar</div>
+        <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Descarga un JSON con todas tus keys, canales, borradores y ajustes.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-p btn-sm" onclick="exportAllData()">⬇ Exportar todo</button>
+          <button class="btn btn-g btn-sm" onclick="exportKeysOnly()">🔑 Solo API keys</button>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r);padding:14px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px">📥 Importar</div>
+        <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Carga un archivo exportado previamente. Los datos se fusionarán con los actuales.</p>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+          <button class="btn btn-g btn-sm" onclick="document.getElementById('import-file').click()">📂 Seleccionar archivo</button>
+          <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="clearAllData()">🗑 Borrar todo</button>
+        </div>
+        <div id="import-status" style="font-size:11px;color:var(--green);margin-top:8px;display:none"></div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
 
@@ -10674,6 +10701,108 @@ function renderComparisonTable() {
     const el = document.getElementById('cmp-cost-'+t);
     if (el) el.textContent = '$'+cost.toFixed(2);
   });
+}
+
+// ══════════════════════════════════════════════════════════
+// EXPORT / IMPORT — localStorage data
+// ══════════════════════════════════════════════════════════
+function exportAllData() {
+  try {
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('fai_')) {
+        data[key] = localStorage.getItem(key);
+      }
+    }
+    data['_exported_at'] = new Date().toISOString();
+    data['_version'] = 'v4.03';
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'facelessai_backup_' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ Exportado: ' + Object.keys(data).length + ' entradas');
+  } catch(e) {
+    showToast('Error al exportar: ' + e.message);
+  }
+}
+
+function exportKeysOnly() {
+  try {
+    const keys = {};
+    const keyNames = ['fai_key_anthropic','fai_key_openai','fai_key_pexels','fai_key_elevenlabs','fai_key_youtube','fai_key_github','fai_key_heygen','fai_key_did','fai_key_runway','fai_key_pika','fai_backend_url'];
+    keyNames.forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v) keys[k] = v;
+    });
+    keys['_exported_at'] = new Date().toISOString();
+    keys['_type'] = 'keys_only';
+    const blob = new Blob([JSON.stringify(keys, null, 2)], {type: 'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'facelessai_keys_' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ Keys exportadas: ' + (Object.keys(keys).length - 2) + ' claves');
+  } catch(e) {
+    showToast('Error: ' + e.message);
+  }
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('import-status');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      let count = 0;
+      Object.entries(data).forEach(([key, value]) => {
+        if (key.startsWith('fai_') && value) {
+          localStorage.setItem(key, value);
+          count++;
+        }
+      });
+      // Reload keys into KEYS object
+      loadKeys();
+      // Refresh current view
+      if (status) {
+        status.style.display = 'block';
+        status.textContent = '✓ Importadas ' + count + ' entradas correctamente';
+        status.style.color = 'var(--green)';
+      }
+      showToast('✓ Importadas ' + count + ' entradas · Recarga la página para ver todo');
+      // Reset input
+      input.value = '';
+      // Update settings display
+      try { refreshSettingsDisplay(); } catch(err) {}
+    } catch(err) {
+      if (status) {
+        status.style.display = 'block';
+        status.textContent = '✗ Error: archivo inválido — ' + err.message;
+        status.style.color = 'var(--red)';
+      }
+      showToast('✗ Error al importar: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function clearAllData() {
+  if (!confirm('⚠️ ¿Borrar TODOS los datos?\n\nEsto eliminará canales, borradores, keys, configuración y analytics.\n\nEsta acción no se puede deshacer.')) return;
+  const keysToDelete = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('fai_')) keysToDelete.push(key);
+  }
+  keysToDelete.forEach(k => localStorage.removeItem(k));
+  showToast('🗑 Todos los datos eliminados · Recargando...');
+  setTimeout(() => location.reload(), 1500);
 }
 // ── INIT ──
 renderDashboard();

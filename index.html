@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.19 — Content Engine</title>
+<title>FacelessAI v4.20 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.19</div>
+    <div class="logo-sub">Content Engine v4.20</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -675,7 +675,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   </div>
 
   <!-- TIER CARDS — static fallback + dynamic update -->
-  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px" id="models-tier-grid">
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px" id="models-tier-grid">
     <div onclick="setActiveTier('free','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div><div style="font-size:11px;font-weight:700;color:var(--green)">GRATIS</div></div>
       <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.00</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
@@ -694,7 +694,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.25</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
     </div>
     <div onclick="setActiveTier('ultra','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#ff6b35"></div><div style="font-size:11px;font-weight:700;color:#ff6b35">ULTRA</div></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#ff6b35"></div><div style="font-size:11px;font-weight:700;color:#ff6b35">ULTRA</div><div onclick="setActiveTier('scale','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#a855f7"></div><div style="font-size:11px;font-weight:700;color:#a855f7">SCALE</div></div><div style="font-size:18px;font-weight:800;font-family:var(--mono)">~0.05E</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div><div style="font-size:9px;color:var(--text3);margin-top:4px">Masivo</div></div></div>
       <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$1.47</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
     </div>
   </div>
@@ -817,6 +817,32 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     </div>
   </div>
 </div>
+  <!-- Multi-model insight card -->
+  <div class="card" style="background:linear-gradient(135deg,var(--pdim),var(--bdim));border-color:var(--purple);margin-top:14px">
+    <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px">Insight: Multi-modelo por video</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px">
+      El mercado en 2026 no es <em>"que herramienta usar"</em> sino <strong>que modelo usar para cada clip segun coste/resultado</strong>.
+      Muchos canales top usan varios modelos en el mismo video.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px">
+      <div style="background:var(--bg2);border-radius:var(--r);padding:8px">
+        <div style="color:var(--green);font-weight:700;margin-bottom:4px">Stack Eficiencia</div>
+        <div style="color:var(--text3)">Groq ideas · Haiku script · Hailuo video · Whisper subs</div>
+        <div style="color:var(--green);font-weight:600;margin-top:4px">~0.10-0.30E/video</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r);padding:8px;border:1px solid var(--amber)44">
+        <div style="color:var(--amber);font-weight:700;margin-bottom:4px">Stack Viral</div>
+        <div style="color:var(--text3)">Sonnet script · ElevenLabs voz · Kling video · DALL-E thumb</div>
+        <div style="color:var(--amber);font-weight:600;margin-top:4px">~0.50-1.50E/video</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r);padding:8px">
+        <div style="color:#ff6b35;font-weight:700;margin-bottom:4px">Stack Pro</div>
+        <div style="color:var(--text3)">Opus script · EL HD voz · Runway video · Midjourney thumb</div>
+        <div style="color:#ff6b35;font-weight:600;margin-top:4px">~3-10E/video</div>
+      </div>
+    </div>
+  </div>
+
 <div class="view" id="view-drafts">
   <div class="sh mb12">
     <h2>Borradores</h2>
@@ -1560,25 +1586,6 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   <!-- Step 4: Audio/Video generation -->
   <div class="pc" id="p-4">
 
-    <!-- Thumbnail IA - mejora 6 -->
-    <div class="card mt12 mb12" style="border-color:var(--purple)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:12px;font-weight:600;color:var(--purple)">Thumbnail IA (gratis)</div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <select class="sel" id="thumb-style" style="font-size:11px;padding:3px 6px">
-            <option value="cinematic">Cinematografico</option>
-            <option value="minimal">Minimal</option>
-            <option value="dark">Dark/Neon</option>
-            <option value="bright">Brillante</option>
-          </select>
-          <button class="btn btn-p btn-sm" id="thumb-gen-btn" onclick="generateThumbnail()" style="font-size:11px">Generar thumbnail</button>
-        </div>
-      </div>
-      <div id="thumbnail-preview" style="min-height:60px;text-align:center;color:var(--text3);font-size:12px;padding:12px">
-        El thumbnail se genera basado en tu hook/script actual
-      </div>
-    </div>
-
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
       <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 5/6 — Audio y vídeo</div>
       <div style="display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button><button class="btn btn-p btn-sm" onclick="setPStep(5)">Revisar →</button></div>
@@ -1587,6 +1594,28 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <h2>Generación audio y vídeo IA</h2>
       <span class="tag ta" id="vidgen-cost-tag">Coste estimado: $0.009</span>
     </div>
+    <!-- Video model selector -->
+    <div style="background:var(--bg2);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="font-size:11px;font-weight:600;color:var(--text3)">Modelo de video:</div>
+      <select class="sel" id="video-model-sel" onchange="updateVideoModelInfo()" style="font-size:12px;min-width:160px">
+        <option value="backend">Backend Railway (clips Pexels)</option>
+        <option value="hailuo">Hailuo API (~$0.01-0.03/seg)</option>
+        <option value="kling">Kling API (~$0.04-0.09/seg)</option>
+        <option value="pika">Pika API</option>
+        <option value="runway">Runway Gen-4 (~$0.05-0.15/seg)</option>
+        <option value="wan">Wan 2.1 (Replicate, barato)</option>
+        <option value="kinetic">Kinetic Text (sin backend)</option>
+      </select>
+      <select class="sel" id="subtitle-style-sel" style="font-size:12px;min-width:120px" onchange="updateSubtitleStyle()">
+        <option value="capcut">CapCut (viral)</option>
+        <option value="viral">Amarillo clásico</option>
+        <option value="minimal">Minimal blanco</option>
+        <option value="none">Sin subtítulos</option>
+      </select>
+      <div id="video-model-info" style="font-size:11px;color:var(--text3)">Clips Pexels + FFmpeg via Railway</div>
+      <div style="font-size:11px;font-weight:700;color:var(--amber)" id="video-model-cost">~$0.10-0.30</div>
+    </div>
+
 
     <!-- Key status warning -->
     <div id="vidgen-keys-warning" style="background:var(--adim);border:1px solid #fbbf2433;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-size:13px;display:none">
@@ -1691,7 +1720,21 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
             <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);padding:2px 6px;border-radius:4px;font-size:10px;font-family:var(--mono);color:#fff" id="vprev-dur">—</div>
           </div>
         </div>
-        <div id="vprev-meta" style="display:none;margin-top:10px;font-size:11px;color:var(--text3);font-family:var(--mono);line-height:2"></div>
+        <div id="vprev-meta" style="display:none;margin-top:10px">
+        <!-- Thumbnail preview -->
+        <div id="vprev-thumb-wrap" style="display:none;margin-bottom:10px;position:relative">
+          <img id="vprev-thumb" src="" style="width:100%;border-radius:var(--r);display:block" alt="Thumbnail">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="playVideoPreview()" id="vprev-play-btn">
+            <div style="background:rgba(0,0,0,.7);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+          </div>
+        </div>
+        <!-- Inline video player (hidden until play) -->
+        <video id="vprev-player" style="display:none;width:100%;border-radius:var(--r);max-height:400px" controls></video>
+        <!-- Download + info -->
+        <div id="vprev-download-area" style="font-size:11px;color:var(--text3);font-family:var(--mono);line-height:2"></div>
+      </div>
       </div>
     </div>
 
@@ -1827,7 +1870,6 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H5L2 5v9a1 1 0 001 1h10a1 1 0 001-1V3a1 1 0 00-1-1z"/><polyline points="9 2 9 8 6 8"/></svg>
             Borrador
           </button>
-          <button class="btn btn-g btn-sm" onclick="generatePublishPack()" title="Descarga metadata para cada plataforma">📦 Pack</button>
           <button class="btn btn-p" onclick="approveAndPublish()">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 8 5 12 15 3"/></svg>
             Aprobar y publicar
@@ -3260,88 +3302,15 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 <!-- ════════════════ TEMPLATES ════════════════ -->
 <div class="view" id="view-templates">
-  <div class="sh mb16">
-    <h2>🎣 Biblioteca de Hooks</h2>
-    <span class="tag tb">Hooks probados con alto CTR por nicho y plataforma</span>
-  </div>
-
-  <!-- Filtros -->
-  <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-    <select class="sel" id="hooks-niche-filter" onchange="filterHooks()" style="font-size:12px;min-width:160px">
-      <option value="all">🌍 Todos los nichos</option>
-      <option value="finanzas">💰 Finanzas</option>
-      <option value="cripto">₿ Cripto/Trading</option>
-      <option value="motivacion">🔥 Motivación</option>
-      <option value="truecrime">🔪 True Crime</option>
-      <option value="historia">📚 Historia</option>
-      <option value="tecnologia">💻 Tech/IA</option>
-      <option value="legal">⚖️ Legal/Fiscal</option>
-      <option value="drama">🎭 Drama/Reddit</option>
-      <option value="misterio">🌌 Misterio</option>
-      <option value="salud">🏃 Salud</option>
-    </select>
-    <select class="sel" id="hooks-plat-filter" onchange="filterHooks()" style="font-size:12px;min-width:140px">
-      <option value="all">📡 Todas plataformas</option>
-      <option value="youtube">▶️ YouTube</option>
-      <option value="tiktok">🎵 TikTok</option>
-      <option value="instagram">📷 Instagram</option>
-    </select>
-    <select class="sel" id="hooks-type-filter" onchange="filterHooks()" style="font-size:12px;min-width:140px">
-      <option value="all">🎯 Todos los tipos</option>
-      <option value="pregunta">❓ Pregunta</option>
-      <option value="dato">📊 Dato sorprendente</option>
-      <option value="secreto">🤫 Secreto/Revelación</option>
-      <option value="historia">🎭 Historia personal</option>
-      <option value="lista">📋 Lista/Ranking</option>
-      <option value="error">❌ Error común</option>
-      <option value="vs">⚔️ Comparativa</option>
-    </select>
-    <input class="inp" id="hooks-search" placeholder="🔍 Buscar hooks..." oninput="filterHooks()" style="flex:1;min-width:180px;font-size:13px">
-    <button class="btn btn-p btn-sm" onclick="generateAIHooks()">🤖 Generar con IA</button>
-  </div>
-
-  <!-- Hook cards grid -->
-  <div id="hooks-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px"></div>
-
-  <!-- AI Generator panel -->
-  <div id="hooks-ai-panel" style="display:none;margin-top:16px">
-    <div class="card" style="border-color:var(--blue)">
-      <div class="stl mb10">🤖 Generar hooks con IA para tu nicho</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
-        <div><label class="lbl">Nicho</label>
-          <select class="sel" id="hooks-ai-niche" style="font-size:12px">
-            <option value="finanzas">💰 Finanzas</option>
-            <option value="cripto">₿ Cripto/Trading</option>
-            <option value="truecrime">🔪 True Crime</option>
-            <option value="historia">📚 Historia</option>
-            <option value="tecnologia">💻 Tech/IA</option>
-            <option value="legal">⚖️ Legal/Fiscal</option>
-            <option value="motivacion">🔥 Motivación</option>
-            <option value="drama">🎭 Drama/Reddit</option>
-            <option value="misterio">🌌 Misterio</option>
-          </select>
-        </div>
-        <div><label class="lbl">Plataforma</label>
-          <select class="sel" id="hooks-ai-plat" style="font-size:12px">
-            <option value="youtube">▶️ YouTube Shorts</option>
-            <option value="tiktok">🎵 TikTok</option>
-            <option value="instagram">📷 Instagram Reels</option>
-            <option value="all">📡 Todas</option>
-          </select>
-        </div>
-        <div><label class="lbl">Idioma</label>
-          <select class="sel" id="hooks-ai-lang" style="font-size:12px">
-            <option value="es">🇪🇸 Español</option>
-            <option value="lat">🌎 Latino</option>
-            <option value="en">🇺🇸 English</option>
-          </select>
-        </div>
-      </div>
-      <div id="hooks-ai-loading" style="display:none;text-align:center;padding:16px;color:var(--text3)">⏳ Claude generando hooks de alto CTR...</div>
-      <button class="btn btn-p" style="width:100%" onclick="runGenerateAIHooks()">⚡ Generar 10 hooks nuevos</button>
-    </div>
+  <div class="sh mb20"><h2>📋 Plantillas virales</h2></div>
+  <div style="text-align:center;padding:60px;color:var(--text3)">
+    <div style="font-size:48px;margin-bottom:12px">📋</div>
+    <div style="font-weight:600;margin-bottom:6px">Biblioteca de plantillas</div>
+    <p style="font-size:13px">Hooks, estructuras y formatos probados. Próximamente.</p>
   </div>
 </div>
+
+<!-- ════════════════ BUDGET ════════════════ -->
 <div class="view" id="view-budget">
   <div class="sh mb16">
     <h2>💰 Presupuesto</h2>
@@ -3807,7 +3776,6 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     <button class="sty-btn"     id="spy-tab-global"  onclick="switchSpyTab('global')">🌍 Top Global</button>
     <button class="sty-btn"     id="spy-tab-top"     onclick="switchSpyTab('top')">🏆 Top por nicho</button>
     <button class="sty-btn"     id="spy-tab-premium" onclick="switchSpyTab('premium')">⚡ APIs premium</button>
-    <button class="sty-btn" id="spy-tab-watchlist" onclick="switchSpyTab('watchlist')">Watchlist</button>
   </div>
 
   <!-- TAB: ANALIZAR CANAL -->
@@ -4030,6 +3998,47 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
     </div>
   </div>
 </div>
+
+<div class="view" id="view-analytics">
+  <div class="sh mb16">
+    <h2>Analytics</h2>
+    <div class="flex g8">
+      <button class="btn btn-g btn-sm" onclick="fetchAllYouTubeStats()">Actualizar YT</button>
+      <button class="btn btn-g btn-sm" onclick="exportAnalyticsCSV()">CSV</button>
+    </div>
+  </div>
+  <div class="g4 mb16">
+    <div class="sc"><div class="sc-label">Views totales</div><div class="sc-val" id="an-total-views">--</div></div>
+    <div class="sc"><div class="sc-label">Subs totales</div><div class="sc-val" id="an-total-subs">--</div></div>
+    <div class="sc"><div class="sc-label">Ingresos est.</div><div class="sc-val" id="an-total-rev" style="color:var(--green)">--</div></div>
+    <div class="sc"><div class="sc-label">Coste IA</div><div class="sc-val" id="an-total-cost" style="color:var(--red)">$0</div></div>
+  </div>
+  <div class="flex g6 mb16">
+    <button class="sty-btn act" id="an-tab-channels" onclick="switchAnalyticsTab('channels')">Por canal</button>
+    <button class="sty-btn" id="an-tab-tiktok" onclick="switchAnalyticsTab('tiktok')">TikTok/IG</button>
+    <button class="sty-btn" id="an-tab-costs" onclick="switchAnalyticsTab('costs')">Costes IA</button>
+    <button class="sty-btn" id="an-tab-log" onclick="switchAnalyticsTab('log')">Log</button>
+  </div>
+  <div id="an-panel-channels"><div id="an-channels-content"><div style="text-align:center;padding:32px;color:var(--text3)">Pulsa Actualizar YT para cargar stats</div></div></div>
+  <div id="an-panel-tiktok" style="display:none">
+    <div class="card mb14">
+      <div class="stl mb10">TikTok + Instagram (manual)</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:12px">TikTok e Instagram no tienen API publica. Introduce los datos desde TikTok Studio.</p>
+      <select class="sel" id="tt-channel-sel" style="width:100%;font-size:12px;margin-bottom:10px" onchange="loadTTStats()"><option value="">-- Selecciona canal --</option></select>
+      <div id="tt-stats-panel" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+          <div><label class="lbl">Seguidores TT</label><input class="inp" id="tt-followers" type="number" placeholder="12400"></div>
+          <div><label class="lbl">Views/mes TT</label><input class="inp" id="tt-views-month" type="number" placeholder="145000"></div>
+          <div><label class="lbl">Seguidores IG</label><input class="inp" id="ig-followers" type="number" placeholder="3200"></div>
+        </div>
+        <div style="display:flex;gap:8px"><button class="btn btn-p" style="flex:1" onclick="saveTTStats()">Guardar</button><button class="btn btn-g btn-sm" onclick="analyzeTTPerformance()">Analizar IA</button></div>
+      </div>
+      <div id="tt-stats-display"></div>
+    </div>
+  </div>
+  <div id="an-panel-costs" style="display:none"><div id="an-costs-content"></div></div>
+  <div id="an-panel-log" style="display:none"><div id="an-log-content"></div></div>
+</div>
 </div><!-- /content -->
 </div><!-- /main -->
 
@@ -4157,12 +4166,310 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 <script>
 // ── GLOBALS — must be first to avoid ReferenceError anywhere in script ──
+
+// ─── CORE KEY MANAGEMENT ─────────────────────────────────
+const KEY_MAP = {
+  anthropic:'fai_key_anthropic', openai:'fai_key_openai', pexels:'fai_key_pexels',
+  elevenlabs:'fai_key_elevenlabs', youtube:'fai_key_youtube', github:'fai_key_github',
+  heygen:'fai_key_heygen', did:'fai_key_did', runway:'fai_key_runway',
+  pika:'fai_key_pika', kling:'fai_key_kling', hailuo:'fai_key_hailuo',
+  minimax:'fai_key_minimax', groq:'fai_key_groq',
+  socialblade:'fai_key_socialblade', kalodata:'fai_key_kalodata', hypeauditor:'fai_key_hypeauditor'
+};
+
+function loadKeys() {
+  Object.entries(KEY_MAP).forEach(([name, lsKey]) => {
+    const val = localStorage.getItem(lsKey) || '';
+    KEYS[name] = val;
+    const inp = document.getElementById('key-' + name);
+    if (inp && val && !inp.value) inp.value = val.slice(0,4) + String.fromCharCode(8226).repeat(8);
+    const st = document.getElementById('key-status-' + name);
+    if (st) { st.textContent = val ? 'Configurada' : '--'; st.style.color = val ? 'var(--green)' : 'var(--text3)'; }
+  });
+  refreshSettingsDisplay();
+}
+
+function saveKey(name) {
+  const inp = document.getElementById('key-' + name);
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val || val.charCodeAt(4) === 8226) { showToast('Introduce una key valida'); return; }
+  const lsKey = KEY_MAP[name];
+  if (!lsKey) { showToast('API key no reconocida: ' + name); return; }
+  localStorage.setItem(lsKey, val);
+  KEYS[name] = val;
+  inp.value = val.slice(0,4) + String.fromCharCode(8226).repeat(8);
+  const st = document.getElementById('key-status-' + name);
+  if (st) { st.textContent = 'Guardada'; st.style.color = 'var(--green)'; }
+  showToast('API key guardada: ' + name);
+  refreshSettingsDisplay();
+}
+
+async function testKey(name) {
+  const key = KEYS[name] || localStorage.getItem(KEY_MAP[name] || '') || '';
+  if (!key) { showToast('No hay key guardada para ' + name); return; }
+  const st = document.getElementById('key-status-' + name);
+  if (st) { st.textContent = 'Probando...'; st.style.color = 'var(--amber)'; }
+  try {
+    let ok = false;
+    if (name === 'anthropic') {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:10,messages:[{role:'user',content:'hi'}]})});
+      ok = r.status !== 401;
+    } else if (name === 'openai') {
+      const r = await fetch('https://api.openai.com/v1/models', {headers:{'Authorization':'Bearer '+key}});
+      ok = r.status === 200;
+    } else if (name === 'pexels') {
+      const r = await fetch('https://api.pexels.com/v1/search?query=nature&per_page=1', {headers:{'Authorization':key}});
+      ok = r.status === 200;
+    } else { ok = true; }
+    if (st) { st.textContent = ok ? 'OK' : 'Invalida'; st.style.color = ok ? 'var(--green)' : 'var(--red)'; }
+    showToast(ok ? 'Key valida: ' + name : 'Key invalida: ' + name);
+  } catch(e) {
+    if (st) { st.textContent = 'Error'; st.style.color = 'var(--red)'; }
+    showToast('Error probando ' + name + ': ' + e.message);
+  }
+}
+
+function clearAllKeys() {
+  if (!confirm('Borrar todas las API keys guardadas?')) return;
+  Object.values(KEY_MAP).forEach(k => localStorage.removeItem(k));
+  Object.keys(KEYS).forEach(k => delete KEYS[k]);
+  document.querySelectorAll('[id^="key-"]').forEach(el => {
+    if (el.tagName === 'INPUT') el.value = '';
+    if (el.tagName === 'SPAN' && !el.id.includes('label')) { el.textContent = '--'; el.style.color = 'var(--text3)'; }
+  });
+  showToast('Todas las API keys eliminadas');
+}
+
+function refreshSettingsDisplay() {
+  const st = document.getElementById('settings-status');
+  if (!st) return;
+  const n = Object.values(KEY_MAP).filter(k => localStorage.getItem(k)).length;
+  st.textContent = n + ' keys configuradas';
+  st.style.color = n > 0 ? 'var(--green)' : 'var(--text3)';
+}
+
+function saveBackendUrl() {
+  const inp = document.getElementById('backend-url-inp');
+  if (!inp) return;
+  localStorage.setItem('fai_backend_url', inp.value.trim());
+  window.BACKEND_URL = inp.value.trim();
+  showToast('Backend URL guardada');
+}
+
+
+function updateVideoModelInfo() {
+  const sel  = document.getElementById('video-model-sel')?.value || 'backend';
+  const info = document.getElementById('video-model-info');
+  const cost = document.getElementById('video-model-cost');
+  const genBtn = document.getElementById('gen-btn');
+  const infos = {
+    backend: ['Clips Pexels + FFmpeg via Railway', '~$0.05-0.30'],
+    hailuo:  ['Hailuo API — ultra barato, buena calidad', '~$0.01-0.03/seg'],
+    kling:   ['Kling API — mejor calidad/precio actual', '~$0.04-0.09/seg'],
+    pika:    ['Pika API — rapido y accesible', '~$0.05-0.10/seg'],
+    runway:  ['Runway Gen-4 — control creativo cinematografico', '~$0.05-0.15/seg'],
+    wan:     ['Wan 2.1 via Replicate — open source barato', '~$0.01-0.05/seg'],
+    kinetic: ['Texto animado local — sin backend, instantaneo', 'GRATIS'],
+  };
+  const [infoText, costText] = infos[sel] || infos.backend;
+  if (info) info.textContent = infoText;
+  if (cost) cost.textContent = costText;
+  if (genBtn) {
+    if (sel === 'kinetic') {
+      genBtn.textContent = 'Generar Kinetic';
+      genBtn.onclick = () => generateKineticFallback();
+    } else {
+      genBtn.textContent = 'Generar MP4';
+      genBtn.onclick = generateRealVideo;
+    }
+  }
+  activeVideoModel = sel;
+}
+var activeVideoModel = 'backend';
+
+
+async function generateKineticFallback() {
+  const script  = currentScript || '';
+  const hook    = (generatedIdeas?.[selectedIdeaIndex]?.hook || script.slice(0, 80)).replace(/[<>&]/g, '');
+  const done    = document.getElementById('vprev-done');
+  const meta    = document.getElementById('vprev-meta');
+  const logLines = document.getElementById('gen-log-lines');
+
+  const addLog = (msg, col) => {
+    if (!logLines) return;
+    const d = document.createElement('div');
+    d.innerHTML = '<span style="color:#475569;margin-right:8px">' + new Date().toLocaleTimeString('es-ES') + '</span><span style="color:' + col + '">' + msg + '</span>';
+    logLines.appendChild(d); logLines.scrollTop = logLines.scrollHeight;
+  };
+
+  addLog('Modo Kinetic activado...', '#fbbf24');
+
+  // Build kinetic HTML safely (no template literals with HTML)
+  const parts = [
+    '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>',
+    '* { margin:0; padding:0; box-sizing:border-box; }',
+    'body { background:#000; width:1080px; height:1920px; display:flex; align-items:center; justify-content:center; font-family:Arial Black,sans-serif; }',
+    '.text { color:#fff; font-size:72px; font-weight:900; text-align:center; line-height:1.2; padding:60px; }',
+    '.accent { color:#fbbf24; }',
+    '</style></head><body>',
+    '<div class="text"><span class="accent">' + hook + '</span></div>',
+    '</body></html>'
+  ];
+  const kineticHTML = parts.join('\n');
+
+  const blob = new Blob([kineticHTML], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+
+  if (done) done.style.display = 'block';
+  if (meta) {
+    meta.style.display = 'block';
+    meta.innerHTML =
+      '<div style="background:#fbbf2415;border:1px solid #fbbf2433;border-radius:8px;padding:12px;margin-bottom:10px">' +
+      '<div style="color:#fbbf24;font-weight:700;margin-bottom:4px">Modo Kinetic</div>' +
+      '<div style="font-size:12px;color:#94a3b8">Preview HTML generada. Sube al backend Railway para MP4 real.</div>' +
+      '</div>' +
+      '<a href="' + url + '" download="kinetic_preview.html" class="btn btn-g btn-sm" style="display:block;text-align:center;text-decoration:none;margin-bottom:8px">Descargar preview HTML</a>' +
+      '<button class="btn btn-p btn-sm" style="width:100%" onclick="generateRealVideo()">Reintentar con backend</button>';
+  }
+  window._videoDownloadUrl = url;
+  addLog('Preview kinetic lista', '#00e87a');
+  showToast('Modo Kinetic: preview lista. Para MP4 usa el backend.');
+  setTimeout(() => setPStep(5), 2500);
+}
+
+
+// ─── HOOKS LIBRARY ───────────────────────────────────────────
+const HOOKS_DB = [
+  { id:'f1', niche:'finanzas',  plat:'youtube',   type:'dato',     lang:'es', ctr:9.2, hook:'Si tienes menos de 30 anos y no haces esto, perderas 50K sin darte cuenta' },
+  { id:'f2', niche:'finanzas',  plat:'tiktok',    type:'pregunta', lang:'es', ctr:8.8, hook:'Cuanto dinero PIERDES cada mes sin saberlo? La respuesta te va a doler' },
+  { id:'f3', niche:'finanzas',  plat:'youtube',   type:'secreto',  lang:'es', ctr:9.5, hook:'El truco que los bancos NO quieren que sepas para multiplicar tus ahorros' },
+  { id:'c1', niche:'cripto',    plat:'youtube',   type:'dato',     lang:'es', ctr:9.4, hook:'Bitcoin va a llegar a 200K o a cero. Esta semana se decide todo' },
+  { id:'c2', niche:'cripto',    plat:'tiktok',    type:'historia', lang:'es', ctr:9.8, hook:'Este hombre convirtio 1000 en 280000 con cripto. Aqui esta su estrategia' },
+  { id:'tc1',niche:'truecrime', plat:'youtube',   type:'historia', lang:'es', ctr:9.7, hook:'El crimen perfecto que quedo sin resolver 40 anos hasta que encontraron esto' },
+  { id:'tc2',niche:'truecrime', plat:'tiktok',    type:'dato',     lang:'es', ctr:9.3, hook:'Este asesino en serie vivio entre nosotros 30 anos. Nadie lo sospecho.' },
+  { id:'h1', niche:'historia',  plat:'youtube',   type:'dato',     lang:'es', ctr:8.6, hook:'El momento exacto en que Roma decidio destruir Cartago y por que fue inevitable' },
+  { id:'t1', niche:'tecnologia',plat:'youtube',   type:'dato',     lang:'es', ctr:9.0, hook:'Esta IA acabo de hacer en 8 segundos lo que a mi me llevaba 3 horas' },
+  { id:'t2', niche:'tecnologia',plat:'tiktok',    type:'secreto',  lang:'es', ctr:9.5, hook:'El prompt secreto de ChatGPT que los expertos no quieren que sepas' },
+  { id:'l1', niche:'legal',     plat:'youtube',   type:'error',    lang:'es', ctr:9.3, hook:'El error fiscal que le costo 12000 a mi cliente y que tu probablemente cometes' },
+  { id:'m1', niche:'motivacion',plat:'youtube',   type:'historia', lang:'es', ctr:8.5, hook:'A los 35 lo perdio todo. A los 40 era millonario. Esta es su historia real.' },
+  { id:'d1', niche:'drama',     plat:'tiktok',    type:'historia', lang:'es', ctr:9.6, hook:'Mi companero robo mi idea y me la presento al jefe. Lo que paso despues...' },
+  { id:'mi1',niche:'misterio',  plat:'youtube',   type:'dato',     lang:'es', ctr:9.1, hook:'Esta foto de 1923 muestra algo que no deberia existir. Los expertos no tienen respuesta.' },
+  { id:'s1', niche:'salud',     plat:'youtube',   type:'dato',     lang:'es', ctr:8.4, hook:'El alimento que comes cada dia esta destruyendo tu cerebro y no es el azucar' },
+];
+function loadSavedHooks() { try { const s=JSON.parse(localStorage.getItem('fai_hooks_db')||'[]'); s.forEach(h=>{if(!HOOKS_DB.find(x=>x.id===h.id))HOOKS_DB.push(h);}); } catch(e){} }
+function filterHooks() {
+  const ni=document.getElementById('hooks-niche-filter')?.value||'all';
+  const pl=document.getElementById('hooks-plat-filter')?.value||'all';
+  const se=document.getElementById('hooks-search')?.value?.toLowerCase()||'';
+  const f=HOOKS_DB.filter(h=>(ni==='all'||h.niche===ni)&&(pl==='all'||h.plat===pl)&&(!se||h.hook.toLowerCase().includes(se)));
+  renderHooksGrid(f.sort((a,b)=>b.ctr-a.ctr));
+}
+function renderHooksGrid(hooks) {
+  const g=document.getElementById('hooks-grid'); if(!g) return;
+  const pc={youtube:'#ff4444',tiktok:'#00d4c4',instagram:'#e1306c'};
+  const pi={youtube:'YT',tiktok:'TT',instagram:'IG'};
+  const ne={finanzas:'$',cripto:'B',truecrime:'X',historia:'H',tecnologia:'T',legal:'L',motivacion:'M',drama:'D',misterio:'?',salud:'S'};
+  if(!hooks.length){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3)">No hay hooks. <button class="btn btn-p btn-sm" onclick="runGenerateAIHooks()">Generar con IA</button></div>';return;}
+  g.innerHTML=hooks.map(h=>{
+    const col=pc[h.plat]||'var(--blue)';
+    const cc=h.ctr>=9?'var(--green)':h.ctr>=8?'var(--amber)':'var(--text3)';
+    return '<div class="card" style="border-top:2px solid '+col+'">'+
+      '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:10px;color:var(--text3)">'+(ne[h.niche]||'?')+' '+h.niche+' · '+pi[h.plat]+'</span><span style="font-size:11px;font-weight:800;color:'+cc+'">'+h.ctr.toFixed(1)+'%</span></div>'+
+      '<div style="font-size:13px;font-weight:600;margin-bottom:10px">"'+h.hook+'"</div>'+
+      '<div style="display:flex;gap:6px">'+'<button class="btn btn-p btn-sm" style="flex:1;font-size:11px" onclick="useHookInPipeline(this.dataset.hook,this.dataset.niche)" data-hook="'+h.hook.replace(/"/g,'')+'" data-niche="'+h.niche+'">Usar</button>'+'<button class="btn btn-g btn-sm" style="font-size:11px" onclick="navigator.clipboard.writeText(this.dataset.hook).then(()=>showToast(\"Copiado\"))" data-hook="'+h.hook.replace(/"/g,'')+'">Copiar</button>'+'</div></div>';
+  }).join('');
+}
+function useHookInPipeline(hook,niche){currentIdea=hook;selectedNiche=niche;nav('pipeline');showToast('Hook cargado: '+hook.slice(0,40));}
+async function runGenerateAIHooks() {
+  if(!KEYS.anthropic){showToast('Necesitas Anthropic API key');return;}
+  const ni=document.getElementById('hooks-ai-niche')?.value||'finanzas';
+  const pl=document.getElementById('hooks-ai-plat')?.value||'youtube';
+  const la=document.getElementById('hooks-ai-lang')?.value||'es';
+  const btn=document.getElementById('hooks-ai-btn');
+  if(btn){btn.disabled=true;btn.textContent='Generando...';}
+  try {
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,messages:[{role:'user',content:'Genera 8 hooks virales para canal IA de '+ni+' en '+pl+' en idioma '+la+'. Responde SOLO en JSON: {"hooks":[{"hook":"texto","type":"dato|pregunta|secreto","ctr":8.5}]}'}]})});
+    const d=await r.json();
+    const res=JSON.parse((d.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
+    const newH=(res.hooks||[]).map((h,i)=>({id:'ai_'+Date.now()+'_'+i,niche:ni,plat:pl==='all'?'youtube':pl,lang:la,type:h.type||'dato',ctr:parseFloat(h.ctr)||8,hook:h.hook,ai_generated:true}));
+    newH.forEach(h=>HOOKS_DB.push(h));
+    const ex=JSON.parse(localStorage.getItem('fai_hooks_db')||'[]');
+    localStorage.setItem('fai_hooks_db',JSON.stringify([...ex,...newH]));
+    filterHooks();
+    showToast(newH.length+' hooks generados');
+  } catch(e){showToast('Error: '+e.message);}
+  finally{if(btn){btn.disabled=false;btn.textContent='Generar hooks';}}
+}
+
+
+// ─── AFFILIATE AUTO-SUGGEST ──────────────────────────────────
+const AFFILIATE_DB = {
+  finanzas: [{name:'Trade Republic',commission:'10E',cta:'Invierte sin comisiones con Trade Republic',link:'https://traderepublic.com'},{name:'Revolut',commission:'bonus',cta:'Cuenta gratis sin comisiones con Revolut',link:'https://revolut.com'}],
+  cripto:   [{name:'Binance',commission:'40%',cta:'Compra Bitcoin sin comisiones en Binance',link:'https://binance.com'},{name:'Ledger',commission:'10%',cta:'Protege tus criptos con Ledger',link:'https://ledger.com'}],
+  tecnologia:[{name:'NordVPN',commission:'40%',cta:'Protege tu privacidad con NordVPN',link:'https://nordvpn.com'},{name:'Hostinger',commission:'60%',cta:'Hosting profesional desde 2 euros en Hostinger',link:'https://hostinger.com'}],
+  legal:    [{name:'Declarando',commission:'20E',cta:'Haz tu declaracion sin errores con Declarando',link:'https://declarando.es'}],
+  salud:    [{name:'myprotein',commission:'8%',cta:'Los mejores suplementos en Myprotein',link:'https://myprotein.com'}],
+  negocios: [{name:'Shopify',commission:'58-200',cta:'Monta tu tienda online en minutos con Shopify',link:'https://shopify.com'}],
+};
+function autoSuggestAffiliateLinks(script, niche) {
+  const panel = document.getElementById('aff-auto-panel');
+  const list  = document.getElementById('aff-auto-list');
+  if (!panel || !list) return;
+  const progs = AFFILIATE_DB[niche] || [];
+  if (!progs.length) return;
+  panel.style.display = 'block';
+  list.innerHTML = progs.slice(0, 2).map(function(p) {
+    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--adim);border:1px solid var(--amber)33;border-radius:var(--r);margin-bottom:6px">' +
+      '<div style="flex:1"><div style="font-size:12px;font-weight:600">' + p.name + ' <span style="font-size:10px;color:var(--text3)">· ' + p.commission + '</span></div>' +
+      '<div style="font-size:11px;color:var(--text3);font-style:italic">' + p.cta + '</div></div>' +
+      '<button class="btn btn-p btn-sm" style="font-size:10px" ' +
+        'data-name="' + p.name + '" data-link="' + p.link + '" data-cta="' + p.cta + '" ' +
+        'onclick="injectAffiliateInDescription(this.dataset.name,this.dataset.link,this.dataset.cta)">+ Desc</button>' +
+      '</div>';
+  }).join('');
+}
+
+function injectAffiliateInDescription(name,link,cta) {
+  const el=document.getElementById('apv-desc');
+  if(el) { el.value+='\n\n'+cta+'\n'+link+'\n(#ad #afiliado)'; showToast('Afiliado anadido: '+name); }
+  else { navigator.clipboard.writeText(cta+'\n'+link).then(()=>showToast('CTA copiado')); }
+}
+
+
+function playVideoPreview() {
+  const url = window._videoPreviewUrl;
+  if (!url) return;
+  const player   = document.getElementById('vprev-player');
+  const playBtn  = document.getElementById('vprev-play-btn');
+  const thumbWrap = document.getElementById('vprev-thumb-wrap');
+  if (!player) return;
+  player.src = url;
+  player.style.display = 'block';
+  if (playBtn)  playBtn.style.display = 'none';
+  if (thumbWrap) thumbWrap.style.pointerEvents = 'none';
+  player.play().catch(e => showToast('Reproduce con el boton del player'));
+}
+
+
+function updateSubtitleStyle() {
+  const style = document.getElementById('subtitle-style-sel')?.value || 'capcut';
+  const labels = {capcut:'3 palabras · bold white · CapCut', viral:'5 palabras · amarillo · Impact',
+                  minimal:'7 palabras · blanco · Arial', none:'Sin subtítulos'};
+  const info = document.getElementById('video-model-info');
+  if (info && labels[style]) info.textContent = labels[style];
+  // Store for payload
+  window._subtitleStyle = style;
+}
+
 const KEYS = {};
 const TIER_CONFIG = {
-  free:    { llm:'local',  tts:'kokoro', img:'pexels', costPerVid:0,    llmModel:'llama-local',              ttsModel:'Kokoro TTS (local)', label:'🟢 GRATIS' },
-  eco:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.01, llmModel:'claude-haiku-4-5-20251001', ttsModel:'OpenAI TTS-1',       label:'🟡 ECONÓMICO' },
-  opt:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.06, llmModel:'claude-sonnet-4-6',        ttsModel:'OpenAI TTS-1 HD',    label:'🔵 OPTIMIZADO' },
-  premium: { llm:'claude', tts:'11labs', img:'pexels', costPerVid:0.25, llmModel:'claude-opus-4-6',          ttsModel:'ElevenLabs v3',      label:'🔴 PREMIUM' }
+  free:    { llm:'local',  tts:'kokoro', img:'pexels', costPerVid:0,     llmModel:'llama-local',              ttsModel:'Kokoro TTS (local)',   label:'GRATIS',     video:'Wan / Hailuo' },
+  eco:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.15,  llmModel:'claude-haiku-4-5-20251001', ttsModel:'OpenAI TTS-1',         label:'ECONOMICO',  video:'Hailuo API' },
+  opt:     { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:0.60,  llmModel:'claude-sonnet-4-6',         ttsModel:'ElevenLabs std',        label:'OPTIMIZADO', video:'Kling API' },
+  premium: { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:3.00,  llmModel:'claude-sonnet-4-6',         ttsModel:'ElevenLabs HD',         label:'PREMIUM',    video:'Kling + Runway' },
+  ultra:   { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:10.00, llmModel:'claude-opus-4-6',           ttsModel:'EL clonada emocional',  label:'ULTRA',      video:'Runway Gen-4 + HeyGen' },
+  scale:   { llm:'groq',   tts:'11labs', img:'sdxl',   costPerVid:0.05,  llmModel:'groq-llama-3',              ttsModel:'EL batch API',          label:'SCALE',      video:'Kling + Wan batch' },
 };
 let activeTier = 'opt';
 try { activeTier = localStorage.getItem('fai_active_tier') || 'opt'; } catch(e) {}
@@ -5047,6 +5354,8 @@ async function generateRealVideo() {
       throw new Error('No hay clips válidos — busca clips de Pexels primero');
     }
 
+    const subtitleStyle = window._subtitleStyle || document.getElementById('subtitle-style-sel')?.value || 'capcut';
+    const videoModel = window.activeVideoModel || document.getElementById('video-model-sel')?.value || 'backend';
     const payload = {
       audio_b64: audioB64Clean,
       audio_url: '',
@@ -5054,7 +5363,10 @@ async function generateRealVideo() {
       script: currentScript || '',
       title: idea?.hook || 'FacelessAI Video',
       lang: activeLang,
-      subtitle_style: 'viral'
+      niche: selectedNiche || 'default',
+      subtitle_style: subtitleStyle === 'none' ? 'minimal' : subtitleStyle,
+      add_music: subtitleStyle !== 'none',
+      zoom_effect: true,
     };
 
     addLog('📦 Payload: audio=' + Math.round(audioB64Clean.length/1024) + 'KB · clips=' + clipUrls.length, '#475569');
@@ -5090,6 +5402,7 @@ async function generateRealVideo() {
 
       if (status.status === 'done') {
         const downloadUrl = backendUrl + status.download_url;
+        const thumbUrl = status.thumbnail_url ? backendUrl + status.thumbnail_url : null;
         if (loading) loading.style.display = 'none';
         if (done) done.style.display = 'block';
         const subEl = document.getElementById('vprev-subtitle');
@@ -5097,7 +5410,20 @@ async function generateRealVideo() {
         const meta = document.getElementById('vprev-meta');
         if (meta) {
           meta.style.display = 'block';
-          meta.innerHTML = '<strong style="color:#00e87a">✅ MP4 generado</strong><br><a href="' + downloadUrl + '" download="facelessai.mp4" class="btn btn-p btn-sm" style="display:inline-block;margin-top:8px;text-decoration:none">⬇ Descargar MP4</a>';
+          // Show thumbnail if available
+          const thumbWrap = document.getElementById('vprev-thumb-wrap');
+          const thumbImg  = document.getElementById('vprev-thumb');
+          const player    = document.getElementById('vprev-player');
+          if (thumbUrl && thumbWrap && thumbImg) {
+            thumbImg.src = thumbUrl;
+            thumbWrap.style.display = 'block';
+            window._videoPreviewUrl = downloadUrl;
+          }
+          // Download area
+          const dlArea = document.getElementById('vprev-download-area');
+          if (dlArea) dlArea.innerHTML = '<strong style="color:#00e87a">✅ Video listo</strong> · ' + (status.message||'') + '<br>' +
+            '<a href="' + downloadUrl + '" download="facelessai.mp4" class="btn btn-p btn-sm" style="display:inline-block;margin-top:8px;text-decoration:none">⬇ Descargar MP4</a>' +
+            (thumbUrl ? ' <a href="' + thumbUrl + '" download="thumbnail.jpg" class="btn btn-g btn-sm" style="text-decoration:none">⬇ Thumbnail</a>' : '');
         }
         addLog('✅ MP4 listo · ' + status.message, '#00e87a');
         window._videoDownloadUrl = downloadUrl;
@@ -6627,7 +6953,7 @@ function renderChannels() {
         </div>
       </div>
 
-      <!-- Lang/voice/score tags like v4.19 -->
+      <!-- Lang/voice/score tags like v4.20 -->
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
         <span class="tag" style="font-size:10px;background:var(--bg3)">${flag} ${ch.lang==='es'?'Español':ch.lang==='lat'?'Latino':'English'}</span>
         <span class="tag" style="font-size:10px;background:var(--bg3)">${ch.gender==='m'?'♂':'♀'} ${ch.voice||'auto'}</span>
@@ -6960,6 +7286,8 @@ var _navCallbacks = {
   'influencer-contenido': function() { try { loadInfluencerContenido(); } catch(e) {} },
   'influencer-video':     function() { try { loadInfluencerContenido(); switchVideoAITab('heygen'); } catch(e) {} },
   score:         function() { try { loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e) {} },
+  templates:   function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
+  reuse:       function() { try { loadReuseDrafts(); } catch(e) {} },
   analytics:     function() { try { renderAnalytics(); switchAnalyticsTab('log'); } catch(e) { console.error(e); } },
   clipping:      function() { try { renderClipChannels(); } catch(e) { console.error(e); } },
   clippipeline:  function() { try { setCPStep(0); } catch(e) {} },
@@ -6968,11 +7296,16 @@ var _navCallbacks = {
   budget:        function() { try { renderBudget(); } catch(e) {} },
   models:        function() { try { renderModels(); } catch(e) { console.error('renderModels:', e); } },
   autopilot:     function() { try { renderAutopilot(); } catch(e) {} },
-  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); renderWatchlist(); } catch(e) {} },
+  templates:   function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
+  reuse:       function() { try { loadReuseDrafts(); } catch(e) {} },
+  analytics:   function() { try { switchAnalyticsTab('channels'); } catch(e) {} },
+  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); } catch(e) {} },
   clone:         function() { try { setClonerStep(0); } catch(e) {} },
-  templates:     function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
   monetization:  function() { try { calcMultiMono(); } catch(e) {} },
-  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); renderWatchlist(); } catch(e) {} },
+  templates:   function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
+  reuse:       function() { try { loadReuseDrafts(); } catch(e) {} },
+  analytics:   function() { try { switchAnalyticsTab('channels'); } catch(e) {} },
+  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); } catch(e) {} },
   settings:      function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
 };
 
@@ -8124,13 +8457,6 @@ async function runAutopilotCycle() {
 
     // Step 2: Generate idea
     addLog('💡 Generando idea con Claude...');
-    // Anti-repeticion: evita repetir angulos recientes
-    const recentDrafts = getDrafts().filter(d => d.channel === channel.name).slice(-10);
-    const recentHooks  = recentDrafts.map(d => d.hook || d.title || '').filter(Boolean).slice(-5);
-    const antiRepeat   = recentHooks.length >= 3
-      ? '\nNO repitas estos angulos recientes del canal:\n' + recentHooks.map((h,i) => (i+1)+'. '+h).join('\n') + '\nGenera un angulo DIFERENTE.'
-      : '';
-
     const ideaPrompt = `Genera 1 idea viral para un vídeo IA de 60 segundos sobre ${channel.niche}.
 Mercado: ${channel.lang === 'es' ? 'España' : channel.lang === 'lat' ? 'LATAM' : 'US English'}.
 Responde SOLO con el hook del título (sin comillas, máximo 80 caracteres, impactante).`;
@@ -8560,11 +8886,12 @@ function openChannelRpmModal(channelName) {
 // ULTRA TIER + TIER RECOMMENDATION ENGINE
 // ══════════════════════════════════════════════════════════
 const TIERS = {
-  free:  { label:'GRATIS',     color:'var(--green)',  cost:'$0.00',  llm:'Llama local', tts:'Kokoro',        video:'—',            desc:'Sin coste. Calidad básica.' },
-  eco:   { label:'ECONÓMICO',  color:'var(--blue)',   cost:'~$0.01', llm:'Claude Haiku',tts:'OpenAI TTS-1',  video:'Pexels clips', desc:'Ideal para volumen alto.' },
-  opt:   { label:'OPTIMIZADO', color:'var(--amber)',  cost:'~$0.06', llm:'Claude Sonnet',tts:'OpenAI TTS-1 HD',video:'Pexels HD',  desc:'Balance calidad/precio.' },
-  prem:  { label:'PREMIUM',    color:'var(--purple)', cost:'~$0.25', llm:'Claude Opus', tts:'ElevenLabs v3', video:'Pexels + efectos',desc:'Máxima calidad de voz.' },
-  ultra: { label:'ULTRA',      color:'#ff6b35',       cost:'~$1.50', llm:'Claude Opus', tts:'ElevenLabs clonada',video:'HeyGen/Runway/D-ID/Pika',desc:'Avatar IA real. Influencer IA.' },
+  free:  { label:'GRATIS',     color:'var(--green)',  cost:'$0.00',    llm:'Groq LLaMA',         tts:'Kokoro/Bark',       video:'Wan 2.1 / Hailuo',      img:'Pollinations',  desc:'Automatizacion masiva sin coste. Ideal para testing y volumen.' },
+  eco:   { label:'ECONOMICO',  color:'var(--blue)',   cost:'~0.15E',   llm:'Claude Haiku',        tts:'OpenAI TTS-1',      video:'Hailuo API',             img:'SDXL API',      desc:'Mejor ratio coste/volumen. ~$0.01-0.03/seg video. Ideal para TikTok pages.' },
+  opt:   { label:'OPTIMIZADO', color:'var(--amber)',  cost:'~0.60E',   llm:'Claude Sonnet',       tts:'ElevenLabs std',    video:'Kling API',              img:'DALL-E 3',      desc:'SWEET SPOT: mejor calidad/precio. Kling ~$0.04-0.09/seg. Multi-plataforma.' },
+  prem:  { label:'PREMIUM',    color:'var(--purple)', cost:'~3.00E',   llm:'Claude Sonnet',       tts:'ElevenLabs HD',     video:'Kling + Runway',         img:'DALL-E HD',     desc:'Para YouTube serio y contenido de marca. Calidad broadcast.' },
+  ultra: { label:'ULTRA',      color:'#ff6b35',       cost:'~10.00E',  llm:'Claude Opus',         tts:'EL clonada',        video:'Runway Gen-4 + HeyGen',  img:'Midjourney',    desc:'Avatar IA real. Nivel agencia. Cinematografico.' },
+  scale: { label:'SCALE',      color:'#a855f7',       cost:'~0.05E',   llm:'Groq + Haiku batch',  tts:'EL batch API',      video:'Kling + Wan batch',      img:'SDXL batch',    desc:'Automatizacion masiva. Multi-canal. Granjas de contenido IA.' },
 };
 activeTier = localStorage.getItem('fai_active_tier') || activeTier || 'opt';
 
@@ -9192,6 +9519,15 @@ const MODEL_CONFIG = {
     video: { model:'HeyGen / Runway / D-ID / Pika',desc:'Avatar IA real',    cost:1.200, quality:5 },
     subs:  { model:'Whisper API', desc:'Transcripción profesional',           cost:0.006, quality:5 },
   },
+  scale: {
+    ideas: { model:'Groq LLaMA 3',       desc:'Ultra-rapido, gratis, miles ideas/hora', cost:0.0005, quality:3 },
+    script:{ model:'Claude Haiku batch', desc:'Scripts batch, coste minimo',            cost:0.002,  quality:3 },
+    score: { model:'Groq LLaMA',         desc:'Score rapido para filtrar ideas',        cost:0.0001, quality:2 },
+    tts:   { model:'ElevenLabs batch',   desc:'TTS batch, maxima eficiencia',           cost:0.010,  quality:3 },
+    video: { model:'Kling + Wan batch',  desc:'Wan clips simples, Kling para top',      cost:0.030,  quality:3 },
+    img:   { model:'SDXL batch',         desc:'Thumbnails en batch',                    cost:0.001,  quality:3 },
+    subs:  { model:'Whisper local',      desc:'Transcripcion local masiva',             cost:0,      quality:3 },
+  }
 };
 
 const STAGE_LABELS = {
@@ -9374,8 +9710,8 @@ function applyTierToPipeline() {
   const tInfo = TIERS[tier] || TIERS['opt'];
 
   // ── Update tier info bar ──
-  const tierNames = { free:'GRATIS', eco:'ECONÓMICO', opt:'OPTIMIZADO', prem:'PREMIUM', ultra:'ULTRA' };
-  const tierColors = { free:'var(--green)', eco:'var(--blue)', opt:'var(--amber)', prem:'var(--purple)', ultra:'#ff6b35' };
+  const tierNames = { free:'GRATIS', eco:'ECONÓMICO', opt:'OPTIMIZADO', prem:'PREMIUM', ultra:'ULTRA', scale:'SCALE' };
+  const tierColors = { free:'var(--green)', eco:'var(--blue)', opt:'var(--amber)', prem:'var(--purple)', ultra:'#ff6b35', scale:'#a855f7' };
   const col = tierColors[tier] || 'var(--amber)';
 
   const setEl = (id,v,c) => { const el=document.getElementById(id); if(el){el.textContent=v; if(c) el.style.color=c;} };
@@ -9485,7 +9821,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.19';
+    data['_version'] = 'v4.20';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -10171,7 +10507,7 @@ var _globalPlatFilter = 'all';
 // Update switchSpyTab to include global
 const _origSwitchSpyTab = switchSpyTab;
 switchSpyTab = function(tab) {
-  ['manual','global','top','premium','watchlist'].forEach(t => {
+  ['manual','global','top','premium'].forEach(t => {
     const btn   = document.getElementById('spy-tab-' + t);
     const panel = document.getElementById('spy-panel-' + t);
     if (btn)   btn.classList.toggle('act', t === tab);
@@ -10438,633 +10774,6 @@ function globalSpyNiche(niche) {
   const nicheEl = document.getElementById('spy-top-niche');
   if (nicheEl) nicheEl.value = niche;
   showToast('🎯 Explorando nicho: ' + niche);
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 1 — BIBLIOTECA DE HOOKS
-// ══════════════════════════════════════════════════════════
-const HOOKS_DB = [
-  // FINANZAS
-  { id:'f1',  niche:'finanzas', plat:'youtube',   type:'dato',     lang:'es', ctr:9.2, hook:'Si tienes menos de 30 años y no haces esto, perderás $50,000 sin darte cuenta', uses:0 },
-  { id:'f2',  niche:'finanzas', plat:'tiktok',    type:'pregunta', lang:'es', ctr:8.8, hook:'¿Cuánto dinero PIERDES cada mes sin saberlo? (La respuesta te va a doler)', uses:0 },
-  { id:'f3',  niche:'finanzas', plat:'youtube',   type:'secreto',  lang:'es', ctr:9.5, hook:'El truco que los bancos NO quieren que sepas para multiplicar tus ahorros', uses:0 },
-  { id:'f4',  niche:'finanzas', plat:'instagram', type:'lista',    lang:'es', ctr:7.9, hook:'3 errores de dinero que el 90% comete antes de los 35 (yo caí en todos)', uses:0 },
-  { id:'f5',  niche:'finanzas', plat:'youtube',   type:'error',    lang:'en', ctr:9.1, hook:'I lost $10,000 making this mistake — and most people do the same thing', uses:0 },
-  { id:'f6',  niche:'finanzas', plat:'tiktok',    type:'vs',       lang:'es', ctr:8.3, hook:'Invertir en bolsa vs inmuebles en 2025: esto es lo que nadie te dice', uses:0 },
-  { id:'f7',  niche:'finanzas', plat:'youtube',   type:'dato',     lang:'lat',ctr:8.7, hook:'Con $100 al mes puedes tener $1 millón en 25 años. Te muestro cómo.', uses:0 },
-
-  // CRIPTO/TRADING
-  { id:'c1',  niche:'cripto',   plat:'youtube',   type:'dato',     lang:'es', ctr:9.4, hook:'Bitcoin va a llegar a $200K — o a $0. Esta semana se decide todo', uses:0 },
-  { id:'c2',  niche:'cripto',   plat:'tiktok',    type:'historia', lang:'es', ctr:9.8, hook:'Este hombre convirtió $1,000 en $280,000 con cripto. Aquí está su estrategia exacta', uses:0 },
-  { id:'c3',  niche:'cripto',   plat:'youtube',   type:'error',    lang:'es', ctr:8.9, hook:'Los 3 errores que hacen perder dinero al 80% de los inversores en cripto', uses:0 },
-  { id:'c4',  niche:'cripto',   plat:'tiktok',    type:'secreto',  lang:'lat',ctr:9.2, hook:'La moneda que los grandes fondos están comprando en silencio (no es Bitcoin)', uses:0 },
-
-  // TRUE CRIME
-  { id:'tc1', niche:'truecrime',plat:'youtube',   type:'historia', lang:'es', ctr:9.7, hook:'El crimen perfecto que quedó sin resolver durante 40 años — hasta que encontraron esto', uses:0 },
-  { id:'tc2', niche:'truecrime',plat:'tiktok',    type:'dato',     lang:'es', ctr:9.3, hook:'Este asesino en serie vivió entre nosotros 30 años. Nadie lo sospechó.', uses:0 },
-  { id:'tc3', niche:'truecrime',plat:'youtube',   type:'pregunta', lang:'es', ctr:8.8, hook:'¿Qué hace un asesino en serie la noche antes de ser atrapado?', uses:0 },
-  { id:'tc4', niche:'truecrime',plat:'instagram', type:'secreto',  lang:'en', ctr:9.0, hook:'The detail that solved a 20-year cold case nobody was looking for', uses:0 },
-
-  // HISTORIA
-  { id:'h1',  niche:'historia', plat:'youtube',   type:'dato',     lang:'es', ctr:8.6, hook:'El momento exacto en que Roma decidió destruir Cartago — y por qué fue inevitable', uses:0 },
-  { id:'h2',  niche:'historia', plat:'tiktok',    type:'secreto',  lang:'es', ctr:9.1, hook:'El secreto que Napoleón se llevó a la tumba y que cambiaría la historia', uses:0 },
-  { id:'h3',  niche:'historia', plat:'youtube',   type:'pregunta', lang:'en', ctr:8.4, hook:'What if one phone call in 1914 had prevented World War I?', uses:0 },
-  { id:'h4',  niche:'historia', plat:'instagram', type:'lista',    lang:'es', ctr:7.8, hook:'5 imperios que cayeron en menos de 24 horas (y el tuyo podría ser el siguiente)', uses:0 },
-
-  // TECNOLOGÍA/IA
-  { id:'t1',  niche:'tecnologia',plat:'youtube',  type:'dato',     lang:'es', ctr:9.0, hook:'Esta IA acaba de hacer en 8 segundos lo que a mí me llevaba 3 horas', uses:0 },
-  { id:'t2',  niche:'tecnologia',plat:'tiktok',   type:'secreto',  lang:'es', ctr:9.5, hook:'El prompt secreto de ChatGPT que los expertos no quieren que sepas', uses:0 },
-  { id:'t3',  niche:'tecnologia',plat:'youtube',  type:'pregunta', lang:'en', ctr:8.9, hook:'Is AI already smarter than you? (The answer is more complex than you think)', uses:0 },
-  { id:'t4',  niche:'tecnologia',plat:'tiktok',   type:'lista',    lang:'es', ctr:8.7, hook:'Las 5 IAs gratuitas que están reemplazando trabajos de $80K/año', uses:0 },
-
-  // LEGAL/FISCAL
-  { id:'l1',  niche:'legal',    plat:'youtube',   type:'error',    lang:'es', ctr:9.3, hook:'El error fiscal que le costó $12,000 a mi cliente — y que tú probablemente estás cometiendo', uses:0 },
-  { id:'l2',  niche:'legal',    plat:'tiktok',    type:'secreto',  lang:'es', ctr:9.6, hook:'El truco legal que usan las grandes empresas para pagar menos impuestos (y tú puedes hacer lo mismo)', uses:0 },
-  { id:'l3',  niche:'legal',    plat:'youtube',   type:'dato',     lang:'lat',ctr:8.8, hook:'Si te despiden, tienen que pagarte ESTO. El 70% no lo sabe y pierde dinero', uses:0 },
-
-  // MOTIVACIÓN
-  { id:'m1',  niche:'motivacion',plat:'youtube',  type:'historia', lang:'es', ctr:8.5, hook:'A los 35 lo perdió todo. A los 40 era millonario. Esta es su historia real.', uses:0 },
-  { id:'m2',  niche:'motivacion',plat:'tiktok',   type:'dato',     lang:'es', ctr:8.2, hook:'El hábito que tienen el 92% de los millonarios y que puedes empezar hoy gratis', uses:0 },
-  { id:'m3',  niche:'motivacion',plat:'instagram',type:'error',    lang:'lat',ctr:7.9, hook:'Deja de hacer esto si quieres cambiar tu vida en 90 días', uses:0 },
-
-  // DRAMA/REDDIT
-  { id:'d1',  niche:'drama',    plat:'tiktok',    type:'historia', lang:'es', ctr:9.6, hook:'Mi compañero de trabajo robó mi idea y me la presentó al jefe. Lo que pasó después...', uses:0 },
-  { id:'d2',  niche:'drama',    plat:'youtube',   type:'secreto',  lang:'es', ctr:9.2, hook:'Le abrí el móvil a mi pareja por accidente. No estaba preparado para lo que vi.', uses:0 },
-  { id:'d3',  niche:'drama',    plat:'instagram', type:'pregunta', lang:'lat',ctr:8.8, hook:'¿Soy el malo de la historia por hacer esto? Necesito opiniones.', uses:0 },
-
-  // MISTERIO
-  { id:'mi1', niche:'misterio', plat:'youtube',   type:'dato',     lang:'es', ctr:9.1, hook:'Esta foto tomada en 1923 muestra algo que no debería existir. Los expertos no tienen respuesta.', uses:0 },
-  { id:'mi2', niche:'misterio', plat:'tiktok',    type:'pregunta', lang:'es', ctr:9.4, hook:'¿Por qué NASA borró estas imágenes de la Luna? La respuesta oficial no convence a nadie', uses:0 },
-
-  // SALUD
-  { id:'s1',  niche:'salud',    plat:'youtube',   type:'dato',     lang:'es', ctr:8.4, hook:'El alimento que comes cada día está destruyendo tu cerebro (y no es el azúcar)', uses:0 },
-  { id:'s2',  niche:'salud',    plat:'tiktok',    type:'error',    lang:'lat',ctr:8.7, hook:'Dejas de dormir bien porque haces ESTO antes de acostarte. Para ya.', uses:0 },
-];
-
-// Load saved hooks from localStorage
-function loadSavedHooks() {
-  try {
-    const saved = JSON.parse(localStorage.getItem('fai_hooks_db') || '[]');
-    saved.forEach(h => { if (!HOOKS_DB.find(x => x.id === h.id)) HOOKS_DB.push(h); });
-  } catch(e) {}
-}
-
-function filterHooks() {
-  const niche  = document.getElementById('hooks-niche-filter')?.value || 'all';
-  const plat   = document.getElementById('hooks-plat-filter')?.value  || 'all';
-  const type   = document.getElementById('hooks-type-filter')?.value  || 'all';
-  const search = document.getElementById('hooks-search')?.value.toLowerCase() || '';
-
-  let filtered = HOOKS_DB.filter(h =>
-    (niche  === 'all' || h.niche === niche) &&
-    (plat   === 'all' || h.plat  === plat)  &&
-    (type   === 'all' || h.type  === type)  &&
-    (!search || h.hook.toLowerCase().includes(search))
-  );
-
-  // Sort by CTR desc
-  filtered.sort((a, b) => b.ctr - a.ctr);
-  renderHooksGrid(filtered);
-}
-
-function renderHooksGrid(hooks) {
-  const grid = document.getElementById('hooks-grid');
-  if (!grid) return;
-
-  const platColors = { youtube:'#ff4444', tiktok:'#00d4c4', instagram:'#e1306c' };
-  const platIcons  = { youtube:'▶️', tiktok:'🎵', instagram:'📷' };
-  const typeLabels = { pregunta:'❓ Pregunta', dato:'📊 Dato', secreto:'🤫 Secreto', historia:'🎭 Historia', lista:'📋 Lista', error:'❌ Error común', vs:'⚔️ Comparativa' };
-  const langFlags  = { es:'🇪🇸', lat:'🌎', en:'🇺🇸' };
-  const nicheEmoji = { finanzas:'💰', cripto:'₿', truecrime:'🔪', historia:'📚', tecnologia:'💻', legal:'⚖️', motivacion:'🔥', drama:'🎭', misterio:'🌌', salud:'🏃' };
-
-  if (!hooks.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3)">No hay hooks para estos filtros. <button class="btn btn-p btn-sm" onclick="generateAIHooks()">🤖 Generar con IA</button></div>';
-    return;
-  }
-
-  grid.innerHTML = hooks.map(h => {
-    const col    = platColors[h.plat] || 'var(--blue)';
-    const ctrCol = h.ctr >= 9 ? 'var(--green)' : h.ctr >= 8 ? 'var(--amber)' : 'var(--text3)';
-    return '<div class="card" style="border-top:2px solid ' + col + ';position:relative">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
-        '<div style="display:flex;align-items:center;gap:6px">' +
-          '<span style="font-size:12px">' + (nicheEmoji[h.niche]||'📺') + '</span>' +
-          '<span style="font-size:10px;color:var(--text3)">' + h.niche + '</span>' +
-          '<span style="font-size:10px;color:var(--border)">·</span>' +
-          '<span style="font-size:10px;color:' + col + '">' + platIcons[h.plat] + '</span>' +
-          '<span style="font-size:10px;color:var(--text3)">' + (typeLabels[h.type]||h.type) + '</span>' +
-          '<span style="font-size:10px">' + (langFlags[h.lang]||'🌍') + '</span>' +
-        '</div>' +
-        '<div style="font-size:11px;font-weight:800;font-family:var(--mono);color:' + ctrCol + '">' + h.ctr.toFixed(1) + '% CTR</div>' +
-      '</div>' +
-      '<div style="font-size:13px;font-weight:600;line-height:1.5;margin-bottom:12px;color:var(--text1)">"' + h.hook + '"</div>' +
-      '<div style="display:flex;gap:6px">' +
-        '<button class="btn btn-p btn-sm" style="flex:1;font-size:11px" onclick="useHookInPipeline(\'' + h.hook.replace(/'/g,"\\'").replace(/"/g,'') + '\',\'' + h.niche + '\')">▶ Usar en Pipeline</button>' +
-        '<button class="btn btn-g btn-sm" style="font-size:11px" onclick="copyHookText(\'' + h.hook.replace(/'/g,"\\'").replace(/"/g,'') + '\')">📋</button>' +
-        '<button class="btn btn-g btn-sm" style="font-size:11px" onclick="rateHook(\'' + h.id + '\',1)" title="Marcar como favorito">⭐</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function useHookInPipeline(hook, niche) {
-  currentIdea   = hook;
-  selectedNiche = niche;
-  nav('pipeline');
-  showToast('▶ Hook cargado en Pipeline: ' + hook.slice(0, 50));
-}
-
-function copyHookText(hook) {
-  navigator.clipboard.writeText(hook).then(() => showToast('📋 Hook copiado'));
-}
-
-function rateHook(id, delta) {
-  const h = HOOKS_DB.find(x => x.id === id);
-  if (h) { h.uses = (h.uses || 0) + delta; showToast('⭐ Marcado como favorito'); }
-}
-
-function generateAIHooks() {
-  const panel = document.getElementById('hooks-ai-panel');
-  if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-}
-
-async function runGenerateAIHooks() {
-  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
-  const niche   = document.getElementById('hooks-ai-niche')?.value  || 'finanzas';
-  const plat    = document.getElementById('hooks-ai-plat')?.value   || 'youtube';
-  const lang    = document.getElementById('hooks-ai-lang')?.value   || 'es';
-  const loading = document.getElementById('hooks-ai-loading');
-  if (loading) loading.style.display = 'block';
-
-  const platLabel = { youtube:'YouTube Shorts', tiktok:'TikTok', instagram:'Instagram Reels', all:'YouTube Shorts, TikTok e Instagram' };
-  const langLabel = { es:'español de España', lat:'español latinoamericano', en:'English US' };
-  const prompt = `Eres experto en CTR y viral content para canales de contenido IA. Genera 10 hooks de alto rendimiento para ${platLabel[plat]} en el nicho "${niche}" en ${langLabel[lang]}.
-Los hooks deben ser para contenido creado 100% con IA (voz en off, clips stock, imágenes IA, avatar IA).
-Responde SOLO en JSON:
-{"hooks":[
-  {"hook":"texto del hook","type":"pregunta|dato|secreto|historia|lista|error|vs","ctr_estimado":9.2,"por_que_funciona":"razón psicológica en 1 línea"}
-]}`;
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]})
-    });
-    const data = await resp.json();
-    const result = JSON.parse((data.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
-    const newHooks = (result.hooks||[]).map((h, i) => ({
-      id: 'ai_' + Date.now() + '_' + i,
-      niche, plat: plat === 'all' ? 'youtube' : plat, lang,
-      type: h.type || 'dato',
-      ctr: parseFloat(h.ctr_estimado) || 8.5,
-      hook: h.hook, uses: 0,
-      ai_generated: true,
-      por_que: h.por_que_funciona || ''
-    }));
-
-    // Add to DB and save
-    newHooks.forEach(h => HOOKS_DB.push(h));
-    const existing = JSON.parse(localStorage.getItem('fai_hooks_db') || '[]');
-    localStorage.setItem('fai_hooks_db', JSON.stringify([...existing, ...newHooks]));
-
-    if (loading) loading.style.display = 'none';
-    filterHooks();
-    logAICall('claude', 'hooks-generator', 0.003, 600);
-    showToast('✓ ' + newHooks.length + ' hooks nuevos generados y añadidos a la biblioteca');
-  } catch(e) {
-    if (loading) loading.style.display = 'none';
-    showToast('✗ Error: ' + e.message);
-  }
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 3 — PACK DE PUBLICACIÓN (ZIP con todo)
-// ══════════════════════════════════════════════════════════
-async function generatePublishPack() {
-  const pubTitle = document.getElementById('apv-title')?.value.trim() || currentIdea || 'FacelessAI Video';
-  const pubDesc  = document.getElementById('apv-desc')?.value.trim()  || '';
-  const pubTags  = document.getElementById('apv-tags')?.value.trim()  || '';
-  const schedule = window._platformSchedule || {};
-  const audio    = window._generatedAudio;
-
-  // Build metadata files for each platform
-  const ytMeta = [
-    'YOUTUBE METADATA',
-    '================',
-    'Título: ' + pubTitle,
-    '',
-    'Descripción:',
-    pubDesc,
-    '',
-    'Tags: ' + pubTags,
-    '',
-    'Programar para: ' + (schedule.yt || 'Hoy 18:30'),
-    '',
-    '⚠️ Recuerda marcar: "Contiene contenido generado por IA"',
-  ].join('\n');
-
-  const ttMeta = [
-    'TIKTOK METADATA',
-    '===============',
-    'Caption: ' + pubTitle,
-    '',
-    window._platformHooks?.tt?.caption || pubDesc,
-    '',
-    'Hashtags: ' + (window._platformHooks?.tt?.hashtags || pubTags),
-    '',
-    'Programar para: ' + (schedule.tt || 'Hoy 18:00'),
-  ].join('\n');
-
-  const igMeta = [
-    'INSTAGRAM METADATA',
-    '==================',
-    'Hook caption: ' + (window._platformHooks?.ig?.hook || pubTitle),
-    '',
-    window._platformHooks?.ig?.caption || pubDesc,
-    '',
-    'Hashtags: ' + (window._platformHooks?.ig?.hashtags || pubTags),
-    '',
-    'Programar para: ' + (schedule.ig || 'Hoy 18:15'),
-  ].join('\n');
-
-  const checklist = [
-    'CHECKLIST DE PUBLICACIÓN',
-    '========================',
-    '',
-    '□ YouTube Studio → Subir vídeo',
-    '  URL: https://studio.youtube.com/channel/upload',
-    '  □ Pegar título y descripción de youtube_metadata.txt',
-    '  □ Añadir tags',
-    '  □ Marcar "Contiene IA"',
-    '  □ Programar: ' + (schedule.yt || '18:30'),
-    '',
-    '□ TikTok Creator Center → Subir vídeo',
-    '  URL: https://www.tiktok.com/creator-center/upload',
-    '  □ Pegar caption de tiktok_metadata.txt',
-    '  □ Programar: ' + (schedule.tt || '18:00'),
-    '',
-    '□ Instagram → Crear Reel',
-    '  URL: https://www.instagram.com/reels/create/',
-    '  □ Pegar caption de instagram_metadata.txt',
-    '  □ Programar: ' + (schedule.ig || '18:15'),
-    '',
-    'Generado por FacelessAI · ' + new Date().toLocaleDateString('es-ES'),
-  ].join('\n');
-
-  // Copy all metadata to clipboard
-  const allMeta = ytMeta + '\n\n' + ttMeta + '\n\n' + igMeta + '\n\n' + checklist;
-  navigator.clipboard.writeText(allMeta).catch(() => {});
-
-  // Create download links for text files (since we can't create real ZIPs client-side easily)
-  const files = [
-    { name: 'youtube_metadata.txt', content: ytMeta },
-    { name: 'tiktok_metadata.txt',  content: ttMeta },
-    { name: 'instagram_metadata.txt', content: igMeta },
-    { name: 'checklist_publicacion.txt', content: checklist },
-  ];
-
-  const packEl = document.getElementById('publish-pack-links');
-  if (packEl) {
-    packEl.innerHTML = '<div style="margin-top:12px;padding:12px;background:var(--bg2);border-radius:var(--r)">' +
-      '<div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--green)">✓ Pack de publicación listo:</div>' +
-      files.map(f => {
-        const blob = new Blob([f.content], {type:'text/plain'});
-        const url  = URL.createObjectURL(blob);
-        return '<a href="' + url + '" download="' + f.name + '" class="btn btn-g btn-sm" style="display:block;width:100%;text-align:left;margin-bottom:4px;font-size:11px;text-decoration:none">⬇ ' + f.name + '</a>';
-      }).join('') +
-      '<div style="font-size:10px;color:var(--text3);margin-top:6px">📋 Metadata copiada al portapapeles</div>' +
-    '</div>';
-  }
-  showToast('✓ Pack de publicación generado — descarga los archivos de metadata');
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 4 — DASHBOARD DE RENTABILIDAD CENTRAL
-// ══════════════════════════════════════════════════════════
-function renderProfitabilityDashboard() {
-  const channels  = getChannels();
-  const drafts    = getDrafts();
-  const log       = getAnalyticsLog();
-  const now       = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-
-  let totalCost    = 0, totalRevEst = 0, bestCh = null, bestROI = 0, pauseCh = null, lowestROI = Infinity;
-  const chStats = channels.map(ch => {
-    const chLog   = log.filter(e => e.channel === ch.name && (e.ts||0) >= monthStart);
-    const cost    = chLog.reduce((s,e) => s+(e.cost||0), 0);
-    const videos  = drafts.filter(d => d.channel === ch.name && (d.createdAt||0) >= monthStart).length;
-    const rpm     = ch.rpm || 4;
-    const revEst  = videos * 1000 * rpm / 1000; // rough estimate
-    const roi     = cost > 0 ? revEst / cost : 0;
-    totalCost    += cost;
-    totalRevEst  += revEst;
-    if (roi > bestROI)    { bestROI = roi; bestCh = ch.name; }
-    if (roi < lowestROI && cost > 0) { lowestROI = roi; pauseCh = ch.name; }
-    return { name: ch.name, cost, revEst, roi, videos, rpm };
-  });
-
-  const globalROI = totalCost > 0 ? totalRevEst / totalCost : 0;
-  const setEl = (id,v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  setEl('prof-total-cost',    '$' + totalCost.toFixed(2));
-  setEl('prof-total-rev',     '$' + totalRevEst.toFixed(0));
-  setEl('prof-global-roi',    globalROI > 0 ? globalROI.toFixed(1) + 'x' : '—');
-  setEl('prof-best-ch',       bestCh || '—');
-  setEl('prof-pause-ch',      pauseCh || '—');
-
-  const table = document.getElementById('prof-ch-table');
-  if (table) {
-    table.innerHTML = chStats.map(ch => {
-      const roiCol = ch.roi >= 5 ? 'var(--green)' : ch.roi >= 1 ? 'var(--amber)' : 'var(--red)';
-      const action = ch.roi >= 5 ? '🚀 Escalar' : ch.roi >= 1 ? '→ Mantener' : '⏸ Revisar';
-      return '<tr style="border-bottom:1px solid var(--border)">' +
-        '<td style="padding:8px 12px;font-weight:600">' + ch.name + '</td>' +
-        '<td style="padding:8px 12px;text-align:center;font-family:var(--mono)">' + ch.videos + '</td>' +
-        '<td style="padding:8px 12px;text-align:center;font-family:var(--mono);color:var(--red)">$' + ch.cost.toFixed(2) + '</td>' +
-        '<td style="padding:8px 12px;text-align:center;font-family:var(--mono);color:var(--green)">$' + ch.revEst.toFixed(0) + '</td>' +
-        '<td style="padding:8px 12px;text-align:center;font-weight:800;color:' + roiCol + '">' + (ch.roi > 0 ? ch.roi.toFixed(1) + 'x' : '—') + '</td>' +
-        '<td style="padding:8px 12px;font-size:11px;color:' + roiCol + '">' + action + '</td>' +
-      '</tr>';
-    }).join('');
-  }
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 5 — WATCHLIST ACTIVA
-// ══════════════════════════════════════════════════════════
-function renderWatchlist() {
-  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
-  const el = document.getElementById('watchlist-container');
-  if (!el) return;
-  if (!wl.length) {
-    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)">No tienes canales en tu watchlist.<br>Añádelos desde el Espía de Canales.</div>';
-    return;
-  }
-  const platColors = { youtube:'#ff4444', tiktok:'#00d4c4', instagram:'#e1306c' };
-  el.innerHTML = wl.map((a, i) => {
-    const col = (a.score_clonable||0) >= 75 ? 'var(--green)' : 'var(--amber)';
-    const daysAgo = Math.round((Date.now() - (a.addedAt||Date.now())) / 86400000);
-    return '<div class="card mb8" style="border-left:3px solid ' + col + '">' +
-      '<div style="display:flex;align-items:center;gap:12px">' +
-        '<div style="text-align:center;min-width:42px"><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:' + col + '">' + (a.score_clonable||'—') + '</div><div style="font-size:9px;color:var(--text3)">clone</div></div>' +
-        '<div style="flex:1">' +
-          '<div style="font-weight:700;font-size:13px">' + (a.nombre||a._url||'Canal') + '</div>' +
-          '<div style="font-size:11px;color:var(--text3)">' + (a.nicho||'') + ' · ' + (a.ingresos_estimados_mes||'—') + ' · añadido hace ' + daysAgo + ' días</div>' +
-          '<div style="font-size:11px;color:var(--text2);margin-top:2px">' + (a.oportunidad_para_mi||'') + '</div>' +
-        '</div>' +
-        '<div style="display:flex;gap:4px;flex-direction:column">' +
-          '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="watchlistClone(' + i + ')">🧬 Clonar</button>' +
-          '<button class="btn btn-g btn-sm" style="font-size:10px" onclick="watchlistAnalyze(' + i + ')">🔍 Re-analizar</button>' +
-          '<button class="btn btn-g btn-sm" style="font-size:10px;color:var(--red)" onclick="removeFromWatchlist(' + i + ')">🗑</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function watchlistClone(idx) {
-  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
-  const a  = wl[idx];
-  if (!a) return;
-  const urlEl = document.getElementById('clone-url');
-  if (urlEl) urlEl.value = a._url || '';
-  nav('clone');
-  setTimeout(() => analyzeCloneSource(), 300);
-}
-function watchlistAnalyze(idx) {
-  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
-  const a  = wl[idx];
-  if (!a) return;
-  switchSpyTab('manual');
-  const urlEl = document.getElementById('spy-url');
-  if (urlEl) { urlEl.value = a._url || ''; spyAnalyzeChannel(); }
-  nav('spychannels');
-}
-function removeFromWatchlist(idx) {
-  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
-  wl.splice(idx, 1);
-  localStorage.setItem('fai_watchlist', JSON.stringify(wl));
-  renderWatchlist();
-  showToast('✓ Eliminado de Watchlist');
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 6 — GENERADOR DE THUMBNAILS IA
-// ══════════════════════════════════════════════════════════
-async function generateThumbnail() {
-  const hook  = currentScript ? currentScript.slice(0,100) : (currentIdea || generatedIdeas?.[selectedIdeaIndex]?.hook || '');
-  const niche = selectedNiche || 'general';
-  if (!hook) { showToast('⚠ Genera primero una idea o script'); return; }
-
-  const thumbEl = document.getElementById('thumbnail-preview');
-  const btn     = document.getElementById('thumb-gen-btn');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Generando...'; }
-
-  // Use Pollinations.ai (free, no API key needed)
-  const style   = document.getElementById('thumb-style')?.value || 'cinematic';
-  const stylePrompts = {
-    cinematic:  'cinematic dramatic YouTube thumbnail, bold text overlay, high contrast, 16:9',
-    minimal:    'clean minimal thumbnail, white background, bold typography, professional',
-    dark:       'dark moody thumbnail, neon accents, dramatic lighting, YouTube style',
-    bright:     'bright vibrant thumbnail, eye-catching colors, bold font, high CTR design',
-  };
-
-  const promptText = encodeURIComponent(
-    'YouTube thumbnail for: ' + hook + '. Niche: ' + niche + '. Style: ' + stylePrompts[style] +
-    '. No real human faces. AI generated content creator thumbnail. Ultra detailed.'
-  );
-  const url = 'https://image.pollinations.ai/prompt/' + promptText + '?width=1280&height=720&nologo=true&seed=' + Date.now();
-
-  if (thumbEl) {
-    thumbEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">⏳ Generando thumbnail con IA...</div>';
-    const img = new Image();
-    img.onload = () => {
-      thumbEl.innerHTML = '<img src="' + url + '" style="width:100%;border-radius:var(--r);border:1px solid var(--border)" alt="Thumbnail IA">' +
-        '<div style="display:flex;gap:8px;margin-top:8px">' +
-          '<a href="' + url + '" download="thumbnail_' + Date.now() + '.jpg" class="btn btn-p btn-sm" style="flex:1;text-decoration:none;text-align:center">⬇ Descargar thumbnail</a>' +
-          '<button class="btn btn-g btn-sm" onclick="generateThumbnail()">🔄 Regenerar</button>' +
-        '</div>';
-      if (btn) { btn.disabled = false; btn.textContent = '🖼️ Generar thumbnail'; }
-    };
-    img.onerror = () => {
-      thumbEl.innerHTML = '<div style="color:var(--red);text-align:center;padding:12px">✗ Error generando thumbnail. Intenta de nuevo.</div>';
-      if (btn) { btn.disabled = false; btn.textContent = '🖼️ Generar thumbnail'; }
-    };
-    img.src = url;
-  }
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 7 — VISTA "HOY" EN DASHBOARD
-// ══════════════════════════════════════════════════════════
-function renderTodayView() {
-  const channels = getChannels();
-  const drafts   = getDrafts();
-  const log      = getAnalyticsLog();
-  const today    = new Date();
-  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
-
-  // Today's cost
-  const todayCost = log.filter(e => (e.ts||0) >= todayStart).reduce((s,e) => s+(e.cost||0), 0);
-
-  // Pending drafts
-  const pending = drafts.filter(d => d.status === 'pending');
-
-  // Which channel to publish today (round-robin by day of month)
-  const dayOfMonth = today.getDate();
-  const todayChannel = channels.length ? channels[dayOfMonth % channels.length] : null;
-
-  const el = document.getElementById('today-view-content');
-  if (!el) return;
-
-  el.innerHTML =
-    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:16px">' +
-      '<div class="sc"><div class="sc-label">Canal de hoy</div><div class="sc-val" style="font-size:14px">' + (todayChannel?.name || '—') + '</div></div>' +
-      '<div class="sc"><div class="sc-label">Borradores pendientes</div><div class="sc-val" style="color:var(--amber)">' + pending.length + '</div></div>' +
-      '<div class="sc"><div class="sc-label">Gasto hoy</div><div class="sc-val" style="color:var(--red)">$' + todayCost.toFixed(3) + '</div></div>' +
-      '<div class="sc"><div class="sc-label">Publicar a las</div><div class="sc-val" style="font-size:14px">18:00 TT → 18:30 YT</div></div>' +
-    '</div>' +
-
-    (pending.length > 0 ?
-      '<div style="margin-bottom:14px"><div class="stl mb8">📋 Aprobar y publicar hoy</div>' +
-      pending.slice(0, 3).map(d =>
-        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px">' +
-          '<div style="flex:1"><div style="font-weight:600;font-size:13px">' + (d.hook||d.title||'—').slice(0,60) + '</div><div style="font-size:10px;color:var(--text3)">' + (d.channel||'') + ' · Score: ' + (d.score||'—') + '</div></div>' +
-          '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="nav(\'drafts\')">Revisar →</button>' +
-        '</div>'
-      ).join('') + '</div>'
-    : '<div style="padding:12px;background:var(--gdim);border-radius:var(--r);font-size:12px;color:var(--green);margin-bottom:14px">✓ Sin borradores pendientes — lanza el AutoPilot para generar contenido nuevo</div>') +
-
-    '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-      (todayChannel ? '<button class="btn btn-p btn-sm" onclick="selectedNiche=\'' + (todayChannel.niche||'') + '\';workingChannel=\'' + todayChannel.name + '\';nav(\'pipeline\')">▶ Generar para ' + todayChannel.name + '</button>' : '') +
-      '<button class="btn btn-g btn-sm" onclick="nav(\'trends\')">🔥 Ver tendencias</button>' +
-      '<button class="btn btn-g btn-sm" onclick="nav(\'autopilot\')">🤖 AutoPilot</button>' +
-    '</div>';
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 8 — GUÍA "TU PRIMERA SEMANA" (onboarding nivel 2)
-// ══════════════════════════════════════════════════════════
-function showFirstWeekGuide() {
-  const channels = getChannels();
-  const drafts   = getDrafts();
-  const hasKey   = !!KEYS.anthropic;
-  const hasCh    = channels.length > 0;
-  const hasDraft = drafts.length > 0;
-
-  const steps = [
-    { day:1, icon:'🔑', title:'Configura tus API keys', done: hasKey, action: "nav('settings')", cta:'Ir a Configuración' },
-    { day:1, icon:'📺', title:'Crea tu primer canal', done: hasCh, action: "nav('channels')", cta:'Crear canal' },
-    { day:2, icon:'🔥', title:'Analiza tendencias del nicho', done: false, action: "nav('trends')", cta:'Ver tendencias' },
-    { day:2, icon:'🔍', title:'Espía 2-3 canales de éxito', done: false, action: "nav('spychannels')", cta:'Espiar canales' },
-    { day:3, icon:'🎬', title:'Genera tu primer vídeo IA', done: hasDraft, action: "nav('pipeline')", cta:'Ir al Pipeline' },
-    { day:4, icon:'📊', title:'Evalúa con Score IA antes de publicar', done: false, action: "nav('score')", cta:'Ir a Score IA' },
-    { day:5, icon:'📱', title:'Publica en TikTok, Instagram y YouTube', done: false, action: "nav('drafts')", cta:'Ver borradores' },
-    { day:6, icon:'🧬', title:'Clona un canal exitoso en otro idioma', done: false, action: "nav('clone')", cta:'Canal Cloner' },
-    { day:7, icon:'🤖', title:'Activa el AutoPilot para el canal', done: false, action: "nav('autopilot')", cta:'Ir a AutoPilot' },
-  ];
-
-  const completed = steps.filter(s => s.done).length;
-  const el = document.getElementById('first-week-content');
-  if (!el) return;
-
-  el.innerHTML =
-    '<div style="background:var(--bg2);border-radius:var(--r);padding:8px 12px;margin-bottom:14px;font-size:12px">' +
-      '<div style="display:flex;align-items:center;gap:10px">' +
-        '<div style="flex:1;background:var(--border);border-radius:99px;height:6px"><div style="background:var(--green);border-radius:99px;height:6px;width:' + Math.round(completed/steps.length*100) + '%"></div></div>' +
-        '<span style="font-weight:700;color:var(--green)">' + completed + '/' + steps.length + '</span>' +
-      '</div>' +
-    '</div>' +
-    steps.map(s =>
-      '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:' + (s.done ? 'var(--gdim)' : 'var(--bg2)') + ';border-radius:var(--r);margin-bottom:6px;opacity:' + (s.done ? '0.7' : '1') + '">' +
-        '<div style="font-size:18px;width:24px;text-align:center">' + (s.done ? '✅' : s.icon) + '</div>' +
-        '<div style="flex:1"><div style="font-size:12px;font-weight:600;' + (s.done ? 'text-decoration:line-through;color:var(--text3)' : '') + '">Día ' + s.day + ' — ' + s.title + '</div></div>' +
-        (!s.done ? '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="' + s.action + ';closeFirstWeekGuide()">' + s.cta + '</button>' : '') +
-      '</div>'
-    ).join('');
-}
-
-function closeFirstWeekGuide() {
-  const el = document.getElementById('first-week-overlay');
-  if (el) el.style.display = 'none';
-}
-function openFirstWeekGuide() {
-  const el = document.getElementById('first-week-overlay');
-  if (el) { el.style.display = 'flex'; showFirstWeekGuide(); }
-}
-
-// ══════════════════════════════════════════════════════════
-// MEJORA 9 — MODO MULTI-CANAL SIMPLIFICADO
-// ══════════════════════════════════════════════════════════
-function renderMultiChannelView() {
-  const channels = getChannels();
-  const drafts   = getDrafts();
-  const log      = getAnalyticsLog();
-  const el       = document.getElementById('multichannel-grid');
-  if (!el) return;
-
-  if (!channels.length) {
-    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)">No tienes canales. <button class="btn btn-p btn-sm" onclick="nav(\'channels\')">Crear canal →</button></div>';
-    return;
-  }
-
-  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
-  const today = new Date();
-  const dayOfMonth = today.getDate();
-
-  el.innerHTML = channels.map((ch, i) => {
-    const chDrafts  = drafts.filter(d => d.channel === ch.name);
-    const pending   = chDrafts.filter(d => d.status === 'pending').length;
-    const monthly   = chDrafts.filter(d => (d.createdAt||0) >= monthStart.getTime()).length;
-    const chCost    = log.filter(e => e.channel === ch.name && (e.ts||0) >= monthStart.getTime()).reduce((s,e) => s+(e.cost||0), 0);
-    const isToday   = dayOfMonth % channels.length === i;
-    const platIcons = (ch.platforms||['youtube']).map(p => p==='youtube'?'▶️':p==='tiktok'?'🎵':'📷').join(' ');
-
-    return '<div class="card" style="' + (isToday ? 'border-color:var(--green);border-width:2px' : '') + '">' +
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">' +
-        '<div style="flex:1">' +
-          '<div style="font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px">' +
-            (isToday ? '<span style="font-size:10px;background:var(--gdim);color:var(--green);padding:1px 6px;border-radius:99px;border:1px solid var(--green)">HOY</span>' : '') +
-            ch.name +
-          '</div>' +
-          '<div style="font-size:11px;color:var(--text3)">' + platIcons + ' · ' + (ch.niche||'') + ' · ' + (ch.lang||'es') + '</div>' +
-        '</div>' +
-        '<div style="text-align:right">' +
-          '<div style="font-size:10px;color:var(--text3)">Este mes</div>' +
-          '<div style="font-family:var(--mono);font-weight:700">' + monthly + ' vídeos</div>' +
-        '</div>' +
-      '</div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">' +
-        '<div style="background:var(--bg2);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--text3)">PENDIENTES</div><div style="font-weight:700;color:' + (pending > 0 ? 'var(--amber)' : 'var(--text3)') + '">' + pending + '</div></div>' +
-        '<div style="background:var(--bg2);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--text3)">COSTE MES</div><div style="font-weight:700;font-family:var(--mono);color:var(--red)">$' + chCost.toFixed(2) + '</div></div>' +
-        '<div style="background:var(--bg2);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--text3)">RPM</div><div style="font-weight:700;font-family:var(--mono);color:var(--amber)">$' + (ch.rpm||4) + '</div></div>' +
-      '</div>' +
-      '<div style="display:flex;gap:6px">' +
-        '<button class="btn btn-p btn-sm" style="flex:1;font-size:11px" onclick="selectedNiche=\'' + (ch.niche||'') + '\';workingChannel=\'' + ch.name + '\';activeLang=\'' + (ch.lang||'es') + '\';nav(\'pipeline\')">▶ Generar</button>' +
-        (pending > 0 ? '<button class="btn btn-g btn-sm" style="font-size:11px;color:var(--amber)" onclick="nav(\'drafts\')">📋 ' + pending + ' pend.</button>' : '') +
-        '<button class="btn btn-g btn-sm" style="font-size:11px" onclick="openEditChannelModal(' + channels.indexOf(ch) + ')">⚙️</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-async function generateForAllChannels() {
-  const channels = getChannels();
-  if (!channels.length) { showToast('⚠ No tienes canales configurados'); return; }
-  if (!KEYS.anthropic)  { showToast('⚠ Configura tu Anthropic API key'); return; }
-  showToast('🤖 Lanzando AutoPilot para ' + channels.length + ' canales...');
-  // Launch autopilot for each channel sequentially with 2s delay
-  for (let i = 0; i < channels.length; i++) {
-    const ch = channels[i];
-    setTimeout(async () => {
-      workingChannel = ch.name;
-      selectedNiche  = ch.niche;
-      activeLang     = ch.lang || 'es';
-      await runAutopilotCycle();
-      showToast('✓ Canal ' + (i+1) + '/' + channels.length + ': ' + ch.name + ' procesado');
-    }, i * 3000);
-  }
 }
 // ── INIT ──
 renderDashboard();
@@ -12180,7 +11889,7 @@ function updateSettingsBadge() {
 function setTier(t) {
   activeTier = t;
   localStorage.setItem('fai_tier', t);
-  ['free','eco','opt','premium'].forEach(id => {
+  ['free','eco','opt','prem','premium','ultra','scale'].forEach(id => {
     const el = document.getElementById('tier-' + id);
     if (!el) return;
     if (id === t) {
@@ -12340,6 +12049,7 @@ Write naturally in the specified language, optimized for maximum retention. Scri
     const raw = await callClaude(prompt, null, 1200);
     currentScript = raw;
     area.innerHTML = formatScript(raw);
+    if(['finanzas','cripto','tecnologia','legal','salud','negocios'].includes(selectedNiche)) setTimeout(()=>autoSuggestAffiliateLinks(raw,selectedNiche),800);
     const tokens = Math.round(raw.length / 4);
     const cost = (tokens / 1000000 * (activeTier === 'opt' ? 3 : activeTier === 'premium' ? 15 : 0.25)).toFixed(4);
     const costEl = document.getElementById('script-cost-info');
@@ -12547,20 +12257,8 @@ function deleteSavedIdea(i) {
   localStorage.setItem('fai_scored_ideas', JSON.stringify(saved));
   renderSavedIdeas();
 }
-</script>
 
-<!-- PRIMERA SEMANA OVERLAY -->
-<div id="first-week-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;align-items:center;justify-content:center">
-  <div style="background:var(--bg1);border:1px solid var(--border);border-radius:18px;padding:28px;width:520px;max-width:95vw;max-height:85vh;overflow-y:auto">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <div>
-        <div style="font-size:18px;font-weight:800">Tu primera semana con FacelessAI</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:3px">Sigue estos pasos para monetizar tu primer canal IA</div>
-      </div>
-      <button onclick="closeFirstWeekGuide()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px">x</button>
-    </div>
-    <div id="first-week-content"></div>
-  </div>
-</div>
+try { loadKeys(); } catch(e) {}
+</script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.17 — Content Engine</title>
+<title>FacelessAI v4.19 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -328,7 +328,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.17</div>
+    <div class="logo-sub">Content Engine v4.19</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -409,7 +409,12 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><polygon points="6,5 12,8 6,11"/></svg>Pipeline Clipping
     </div>
 
-    <div class="nsl" style="margin-top:6px">Marketing</div>
+    <div class="nsl" style="margin-top:6px">Inteligencia</div>
+      <div class="ni" data-view="spychannels">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="4"/><path d="M10 10l4 4"/><path d="M6 3v1M6 9v1M3 6h1M9 6h1"/></svg>Espía de Canales
+        <span class="tag" style="font-size:9px;padding:1px 5px;margin-left:4px;background:var(--rdim);color:var(--red);border:none">NEW</span>
+      </div>
+      <div class="nsl" style="margin-top:6px">Marketing</div>
     <div class="ni" data-view="affiliation" onclick="nav('affiliation')">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z"/></svg>Afiliados<span class="nb" style="background:#f472b620;color:#f472b6;border:1px solid #f472b640;font-size:9px;padding:1px 5px;border-radius:99px;margin-left:4px">NEW</span>
     </div>
@@ -1378,11 +1383,23 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 </div>
 <div class="view" id="view-pipeline">
-  <div class="sh mb8">
-    <h2>Pipeline de creación</h2>
-    <div class="flex g8 fic">
-      <span class="tag tb" id="pipe-channel-tag">FinanceFacts ES</span>
-      <span class="tag tg" id="pipe-score-tag" style="display:none">Score: 85/100</span>
+
+  <!-- ═══ TIER BAR — siempre visible arriba ═══ -->
+  <div id="pipe-tier-bar" style="background:var(--bg2);border-radius:var(--r);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--border)">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px">
+      <span style="font-size:11px;color:var(--text3)">Tier activo:</span>
+      <span id="pipe-tier-tag" style="font-size:12px;font-weight:800;color:var(--amber);cursor:pointer" onclick="nav('models')" title="Cambiar tier">⚡ OPTIMIZADO</span>
+      <span style="font-size:10px;color:var(--border)">│</span>
+      <span style="font-size:11px;color:var(--text3)">💡</span><span id="ptb-ideas" style="font-size:11px;color:var(--text2)">Claude Sonnet</span>
+      <span style="font-size:10px;color:var(--border)">│</span>
+      <span style="font-size:11px;color:var(--text3)">🎤</span><span id="ptb-tts" style="font-size:11px;color:var(--text2)">TTS-1 HD</span>
+      <span style="font-size:10px;color:var(--border)">│</span>
+      <span style="font-size:11px;color:var(--text3)">💰</span><span id="ptb-cost" style="font-size:11px;font-weight:700;color:var(--amber)">~$0.06/vídeo</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="tag tb" id="pipe-channel-tag" style="font-size:11px">—</span>
+      <span class="tag tg" id="pipe-score-tag" style="display:none;font-size:11px">Score: 85</span>
+      <button onclick="nav('models')" style="background:none;border:1px solid var(--border);border-radius:99px;padding:2px 10px;font-size:10px;color:var(--text3);cursor:pointer">Cambiar tier →</button>
     </div>
   </div>
 
@@ -1397,6 +1414,11 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
   <!-- Step 0: Nicho -->
   <div class="pc act" id="p-0">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
+      <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 1/6 — Nicho y canal</div>
+      <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="setPStep(1)">Continuar →</button></div>
+    </div>
     <div class="sh"><h2>Selecciona el nicho</h2><button class="btn btn-g btn-sm" onclick="showToast('Tendencias actualizadas ✓')">↻ Actualizar</button></div>
     <div class="g3">
       <div class="nc sel" style="--ac:var(--green)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">💰</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Finanzas básicas</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:92%;background:var(--green)"></div></div><div class="si-lbl">Viral 92</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:30%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 30</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:88%;background:var(--amber)"></div></div><div class="si-lbl">CPM $8.8</div></div></div></div>
@@ -1411,6 +1433,11 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
   <!-- Step 1: Ideas -->
   <div class="pc" id="p-1">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
+      <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 2/6 — Ideas virales</div>
+      <div style="display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="setPStep(0)">← Atrás</button><button class="btn btn-p btn-sm" onclick="setPStep(2)">Evaluar con Score IA →</button></div>
+    </div>
     <div class="sh">
       <h2>Ideas virales — generadas con Claude</h2>
       <button class="btn btn-p btn-sm" id="ideas-gen-btn" onclick="generateIdeasReal()">🤖 Generar con Claude</button>
@@ -1431,6 +1458,11 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
   <!-- Step 2: Score mini -->
   <div class="pc" id="p-2">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
+      <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 3/6 — Score IA</div>
+      <div style="display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="setPStep(1)">← Atrás</button><button class="btn btn-p btn-sm" onclick="setPStep(3)">Generar script →</button></div>
+    </div>
     <div class="sh">
       <h2>Score predictivo</h2>
       <button class="btn btn-p btn-sm" id="score-pipe-btn" onclick="runPipelineScore()">🤖 Analizar con Claude</button>
@@ -1482,8 +1514,13 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
   <!-- Step 3: Script -->
   <div class="pc" id="p-3">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
+      <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 4/6 — Script</div>
+      <div style="display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="setPStep(2)">← Atrás</button><button class="btn btn-p btn-sm" onclick="setPStep(4)">Generar vídeo →</button></div>
+    </div>
     <div class="sh">
-      <h2>Generador de script</h2>
+      <h2>Generador de script IA</h2>
       <span class="tag ta" id="script-model-tag">Claude Haiku · ~$0.003</span>
     </div>
     <div class="script-bar">
@@ -1522,8 +1559,32 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
   <!-- Step 4: Audio/Video generation -->
   <div class="pc" id="p-4">
+
+    <!-- Thumbnail IA - mejora 6 -->
+    <div class="card mt12 mb12" style="border-color:var(--purple)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:600;color:var(--purple)">Thumbnail IA (gratis)</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <select class="sel" id="thumb-style" style="font-size:11px;padding:3px 6px">
+            <option value="cinematic">Cinematografico</option>
+            <option value="minimal">Minimal</option>
+            <option value="dark">Dark/Neon</option>
+            <option value="bright">Brillante</option>
+          </select>
+          <button class="btn btn-p btn-sm" id="thumb-gen-btn" onclick="generateThumbnail()" style="font-size:11px">Generar thumbnail</button>
+        </div>
+      </div>
+      <div id="thumbnail-preview" style="min-height:60px;text-align:center;color:var(--text3);font-size:12px;padding:12px">
+        El thumbnail se genera basado en tu hook/script actual
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
+      <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 5/6 — Audio y vídeo</div>
+      <div style="display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="setPStep(3)">← Atrás</button><button class="btn btn-p btn-sm" onclick="setPStep(5)">Revisar →</button></div>
+    </div>
     <div class="sh">
-      <h2>Generación de audio y vídeo</h2>
+      <h2>Generación audio y vídeo IA</h2>
       <span class="tag ta" id="vidgen-cost-tag">Coste estimado: $0.009</span>
     </div>
 
@@ -1766,6 +1827,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H5L2 5v9a1 1 0 001 1h10a1 1 0 001-1V3a1 1 0 00-1-1z"/><polyline points="9 2 9 8 6 8"/></svg>
             Borrador
           </button>
+          <button class="btn btn-g btn-sm" onclick="generatePublishPack()" title="Descarga metadata para cada plataforma">📦 Pack</button>
           <button class="btn btn-p" onclick="approveAndPublish()">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 8 5 12 15 3"/></svg>
             Aprobar y publicar
@@ -1872,7 +1934,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 <!-- ════════════════ 1 · CLONE ════════════════ -->
 <div class="view" id="view-clone">
-  <div class="sh mb14"><h2>Clonar canal viral</h2><span class="tag tb">Extrae la fórmula de éxito sin copiar contenido</span></div>
+  <div class="sh mb14"><h2>Clonar canal IA</h2><span class="tag tb">Clona cualquier canal IA y adáptalo a tu mercado</span></div>
 
   <div class="card mb14">
     <label class="lbl mb8">URL del canal de YouTube a analizar</label>
@@ -3198,15 +3260,88 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 
 <!-- ════════════════ TEMPLATES ════════════════ -->
 <div class="view" id="view-templates">
-  <div class="sh mb20"><h2>📋 Plantillas virales</h2></div>
-  <div style="text-align:center;padding:60px;color:var(--text3)">
-    <div style="font-size:48px;margin-bottom:12px">📋</div>
-    <div style="font-weight:600;margin-bottom:6px">Biblioteca de plantillas</div>
-    <p style="font-size:13px">Hooks, estructuras y formatos probados. Próximamente.</p>
+  <div class="sh mb16">
+    <h2>🎣 Biblioteca de Hooks</h2>
+    <span class="tag tb">Hooks probados con alto CTR por nicho y plataforma</span>
+  </div>
+
+  <!-- Filtros -->
+  <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+    <select class="sel" id="hooks-niche-filter" onchange="filterHooks()" style="font-size:12px;min-width:160px">
+      <option value="all">🌍 Todos los nichos</option>
+      <option value="finanzas">💰 Finanzas</option>
+      <option value="cripto">₿ Cripto/Trading</option>
+      <option value="motivacion">🔥 Motivación</option>
+      <option value="truecrime">🔪 True Crime</option>
+      <option value="historia">📚 Historia</option>
+      <option value="tecnologia">💻 Tech/IA</option>
+      <option value="legal">⚖️ Legal/Fiscal</option>
+      <option value="drama">🎭 Drama/Reddit</option>
+      <option value="misterio">🌌 Misterio</option>
+      <option value="salud">🏃 Salud</option>
+    </select>
+    <select class="sel" id="hooks-plat-filter" onchange="filterHooks()" style="font-size:12px;min-width:140px">
+      <option value="all">📡 Todas plataformas</option>
+      <option value="youtube">▶️ YouTube</option>
+      <option value="tiktok">🎵 TikTok</option>
+      <option value="instagram">📷 Instagram</option>
+    </select>
+    <select class="sel" id="hooks-type-filter" onchange="filterHooks()" style="font-size:12px;min-width:140px">
+      <option value="all">🎯 Todos los tipos</option>
+      <option value="pregunta">❓ Pregunta</option>
+      <option value="dato">📊 Dato sorprendente</option>
+      <option value="secreto">🤫 Secreto/Revelación</option>
+      <option value="historia">🎭 Historia personal</option>
+      <option value="lista">📋 Lista/Ranking</option>
+      <option value="error">❌ Error común</option>
+      <option value="vs">⚔️ Comparativa</option>
+    </select>
+    <input class="inp" id="hooks-search" placeholder="🔍 Buscar hooks..." oninput="filterHooks()" style="flex:1;min-width:180px;font-size:13px">
+    <button class="btn btn-p btn-sm" onclick="generateAIHooks()">🤖 Generar con IA</button>
+  </div>
+
+  <!-- Hook cards grid -->
+  <div id="hooks-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px"></div>
+
+  <!-- AI Generator panel -->
+  <div id="hooks-ai-panel" style="display:none;margin-top:16px">
+    <div class="card" style="border-color:var(--blue)">
+      <div class="stl mb10">🤖 Generar hooks con IA para tu nicho</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="lbl">Nicho</label>
+          <select class="sel" id="hooks-ai-niche" style="font-size:12px">
+            <option value="finanzas">💰 Finanzas</option>
+            <option value="cripto">₿ Cripto/Trading</option>
+            <option value="truecrime">🔪 True Crime</option>
+            <option value="historia">📚 Historia</option>
+            <option value="tecnologia">💻 Tech/IA</option>
+            <option value="legal">⚖️ Legal/Fiscal</option>
+            <option value="motivacion">🔥 Motivación</option>
+            <option value="drama">🎭 Drama/Reddit</option>
+            <option value="misterio">🌌 Misterio</option>
+          </select>
+        </div>
+        <div><label class="lbl">Plataforma</label>
+          <select class="sel" id="hooks-ai-plat" style="font-size:12px">
+            <option value="youtube">▶️ YouTube Shorts</option>
+            <option value="tiktok">🎵 TikTok</option>
+            <option value="instagram">📷 Instagram Reels</option>
+            <option value="all">📡 Todas</option>
+          </select>
+        </div>
+        <div><label class="lbl">Idioma</label>
+          <select class="sel" id="hooks-ai-lang" style="font-size:12px">
+            <option value="es">🇪🇸 Español</option>
+            <option value="lat">🌎 Latino</option>
+            <option value="en">🇺🇸 English</option>
+          </select>
+        </div>
+      </div>
+      <div id="hooks-ai-loading" style="display:none;text-align:center;padding:16px;color:var(--text3)">⏳ Claude generando hooks de alto CTR...</div>
+      <button class="btn btn-p" style="width:100%" onclick="runGenerateAIHooks()">⚡ Generar 10 hooks nuevos</button>
+    </div>
   </div>
 </div>
-
-<!-- ════════════════ BUDGET ════════════════ -->
 <div class="view" id="view-budget">
   <div class="sh mb16">
     <h2>💰 Presupuesto</h2>
@@ -3659,6 +3794,242 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
   </div>
 
 </div>
+
+<!-- ════════════════ ESPÍA DE CANALES ════════════════ -->
+<div class="view" id="view-spychannels">
+  <div class="sh mb16">
+    <h2>🔍 Espía de Canales</h2>
+    <span class="tag" style="background:var(--rdim);color:var(--red);border:none">Market Intel</span>
+  </div>
+
+  <div class="flex g6 mb16" style="flex-wrap:wrap">
+    <button class="sty-btn act" id="spy-tab-manual"  onclick="switchSpyTab('manual')">🔗 Analizar canal</button>
+    <button class="sty-btn"     id="spy-tab-global"  onclick="switchSpyTab('global')">🌍 Top Global</button>
+    <button class="sty-btn"     id="spy-tab-top"     onclick="switchSpyTab('top')">🏆 Top por nicho</button>
+    <button class="sty-btn"     id="spy-tab-premium" onclick="switchSpyTab('premium')">⚡ APIs premium</button>
+    <button class="sty-btn" id="spy-tab-watchlist" onclick="switchSpyTab('watchlist')">Watchlist</button>
+  </div>
+
+  <!-- TAB: ANALIZAR CANAL -->
+  <div id="spy-panel-manual">
+    <div class="card mb14">
+      <div class="stl mb10">🔗 Analiza cualquier canal</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Introduce la URL de un canal → analytics detallados + estimación de ingresos + botón para clonarlo</p>
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <input class="inp" id="spy-url" placeholder="https://youtube.com/@canal · tiktok.com/@user · instagram.com/user" style="flex:1;font-size:13px">
+        <button class="btn btn-p" id="spy-analyze-btn" onclick="spyAnalyzeChannel()">🔍 Analizar</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><label class="lbl">Plataforma</label>
+          <select class="sel" id="spy-platform" style="font-size:12px">
+            <option value="youtube">▶️ YouTube</option>
+            <option value="tiktok">🎵 TikTok</option>
+            <option value="instagram">📷 Instagram</option>
+          </select>
+        </div>
+        <div><label class="lbl">Idioma del canal</label>
+          <select class="sel" id="spy-lang" style="font-size:12px">
+            <option value="en">🇺🇸 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="lat">🌎 Latino</option>
+            <option value="pt">🇧🇷 Português</option>
+          </select>
+        </div>
+        <div><label class="lbl">Objetivo</label>
+          <select class="sel" id="spy-goal" style="font-size:12px">
+            <option value="clone">🧬 Quiero clonarlo</option>
+            <option value="compete">⚔️ Quiero competir</option>
+            <option value="learn">📚 Solo aprender</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="spy-loading" style="display:none;text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:12px">🔍</div>
+      <div>⏳ Claude + YouTube API analizando el canal...</div>
+    </div>
+    <div id="spy-result" style="display:none"></div>
+    <div id="spy-placeholder" style="text-align:center;padding:48px;color:var(--text3)">
+      <div style="font-size:48px;margin-bottom:14px">🔍</div>
+      <p style="font-size:13px;max-width:380px;margin:0 auto">Introduce la URL de cualquier canal para ver sus métricas, estimar ingresos y decidir si clonarlo</p>
+    </div>
+    <div id="spy-history" style="display:none;margin-top:20px">
+      <div class="stl mb8">🕐 Analizados recientemente</div>
+      <div id="spy-history-list" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+  </div>
+
+  <!-- TAB: TOP GLOBAL -->
+  <div id="spy-panel-global" style="display:none">
+    <div class="card mb14">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div class="stl">🌍 Radar de mercado global</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">Los canales de contenido IA más rentables del momento, sin filtro de nicho. Ideal para descubrir oportunidades nuevas.</div>
+        </div>
+        <button class="btn btn-p" id="spy-global-btn" onclick="fetchGlobalTopChannels()">🤖 Analizar mercado</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><label class="lbl">Plataforma</label>
+          <select class="sel" id="spy-global-plat" style="font-size:12px">
+            <option value="all">📡 Todas las plataformas</option>
+            <option value="youtube">▶️ YouTube</option>
+            <option value="tiktok">🎵 TikTok</option>
+            <option value="instagram">📷 Instagram</option>
+          </select>
+        </div>
+        <div><label class="lbl">Mercado</label>
+          <select class="sel" id="spy-global-market" style="font-size:12px">
+            <option value="all">🌍 Global (todos)</option>
+            <option value="en">🇺🇸 English (mayor CPM)</option>
+            <option value="es">🇪🇸 Español España</option>
+            <option value="lat">🌎 Español Latino</option>
+          </select>
+        </div>
+        <div><label class="lbl">Ordenar por</label>
+          <select class="sel" id="spy-global-sort" style="font-size:12px">
+            <option value="revenue">💰 Más rentables</option>
+            <option value="views">👁️ Más visitas</option>
+            <option value="growth">🚀 Mayor crecimiento</option>
+            <option value="opportunity">🎯 Mejor oportunidad</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="spy-global-loading" style="display:none;text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:12px">🌍</div>
+      <div style="font-weight:600;margin-bottom:6px">Analizando mercado global...</div>
+      <div style="font-size:12px">Claude identificando los canales de contenido IA más rentables en todas las plataformas</div>
+    </div>
+
+    <!-- Summary stats strip -->
+    <div id="spy-global-stats" style="display:none;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div class="sc"><div class="sc-label">Top nicho YT</div><div class="sc-val" id="sgs-yt-niche" style="font-size:14px">—</div></div>
+        <div class="sc"><div class="sc-label">Top nicho TT</div><div class="sc-val" id="sgs-tt-niche" style="font-size:14px">—</div></div>
+        <div class="sc"><div class="sc-label">CPM más alto</div><div class="sc-val" id="sgs-max-cpm" style="font-size:14px;color:var(--green)">—</div></div>
+        <div class="sc"><div class="sc-label">Mejor oportunidad</div><div class="sc-val" id="sgs-opportunity" style="font-size:14px;color:var(--amber)">—</div></div>
+      </div>
+    </div>
+
+    <!-- Tabs by platform -->
+    <div id="spy-global-platform-tabs" style="display:none;margin-bottom:12px">
+      <div class="flex g6">
+        <button class="sty-btn act" id="sgpt-all" onclick="switchGlobalPlatTab('all')">📡 Todos</button>
+        <button class="sty-btn" id="sgpt-yt" onclick="switchGlobalPlatTab('yt')">▶️ YouTube</button>
+        <button class="sty-btn" id="sgpt-tt" onclick="switchGlobalPlatTab('tt')">🎵 TikTok</button>
+        <button class="sty-btn" id="sgpt-ig" onclick="switchGlobalPlatTab('ig')">📷 Instagram</button>
+      </div>
+    </div>
+
+    <div id="spy-global-results"></div>
+
+    <div id="spy-global-placeholder" style="text-align:center;padding:48px;color:var(--text3)">
+      <div style="font-size:48px;margin-bottom:14px">🌍</div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:8px">Radar de mercado global</div>
+      <p style="font-size:13px;max-width:420px;margin:0 auto 16px">Descubre qué canales IA están generando más dinero ahora mismo en YouTube, TikTok e Instagram — sin filtro de nicho</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:420px;margin:0 auto;font-size:12px;color:var(--text3)">
+        <div style="background:var(--bg2);border-radius:var(--r);padding:10px">💰 Ingresos<br>estimados</div>
+        <div style="background:var(--bg2);border-radius:var(--r);padding:10px">📊 CPM real<br>por nicho</div>
+        <div style="background:var(--bg2);border-radius:var(--r);padding:10px">🎯 Oportunidad<br>de clonar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: TOP CANALES -->
+  <div id="spy-panel-top" style="display:none">
+    <div class="card mb14">
+      <div class="stl mb10">🏆 Top canales de contenido IA por nicho</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Claude identifica los mejores canales IA en tu nicho. Capa gratuita.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="lbl">Nicho</label>
+          <select class="sel" id="spy-top-niche" style="font-size:12px">
+            <option value="finanzas">💰 Finanzas</option>
+            <option value="cripto">₿ Cripto/Trading</option>
+            <option value="truecrime">🔪 True Crime</option>
+            <option value="historia">📚 Historia</option>
+            <option value="motivacion">🔥 Motivación</option>
+            <option value="tecnologia">💻 Tech/IA</option>
+            <option value="legal">⚖️ Legal/Fiscal</option>
+            <option value="drama">🎭 Drama/Reddit</option>
+            <option value="misterio">🌌 Misterio</option>
+            <option value="salud">🏃 Salud</option>
+          </select>
+        </div>
+        <div><label class="lbl">Idioma</label>
+          <select class="sel" id="spy-top-lang" style="font-size:12px">
+            <option value="en">🇺🇸 English (más CPM)</option>
+            <option value="es">🇪🇸 Español España</option>
+            <option value="lat">🌎 Español Latino</option>
+          </select>
+        </div>
+        <div><label class="lbl">Plataforma</label>
+          <select class="sel" id="spy-top-plat" style="font-size:12px">
+            <option value="youtube">▶️ YouTube</option>
+            <option value="tiktok">🎵 TikTok</option>
+            <option value="all">📡 Todas</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-p" style="width:100%" onclick="discoverTopChannels()">🤖 Descubrir top canales</button>
+    </div>
+    <div id="spy-top-loading" style="display:none;text-align:center;padding:32px;color:var(--text3)">⏳ Claude identificando top canales...</div>
+    <div id="spy-top-results"></div>
+    <div id="spy-top-placeholder" style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:10px">🏆</div>
+      <p style="font-size:13px">Selecciona nicho, idioma y plataforma para descubrir los mejores canales</p>
+    </div>
+  </div>
+
+  <!-- TAB: APIs PREMIUM -->
+  <div id="spy-panel-premium" style="display:none">
+    <div style="background:linear-gradient(135deg,var(--pdim),var(--bdim));border:1px solid var(--purple);border-radius:var(--rl);padding:18px;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:700;color:var(--purple);margin-bottom:6px">⚡ Capa Premium — Analytics en tiempo real</div>
+      <div style="font-size:12px;color:var(--text3)">Con APIs de terceros obtienes rankings actualizados y datos de TikTok/Instagram que la capa gratuita no puede obtener.</div>
+    </div>
+    <div class="card mb10">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:40px;height:40px;border-radius:8px;background:#ff6b3520;display:flex;align-items:center;justify-content:center;font-size:18px">📊</div>
+        <div style="flex:1"><div style="font-weight:700">Social Blade API</div><div style="font-size:11px;color:var(--text3)">Rankings YT/TT/IG · Estimación ingresos · ~$20/mes</div></div>
+        <span id="spy-sb-status" class="tag" style="font-size:10px">No configurada</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:6px">
+        <input class="inp" id="spy-key-socialblade" placeholder="Social Blade API key..." style="flex:1;font-size:12px;font-family:var(--mono)">
+        <button class="btn btn-p btn-sm" onclick="saveSocialBladeKey()">Guardar</button>
+      </div>
+      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://socialblade.com/app" target="_blank" style="color:var(--blue)">socialblade.com/app</a></div>
+    </div>
+    <div class="card mb10">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:40px;height:40px;border-radius:8px;background:#00d4c420;display:flex;align-items:center;justify-content:center;font-size:18px">🎵</div>
+        <div style="flex:1"><div style="font-weight:700">Kalodata API <span style="font-size:11px;color:var(--text3);font-weight:400">— TikTok especializado</span></div><div style="font-size:11px;color:var(--text3)">Top canales TikTok · Ingresos Shop · ~$50/mes</div></div>
+        <span id="spy-kalo-status" class="tag" style="font-size:10px">No configurada</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:6px">
+        <input class="inp" id="spy-key-kalodata" placeholder="Kalodata API key..." style="flex:1;font-size:12px;font-family:var(--mono)">
+        <button class="btn btn-p btn-sm" onclick="saveKalodataKey()">Guardar</button>
+      </div>
+      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://www.kalodata.com" target="_blank" style="color:var(--blue)">kalodata.com</a></div>
+    </div>
+    <div class="card mb10">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:40px;height:40px;border-radius:8px;background:#e1306c20;display:flex;align-items:center;justify-content:center;font-size:18px">📷</div>
+        <div style="flex:1"><div style="font-weight:700">HypeAuditor API <span style="font-size:11px;color:var(--text3);font-weight:400">— Instagram especializado</span></div><div style="font-size:11px;color:var(--text3)">Analytics IG · Engagement real · ~$50/mes</div></div>
+        <span id="spy-hype-status" class="tag" style="font-size:10px">No configurada</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:6px">
+        <input class="inp" id="spy-key-hypeauditor" placeholder="HypeAuditor API key..." style="flex:1;font-size:12px;font-family:var(--mono)">
+        <button class="btn btn-p btn-sm" onclick="saveHypeAuditorKey()">Guardar</button>
+      </div>
+      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://hypeauditor.com/api/" target="_blank" style="color:var(--blue)">hypeauditor.com/api</a></div>
+    </div>
+    <div class="card" style="background:var(--bg2)">
+      <div class="stl mb8">Estado de APIs premium</div>
+      <div id="spy-premium-status-list" style="font-size:12px;color:var(--text3)">Ninguna API premium configurada · Usando capa gratuita</div>
+    </div>
+  </div>
+</div>
 </div><!-- /content -->
 </div><!-- /main -->
 
@@ -3666,7 +4037,7 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--sans);font-size:
 <div class="modal-ov" id="modal-ov" onclick="if(event.target===this)closeModal()">
   <div class="modal" style="width:520px;max-width:96vw">
     <div style="font-size:16px;font-weight:700;margin-bottom:4px">✨ Crear nuevo canal</div>
-    <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal faceless — el idioma y voz definen toda la producción</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal IA — el idioma y voz definen toda la producción</div>
 
     <!-- Row 1: Name + Niche -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
@@ -3809,11 +4180,11 @@ function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
 function getVoice()   { return getLangCfg().voices[activeGender]; }
 
 // ── NAVIGATION ──
-const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','influencer','influencer-contenido','influencer-video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliation','admarketing','analytics','monetization','settings'];
+const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','influencer','influencer-contenido','influencer-video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','models','budget','affiliation','admarketing','analytics','monetization','settings','spychannels'];
 const TITLES = {
   dashboard:'Dashboard', channels:'Mis canales', drafts:'Borradores',
-  trends:'Tendencias — ventana 48h', score:'Score predictivo IA', pipeline:'Pipeline de creación',
-  url2video:'URL → Vídeo', templates:'Plantillas virales', clone:'Clonar canal viral',
+  trends:'Tendencias — ventana 48h', score:'Score predictivo IA', pipeline:'Pipeline IA',
+  url2video:'URL → Vídeo', templates:'Plantillas virales', clone:'Clonar canal IA',
   reuse:'Reutilizar contenido',
   tiktokshop:'🛍️ TikTok Shop — Canales y productos', tiktokproduct:'🛍️ Pipeline de producto UGC', tiktokauto:'🛍️ AutoPost TikTok Shop',
   autopilot:'AutoPilot', models:'Modelos IA',
@@ -5438,9 +5809,9 @@ async function discoverChannels() {
   const goalMap  = { fast:'monetize quickly (4500 subs + 3M views threshold)', affiliate:'affiliate marketing revenue', audience:'build large audience first', autopilot:'100% automated, minimal oversight' };
   const budgetMap = { free:'$0 per video (local AI only)', eco:'~$0.01 per video (Claude Haiku + OpenAI TTS-1)', opt:'~$0.06 per video (Claude Sonnet + TTS-1 HD)', premium:'~$0.25 per video (Claude Opus + ElevenLabs)' };
 
-  const prompt = `You are an expert YouTube Shorts and TikTok channel strategist with deep knowledge of faceless content monetization.
+  const prompt = `You are an expert AI-content YouTube Shorts and TikTok channel strategist (AI content: voice-over, stock clips, AI avatars, AI influencers, voice-over). REGLA: El canal/contenido debe poder crearse con IA: voz en off + clips stock, imágenes IA, texto animado, avatar IA (HeyGen/D-ID), influencer IA, animación, infografía automatizada, o cualquier formato donde NO aparezca una persona real como protagonista habitual. Avatares IA con cara SÍ están permitidos. with deep knowledge of AI-generated content monetization.
 
-Analyze the current market and suggest 6 high-potential faceless channel opportunities.
+Analyze the current market and suggest 6 high-potential AI content channel opportunities.
 
 Parameters:
 - Target market: ${langMap[lang] || 'all markets'}
@@ -6256,7 +6627,7 @@ function renderChannels() {
         </div>
       </div>
 
-      <!-- Lang/voice/score tags like v4.17 -->
+      <!-- Lang/voice/score tags like v4.19 -->
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
         <span class="tag" style="font-size:10px;background:var(--bg3)">${flag} ${ch.lang==='es'?'Español':ch.lang==='lat'?'Latino':'English'}</span>
         <span class="tag" style="font-size:10px;background:var(--bg3)">${ch.gender==='m'?'♂':'♀'} ${ch.voice||'auto'}</span>
@@ -6399,7 +6770,7 @@ function discoverChannelsAI() {
   const goalLabel   = { monetize:'monetizar rápido con alto CPM', grow:'crecer audiencia viralmente', diversify:'diversificar cartera de canales', affiliate:'ingresos por afiliados', brand:'construir marca personal' };
   const platLabel   = { youtube:'YouTube Shorts', tiktok:'TikTok', instagram:'Instagram Reels', all:'multiplataforma (YT+TT+IG)' };
 
-  const prompt = `Eres experto en canales faceless. Sugiere 6 oportunidades de canal para:
+  const prompt = `Eres experto en canales IA. Sugiere 6 oportunidades de canal para:
 Mercado: ${marketLabel[market]||market} | Inversión: ${budgetLabel[budget]||budget} | Objetivo: ${goalLabel[goal]||goal} | Plataforma: ${platLabel[platform]||platform}
 ${avoid?'Evitar: '+avoid+' | ':''}${niche?'Interés en: '+niche:''}
 
@@ -6597,9 +6968,11 @@ var _navCallbacks = {
   budget:        function() { try { renderBudget(); } catch(e) {} },
   models:        function() { try { renderModels(); } catch(e) { console.error('renderModels:', e); } },
   autopilot:     function() { try { renderAutopilot(); } catch(e) {} },
-  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); } catch(e) {} },
+  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); renderWatchlist(); } catch(e) {} },
   clone:         function() { try { setClonerStep(0); } catch(e) {} },
+  templates:     function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
   monetization:  function() { try { calcMultiMono(); } catch(e) {} },
+  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); renderWatchlist(); } catch(e) {} },
   settings:      function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
 };
 
@@ -6853,7 +7226,7 @@ function suggestAffiliates() {
   const typeLabel = { recurrente:'comisión recurrente (SaaS, suscripciones)', alto:'alto valor (>$50 por venta)', facil:'fácil conversión (productos masivos)' };
   const marketLabel = { es:'España', lat:'Latinoamérica', us:'Estados Unidos' };
 
-  const prompt = `Sugiere 6 programas de afiliados reales y rentables para un creador de contenido faceless de ${niche} en ${marketLabel[market]}.
+  const prompt = `Sugiere 6 programas de afiliados reales y rentables para un creador de contenido IA de ${niche} en ${marketLabel[market]}.
 Tipo preferido: ${typeLabel[type]}.
 Para cada programa incluye: nombre, plataforma (Amazon/Hotmart/etc), comisión %, estimación $/1000 views, CTA sugerido para vídeos (1 línea), ángulo viral para mencionarlo.
 Responde SOLO en JSON: [{"name":"...","platform":"...","commission":8,"per_1k":2.5,"cta":"...","angle":"..."},...]`;
@@ -7054,7 +7427,7 @@ function fetchChannelTrends() {
   const focusLabel  = { cpm:'nichos con mayor CPM y mayor monetización', growth:'nichos con mayor crecimiento y tendencia ascendente', low_sat:'nichos con menor saturación y más fáciles de penetrar', affiliate:'nichos con mejor potencial de ingresos por afiliados' };
   const today = new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
-  const prompt = `Hoy es ${today}. Eres experto en canales faceless y tendencias del mercado.
+  const prompt = `Hoy es ${today}. Eres experto en canales de CONTENIDO IA y tendencias. REGLA: El canal/contenido debe poder crearse con IA: voz en off + clips stock, imágenes IA, texto animado, avatar IA (HeyGen/D-ID), influencer IA, animación, infografía automatizada, o cualquier formato donde NO aparezca una persona real como protagonista habitual. Avatares IA con cara SÍ están permitidos. el mercado.
 Analiza qué nichos y tipos de canal tienen MAYOR POTENCIAL ahora mismo para ${marketLabel[market]} en ${platLabel[platform]}.
 Enfócate en: ${focusLabel[focus]}.
 
@@ -7238,7 +7611,7 @@ async function runCanalScore() {
   document.getElementById('score-canal-results').style.display = 'none';
   document.getElementById('score-canal-placeholder').innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)">⏳ Analizando canal...</div>';
 
-  const prompt = `Analiza este canal faceless y da un diagnóstico completo:
+  const prompt = `Analiza este canal IA y da un diagnóstico completo:
 Canal: ${ch.name}
 Nicho: ${ch.niche} | Mercado: ${ch.lang==='en'?'US English':ch.lang==='lat'?'LATAM':'España'} | Plataformas: ${(ch.platforms||['youtube']).join(', ')}
 RPM configurado: $${ch.rpm||3}/K views | Score medio de ideas: ${avgScore||'sin datos'}
@@ -7294,7 +7667,7 @@ async function runDraftScore() {
   document.getElementById('score-borrador-results').style.display='none';
   document.getElementById('score-borrador-placeholder').innerHTML='<div style="text-align:center;padding:32px;color:var(--text3)">⏳ Analizando borrador...</div>';
 
-  const prompt = `Evalúa este borrador de vídeo faceless antes de publicarlo:
+  const prompt = `Evalúa este borrador de vídeo IA antes de publicarlo:
 Hook/Título: "${d.hook||d.title}"
 Canal: ${d.channel||'general'} | Idioma: ${d.lang||'es'}
 ${d.script?'Script: '+d.script.slice(0,500):'Sin script disponible'}
@@ -7352,7 +7725,7 @@ URL: ${url}
 Plataforma detectada: ${platform}
 
 Basándote en la URL y lo que sabes sobre el formato/nicho de este tipo de contenido:
-{"score":75,"veredicto":"APROBADO","recomendacion":"análisis del contenido y oportunidad","nicho":"nicho detectado","formato":"formato del vídeo","por_que_funciona":"razón principal del éxito","como_replicar":"cómo crear algo similar faceless","mejorar":"cómo superar este vídeo","metrics":[{"label":"Replicabilidad faceless","val":80,"col":"var(--green)"},{"label":"Potencial de nicho","val":75,"col":"var(--amber)"},{"label":"Saturación (inv.)","val":65,"col":"var(--blue)"},{"label":"CPM estimado","val":70,"col":"var(--amber)"}]}`;
+{"score":75,"veredicto":"APROBADO","recomendacion":"análisis del contenido y oportunidad","nicho":"nicho detectado","formato":"formato del vídeo","por_que_funciona":"razón principal del éxito","como_replicar":"cómo crear algo similar con IA","mejorar":"cómo superar este vídeo","metrics":[{"label":"Replicable con IA","val":80,"col":"var(--green)"},{"label":"Potencial de nicho","val":75,"col":"var(--amber)"},{"label":"Saturación (inv.)","val":65,"col":"var(--blue)"},{"label":"CPM estimado","val":70,"col":"var(--amber)"}]}`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -7391,10 +7764,10 @@ async function runExtCanalScore() {
 
   const platform = url.includes('tiktok')?'TikTok':url.includes('instagram')?'Instagram':'YouTube';
 
-  const prompt = `Analiza este canal de ${platform} para evaluar si vale la pena clonarlo como canal faceless:
+  const prompt = `Analiza este canal de ${platform} para evaluar si vale la pena clonarlo como canal IA:
 URL: ${url}
 
-{"score":82,"veredicto":"APROBADO","recomendacion":"diagnóstico del canal","nicho":"nicho del canal","concepto":"concepto en 1 línea","por_que_funciona":"razón del éxito","como_clonar":"cómo crear un canal similar faceless","lang":"es o lat o en","rpm_estimado":5.5,"saturacion":"Baja/Media/Alta","oportunidad":"por qué ahora es buen momento","primer_video":"idea para el primer vídeo","metrics":[{"label":"Replicabilidad","val":85,"col":"var(--green)"},{"label":"Potencial CPM","val":80,"col":"var(--amber)"},{"label":"Saturación (inv.)","val":60,"col":"var(--blue)"},{"label":"Timing","val":75,"col":"var(--purple)"}]}`;
+{"score":82,"veredicto":"APROBADO","recomendacion":"diagnóstico del canal","nicho":"nicho del canal","concepto":"concepto en 1 línea","por_que_funciona":"razón del éxito","como_clonar":"cómo crear un canal similar con IA","lang":"es o lat o en","rpm_estimado":5.5,"saturacion":"Baja/Media/Alta","oportunidad":"por qué ahora es buen momento","primer_video":"idea para el primer vídeo","metrics":[{"label":"Replicabilidad","val":85,"col":"var(--green)"},{"label":"Potencial CPM","val":80,"col":"var(--amber)"},{"label":"Saturación (inv.)","val":60,"col":"var(--blue)"},{"label":"Timing","val":75,"col":"var(--purple)"}]}`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -7538,7 +7911,7 @@ function fetchTrendsWithAI() {
   const nicheContext = niche === 'global'
     ? 'CUALQUIER nicho o categoría — busca lo que más está creciendo en este momento sin restricción de temática'
     : `el nicho de "${niche}"`;
-  const prompt = `Hoy es ${today}. Eres analista de tendencias virales para creadores de contenido faceless.
+  const prompt = `Hoy es ${today}. Eres analista de tendencias virales para creadores de contenido IA.
 Analiza qué temas están TRENDING AHORA en ${nicheContext} para ${marketLabel[market]||market}, enfocado en ${platLabel[platform]||platform}.
 Fuentes a considerar: ${sources}.
 
@@ -7751,7 +8124,14 @@ async function runAutopilotCycle() {
 
     // Step 2: Generate idea
     addLog('💡 Generando idea con Claude...');
-    const ideaPrompt = `Genera 1 idea viral para un vídeo faceless de 60 segundos sobre ${channel.niche}.
+    // Anti-repeticion: evita repetir angulos recientes
+    const recentDrafts = getDrafts().filter(d => d.channel === channel.name).slice(-10);
+    const recentHooks  = recentDrafts.map(d => d.hook || d.title || '').filter(Boolean).slice(-5);
+    const antiRepeat   = recentHooks.length >= 3
+      ? '\nNO repitas estos angulos recientes del canal:\n' + recentHooks.map((h,i) => (i+1)+'. '+h).join('\n') + '\nGenera un angulo DIFERENTE.'
+      : '';
+
+    const ideaPrompt = `Genera 1 idea viral para un vídeo IA de 60 segundos sobre ${channel.niche}.
 Mercado: ${channel.lang === 'es' ? 'España' : channel.lang === 'lat' ? 'LATAM' : 'US English'}.
 Responde SOLO con el hook del título (sin comillas, máximo 80 caracteres, impactante).`;
     const hook = await callClaude(ideaPrompt, null, 100);
@@ -8968,7 +9348,7 @@ function getModelsAIRecommendation() {
   const hasEL = !!(localStorage.getItem('fai_key_elevenlabs'));
   const hasHG = !!(localStorage.getItem('fai_key_heygen'));
 
-  const prompt = `Soy un creador de contenido faceless. Analiza mi situación y recomienda qué tier de IA debo usar:
+  const prompt = `Soy un creador de contenido IA. Analiza mi situación y recomienda qué tier de IA debo usar:
 - Borradores creados: ${drafts.length} total, ${drafts.filter(d=>d.source==='autopilot').length} con AutoPilot
 - Coste IA acumulado: $${totalCost.toFixed(3)}
 - ElevenLabs disponible: ${hasEL}
@@ -9105,7 +9485,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.17';
+    data['_version'] = 'v4.19';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -9272,7 +9652,7 @@ function renderNichesTableStatic() {
 // ══════════════════════════════════════════════════════════
 async function runMultiPlatformScore(idea, niche) {
   if (!KEYS.anthropic) return null;
-  const prompt = 'Evalúa esta idea de vídeo faceless en las 3 plataformas:\nIdea: "' + idea + '"\nNicho: ' + (niche||'general') + '\nResponde SOLO en JSON:\n{"youtube":{"score":82,"formato_ideal":"Short 45s","razon":"por qué en YT","rpm_estimado":"$8-12"},"tiktok":{"score":88,"formato_ideal":"15-30s","razon":"por qué en TT","potencial_viral":"Alto"},"instagram":{"score":75,"formato_ideal":"Reel 30s","razon":"por qué en IG","mejor_para":"afiliados"},"mejor_plataforma":"tiktok","recomendacion":"resumen en 1 línea"}';
+  const prompt = 'Evalúa esta idea de vídeo IA en las 3 plataformas:\nIdea: "' + idea + '"\nNicho: ' + (niche||'general') + '\nResponde SOLO en JSON:\n{"youtube":{"score":82,"formato_ideal":"Short 45s","razon":"por qué en YT","rpm_estimado":"$8-12"},"tiktok":{"score":88,"formato_ideal":"15-30s","razon":"por qué en TT","potencial_viral":"Alto"},"instagram":{"score":75,"formato_ideal":"Reel 30s","razon":"por qué en IG","mejor_para":"afiliados"},"mejor_plataforma":"tiktok","recomendacion":"resumen en 1 línea"}';
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:prompt}]})});
     const data = await resp.json();
@@ -9474,7 +9854,7 @@ async function analyzeCloneSource() {
   if(placeholder) placeholder.style.display='none';
   if(btn){btn.disabled=true;btn.textContent='⏳ Analizando...';}
   const langNames={en:'English',es:'Español España',lat:'Español Latino',pt:'Português',fr:'Français',de:'Deutsch'};
-  const prompt='Analiza este canal para clonarlo en '+langNames[tgtLang]+'. URL: '+url+'\nIdioma original: '+langNames[srcLang]+'\nResponde SOLO en JSON:\n{"nombre_sugerido":"nombre del clone","nicho":"finanzas|motivacion|truecrime|historia|tecnologia|cripto|legal|drama|misterio|salud","descripcion_nicho":"1 línea","formato_videos":"duración y tipo","tipo_contenido":"clips|imgai|kinetic|reddit|compilation","frecuencia":"X/semana","estilo_script":"tono y estilo","hook_formula":"fórmula del hook","estructura":"estructura típica","monetizacion":"cómo monetizan","rpm_estimado":6.5,"score_clonabilidad":85,"diferenciadores_sugeridos":["dif1","dif2","dif3"],"primeras_ideas":[{"hook":"idea con emoji","viral_score":88}],"advertencia":"riesgo si aplica"}';
+  const prompt='Analiza este canal de contenido IA para clonarlo en '+langNames[tgtLang]+'. URL: '+url+'\nIdioma original: '+langNames[srcLang]+'\nNOTA: Solo analiza si es un canal IA (sin cara real), de avatares IA o de influencers IA. Si detectas que es un canal de persona real, indícalo en la advertencia y reduce el score_clonabilidad.\nResponde SOLO en JSON:\n{"nombre_sugerido":"nombre del clone","nicho":"finanzas|motivacion|truecrime|historia|tecnologia|cripto|legal|drama|misterio|salud","descripcion_nicho":"1 línea","formato_videos":"duración y tipo","tipo_contenido":"clips|imgai|kinetic|reddit|compilation","frecuencia":"X/semana","estilo_script":"tono y estilo","hook_formula":"fórmula del hook","estructura":"estructura típica","monetizacion":"cómo monetizan","rpm_estimado":6.5,"score_clonabilidad":85,"diferenciadores_sugeridos":["dif1","dif2","dif3"],"primeras_ideas":[{"hook":"idea con emoji","viral_score":88}],"advertencia":"riesgo si aplica"}';
   try {
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
     const data=await resp.json();
@@ -9587,7 +9967,7 @@ async function spyAnalyzeChannel(){
   if(btn){btn.disabled=true;btn.textContent='⏳ Analizando...';}
   const goalLabel={clone:'para clonarlo',compete:'para competir',learn:'para aprender'};
   const langNames={en:'English',es:'Español España',lat:'Español Latino',pt:'Português'};
-  const prompt='Analiza este canal de '+platform+' en '+langNames[lang]+' '+goalLabel[goal]+':\nURL: '+url+'\nResponde SOLO en JSON:\n{"nombre":"canal","nicho":"nicho","suscriptores":"Xm","views_mes":"XM/mes","ingresos_estimados_mes":"$X-Y/mes","rpm_estimado":8.5,"tipo_contenido":"descripción","formato_videos":"formato","frecuencia_publicacion":"X/semana","hook_formula":"fórmula","por_que_funciona":"razón","puntos_debiles":["deb1"],"oportunidad_para_mi":"oportunidad","score_clonable":85,"score_competencia":70,"accion_recomendada":"clonar|competir|aprender","idiomas_para_clonar":["es","lat"],"monetizacion_principal":"ads","ingresos_adicionales":"afiliados","crecimiento_tendencia":"creciendo|estable|declinando","advertencias":"riesgo si aplica"}';
+  const prompt='Analiza este canal de '+platform+' en '+langNames[lang]+' '+goalLabel[goal]+'. SOLO canales IA sin cara real (voz en off, clips stock, imágenes IA, avatares IA). Si hay persona real en cámara, baja score_clonable e indica en advertencias.\n\nURL: '+url+'\nResponde SOLO en JSON:\n{"nombre":"canal","nicho":"nicho","suscriptores":"Xm","views_mes":"XM/mes","ingresos_estimados_mes":"$X-Y/mes","rpm_estimado":8.5,"tipo_contenido":"descripción","formato_videos":"formato","frecuencia_publicacion":"X/semana","hook_formula":"fórmula","por_que_funciona":"razón","puntos_debiles":["deb1"],"oportunidad_para_mi":"oportunidad","score_clonable":85,"score_competencia":70,"accion_recomendada":"clonar|competir|aprender","idiomas_para_clonar":["es","lat"],"monetizacion_principal":"ads","ingresos_adicionales":"afiliados","crecimiento_tendencia":"creciendo|estable|declinando","advertencias":"riesgo si aplica"}';
   try {
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await resp.json();
@@ -9623,6 +10003,17 @@ function renderSpyResult(a){
     '<div style="background:var(--bg2);border-radius:var(--r);padding:8px"><div style="color:var(--text3);font-size:10px">OPORTUNIDAD PARA MÍ</div><div style="color:var(--green)">'+(a.oportunidad_para_mi||'—')+'</div></div></div>'+
     (a.advertencias?'<div style="padding:8px;background:var(--adim);border-radius:6px;font-size:11px;color:var(--amber);margin-bottom:10px">⚠️ '+a.advertencias+'</div>':'')+
     '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="spyCloneChannel()" style="flex:1">🧬 Clonar</button><button class="btn btn-g btn-sm" onclick="spyCompeteChannel()">⚔️ Competir</button><button class="btn btn-g btn-sm" onclick="spyAddToWatchlist()">👁️ Watchlist</button></div></div>';
+  // Add warning if not AI-replicable
+  if (a.es_faceless === false) {
+    el.innerHTML = '<div style="padding:10px 14px;background:var(--rdim);border:1px solid var(--red)44;border-radius:var(--r);font-size:12px;color:var(--red);margin-bottom:12px">⚠️ <strong>Atención:</strong> Este canal parece tener una persona real en cámara — no es fácilmente replicable con IA. El análisis es orientativo pero la estrategia de clonación requiere adaptación.</div>' + el.innerHTML;
+  }
+  // Show warning if not AI-replicable
+  if (a.es_faceless === false || (a.score_clonable < 40)) {
+    const warn = document.createElement('div');
+    warn.style.cssText = 'padding:10px 14px;background:var(--rdim);border:1px solid #ff444444;border-radius:var(--r);font-size:12px;color:var(--red);margin-bottom:12px';
+    warn.innerHTML = '⚠️ <strong>Canal no replicable con IA:</strong> Este canal parece tener personas reales en cámara. Clonarlo requiere adaptarlo a formato replicable con IA.';
+    if (el.firstChild) el.insertBefore(warn, el.firstChild);
+  }
   window._lastSpyAnalysis=a;
 }
 function spyCloneChannel(){const a=window._lastSpyAnalysis;if(!a) return;const u=document.getElementById('clone-url');if(u) u.value=a._url||'';nav('clone');setTimeout(()=>analyzeCloneSource(),300);showToast('🧬 Cargando en Canal Cloner...');}
@@ -9653,7 +10044,7 @@ async function discoverTopChannels(){
   if(results) results.innerHTML='';
   if(placeholder) placeholder.style.display='none';
   const langNames={en:'English (US/UK)',es:'Español España',lat:'Español Latino'};
-  const prompt='Lista los 8 mejores canales faceless de '+platform+' para el nicho "'+niche+'" en '+langNames[lang]+' en 2026. Canales REALES y exitosos. Responde SOLO en JSON:\n{"canales":[{"nombre":"nombre canal","url":"https://...","suscriptores":"Xm","views_mes":"XM/mes","ingresos_mes":"$X-Y/mes","rpm":8.5,"por_que_funciona":"razón en 1 línea","tipo_contenido":"descripción","clonable":true,"score":88}],"resumen":"insight clave"}';
+  const prompt='Lista los 8 mejores canales de CONTENIDO IA de '+platform+' para el nicho "'+niche+'" en '+langNames[lang]+' en 2026. REGLA: El canal/contenido debe poder crearse con IA: voz en off + clips stock, imágenes IA, texto animado, avatar IA (HeyGen/D-ID), influencer IA, animación, infografía automatizada, o cualquier formato donde NO aparezca una persona real como protagonista habitual. Avatares IA con cara SÍ están permitidos. Canales REALES y exitosos. Responde SOLO en JSON:\n{"canales":[{"nombre":"nombre canal","url":"https://...","suscriptores":"Xm","views_mes":"XM/mes","ingresos_mes":"$X-Y/mes","rpm":8.5,"por_que_funciona":"razón en 1 línea","tipo_contenido":"descripción","clonable":true,"score":88}],"resumen":"insight clave"}';
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1500,messages:[{role:'user',content:prompt}]})});
     const data=await resp.json();
@@ -9712,7 +10103,7 @@ async function fetchCrossPlatformTrends(){
   if(placeholder) placeholder.style.display='none';
   const langLabel={es:'español de España',lat:'español latinoamericano',en:'English US'};
   const prioLabel={viral:'máximo potencial viral',rpm:'máximo CPM/RPM',balance:'equilibrio viral y rentabilidad'};
-  const prompt='Genera 5 ideas de vídeo faceless para el nicho "'+niche+'" en '+langLabel[lang]+' con foco en '+prioLabel[priority]+'. Cada idea debe funcionar bien en YT Shorts, TikTok Y Instagram.\nResponde SOLO en JSON:\n{"ideas":[{"titulo":"idea con emoji","formato":"duración","hook_universal":"primer hook","yt_score":85,"tt_score":92,"ig_score":78,"rpm_yt":"$8-12","viral_reason":"por qué viral en 3","tipo_video":"clips|imgai|kinetic|reddit","mejor_plataforma":"tiktok"}],"estrategia":"recomendación en 2 líneas"}';
+  const prompt='Genera 5 ideas de vídeo IA para el nicho "'+niche+'" en '+langLabel[lang]+' con foco en '+prioLabel[priority]+'. Cada idea debe funcionar bien en YT Shorts, TikTok Y Instagram.\nResponde SOLO en JSON:\n{"ideas":[{"titulo":"idea con emoji","formato":"duración","hook_universal":"primer hook","yt_score":85,"tt_score":92,"ig_score":78,"rpm_yt":"$8-12","viral_reason":"por qué viral en 3","tipo_video":"clips|imgai|kinetic|reddit","mejor_plataforma":"tiktok"}],"estrategia":"recomendación en 2 líneas"}';
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
     const data=await resp.json();
@@ -9743,7 +10134,7 @@ async function analyzeNicheProfitability(){
   const loading=document.getElementById('niches-loading');
   if(loading) loading.style.display='block';
   const mLabel={es:'España',lat:'Latinoamérica',en:'US English'};
-  const prompt='Analiza los 5 nichos más rentables para canales faceless en '+mLabel[market]+' en 2026. Responde SOLO en JSON:\n{"nichos":[{"nombre":"nicho con emoji","cpm_yt":"$X-Y","crp_tt":"$X-X","ig_tipo":"Afiliados/Patrocinios","score_total":85,"competencia":"Baja/Media/Alta","crecimiento":"descripción","razon":"por qué es top ahora"}]}';
+  const prompt='Analiza los 5 nichos más rentables para canales IA en '+mLabel[market]+' en 2026. Responde SOLO en JSON:\n{"nichos":[{"nombre":"nicho con emoji","cpm_yt":"$X-Y","crp_tt":"$X-X","ig_tipo":"Afiliados/Patrocinios","score_total":85,"competencia":"Baja/Media/Alta","crecimiento":"descripción","razon":"por qué es top ahora"}]}';
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,messages:[{role:'user',content:prompt}]})});
     const data=await resp.json();
@@ -9769,6 +10160,911 @@ function openChannelUrl(inputId){
   const url=document.getElementById(inputId)?.value.trim();
   if(url) window.open(url.startsWith('http')?url:'https://'+url,'_blank');
   else showToast('⚠ Introduce primero la URL');
+}
+
+// ══════════════════════════════════════════════════════════
+// SPY CHANNELS — GLOBAL TOP
+// ══════════════════════════════════════════════════════════
+var _globalTopData = null;
+var _globalPlatFilter = 'all';
+
+// Update switchSpyTab to include global
+const _origSwitchSpyTab = switchSpyTab;
+switchSpyTab = function(tab) {
+  ['manual','global','top','premium','watchlist'].forEach(t => {
+    const btn   = document.getElementById('spy-tab-' + t);
+    const panel = document.getElementById('spy-panel-' + t);
+    if (btn)   btn.classList.toggle('act', t === tab);
+    if (panel) panel.style.display = (t === tab) ? 'block' : 'none';
+  });
+  if (tab === 'premium') renderSpyPremiumStatus();
+  if (tab === 'global' && _globalTopData) renderGlobalResults(_globalTopData, _globalPlatFilter);
+};
+
+function switchGlobalPlatTab(plat) {
+  _globalPlatFilter = plat;
+  ['all','yt','tt','ig'].forEach(p => {
+    const btn = document.getElementById('sgpt-' + p);
+    if (btn) btn.classList.toggle('act', p === plat);
+  });
+  if (_globalTopData) renderGlobalResults(_globalTopData, plat);
+}
+
+async function fetchGlobalTopChannels() {
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
+  const plat   = document.getElementById('spy-global-plat')?.value   || 'all';
+  const market = document.getElementById('spy-global-market')?.value || 'all';
+  const sort   = document.getElementById('spy-global-sort')?.value   || 'revenue';
+
+  const loading     = document.getElementById('spy-global-loading');
+  const placeholder = document.getElementById('spy-global-placeholder');
+  const results     = document.getElementById('spy-global-results');
+  const stats       = document.getElementById('spy-global-stats');
+  const platTabs    = document.getElementById('spy-global-platform-tabs');
+  const btn         = document.getElementById('spy-global-btn');
+
+  if (loading)     loading.style.display = 'block';
+  if (placeholder) placeholder.style.display = 'none';
+  if (results)     results.innerHTML = '';
+  if (stats)       stats.style.display = 'none';
+  if (platTabs)    platTabs.style.display = 'none';
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Analizando...'; }
+
+  const marketLabel = { all:'todos los mercados (inglés y español)', en:'mercado anglófono (US/UK/AU/CA)', es:'España', lat:'Latinoamérica' };
+  const platLabel   = { all:'YouTube + TikTok + Instagram', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram' };
+  const sortLabel   = { revenue:'ingresos estimados más altos', views:'más vistas mensuales', growth:'mayor crecimiento', opportunity:'mayor oportunidad de clonar' };
+
+  const prompt = `Eres el mayor experto mundial en canales IA y monetización de contenido. 
+Genera un análisis completo del mercado global de canales IA en ${platLabel[plat]} para ${marketLabel[market]}, ordenados por ${sortLabel[sort]}.
+
+Lista los 15 canales IA más destacados REALES de 2025-2026. Incluye diversidad de nichos.
+
+Responde SOLO en JSON (sin markdown):
+{
+  "resumen_mercado": "insight clave del mercado en 2 líneas",
+  "top_nicho_youtube": "nicho más rentable en YT",
+  "top_nicho_tiktok": "nicho más rentable en TT",
+  "cpm_mas_alto": "$XX nicho",
+  "mejor_oportunidad": "nicho con menos competencia y más potencial",
+  "tendencia_2026": "tendencia clave a aprovechar",
+  "canales": [
+    {
+      "nombre": "nombre real del canal",
+      "plataforma": "youtube|tiktok|instagram",
+      "url": "https://...",
+      "idioma": "en|es|lat",
+      "nicho": "nicho principal",
+      "sub_nicho": "sub-nicho específico",
+      "suscriptores_o_seguidores": "Xm",
+      "views_mes": "XM views/mes",
+      "ingresos_mes_estimado": "$X,XXX-$X,XXX",
+      "rpm_cpm": "$XX",
+      "tipo_contenido": "clips stock|imágenes IA|kinetic text|reddit|compilation",
+      "duracion_tipica": "45s|8min|etc",
+      "frecuencia": "X vídeos/día",
+      "monetizacion_principal": "ads|afiliados|sponsorships|shop",
+      "monetizacion_secundaria": "descripción",
+      "por_que_funciona": "razón principal del éxito",
+      "hook_formula": "fórmula del hook",
+      "crecimiento": "creciendo|estable|declinando",
+      "tasa_crecimiento": "+X% mes",
+      "score_oportunidad": 85,
+      "dificultad_clonar": "fácil|media|difícil",
+      "inversion_inicial": "baja|media|alta",
+      "idiomas_para_clonar": ["es", "lat"],
+      "por_que_clonar": "razón concreta para clonarlo ahora"
+    }
+  ]
+}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-api-key':KEYS.anthropic, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:4000, messages:[{role:'user',content:prompt}] })
+    });
+    const data = await resp.json();
+    _globalTopData = JSON.parse((data.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
+
+    if (loading)  loading.style.display  = 'none';
+    if (stats)    stats.style.display    = 'grid';
+    if (platTabs) platTabs.style.display = 'block';
+
+    // Fill summary stats
+    const setEl = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+    setEl('sgs-yt-niche',    _globalTopData.top_nicho_youtube   || '—');
+    setEl('sgs-tt-niche',    _globalTopData.top_nicho_tiktok    || '—');
+    setEl('sgs-max-cpm',     _globalTopData.cpm_mas_alto        || '—');
+    setEl('sgs-opportunity', _globalTopData.mejor_oportunidad   || '—');
+
+    _globalPlatFilter = 'all';
+    ['all','yt','tt','ig'].forEach(p => {
+      const b = document.getElementById('sgpt-' + p);
+      if (b) b.classList.toggle('act', p === 'all');
+    });
+
+    renderGlobalResults(_globalTopData, 'all');
+    logAICall('claude', 'global-top-channels', 0.015, 2000);
+    showToast('✓ Radar global: ' + (_globalTopData.canales||[]).length + ' canales analizados');
+  } catch(e) {
+    if (loading)     loading.style.display = 'none';
+    if (placeholder) { placeholder.style.display='block'; placeholder.innerHTML='<div style="color:var(--red);text-align:center;padding:24px">✗ '+e.message+'</div>'; }
+    showToast('✗ Error: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='🤖 Analizar mercado'; }
+  }
+}
+
+function renderGlobalResults(data, platFilter) {
+  const el = document.getElementById('spy-global-results');
+  if (!el || !data) return;
+
+  const platColors = { youtube:'#ff4444', tiktok:'#00d4c4', instagram:'#e1306c' };
+  const platIcons  = { youtube:'▶️', tiktok:'🎵', instagram:'📷' };
+  const platShort  = { youtube:'YT', tiktok:'TT', instagram:'IG' };
+  const langFlags  = { en:'🇺🇸', es:'🇪🇸', lat:'🌎', pt:'🇧🇷' };
+  const growthIcon = { creciendo:'📈', estable:'→', declinando:'📉' };
+  const diffCol    = { fácil:'var(--green)', media:'var(--amber)', difícil:'var(--red)' };
+
+  const platMap = { yt:'youtube', tt:'tiktok', ig:'instagram' };
+  const filterPlat = platMap[platFilter] || null;
+
+  let canales = data.canales || [];
+  if (filterPlat) canales = canales.filter(ch => ch.plataforma === filterPlat);
+
+  if (!canales.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)">No hay canales para este filtro</div>';
+    return;
+  }
+
+  el.innerHTML =
+    // Market insight
+    (data.resumen_mercado ? '<div style="padding:12px 14px;background:var(--bdim);border:1px solid var(--blue);border-radius:var(--r);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">💡 <strong>Mercado 2026:</strong> ' + data.resumen_mercado + (data.tendencia_2026 ? ' · <strong>Tendencia:</strong> ' + data.tendencia_2026 : '') + '</div>' : '') +
+
+    // Channel count by platform
+    '<div style="display:flex;gap:8px;margin-bottom:14px;font-size:11px;color:var(--text3)">' +
+    ['youtube','tiktok','instagram'].map(p => {
+      const count = (data.canales||[]).filter(c => c.plataforma === p).length;
+      return count ? '<span style="padding:3px 8px;border:1px solid ' + platColors[p] + '44;border-radius:99px;color:' + platColors[p] + '">' + platIcons[p] + ' ' + count + ' canales</span>' : '';
+    }).join('') + '</div>' +
+
+    // Channel cards
+    canales.map((ch, i) => {
+      const col      = platColors[ch.plataforma] || 'var(--blue)';
+      const oppCol   = (ch.score_oportunidad||0) >= 75 ? 'var(--green)' : (ch.score_oportunidad||0) >= 55 ? 'var(--amber)' : 'var(--text3)';
+      const gIcon    = growthIcon[ch.crecimiento] || '→';
+      const gCol     = ch.crecimiento==='creciendo' ? 'var(--green)' : ch.crecimiento==='declinando' ? 'var(--red)' : 'var(--amber)';
+
+      return '<div class="card mb10" style="border-left:4px solid ' + col + '">' +
+
+        // Header row
+        '<div style="display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:flex-start;margin-bottom:12px">' +
+          '<div style="background:' + col + '18;border-radius:var(--r);padding:6px 10px;text-align:center;min-width:52px">' +
+            '<div style="font-size:16px">' + (platIcons[ch.plataforma]||'📺') + '</div>' +
+            '<div style="font-size:9px;font-weight:700;color:' + col + '">' + (platShort[ch.plataforma]||'') + '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">' +
+              '<span style="font-weight:700;font-size:14px">' + (ch.nombre||'Canal') + '</span>' +
+              '<span style="font-size:11px">' + (langFlags[ch.idioma]||'🌍') + '</span>' +
+              '<span style="font-size:10px;color:' + gCol + '">' + gIcon + ' ' + (ch.tasa_crecimiento||ch.crecimiento||'') + '</span>' +
+            '</div>' +
+            '<div style="font-size:11px;color:var(--text3)">' +
+              '<span style="color:' + col + ';font-weight:600">' + (ch.nicho||'') + '</span>' +
+              (ch.sub_nicho ? ' · ' + ch.sub_nicho : '') +
+              ' · ' + (ch.tipo_contenido||'') +
+              ' · ' + (ch.duracion_tipica||'') + ' · ' + (ch.frecuencia||'') +
+            '</div>' +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div style="font-size:9px;color:var(--text3)">Ingresos/mes</div>' +
+            '<div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--green)">' + (ch.ingresos_mes_estimado||'—') + '</div>' +
+            '<div style="font-size:10px;color:var(--amber)">RPM ' + (ch.rpm_cpm||'—') + '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Stats grid
+        '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px">' +
+          [
+            { lbl:'SUBS/SEGUIDORES', val: ch.suscriptores_o_seguidores||'—', col:'var(--text2)' },
+            { lbl:'VIEWS/MES',       val: ch.views_mes||'—',                  col:'var(--text2)' },
+            { lbl:'MONETIZA',        val: ch.monetizacion_principal||'—',     col:'var(--amber)' },
+            { lbl:'INVERSIÓN',       val: ch.inversion_inicial||'—',          col:'var(--text2)' },
+            { lbl:'CLONAR',          val: ch.dificultad_clonar||'—',          col: diffCol[ch.dificultad_clonar]||'var(--text3)' },
+          ].map(s => '<div style="background:var(--bg2);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--text3)">' + s.lbl + '</div><div style="font-size:11px;font-weight:700;color:' + s.col + '">' + s.val + '</div></div>').join('') +
+        '</div>' +
+
+        // Intelligence
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:11px">' +
+          '<div style="background:var(--bg2);border-radius:6px;padding:8px">' +
+            '<div style="color:var(--text3);font-size:9px;margin-bottom:3px">POR QUÉ FUNCIONA</div>' +
+            '<div>' + (ch.por_que_funciona||'—') + '</div>' +
+          '</div>' +
+          '<div style="background:' + oppCol + '12;border:1px solid ' + oppCol + '33;border-radius:6px;padding:8px">' +
+            '<div style="color:var(--text3);font-size:9px;margin-bottom:3px">POR QUÉ CLONARLO AHORA</div>' +
+            '<div style="color:' + oppCol + '">' + (ch.por_que_clonar||'—') + '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Hook formula
+        (ch.hook_formula ? '<div style="font-size:11px;color:var(--text3);background:var(--bg2);border-radius:6px;padding:6px 8px;margin-bottom:10px;font-style:italic">🎣 Hook: ' + ch.hook_formula + '</div>' : '') +
+
+        // Secondary monetization
+        (ch.monetizacion_secundaria ? '<div style="font-size:10px;color:var(--text3);margin-bottom:10px">💡 También monetiza: ' + ch.monetizacion_secundaria + '</div>' : '') +
+
+        // Clone languages + opportunity score
+        '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<div style="display:flex;align-items:center;gap:6px">' +
+            (ch.idiomas_para_clonar||[]).map(l => '<span class="tag" style="font-size:10px">' + (langFlags[l]||'🌍') + ' ' + l + '</span>').join('') +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px">' +
+            '<div style="text-align:center;background:' + oppCol + '15;border:1px solid ' + oppCol + '44;border-radius:var(--r);padding:4px 10px">' +
+              '<div style="font-size:9px;color:var(--text3)">OPORTUNIDAD</div>' +
+              '<div style="font-size:16px;font-weight:800;font-family:var(--mono);color:' + oppCol + '">' + (ch.score_oportunidad||'—') + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Action buttons
+        '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">' +
+          (ch.url ? '<a href="' + ch.url + '" target="_blank" class="btn btn-g btn-sm" style="font-size:10px;text-decoration:none">↗ Ver canal</a>' : '') +
+          '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="globalSpyAnalyze(\'' + (ch.url||'').replace(/'/g,"\\'") + '\',\'' + (ch.plataforma||'youtube') + '\')">🔍 Analizar</button>' +
+          '<button class="btn btn-sm" style="font-size:10px;background:var(--gdim);color:var(--green);border:1px solid var(--green)44" onclick="globalSpyClone(\'' + (ch.url||'').replace(/'/g,"\\'") + '\',\'' + (ch.idioma||'en') + '\')">🧬 Clonar</button>' +
+          '<button class="btn btn-g btn-sm" style="font-size:10px" onclick="globalSpyNiche(\'' + (ch.nicho||'').replace(/'/g,"\\'") + '\')">🎯 Explorar nicho</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+}
+
+function globalSpyAnalyze(url, platform) {
+  switchSpyTab('manual');
+  const urlEl = document.getElementById('spy-url');
+  const platEl = document.getElementById('spy-platform');
+  if (urlEl) urlEl.value = url;
+  if (platEl) platEl.value = platform;
+  if (url) spyAnalyzeChannel();
+}
+function globalSpyClone(url, srcLang) {
+  const urlEl = document.getElementById('clone-url');
+  const srcEl = document.getElementById('clone-source-lang');
+  if (urlEl) urlEl.value = url;
+  if (srcEl) srcEl.value = srcLang;
+  nav('clone');
+  setTimeout(() => analyzeCloneSource(), 300);
+  showToast('🧬 Cargando en Canal Cloner...');
+}
+function globalSpyNiche(niche) {
+  switchSpyTab('top');
+  const nicheEl = document.getElementById('spy-top-niche');
+  if (nicheEl) nicheEl.value = niche;
+  showToast('🎯 Explorando nicho: ' + niche);
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 1 — BIBLIOTECA DE HOOKS
+// ══════════════════════════════════════════════════════════
+const HOOKS_DB = [
+  // FINANZAS
+  { id:'f1',  niche:'finanzas', plat:'youtube',   type:'dato',     lang:'es', ctr:9.2, hook:'Si tienes menos de 30 años y no haces esto, perderás $50,000 sin darte cuenta', uses:0 },
+  { id:'f2',  niche:'finanzas', plat:'tiktok',    type:'pregunta', lang:'es', ctr:8.8, hook:'¿Cuánto dinero PIERDES cada mes sin saberlo? (La respuesta te va a doler)', uses:0 },
+  { id:'f3',  niche:'finanzas', plat:'youtube',   type:'secreto',  lang:'es', ctr:9.5, hook:'El truco que los bancos NO quieren que sepas para multiplicar tus ahorros', uses:0 },
+  { id:'f4',  niche:'finanzas', plat:'instagram', type:'lista',    lang:'es', ctr:7.9, hook:'3 errores de dinero que el 90% comete antes de los 35 (yo caí en todos)', uses:0 },
+  { id:'f5',  niche:'finanzas', plat:'youtube',   type:'error',    lang:'en', ctr:9.1, hook:'I lost $10,000 making this mistake — and most people do the same thing', uses:0 },
+  { id:'f6',  niche:'finanzas', plat:'tiktok',    type:'vs',       lang:'es', ctr:8.3, hook:'Invertir en bolsa vs inmuebles en 2025: esto es lo que nadie te dice', uses:0 },
+  { id:'f7',  niche:'finanzas', plat:'youtube',   type:'dato',     lang:'lat',ctr:8.7, hook:'Con $100 al mes puedes tener $1 millón en 25 años. Te muestro cómo.', uses:0 },
+
+  // CRIPTO/TRADING
+  { id:'c1',  niche:'cripto',   plat:'youtube',   type:'dato',     lang:'es', ctr:9.4, hook:'Bitcoin va a llegar a $200K — o a $0. Esta semana se decide todo', uses:0 },
+  { id:'c2',  niche:'cripto',   plat:'tiktok',    type:'historia', lang:'es', ctr:9.8, hook:'Este hombre convirtió $1,000 en $280,000 con cripto. Aquí está su estrategia exacta', uses:0 },
+  { id:'c3',  niche:'cripto',   plat:'youtube',   type:'error',    lang:'es', ctr:8.9, hook:'Los 3 errores que hacen perder dinero al 80% de los inversores en cripto', uses:0 },
+  { id:'c4',  niche:'cripto',   plat:'tiktok',    type:'secreto',  lang:'lat',ctr:9.2, hook:'La moneda que los grandes fondos están comprando en silencio (no es Bitcoin)', uses:0 },
+
+  // TRUE CRIME
+  { id:'tc1', niche:'truecrime',plat:'youtube',   type:'historia', lang:'es', ctr:9.7, hook:'El crimen perfecto que quedó sin resolver durante 40 años — hasta que encontraron esto', uses:0 },
+  { id:'tc2', niche:'truecrime',plat:'tiktok',    type:'dato',     lang:'es', ctr:9.3, hook:'Este asesino en serie vivió entre nosotros 30 años. Nadie lo sospechó.', uses:0 },
+  { id:'tc3', niche:'truecrime',plat:'youtube',   type:'pregunta', lang:'es', ctr:8.8, hook:'¿Qué hace un asesino en serie la noche antes de ser atrapado?', uses:0 },
+  { id:'tc4', niche:'truecrime',plat:'instagram', type:'secreto',  lang:'en', ctr:9.0, hook:'The detail that solved a 20-year cold case nobody was looking for', uses:0 },
+
+  // HISTORIA
+  { id:'h1',  niche:'historia', plat:'youtube',   type:'dato',     lang:'es', ctr:8.6, hook:'El momento exacto en que Roma decidió destruir Cartago — y por qué fue inevitable', uses:0 },
+  { id:'h2',  niche:'historia', plat:'tiktok',    type:'secreto',  lang:'es', ctr:9.1, hook:'El secreto que Napoleón se llevó a la tumba y que cambiaría la historia', uses:0 },
+  { id:'h3',  niche:'historia', plat:'youtube',   type:'pregunta', lang:'en', ctr:8.4, hook:'What if one phone call in 1914 had prevented World War I?', uses:0 },
+  { id:'h4',  niche:'historia', plat:'instagram', type:'lista',    lang:'es', ctr:7.8, hook:'5 imperios que cayeron en menos de 24 horas (y el tuyo podría ser el siguiente)', uses:0 },
+
+  // TECNOLOGÍA/IA
+  { id:'t1',  niche:'tecnologia',plat:'youtube',  type:'dato',     lang:'es', ctr:9.0, hook:'Esta IA acaba de hacer en 8 segundos lo que a mí me llevaba 3 horas', uses:0 },
+  { id:'t2',  niche:'tecnologia',plat:'tiktok',   type:'secreto',  lang:'es', ctr:9.5, hook:'El prompt secreto de ChatGPT que los expertos no quieren que sepas', uses:0 },
+  { id:'t3',  niche:'tecnologia',plat:'youtube',  type:'pregunta', lang:'en', ctr:8.9, hook:'Is AI already smarter than you? (The answer is more complex than you think)', uses:0 },
+  { id:'t4',  niche:'tecnologia',plat:'tiktok',   type:'lista',    lang:'es', ctr:8.7, hook:'Las 5 IAs gratuitas que están reemplazando trabajos de $80K/año', uses:0 },
+
+  // LEGAL/FISCAL
+  { id:'l1',  niche:'legal',    plat:'youtube',   type:'error',    lang:'es', ctr:9.3, hook:'El error fiscal que le costó $12,000 a mi cliente — y que tú probablemente estás cometiendo', uses:0 },
+  { id:'l2',  niche:'legal',    plat:'tiktok',    type:'secreto',  lang:'es', ctr:9.6, hook:'El truco legal que usan las grandes empresas para pagar menos impuestos (y tú puedes hacer lo mismo)', uses:0 },
+  { id:'l3',  niche:'legal',    plat:'youtube',   type:'dato',     lang:'lat',ctr:8.8, hook:'Si te despiden, tienen que pagarte ESTO. El 70% no lo sabe y pierde dinero', uses:0 },
+
+  // MOTIVACIÓN
+  { id:'m1',  niche:'motivacion',plat:'youtube',  type:'historia', lang:'es', ctr:8.5, hook:'A los 35 lo perdió todo. A los 40 era millonario. Esta es su historia real.', uses:0 },
+  { id:'m2',  niche:'motivacion',plat:'tiktok',   type:'dato',     lang:'es', ctr:8.2, hook:'El hábito que tienen el 92% de los millonarios y que puedes empezar hoy gratis', uses:0 },
+  { id:'m3',  niche:'motivacion',plat:'instagram',type:'error',    lang:'lat',ctr:7.9, hook:'Deja de hacer esto si quieres cambiar tu vida en 90 días', uses:0 },
+
+  // DRAMA/REDDIT
+  { id:'d1',  niche:'drama',    plat:'tiktok',    type:'historia', lang:'es', ctr:9.6, hook:'Mi compañero de trabajo robó mi idea y me la presentó al jefe. Lo que pasó después...', uses:0 },
+  { id:'d2',  niche:'drama',    plat:'youtube',   type:'secreto',  lang:'es', ctr:9.2, hook:'Le abrí el móvil a mi pareja por accidente. No estaba preparado para lo que vi.', uses:0 },
+  { id:'d3',  niche:'drama',    plat:'instagram', type:'pregunta', lang:'lat',ctr:8.8, hook:'¿Soy el malo de la historia por hacer esto? Necesito opiniones.', uses:0 },
+
+  // MISTERIO
+  { id:'mi1', niche:'misterio', plat:'youtube',   type:'dato',     lang:'es', ctr:9.1, hook:'Esta foto tomada en 1923 muestra algo que no debería existir. Los expertos no tienen respuesta.', uses:0 },
+  { id:'mi2', niche:'misterio', plat:'tiktok',    type:'pregunta', lang:'es', ctr:9.4, hook:'¿Por qué NASA borró estas imágenes de la Luna? La respuesta oficial no convence a nadie', uses:0 },
+
+  // SALUD
+  { id:'s1',  niche:'salud',    plat:'youtube',   type:'dato',     lang:'es', ctr:8.4, hook:'El alimento que comes cada día está destruyendo tu cerebro (y no es el azúcar)', uses:0 },
+  { id:'s2',  niche:'salud',    plat:'tiktok',    type:'error',    lang:'lat',ctr:8.7, hook:'Dejas de dormir bien porque haces ESTO antes de acostarte. Para ya.', uses:0 },
+];
+
+// Load saved hooks from localStorage
+function loadSavedHooks() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('fai_hooks_db') || '[]');
+    saved.forEach(h => { if (!HOOKS_DB.find(x => x.id === h.id)) HOOKS_DB.push(h); });
+  } catch(e) {}
+}
+
+function filterHooks() {
+  const niche  = document.getElementById('hooks-niche-filter')?.value || 'all';
+  const plat   = document.getElementById('hooks-plat-filter')?.value  || 'all';
+  const type   = document.getElementById('hooks-type-filter')?.value  || 'all';
+  const search = document.getElementById('hooks-search')?.value.toLowerCase() || '';
+
+  let filtered = HOOKS_DB.filter(h =>
+    (niche  === 'all' || h.niche === niche) &&
+    (plat   === 'all' || h.plat  === plat)  &&
+    (type   === 'all' || h.type  === type)  &&
+    (!search || h.hook.toLowerCase().includes(search))
+  );
+
+  // Sort by CTR desc
+  filtered.sort((a, b) => b.ctr - a.ctr);
+  renderHooksGrid(filtered);
+}
+
+function renderHooksGrid(hooks) {
+  const grid = document.getElementById('hooks-grid');
+  if (!grid) return;
+
+  const platColors = { youtube:'#ff4444', tiktok:'#00d4c4', instagram:'#e1306c' };
+  const platIcons  = { youtube:'▶️', tiktok:'🎵', instagram:'📷' };
+  const typeLabels = { pregunta:'❓ Pregunta', dato:'📊 Dato', secreto:'🤫 Secreto', historia:'🎭 Historia', lista:'📋 Lista', error:'❌ Error común', vs:'⚔️ Comparativa' };
+  const langFlags  = { es:'🇪🇸', lat:'🌎', en:'🇺🇸' };
+  const nicheEmoji = { finanzas:'💰', cripto:'₿', truecrime:'🔪', historia:'📚', tecnologia:'💻', legal:'⚖️', motivacion:'🔥', drama:'🎭', misterio:'🌌', salud:'🏃' };
+
+  if (!hooks.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3)">No hay hooks para estos filtros. <button class="btn btn-p btn-sm" onclick="generateAIHooks()">🤖 Generar con IA</button></div>';
+    return;
+  }
+
+  grid.innerHTML = hooks.map(h => {
+    const col    = platColors[h.plat] || 'var(--blue)';
+    const ctrCol = h.ctr >= 9 ? 'var(--green)' : h.ctr >= 8 ? 'var(--amber)' : 'var(--text3)';
+    return '<div class="card" style="border-top:2px solid ' + col + ';position:relative">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+        '<div style="display:flex;align-items:center;gap:6px">' +
+          '<span style="font-size:12px">' + (nicheEmoji[h.niche]||'📺') + '</span>' +
+          '<span style="font-size:10px;color:var(--text3)">' + h.niche + '</span>' +
+          '<span style="font-size:10px;color:var(--border)">·</span>' +
+          '<span style="font-size:10px;color:' + col + '">' + platIcons[h.plat] + '</span>' +
+          '<span style="font-size:10px;color:var(--text3)">' + (typeLabels[h.type]||h.type) + '</span>' +
+          '<span style="font-size:10px">' + (langFlags[h.lang]||'🌍') + '</span>' +
+        '</div>' +
+        '<div style="font-size:11px;font-weight:800;font-family:var(--mono);color:' + ctrCol + '">' + h.ctr.toFixed(1) + '% CTR</div>' +
+      '</div>' +
+      '<div style="font-size:13px;font-weight:600;line-height:1.5;margin-bottom:12px;color:var(--text1)">"' + h.hook + '"</div>' +
+      '<div style="display:flex;gap:6px">' +
+        '<button class="btn btn-p btn-sm" style="flex:1;font-size:11px" onclick="useHookInPipeline(\'' + h.hook.replace(/'/g,"\\'").replace(/"/g,'') + '\',\'' + h.niche + '\')">▶ Usar en Pipeline</button>' +
+        '<button class="btn btn-g btn-sm" style="font-size:11px" onclick="copyHookText(\'' + h.hook.replace(/'/g,"\\'").replace(/"/g,'') + '\')">📋</button>' +
+        '<button class="btn btn-g btn-sm" style="font-size:11px" onclick="rateHook(\'' + h.id + '\',1)" title="Marcar como favorito">⭐</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function useHookInPipeline(hook, niche) {
+  currentIdea   = hook;
+  selectedNiche = niche;
+  nav('pipeline');
+  showToast('▶ Hook cargado en Pipeline: ' + hook.slice(0, 50));
+}
+
+function copyHookText(hook) {
+  navigator.clipboard.writeText(hook).then(() => showToast('📋 Hook copiado'));
+}
+
+function rateHook(id, delta) {
+  const h = HOOKS_DB.find(x => x.id === id);
+  if (h) { h.uses = (h.uses || 0) + delta; showToast('⭐ Marcado como favorito'); }
+}
+
+function generateAIHooks() {
+  const panel = document.getElementById('hooks-ai-panel');
+  if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+async function runGenerateAIHooks() {
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
+  const niche   = document.getElementById('hooks-ai-niche')?.value  || 'finanzas';
+  const plat    = document.getElementById('hooks-ai-plat')?.value   || 'youtube';
+  const lang    = document.getElementById('hooks-ai-lang')?.value   || 'es';
+  const loading = document.getElementById('hooks-ai-loading');
+  if (loading) loading.style.display = 'block';
+
+  const platLabel = { youtube:'YouTube Shorts', tiktok:'TikTok', instagram:'Instagram Reels', all:'YouTube Shorts, TikTok e Instagram' };
+  const langLabel = { es:'español de España', lat:'español latinoamericano', en:'English US' };
+  const prompt = `Eres experto en CTR y viral content para canales de contenido IA. Genera 10 hooks de alto rendimiento para ${platLabel[plat]} en el nicho "${niche}" en ${langLabel[lang]}.
+Los hooks deben ser para contenido creado 100% con IA (voz en off, clips stock, imágenes IA, avatar IA).
+Responde SOLO en JSON:
+{"hooks":[
+  {"hook":"texto del hook","type":"pregunta|dato|secreto|historia|lista|error|vs","ctr_estimado":9.2,"por_que_funciona":"razón psicológica en 1 línea"}
+]}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await resp.json();
+    const result = JSON.parse((data.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
+    const newHooks = (result.hooks||[]).map((h, i) => ({
+      id: 'ai_' + Date.now() + '_' + i,
+      niche, plat: plat === 'all' ? 'youtube' : plat, lang,
+      type: h.type || 'dato',
+      ctr: parseFloat(h.ctr_estimado) || 8.5,
+      hook: h.hook, uses: 0,
+      ai_generated: true,
+      por_que: h.por_que_funciona || ''
+    }));
+
+    // Add to DB and save
+    newHooks.forEach(h => HOOKS_DB.push(h));
+    const existing = JSON.parse(localStorage.getItem('fai_hooks_db') || '[]');
+    localStorage.setItem('fai_hooks_db', JSON.stringify([...existing, ...newHooks]));
+
+    if (loading) loading.style.display = 'none';
+    filterHooks();
+    logAICall('claude', 'hooks-generator', 0.003, 600);
+    showToast('✓ ' + newHooks.length + ' hooks nuevos generados y añadidos a la biblioteca');
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    showToast('✗ Error: ' + e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 3 — PACK DE PUBLICACIÓN (ZIP con todo)
+// ══════════════════════════════════════════════════════════
+async function generatePublishPack() {
+  const pubTitle = document.getElementById('apv-title')?.value.trim() || currentIdea || 'FacelessAI Video';
+  const pubDesc  = document.getElementById('apv-desc')?.value.trim()  || '';
+  const pubTags  = document.getElementById('apv-tags')?.value.trim()  || '';
+  const schedule = window._platformSchedule || {};
+  const audio    = window._generatedAudio;
+
+  // Build metadata files for each platform
+  const ytMeta = [
+    'YOUTUBE METADATA',
+    '================',
+    'Título: ' + pubTitle,
+    '',
+    'Descripción:',
+    pubDesc,
+    '',
+    'Tags: ' + pubTags,
+    '',
+    'Programar para: ' + (schedule.yt || 'Hoy 18:30'),
+    '',
+    '⚠️ Recuerda marcar: "Contiene contenido generado por IA"',
+  ].join('\n');
+
+  const ttMeta = [
+    'TIKTOK METADATA',
+    '===============',
+    'Caption: ' + pubTitle,
+    '',
+    window._platformHooks?.tt?.caption || pubDesc,
+    '',
+    'Hashtags: ' + (window._platformHooks?.tt?.hashtags || pubTags),
+    '',
+    'Programar para: ' + (schedule.tt || 'Hoy 18:00'),
+  ].join('\n');
+
+  const igMeta = [
+    'INSTAGRAM METADATA',
+    '==================',
+    'Hook caption: ' + (window._platformHooks?.ig?.hook || pubTitle),
+    '',
+    window._platformHooks?.ig?.caption || pubDesc,
+    '',
+    'Hashtags: ' + (window._platformHooks?.ig?.hashtags || pubTags),
+    '',
+    'Programar para: ' + (schedule.ig || 'Hoy 18:15'),
+  ].join('\n');
+
+  const checklist = [
+    'CHECKLIST DE PUBLICACIÓN',
+    '========================',
+    '',
+    '□ YouTube Studio → Subir vídeo',
+    '  URL: https://studio.youtube.com/channel/upload',
+    '  □ Pegar título y descripción de youtube_metadata.txt',
+    '  □ Añadir tags',
+    '  □ Marcar "Contiene IA"',
+    '  □ Programar: ' + (schedule.yt || '18:30'),
+    '',
+    '□ TikTok Creator Center → Subir vídeo',
+    '  URL: https://www.tiktok.com/creator-center/upload',
+    '  □ Pegar caption de tiktok_metadata.txt',
+    '  □ Programar: ' + (schedule.tt || '18:00'),
+    '',
+    '□ Instagram → Crear Reel',
+    '  URL: https://www.instagram.com/reels/create/',
+    '  □ Pegar caption de instagram_metadata.txt',
+    '  □ Programar: ' + (schedule.ig || '18:15'),
+    '',
+    'Generado por FacelessAI · ' + new Date().toLocaleDateString('es-ES'),
+  ].join('\n');
+
+  // Copy all metadata to clipboard
+  const allMeta = ytMeta + '\n\n' + ttMeta + '\n\n' + igMeta + '\n\n' + checklist;
+  navigator.clipboard.writeText(allMeta).catch(() => {});
+
+  // Create download links for text files (since we can't create real ZIPs client-side easily)
+  const files = [
+    { name: 'youtube_metadata.txt', content: ytMeta },
+    { name: 'tiktok_metadata.txt',  content: ttMeta },
+    { name: 'instagram_metadata.txt', content: igMeta },
+    { name: 'checklist_publicacion.txt', content: checklist },
+  ];
+
+  const packEl = document.getElementById('publish-pack-links');
+  if (packEl) {
+    packEl.innerHTML = '<div style="margin-top:12px;padding:12px;background:var(--bg2);border-radius:var(--r)">' +
+      '<div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--green)">✓ Pack de publicación listo:</div>' +
+      files.map(f => {
+        const blob = new Blob([f.content], {type:'text/plain'});
+        const url  = URL.createObjectURL(blob);
+        return '<a href="' + url + '" download="' + f.name + '" class="btn btn-g btn-sm" style="display:block;width:100%;text-align:left;margin-bottom:4px;font-size:11px;text-decoration:none">⬇ ' + f.name + '</a>';
+      }).join('') +
+      '<div style="font-size:10px;color:var(--text3);margin-top:6px">📋 Metadata copiada al portapapeles</div>' +
+    '</div>';
+  }
+  showToast('✓ Pack de publicación generado — descarga los archivos de metadata');
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 4 — DASHBOARD DE RENTABILIDAD CENTRAL
+// ══════════════════════════════════════════════════════════
+function renderProfitabilityDashboard() {
+  const channels  = getChannels();
+  const drafts    = getDrafts();
+  const log       = getAnalyticsLog();
+  const now       = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+  let totalCost    = 0, totalRevEst = 0, bestCh = null, bestROI = 0, pauseCh = null, lowestROI = Infinity;
+  const chStats = channels.map(ch => {
+    const chLog   = log.filter(e => e.channel === ch.name && (e.ts||0) >= monthStart);
+    const cost    = chLog.reduce((s,e) => s+(e.cost||0), 0);
+    const videos  = drafts.filter(d => d.channel === ch.name && (d.createdAt||0) >= monthStart).length;
+    const rpm     = ch.rpm || 4;
+    const revEst  = videos * 1000 * rpm / 1000; // rough estimate
+    const roi     = cost > 0 ? revEst / cost : 0;
+    totalCost    += cost;
+    totalRevEst  += revEst;
+    if (roi > bestROI)    { bestROI = roi; bestCh = ch.name; }
+    if (roi < lowestROI && cost > 0) { lowestROI = roi; pauseCh = ch.name; }
+    return { name: ch.name, cost, revEst, roi, videos, rpm };
+  });
+
+  const globalROI = totalCost > 0 ? totalRevEst / totalCost : 0;
+  const setEl = (id,v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setEl('prof-total-cost',    '$' + totalCost.toFixed(2));
+  setEl('prof-total-rev',     '$' + totalRevEst.toFixed(0));
+  setEl('prof-global-roi',    globalROI > 0 ? globalROI.toFixed(1) + 'x' : '—');
+  setEl('prof-best-ch',       bestCh || '—');
+  setEl('prof-pause-ch',      pauseCh || '—');
+
+  const table = document.getElementById('prof-ch-table');
+  if (table) {
+    table.innerHTML = chStats.map(ch => {
+      const roiCol = ch.roi >= 5 ? 'var(--green)' : ch.roi >= 1 ? 'var(--amber)' : 'var(--red)';
+      const action = ch.roi >= 5 ? '🚀 Escalar' : ch.roi >= 1 ? '→ Mantener' : '⏸ Revisar';
+      return '<tr style="border-bottom:1px solid var(--border)">' +
+        '<td style="padding:8px 12px;font-weight:600">' + ch.name + '</td>' +
+        '<td style="padding:8px 12px;text-align:center;font-family:var(--mono)">' + ch.videos + '</td>' +
+        '<td style="padding:8px 12px;text-align:center;font-family:var(--mono);color:var(--red)">$' + ch.cost.toFixed(2) + '</td>' +
+        '<td style="padding:8px 12px;text-align:center;font-family:var(--mono);color:var(--green)">$' + ch.revEst.toFixed(0) + '</td>' +
+        '<td style="padding:8px 12px;text-align:center;font-weight:800;color:' + roiCol + '">' + (ch.roi > 0 ? ch.roi.toFixed(1) + 'x' : '—') + '</td>' +
+        '<td style="padding:8px 12px;font-size:11px;color:' + roiCol + '">' + action + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 5 — WATCHLIST ACTIVA
+// ══════════════════════════════════════════════════════════
+function renderWatchlist() {
+  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
+  const el = document.getElementById('watchlist-container');
+  if (!el) return;
+  if (!wl.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)">No tienes canales en tu watchlist.<br>Añádelos desde el Espía de Canales.</div>';
+    return;
+  }
+  const platColors = { youtube:'#ff4444', tiktok:'#00d4c4', instagram:'#e1306c' };
+  el.innerHTML = wl.map((a, i) => {
+    const col = (a.score_clonable||0) >= 75 ? 'var(--green)' : 'var(--amber)';
+    const daysAgo = Math.round((Date.now() - (a.addedAt||Date.now())) / 86400000);
+    return '<div class="card mb8" style="border-left:3px solid ' + col + '">' +
+      '<div style="display:flex;align-items:center;gap:12px">' +
+        '<div style="text-align:center;min-width:42px"><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:' + col + '">' + (a.score_clonable||'—') + '</div><div style="font-size:9px;color:var(--text3)">clone</div></div>' +
+        '<div style="flex:1">' +
+          '<div style="font-weight:700;font-size:13px">' + (a.nombre||a._url||'Canal') + '</div>' +
+          '<div style="font-size:11px;color:var(--text3)">' + (a.nicho||'') + ' · ' + (a.ingresos_estimados_mes||'—') + ' · añadido hace ' + daysAgo + ' días</div>' +
+          '<div style="font-size:11px;color:var(--text2);margin-top:2px">' + (a.oportunidad_para_mi||'') + '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:4px;flex-direction:column">' +
+          '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="watchlistClone(' + i + ')">🧬 Clonar</button>' +
+          '<button class="btn btn-g btn-sm" style="font-size:10px" onclick="watchlistAnalyze(' + i + ')">🔍 Re-analizar</button>' +
+          '<button class="btn btn-g btn-sm" style="font-size:10px;color:var(--red)" onclick="removeFromWatchlist(' + i + ')">🗑</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function watchlistClone(idx) {
+  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
+  const a  = wl[idx];
+  if (!a) return;
+  const urlEl = document.getElementById('clone-url');
+  if (urlEl) urlEl.value = a._url || '';
+  nav('clone');
+  setTimeout(() => analyzeCloneSource(), 300);
+}
+function watchlistAnalyze(idx) {
+  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
+  const a  = wl[idx];
+  if (!a) return;
+  switchSpyTab('manual');
+  const urlEl = document.getElementById('spy-url');
+  if (urlEl) { urlEl.value = a._url || ''; spyAnalyzeChannel(); }
+  nav('spychannels');
+}
+function removeFromWatchlist(idx) {
+  const wl = JSON.parse(localStorage.getItem('fai_watchlist') || '[]');
+  wl.splice(idx, 1);
+  localStorage.setItem('fai_watchlist', JSON.stringify(wl));
+  renderWatchlist();
+  showToast('✓ Eliminado de Watchlist');
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 6 — GENERADOR DE THUMBNAILS IA
+// ══════════════════════════════════════════════════════════
+async function generateThumbnail() {
+  const hook  = currentScript ? currentScript.slice(0,100) : (currentIdea || generatedIdeas?.[selectedIdeaIndex]?.hook || '');
+  const niche = selectedNiche || 'general';
+  if (!hook) { showToast('⚠ Genera primero una idea o script'); return; }
+
+  const thumbEl = document.getElementById('thumbnail-preview');
+  const btn     = document.getElementById('thumb-gen-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Generando...'; }
+
+  // Use Pollinations.ai (free, no API key needed)
+  const style   = document.getElementById('thumb-style')?.value || 'cinematic';
+  const stylePrompts = {
+    cinematic:  'cinematic dramatic YouTube thumbnail, bold text overlay, high contrast, 16:9',
+    minimal:    'clean minimal thumbnail, white background, bold typography, professional',
+    dark:       'dark moody thumbnail, neon accents, dramatic lighting, YouTube style',
+    bright:     'bright vibrant thumbnail, eye-catching colors, bold font, high CTR design',
+  };
+
+  const promptText = encodeURIComponent(
+    'YouTube thumbnail for: ' + hook + '. Niche: ' + niche + '. Style: ' + stylePrompts[style] +
+    '. No real human faces. AI generated content creator thumbnail. Ultra detailed.'
+  );
+  const url = 'https://image.pollinations.ai/prompt/' + promptText + '?width=1280&height=720&nologo=true&seed=' + Date.now();
+
+  if (thumbEl) {
+    thumbEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">⏳ Generando thumbnail con IA...</div>';
+    const img = new Image();
+    img.onload = () => {
+      thumbEl.innerHTML = '<img src="' + url + '" style="width:100%;border-radius:var(--r);border:1px solid var(--border)" alt="Thumbnail IA">' +
+        '<div style="display:flex;gap:8px;margin-top:8px">' +
+          '<a href="' + url + '" download="thumbnail_' + Date.now() + '.jpg" class="btn btn-p btn-sm" style="flex:1;text-decoration:none;text-align:center">⬇ Descargar thumbnail</a>' +
+          '<button class="btn btn-g btn-sm" onclick="generateThumbnail()">🔄 Regenerar</button>' +
+        '</div>';
+      if (btn) { btn.disabled = false; btn.textContent = '🖼️ Generar thumbnail'; }
+    };
+    img.onerror = () => {
+      thumbEl.innerHTML = '<div style="color:var(--red);text-align:center;padding:12px">✗ Error generando thumbnail. Intenta de nuevo.</div>';
+      if (btn) { btn.disabled = false; btn.textContent = '🖼️ Generar thumbnail'; }
+    };
+    img.src = url;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 7 — VISTA "HOY" EN DASHBOARD
+// ══════════════════════════════════════════════════════════
+function renderTodayView() {
+  const channels = getChannels();
+  const drafts   = getDrafts();
+  const log      = getAnalyticsLog();
+  const today    = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+
+  // Today's cost
+  const todayCost = log.filter(e => (e.ts||0) >= todayStart).reduce((s,e) => s+(e.cost||0), 0);
+
+  // Pending drafts
+  const pending = drafts.filter(d => d.status === 'pending');
+
+  // Which channel to publish today (round-robin by day of month)
+  const dayOfMonth = today.getDate();
+  const todayChannel = channels.length ? channels[dayOfMonth % channels.length] : null;
+
+  const el = document.getElementById('today-view-content');
+  if (!el) return;
+
+  el.innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:16px">' +
+      '<div class="sc"><div class="sc-label">Canal de hoy</div><div class="sc-val" style="font-size:14px">' + (todayChannel?.name || '—') + '</div></div>' +
+      '<div class="sc"><div class="sc-label">Borradores pendientes</div><div class="sc-val" style="color:var(--amber)">' + pending.length + '</div></div>' +
+      '<div class="sc"><div class="sc-label">Gasto hoy</div><div class="sc-val" style="color:var(--red)">$' + todayCost.toFixed(3) + '</div></div>' +
+      '<div class="sc"><div class="sc-label">Publicar a las</div><div class="sc-val" style="font-size:14px">18:00 TT → 18:30 YT</div></div>' +
+    '</div>' +
+
+    (pending.length > 0 ?
+      '<div style="margin-bottom:14px"><div class="stl mb8">📋 Aprobar y publicar hoy</div>' +
+      pending.slice(0, 3).map(d =>
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px">' +
+          '<div style="flex:1"><div style="font-weight:600;font-size:13px">' + (d.hook||d.title||'—').slice(0,60) + '</div><div style="font-size:10px;color:var(--text3)">' + (d.channel||'') + ' · Score: ' + (d.score||'—') + '</div></div>' +
+          '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="nav(\'drafts\')">Revisar →</button>' +
+        '</div>'
+      ).join('') + '</div>'
+    : '<div style="padding:12px;background:var(--gdim);border-radius:var(--r);font-size:12px;color:var(--green);margin-bottom:14px">✓ Sin borradores pendientes — lanza el AutoPilot para generar contenido nuevo</div>') +
+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+      (todayChannel ? '<button class="btn btn-p btn-sm" onclick="selectedNiche=\'' + (todayChannel.niche||'') + '\';workingChannel=\'' + todayChannel.name + '\';nav(\'pipeline\')">▶ Generar para ' + todayChannel.name + '</button>' : '') +
+      '<button class="btn btn-g btn-sm" onclick="nav(\'trends\')">🔥 Ver tendencias</button>' +
+      '<button class="btn btn-g btn-sm" onclick="nav(\'autopilot\')">🤖 AutoPilot</button>' +
+    '</div>';
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 8 — GUÍA "TU PRIMERA SEMANA" (onboarding nivel 2)
+// ══════════════════════════════════════════════════════════
+function showFirstWeekGuide() {
+  const channels = getChannels();
+  const drafts   = getDrafts();
+  const hasKey   = !!KEYS.anthropic;
+  const hasCh    = channels.length > 0;
+  const hasDraft = drafts.length > 0;
+
+  const steps = [
+    { day:1, icon:'🔑', title:'Configura tus API keys', done: hasKey, action: "nav('settings')", cta:'Ir a Configuración' },
+    { day:1, icon:'📺', title:'Crea tu primer canal', done: hasCh, action: "nav('channels')", cta:'Crear canal' },
+    { day:2, icon:'🔥', title:'Analiza tendencias del nicho', done: false, action: "nav('trends')", cta:'Ver tendencias' },
+    { day:2, icon:'🔍', title:'Espía 2-3 canales de éxito', done: false, action: "nav('spychannels')", cta:'Espiar canales' },
+    { day:3, icon:'🎬', title:'Genera tu primer vídeo IA', done: hasDraft, action: "nav('pipeline')", cta:'Ir al Pipeline' },
+    { day:4, icon:'📊', title:'Evalúa con Score IA antes de publicar', done: false, action: "nav('score')", cta:'Ir a Score IA' },
+    { day:5, icon:'📱', title:'Publica en TikTok, Instagram y YouTube', done: false, action: "nav('drafts')", cta:'Ver borradores' },
+    { day:6, icon:'🧬', title:'Clona un canal exitoso en otro idioma', done: false, action: "nav('clone')", cta:'Canal Cloner' },
+    { day:7, icon:'🤖', title:'Activa el AutoPilot para el canal', done: false, action: "nav('autopilot')", cta:'Ir a AutoPilot' },
+  ];
+
+  const completed = steps.filter(s => s.done).length;
+  const el = document.getElementById('first-week-content');
+  if (!el) return;
+
+  el.innerHTML =
+    '<div style="background:var(--bg2);border-radius:var(--r);padding:8px 12px;margin-bottom:14px;font-size:12px">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<div style="flex:1;background:var(--border);border-radius:99px;height:6px"><div style="background:var(--green);border-radius:99px;height:6px;width:' + Math.round(completed/steps.length*100) + '%"></div></div>' +
+        '<span style="font-weight:700;color:var(--green)">' + completed + '/' + steps.length + '</span>' +
+      '</div>' +
+    '</div>' +
+    steps.map(s =>
+      '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:' + (s.done ? 'var(--gdim)' : 'var(--bg2)') + ';border-radius:var(--r);margin-bottom:6px;opacity:' + (s.done ? '0.7' : '1') + '">' +
+        '<div style="font-size:18px;width:24px;text-align:center">' + (s.done ? '✅' : s.icon) + '</div>' +
+        '<div style="flex:1"><div style="font-size:12px;font-weight:600;' + (s.done ? 'text-decoration:line-through;color:var(--text3)' : '') + '">Día ' + s.day + ' — ' + s.title + '</div></div>' +
+        (!s.done ? '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="' + s.action + ';closeFirstWeekGuide()">' + s.cta + '</button>' : '') +
+      '</div>'
+    ).join('');
+}
+
+function closeFirstWeekGuide() {
+  const el = document.getElementById('first-week-overlay');
+  if (el) el.style.display = 'none';
+}
+function openFirstWeekGuide() {
+  const el = document.getElementById('first-week-overlay');
+  if (el) { el.style.display = 'flex'; showFirstWeekGuide(); }
+}
+
+// ══════════════════════════════════════════════════════════
+// MEJORA 9 — MODO MULTI-CANAL SIMPLIFICADO
+// ══════════════════════════════════════════════════════════
+function renderMultiChannelView() {
+  const channels = getChannels();
+  const drafts   = getDrafts();
+  const log      = getAnalyticsLog();
+  const el       = document.getElementById('multichannel-grid');
+  if (!el) return;
+
+  if (!channels.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)">No tienes canales. <button class="btn btn-p btn-sm" onclick="nav(\'channels\')">Crear canal →</button></div>';
+    return;
+  }
+
+  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+  const today = new Date();
+  const dayOfMonth = today.getDate();
+
+  el.innerHTML = channels.map((ch, i) => {
+    const chDrafts  = drafts.filter(d => d.channel === ch.name);
+    const pending   = chDrafts.filter(d => d.status === 'pending').length;
+    const monthly   = chDrafts.filter(d => (d.createdAt||0) >= monthStart.getTime()).length;
+    const chCost    = log.filter(e => e.channel === ch.name && (e.ts||0) >= monthStart.getTime()).reduce((s,e) => s+(e.cost||0), 0);
+    const isToday   = dayOfMonth % channels.length === i;
+    const platIcons = (ch.platforms||['youtube']).map(p => p==='youtube'?'▶️':p==='tiktok'?'🎵':'📷').join(' ');
+
+    return '<div class="card" style="' + (isToday ? 'border-color:var(--green);border-width:2px' : '') + '">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">' +
+        '<div style="flex:1">' +
+          '<div style="font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px">' +
+            (isToday ? '<span style="font-size:10px;background:var(--gdim);color:var(--green);padding:1px 6px;border-radius:99px;border:1px solid var(--green)">HOY</span>' : '') +
+            ch.name +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--text3)">' + platIcons + ' · ' + (ch.niche||'') + ' · ' + (ch.lang||'es') + '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-size:10px;color:var(--text3)">Este mes</div>' +
+          '<div style="font-family:var(--mono);font-weight:700">' + monthly + ' vídeos</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">' +
+        '<div style="background:var(--bg2);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--text3)">PENDIENTES</div><div style="font-weight:700;color:' + (pending > 0 ? 'var(--amber)' : 'var(--text3)') + '">' + pending + '</div></div>' +
+        '<div style="background:var(--bg2);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--text3)">COSTE MES</div><div style="font-weight:700;font-family:var(--mono);color:var(--red)">$' + chCost.toFixed(2) + '</div></div>' +
+        '<div style="background:var(--bg2);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--text3)">RPM</div><div style="font-weight:700;font-family:var(--mono);color:var(--amber)">$' + (ch.rpm||4) + '</div></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:6px">' +
+        '<button class="btn btn-p btn-sm" style="flex:1;font-size:11px" onclick="selectedNiche=\'' + (ch.niche||'') + '\';workingChannel=\'' + ch.name + '\';activeLang=\'' + (ch.lang||'es') + '\';nav(\'pipeline\')">▶ Generar</button>' +
+        (pending > 0 ? '<button class="btn btn-g btn-sm" style="font-size:11px;color:var(--amber)" onclick="nav(\'drafts\')">📋 ' + pending + ' pend.</button>' : '') +
+        '<button class="btn btn-g btn-sm" style="font-size:11px" onclick="openEditChannelModal(' + channels.indexOf(ch) + ')">⚙️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function generateForAllChannels() {
+  const channels = getChannels();
+  if (!channels.length) { showToast('⚠ No tienes canales configurados'); return; }
+  if (!KEYS.anthropic)  { showToast('⚠ Configura tu Anthropic API key'); return; }
+  showToast('🤖 Lanzando AutoPilot para ' + channels.length + ' canales...');
+  // Launch autopilot for each channel sequentially with 2s delay
+  for (let i = 0; i < channels.length; i++) {
+    const ch = channels[i];
+    setTimeout(async () => {
+      workingChannel = ch.name;
+      selectedNiche  = ch.niche;
+      activeLang     = ch.lang || 'es';
+      await runAutopilotCycle();
+      showToast('✓ Canal ' + (i+1) + '/' + channels.length + ': ' + ch.name + ' procesado');
+    }, i * 3000);
+  }
 }
 // ── INIT ──
 renderDashboard();
@@ -10930,7 +12226,7 @@ async function generateIdeasReal() {
   const langCfg = getLangCfg();
   container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-family:var(--mono)">🤖 Claude generando ideas en ' + langCfg.label + ' para ' + selectedNiche + '...</div>';
 
-  const prompt = `You are an expert in viral faceless content for YouTube Shorts, TikTok and Instagram Reels.
+  const prompt = `You are an expert in viral AI-GENERATED content for YouTube Shorts. REGLA: El canal/contenido debe poder crearse con IA: voz en off + clips stock, imágenes IA, texto animado, avatar IA (HeyGen/D-ID), influencer IA, animación, infografía automatizada, o cualquier formato donde NO aparezca una persona real como protagonista habitual. Avatares IA con cara SÍ están permitidos. TikTok and Instagram Reels.
 Generate exactly 6 viral video ideas for the niche: "${selectedNiche}"
 Language: ${langCfg.promptLang}
 Currency symbol: ${langCfg.currency}
@@ -11015,7 +12311,7 @@ async function generateScriptReal() {
 
   const langCfg = getLangCfg();
 
-  const prompt = `You are an expert scriptwriter for viral faceless videos for YouTube Shorts.
+  const prompt = `You are an expert scriptwriter for viral AI-generated videos for YouTube Shorts. The video uses: stock footage, AI images, kinetic text, AI avatars (HeyGen/D-ID style), or voice-over only. Never features a real human as the channel protagonist.
 Write a complete script for this video:
 HOOK/IDEA: "${hookText}"
 NICHE: ${selectedNiche}
@@ -11087,7 +12383,7 @@ async function runScoreReal() {
   const platLabel     = { youtube:'YouTube Shorts', tiktok:'TikTok', instagram:'Instagram Reels' };
   const channelCtx    = ch ? `\nCanal: ${ch.name} · Nicho: ${ch.niche} · RPM: $${ch.rpm||3}/K · Voz: ${ch.voice}` : '';
 
-  const prompt = `Evalúa el potencial viral de esta idea para contenido faceless en ${platLabel[platform]||'YouTube Shorts'}, mercado ${marketLabel[market]}.${channelCtx}
+  const prompt = `Evalúa el potencial viral de esta idea para contenido IA en ${platLabel[platform]||'YouTube Shorts'}, mercado ${marketLabel[market]}.${channelCtx}
 
 Idea: "${idea}"
 
@@ -11252,5 +12548,19 @@ function deleteSavedIdea(i) {
   renderSavedIdeas();
 }
 </script>
+
+<!-- PRIMERA SEMANA OVERLAY -->
+<div id="first-week-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;align-items:center;justify-content:center">
+  <div style="background:var(--bg1);border:1px solid var(--border);border-radius:18px;padding:28px;width:520px;max-width:95vw;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div>
+        <div style="font-size:18px;font-weight:800">Tu primera semana con FacelessAI</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:3px">Sigue estos pasos para monetizar tu primer canal IA</div>
+      </div>
+      <button onclick="closeFirstWeekGuide()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px">x</button>
+    </div>
+    <div id="first-week-content"></div>
+  </div>
+</div>
 </body>
 </html>

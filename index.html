@@ -691,6 +691,7 @@ code, .mono { font-family: var(--mono); }
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
+    <span id="page-title" class="topbar-title">Dashboard</span>
     <button id="mob-menu" onclick="toggleMobMenu()" style="display:none;align-items:center;justify-content:center;width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
 
     <!-- MODE SWITCH -->
@@ -7931,7 +7932,7 @@ function saveClipsToDrafts() {
 var _navCallbacks = {
   dashboard:     function() { try { renderDashboard(); } catch(e) { console.error(e); } },
   channels:      function() { try { renderChannels(); } catch(e) { console.error(e); } },
-  drafts:        function() { try { renderDrafts(); checkViralDrafts(); } catch(e) {} },        function() { try { renderDrafts(); } catch(e) { console.error(e); } },
+  drafts:        function() { try { renderDrafts(); checkViralDrafts(); } catch(e) {} },
   trends:           function() { try { loadTrendsChannels(); } catch(e) {} },
   influencer:        function() { try { renderInfluencer(); } catch(e) {} },
   'influencer-contenido': function() { try { loadInfluencerContenido(); } catch(e) {} },

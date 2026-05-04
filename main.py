@@ -106,6 +106,7 @@ async def debug_request(req: VideoRequest):
 
 
 
+@app.post("/generate", response_model=StatusResponse)
 async def generate_video(req: VideoRequest, background_tasks: BackgroundTasks):
     job_id = str(uuid.uuid4())[:8]
     jobs[job_id] = {"status": "pending", "progress": 0, "message": "Iniciando...", "download_url": None}
@@ -202,7 +203,7 @@ async def process_video(job_id: str, req: VideoRequest):
                     # Zoom effect: subtle ken burns
                     f"zoompan=z='min(zoom+0.0015,1.5)':d={int(clip_duration*30)}:s=1080x1920"
                 ),
-                "-r", str(req.fps),
+                "-r", "30",
                 "-an",
                 "-c:v", "libx264",
                 "-preset", "fast",
@@ -354,6 +355,40 @@ def get_subtitle_filter(srt_path: str, style: str) -> str:
             "OutlineColour=&H00000000,Outline=2,"
             "Alignment=2,MarginV=50'"
         )
+
+
+# ─────────────────────────────────────────
+# YOUTUBE ANALYTICS PROXY
+# ─────────────────────────────────────────
+
+@app.get("/yt/channel-stats")
+async def yt_channel_stats(channel_id: str, access_token: str):
+    """Proxy YouTube Data API v3 channel stats (avoids CORS in browser)"""
+    async with httpx.AsyncClient(timeout=15) as client:
+        r = await client.get(
+            "https://www.googleapis.com/youtube/v3/channels",
+            params={"part": "statistics,snippet", "id": channel_id},
+            headers={"Authorization": f"Bearer {access_token}"}
+        )
+    if r.status_code == 401:
+        raise HTTPException(status_code=401, detail="Token expirado o inválido")
+    if not r.is_success:
+        raise HTTPException(status_code=r.status_code, detail="YouTube API error")
+    data = r.json()
+    items = data.get("items", [])
+    if not items:
+        raise HTTPException(status_code=404, detail="Canal no encontrado")
+    item = items[0]
+    stats = item.get("statistics", {})
+    snippet = item.get("snippet", {})
+    return {
+        "title": snippet.get("title", ""),
+        "description": snippet.get("description", ""),
+        "thumbnail": snippet.get("thumbnails", {}).get("default", {}).get("url", ""),
+        "subscribers": int(stats.get("subscriberCount", 0)),
+        "total_views": int(stats.get("viewCount", 0)),
+        "video_count": int(stats.get("videoCount", 0))
+    }
 
 
 # ─────────────────────────────────────────

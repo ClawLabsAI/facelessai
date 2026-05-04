@@ -1,6 +1,6 @@
 # FacelessAI — Documento de Contexto del Proyecto
-**Última actualización:** Marzo 2026
-**Versión actual del dashboard:** v3.26
+**Última actualización:** Mayo 2026
+**Versión actual del dashboard:** v4.30
 **URL live:** https://clawlabsai.github.io/facelessai
 **Repositorio frontend:** https://github.com/clawlabsai/facelessai (rama: main, archivo: index.html)
 **Repositorio backend:** https://github.com/clawlabsai/facelessai-backend
@@ -232,27 +232,36 @@ Coste: ~$0.01-0.015 por vídeo procesado
 
 ## Próximos pasos prioritarios
 
-### CRÍTICO — Backend Railway
-El error 422 (audio_url field required) bloquea la generación de vídeos.
-Workaround actual: frontend envía audio_url: "" vacío.
-Solución definitiva: eliminar el servicio en Railway y recrearlo para forzar deploy limpio del main.py actual.
+### RESUELTO (Mayo 2026)
+- ✅ Bug 422: main.py tenía decorator `@app.post("/generate")` faltante → AÑADIDO
+- ✅ Bug `req.fps`: VideoRequest no tenía campo fps, hardcoded a 30 → CORREGIDO
+- ✅ YouTube OAuth: callback automático detecta `#access_token=` en URL → IMPLEMENTADO
+- ✅ YouTube upload real: `publishToYouTube()` usa YouTube Data API v3 resumable upload → IMPLEMENTADO
+- ✅ Backend endpoint `/yt/channel-stats` para analytics → AÑADIDO
+
+### PENDIENTE
+1. Backend Railway — forzar redeploy del servicio en Railway (el main.py está corregido en el repo)
+2. YouTube Client ID — en Configuración, el campo "YouTube API" debe contener el OAuth 2.0 Client ID (no una API key simple). Ver instrucciones en Configuración.
+3. TikTok Content Posting API (requiere app aprobada 2-7 días)
+4. AutoPilot → completar pipeline completo (TTS + video) en ciclo automático
 
 ### ALTA PRIORIDAD
-1. Resolver backend definitivamente
+1. Redeploy Railway con main.py corregido
 2. Dashboard — gráfico de actividad últimos 7 días
-3. Pipeline paso 5 — mostrar preview del MP4 generado en pantalla de aprobación
-4. Sidebar badges con contadores reales en tiempo real
-
-### SIGUIENTE
-5. YouTube API — publicación directa
-6. Tendencias reales — conectar a Google Trends via web search
-7. AutoPilot real — cron job en Railway
-8. TikTok Content Posting API (requiere app aprobada 2-7 días)
+3. Pipeline paso 5 — preview del MP4 antes de aprobar
 
 ### FUTURO
-9. Publicidad de canales (YouTube Ads / Meta Ads)
-10. Multi-idioma UI (inglés completo)
-11. Multi-usuario / equipo
+4. Tendencias reales — Google Trends API
+5. YouTube Ads / Meta Ads integración
+6. Multi-usuario / equipo
+
+### NOTA IMPORTANTE — YouTube OAuth
+El campo "YouTube API" en Configuración debe contener tu **OAuth 2.0 Client ID** de Google Cloud Console (formato: XXXXXXXXXX-xxx.apps.googleusercontent.com), NO una API key simple. Pasos:
+1. Google Cloud Console → Credenciales → Crear credencial → OAuth 2.0 Client ID
+2. Tipo: Aplicación web
+3. URI de redirección: https://clawlabsai.github.io/facelessai/
+4. Copiar el Client ID y pegarlo en Configuración → YouTube API
+5. Hacer clic en "Conectar YouTube" para autorizar
 
 ---
 

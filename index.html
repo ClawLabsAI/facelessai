@@ -4816,8 +4816,27 @@ function updateYTOAuthStatus(connected){
   if(btn)btn.textContent=connected?'YouTube conectado ✓':'Conectar YouTube';
   if(badge){badge.textContent=connected?'OAuth activo':'Sin conectar';badge.style.color=connected?'var(--green)':'var(--red)';}
 }
-// Load saved token on startup
-(function(){var t=localStorage.getItem('fai_yt_oauth_token');if(t){_ytOAuthToken=t;setTimeout(function(){updateYTOAuthStatus(true);},500);}})();
+// Load saved token + handle OAuth callback redirect
+(function(){
+  // Handle OAuth2 implicit flow callback (access_token in URL hash)
+  var hash=window.location.hash;
+  if(hash&&hash.includes('access_token=')){
+    try{
+      var params=new URLSearchParams(hash.substring(1));
+      var token=params.get('access_token');
+      if(token){
+        _ytOAuthToken=token;
+        localStorage.setItem('fai_yt_oauth_token',token);
+        // Clean hash from URL
+        history.replaceState(null,'',window.location.pathname+window.location.search);
+        setTimeout(function(){updateYTOAuthStatus(true);showToast('✓ YouTube conectado correctamente');},600);
+      }
+    }catch(e){}
+  } else {
+    var t=localStorage.getItem('fai_yt_oauth_token');
+    if(t){_ytOAuthToken=t;setTimeout(function(){updateYTOAuthStatus(true);},500);}
+  }
+})();
 
 // ─── CTR INPUT IN DRAFT CARDS ─────────────────────────────────
 function showCTRInput(draftId,currentCTR){
@@ -8769,26 +8788,135 @@ function approveDraftWithDownload(id) {
 // ══════════════════════════════════════════════════════════
 // YOUTUBE — publicar directo
 // ══════════════════════════════════════════════════════════
-function publishToYouTube(draftId) {
-  const youtubeKey = localStorage.getItem('fai_key_youtube') || KEYS.youtube;
-  if (!youtubeKey) {
-    // Show setup instructions
-    const msg = `Para publicar en YouTube necesitas:\n\n1. Google Cloud Console → crear proyecto\n2. Activar YouTube Data API v3\n3. Crear credenciales OAuth 2.0\n4. Añadir la API key en Configuración → YouTube API\n\n¿Ir a Configuración?`;
-    if (confirm(msg)) nav('settings');
+async function publishToYouTube(draftId) {
+  const token = _ytOAuthToken || localStorage.getItem('fai_yt_oauth_token');
+  if (!token) {
+    showToast('⚠ Conecta YouTube OAuth primero en Configuración → YouTube API');
+    if (confirm('¿Ir a Configuración para conectar YouTube OAuth?')) nav('settings');
     return;
   }
+
   const drafts = getDrafts();
   const d = drafts.find(x => x.id === draftId);
   if (!d) return;
-  if (!d.videoUrl && !d.video_url) {
-    showToast('⚠ Este borrador no tiene MP4 generado');
+
+  const videoUrl = d.videoUrl || d.video_url;
+  if (!videoUrl) {
+    showToast('⚠ Este borrador no tiene MP4 generado. Completa el pipeline primero.');
     return;
   }
-  // Open YouTube upload flow
-  showToast('📺 Abriendo publicación en YouTube...');
-  // For now open YouTube Studio (full OAuth flow requires server-side)
-  window.open('https://studio.youtube.com', '_blank');
-  showToast('💡 Sube el MP4 manualmente desde YouTube Studio. OAuth directo próximamente.');
+
+  showToast('📤 Preparando subida a YouTube...');
+
+  try {
+    // 1. Fetch video blob from backend or ask user for file
+    let videoBlob = null;
+
+    if (videoUrl.startsWith('blob:')) {
+      const r = await fetch(videoUrl);
+      if (r.ok) videoBlob = await r.blob();
+    }
+
+    if (!videoBlob) {
+      const backend = localStorage.getItem('fai_backend_url') || '';
+      if (backend) {
+        const fullUrl = videoUrl.startsWith('http') ? videoUrl : backend + videoUrl;
+        try {
+          const r = await fetch(fullUrl);
+          if (r.ok) videoBlob = await r.blob();
+        } catch(e) {}
+      }
+    }
+
+    // Fallback: ask user to select the downloaded MP4 file
+    if (!videoBlob) {
+      videoBlob = await new Promise((resolve, reject) => {
+        showToast('⚠ Video no disponible en servidor. Selecciona el MP4 descargado.');
+        const input = document.createElement('input');
+        input.type = 'file'; input.accept = 'video/mp4,video/*';
+        input.onchange = () => resolve(input.files[0]);
+        input.oncancel = () => reject(new Error('Cancelado'));
+        input.click();
+      });
+    }
+
+    if (!videoBlob) throw new Error('No se pudo obtener el vídeo');
+
+    // 2. Build metadata
+    const title = (d.hook || d.title || 'FacelessAI Video').substring(0, 100);
+    const desc  = (d.script || '').substring(0, 4500) + '\n\n#shorts #facelessai #ia #viral';
+    const tags  = ['shorts', 'faceless', 'ia', 'viral', d.niche || 'tecnologia'].slice(0, 10);
+    const lang  = (d.lang === 'us' || d.lang === 'en') ? 'en' : 'es';
+
+    const metadata = {
+      snippet: { title, description: desc, tags, categoryId: '22', defaultLanguage: lang },
+      status:  { privacyStatus: 'public', selfDeclaredMadeForKids: false }
+    };
+
+    // 3. Initiate resumable upload
+    showToast('📤 Iniciando upload YouTube...');
+    const initResp = await fetch(
+      'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'X-Upload-Content-Type': 'video/mp4',
+          'X-Upload-Content-Length': String(videoBlob.size)
+        },
+        body: JSON.stringify(metadata)
+      }
+    );
+
+    if (initResp.status === 401) {
+      _ytOAuthToken = null;
+      localStorage.removeItem('fai_yt_oauth_token');
+      updateYTOAuthStatus(false);
+      showToast('⚠ Token expirado. Reconecta YouTube en Configuración.');
+      return;
+    }
+    if (!initResp.ok) throw new Error('Error iniciando upload: ' + initResp.status);
+
+    const uploadUrl = initResp.headers.get('Location') || initResp.headers.get('location');
+    if (!uploadUrl) throw new Error('No se obtuvo URL de upload de YouTube');
+
+    // 4. Upload video bytes
+    showToast('📤 Subiendo vídeo a YouTube... (puede tardar 1-3 min)');
+    const uploadResp = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'video/mp4' },
+      body: videoBlob
+    });
+
+    if (!uploadResp.ok) throw new Error('Error subiendo vídeo: ' + uploadResp.status);
+
+    const uploadData = await uploadResp.json();
+    const ytVideoId  = uploadData.id;
+    const ytUrl      = `https://youtu.be/${ytVideoId}`;
+
+    // 5. Update draft
+    const allDrafts = getDrafts();
+    const idx = allDrafts.findIndex(x => x.id === draftId);
+    if (idx >= 0) {
+      allDrafts[idx].status      = 'published';
+      allDrafts[idx].ytVideoId   = ytVideoId;
+      allDrafts[idx].ytUrl       = ytUrl;
+      allDrafts[idx].publishedAt = Date.now();
+      saveDrafts(allDrafts);
+    }
+    renderDrafts && renderDrafts();
+    renderDashboard && renderDashboard();
+
+    showToast('✓ Publicado en YouTube: ' + ytUrl);
+    if (confirm(`✓ Vídeo publicado en YouTube!\n\n${ytUrl}\n\n¿Abrirlo ahora?`)) {
+      window.open(ytUrl, '_blank');
+    }
+
+  } catch(e) {
+    showToast('✕ Error YouTube: ' + e.message);
+    console.error('YouTube upload error:', e);
+  }
 }
 function addYouTubePublishButtons() {
   // Add publish button to each draft card if it has a video

@@ -426,12 +426,15 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>Configuración<span class="nb nba" id="settings-badge" style="display:none">!</span>
     </div>
   
+      <!-- SaaS placeholder views hidden until implemented -->
+      <div style="display:none">
       <div class="nsl" style="margin-top:10px;opacity:0.55">SaaS <span style="font-size:9px;background:var(--purple);color:var(--text1);padding:1px 5px;border-radius:3px;margin-left:4px">PROXIMAMENTE</span></div>
       <div class="ni" data-view="saas-users" onclick="nav('saas-users')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 14s1-4 5-4 5 4 5 4"/></svg>Usuarios</div>
       <div class="ni" data-view="saas-billing" onclick="nav('saas-billing')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 7h14"/></svg>Facturacion</div>
       <div class="ni" data-view="saas-plans" onclick="nav('saas-plans')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l2 4 5 .7-3.5 3.5.8 5L8 13l-4.3 2.2.8-5L1 6.7 6 6z"/></svg>Planes</div>
       <div class="ni" data-view="saas-admin" onclick="nav('saas-admin')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/></svg>Admin</div>
       <div class="ni" data-view="saas-onboarding" onclick="nav('saas-onboarding')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,8 6,12 14,4"/></svg>Onboarding</div>
+      </div>
       <div class="ni" data-view="cliplibrary" onclick="nav('cliplibrary')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="11" rx="1"/><circle cx="5.5" cy="7.5" r="1.5"/><path d="M1 12l3.5-3 3 2.5 3-4 4.5 4.5"/></svg>Mis Clips</div></nav>
   <div class="sidebar-footer">
     <div class="user-pill">
@@ -3531,22 +3534,49 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     </div>
 
 
-      <!-- YouTube Data API -->
+      <!-- YouTube — dos campos separados -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
           <div style="width:28px;height:28px;border-radius:6px;background:#ff444420;display:flex;align-items:center;justify-content:center;font-size:14px">▶</div>
           <div style="flex:1">
-            <div style="font-size:12px;font-weight:600;color:var(--text1)">YouTube Data API v3</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text1)">YouTube</div>
             <div style="font-size:10px;color:var(--text3);font-family:var(--mono)" id="status-youtube-text">No configurada</div>
           </div>
           <span style="font-size:10px;padding:2px 6px;border-radius:99px" id="status-youtube-badge">—</span>
         </div>
-        <div style="display:flex;gap:8px">
-          <input class="inp" id="key-youtube" placeholder="AIza..." style="flex:1;font-size:12px;font-family:var(--mono)">
-          <button class="btn btn-p btn-sm" onclick="saveKey('youtube')">Guardar</button>
+        <!-- Campo 1: Data API key (para analytics/estadísticas) -->
+        <div style="margin-bottom:10px">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:600">Data API Key <span style="font-weight:400;color:var(--text3)">(para Analytics y estadísticas)</span></div>
+          <div style="display:flex;gap:8px">
+            <input class="inp" id="key-youtube" placeholder="AIza..." style="flex:1;font-size:12px;font-family:var(--mono)">
+            <button class="btn btn-p btn-sm" onclick="saveKey('youtube')">Guardar</button>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">Google Cloud Console</a> → Activar YouTube Data API v3 → Crear API Key
+          </div>
         </div>
-        <div style="font-size:10px;color:var(--text3);margin-top:6px">
-          <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">Google Cloud Console</a> → Activar YouTube Data API v3 → Crear API key
+        <!-- Campo 2: OAuth Client ID (para publicar vídeos) -->
+        <div style="border-top:1px solid var(--border);padding-top:10px">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:600">OAuth Client ID <span style="font-weight:400;color:var(--text3)">(para publicar vídeos)</span></div>
+          <div style="display:flex;gap:8px;margin-bottom:6px">
+            <input class="inp" id="key-youtube-client-id" placeholder="XXXX.apps.googleusercontent.com" style="flex:1;font-size:12px;font-family:var(--mono)">
+            <button class="btn btn-p btn-sm" onclick="saveYouTubeClientId()">Guardar</button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-g btn-sm" id="yt-oauth-status-btn" onclick="startYouTubeOAuth()" style="font-size:11px">Conectar YouTube</button>
+            <span id="yt-oauth-badge" style="font-size:10px;color:var(--text3)">Sin conectar</span>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:6px">
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">Google Cloud Console</a> → Credenciales → OAuth 2.0 Client ID → Tipo: Aplicación web → URI redirección: <span style="font-family:var(--mono);color:var(--text1)">https://clawlabsai.github.io/facelessai/</span>
+          </div>
+        </div>
+        <!-- Campo 3: token manual (fallback) -->
+        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Token OAuth manual <span style="color:var(--text3)">(alternativa si el popup no funciona)</span></div>
+          <div style="display:flex;gap:8px">
+            <input class="inp" id="yt-token-inp" placeholder="ya29...." style="flex:1;font-size:12px;font-family:var(--mono)">
+            <button class="btn btn-g btn-sm" onclick="saveYTToken()">Guardar</button>
+          </div>
         </div>
       </div>
 
@@ -4793,9 +4823,16 @@ async function generateABVariants(){
 
 // ─── YOUTUBE OAUTH ────────────────────────────────────────────
 var _ytOAuthToken = null;
+function saveYouTubeClientId(){
+  var val=(document.getElementById('key-youtube-client-id')||{}).value||'';
+  if(!val){showToast('Introduce el OAuth Client ID');return;}
+  localStorage.setItem('fai_yt_client_id',val.trim());
+  showToast('Client ID guardado — ahora pulsa Conectar YouTube');
+}
 function startYouTubeOAuth(){
-  var clientId=KEYS.youtube||localStorage.getItem('fai_key_youtube')||'';
-  if(!clientId){showToast('Configura YouTube Client ID en Configuracion');return;}
+  // Prefer dedicated client ID field, fall back to youtube key (legacy)
+  var clientId=localStorage.getItem('fai_yt_client_id')||KEYS.youtube||localStorage.getItem('fai_key_youtube')||'';
+  if(!clientId){showToast('Configura el OAuth Client ID de YouTube en Configuración');nav('settings');return;}
   var redirect=window.location.origin+window.location.pathname;
   var scope='https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly';
   var authUrl='https://accounts.google.com/o/oauth2/v2/auth?client_id='+encodeURIComponent(clientId)+'&redirect_uri='+encodeURIComponent(redirect)+'&response_type=token&scope='+encodeURIComponent(scope);
@@ -4940,12 +4977,21 @@ function nav(id) {
   if (titleEl) titleEl.textContent = TITLES[id] || id;
   window.scrollTo(0, 0);
 
-  // Refresh settings display after DOM is visible
-  if (id === 'tiktokshop') renderTTSChannels();
+  // ── View-specific on-show callbacks ──
+  if (id === 'tiktokshop')   renderTTSChannels();
   if (id === 'tiktokproduct') setTSStep(0);
-  if (id === 'settings') setTimeout(() => { refreshSettingsDisplay(); initPreferences(); }, 50);
-  // Render drafts when navigating to drafts view
-  if (id === 'drafts') renderDrafts();
+  if (id === 'settings')     setTimeout(() => { refreshSettingsDisplay(); initPreferences(); autoFillBackendUrl(); }, 50);
+  if (id === 'drafts')       renderDrafts();
+  if (id === 'templates')    setTimeout(() => { if(typeof renderScriptTemplates==='function') renderScriptTemplates(); if(typeof renderHooksGrid==='function') renderHooksGrid(); }, 50);
+  if (id === 'scheduler')    setTimeout(() => { if(typeof renderScheduler==='function') renderScheduler(); }, 50);
+  if (id === 'autopilot')    setTimeout(() => { if(typeof renderAutopilot==='function') renderAutopilot(); if(typeof renderAPChannelList==='function') renderAPChannelList(); if(typeof updateAPStats==='function') updateAPStats(); }, 50);
+  if (id === 'monetization') setTimeout(() => { if(typeof renderProfitabilityDashboard==='function') renderProfitabilityDashboard(); }, 50);
+  if (id === 'analytics')    setTimeout(() => { if(typeof renderAnalytics==='function') renderAnalytics(); }, 50);
+  if (id === 'budget')       setTimeout(() => { if(typeof renderNicheCalculator==='function') renderNicheCalculator(); if(typeof renderNichesTableStatic==='function') renderNichesTableStatic(); }, 50);
+  if (id === 'cliplibrary')  setTimeout(() => { if(typeof renderClipLibrary==='function') renderClipLibrary(); }, 50);
+  if (id === 'spychannels')  setTimeout(() => { if(typeof loadSpyHistory==='function') loadSpyHistory(); }, 50);
+  if (id === 'affiliation')  setTimeout(() => { if(typeof renderAffiliates==='function') renderAffiliates(); }, 50);
+  if (id === 'dashboard')    setTimeout(() => { renderDashboard(); renderWeeklyChart(); }, 30);
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -6983,6 +7029,91 @@ function clearAnalyticsLog() {
 // ══════════════════════════════════════════════════════════
 // DASHBOARD — datos reales
 // ══════════════════════════════════════════════════════════
+// SCHEDULER — render publish queue from localStorage
+// ══════════════════════════════════════════════════════════
+function renderScheduler() {
+  const el = document.getElementById('scheduler-queue');
+  if (!el) return;
+  let queue = [];
+  try { queue = JSON.parse(localStorage.getItem('fai_publish_queue') || '[]'); } catch(e) {}
+  if (!queue.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3)"><div style="font-size:36px;margin-bottom:12px">📅</div><div style="font-size:14px;font-weight:600;margin-bottom:6px">No hay vídeos programados</div><p style="font-size:12px;max-width:340px;margin:0 auto">Los vídeos auto-aprobados por el AutoPilot aparecen aquí. También puedes programar manualmente desde Borradores.</p></div>';
+    return;
+  }
+  const platIcon = {youtube:'▶️',tiktok:'🎵',instagram:'📸'};
+  const statusColor = {pending:'var(--amber)',published:'var(--green)',failed:'var(--red)'};
+  const now = Date.now();
+  queue.sort((a,b) => (a.scheduledAt||0) - (b.scheduledAt||0));
+  el.innerHTML = queue.map((item,i) => {
+    const d = new Date(item.scheduledAt || now);
+    const isPast = (item.scheduledAt||0) < now;
+    const plats = (item.platforms||['youtube']).map(p => platIcon[p]||p).join(' ');
+    const statusCol = statusColor[item.status] || 'var(--amber)';
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg1);border:1px solid var(--border);border-left:3px solid ${statusCol};border-radius:var(--r);margin-bottom:8px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.title||'Sin título'}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">${plats} · ${item.channel||''} · ${d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'})} ${d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+      <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${statusCol}22;color:${statusCol};font-family:var(--mono);white-space:nowrap">${item.status==='published'?'✓ publicado':item.status==='failed'?'✕ error':isPast?'⏰ pendiente':'⏳ programado'}</span>
+      <button class="btn btn-g btn-sm" style="font-size:10px;color:var(--red)" onclick="removeFromQueue('${item.id}')">×</button>
+    </div>`;
+  }).join('');
+}
+function removeFromQueue(id) {
+  try {
+    let q = JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');
+    q = q.filter(x => x.id !== id);
+    localStorage.setItem('fai_publish_queue', JSON.stringify(q));
+    renderScheduler();
+    showToast('Eliminado de la cola');
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════
+// WEEKLY CHART — render last 7 days activity bars
+// ══════════════════════════════════════════════════════════
+function renderWeeklyChart() {
+  const chartEl  = document.getElementById('dash-weekly-chart');
+  const labelsEl = document.getElementById('dash-weekly-labels');
+  if (!chartEl) return;
+  const drafts = getDrafts();
+  const days = [];
+  const labels = [];
+  const dayNames = ['do','lu','ma','mi','ju','vi','sá'];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i); d.setHours(0,0,0,0);
+    const next = new Date(d); next.setDate(d.getDate() + 1);
+    const count = drafts.filter(dr => (dr.createdAt||0) >= d.getTime() && (dr.createdAt||0) < next.getTime()).length;
+    days.push(count);
+    labels.push(dayNames[d.getDay()]);
+  }
+  const max = Math.max(...days, 1);
+  chartEl.innerHTML = days.map((n,i) => {
+    const pct = Math.round((n / max) * 100);
+    const isToday = i === 6;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${n||''}</div>
+      <div style="width:100%;border-radius:3px 3px 0 0;background:${isToday?'var(--blue)':'var(--bg3)'};height:${Math.max(pct,4)}%;transition:height .4s ease;min-height:4px"></div>
+    </div>`;
+  }).join('');
+  if (labelsEl) labelsEl.innerHTML = labels.map((l,i) => `<div style="flex:1;text-align:center;font-size:10px;color:${i===6?'var(--blue)':'var(--text3)'};font-weight:${i===6?'700':'400'}">${l}</div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// AUTO-FILL backend URL in settings
+// ══════════════════════════════════════════════════════════
+function autoFillBackendUrl() {
+  const inp = document.getElementById('backend-url-inp');
+  if (!inp) return;
+  const saved = localStorage.getItem('fai_backend_url');
+  if (!saved) {
+    const defaultUrl = 'https://facelessai-backend-production.up.railway.app';
+    inp.value = defaultUrl;
+    localStorage.setItem('fai_backend_url', defaultUrl);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
 function renderDashboard() {
   const allDrafts = getDrafts();
   const channels  = getChannels();
@@ -8947,21 +9078,16 @@ var autopilotTimer = null;
 
 function toggleAutopilot() {
   autopilotRunning = !autopilotRunning;
-  const btn   = document.getElementById('ap-toggle-btn');
   const badge = document.getElementById('ap-nav-badge');
-  const status = document.getElementById('ap-status');
-
   if (autopilotRunning) {
-    if (btn) { btn.textContent = '⏸ Pausar AutoPilot'; btn.style.background = 'var(--amber)'; }
     if (badge) badge.textContent = 'ON';
-    if (status) status.textContent = '🟢 AutoPilot activo — ejecutando cada ' + (getAutopilotInterval()) + ' horas';
+    updateAPStatus('running', 'AutoPilot activo — ciclo cada ' + getAutopilotInterval() + 'h');
     scheduleNextRun();
     showToast('🤖 AutoPilot activado');
   } else {
     if (autopilotTimer) clearTimeout(autopilotTimer);
-    if (btn) { btn.textContent = '▶ Activar AutoPilot'; btn.style.background = ''; }
     if (badge) badge.textContent = 'OFF';
-    if (status) status.textContent = '⏸ AutoPilot pausado';
+    updateAPStatus('idle', 'AutoPilot pausado');
     showToast('AutoPilot pausado');
   }
   localStorage.setItem('fai_autopilot', autopilotRunning ? '1' : '0');
@@ -8973,8 +9099,7 @@ function scheduleNextRun() {
   if (!autopilotRunning) return;
   const ms = getAutopilotInterval() * 3600000;
   const nextRun = new Date(Date.now() + ms);
-  const status = document.getElementById('ap-status');
-  if (status) status.textContent = '🟢 Próxima ejecución: ' + nextRun.toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
+  updateAPStatus('running', '🟢 Próxima ejecución: ' + nextRun.toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'}));
   autopilotTimer = setTimeout(runAutopilotCycle, ms);
 }
 async function runAutopilotCycle() {
@@ -9051,19 +9176,23 @@ Sin intros ni presentaciones. Empieza directo con el hook. Máximo 150 palabras.
 }
 function renderAutopilot() {
   const running = localStorage.getItem('fai_autopilot') === '1';
-  const btn = document.getElementById('ap-toggle-btn');
   const badge = document.getElementById('ap-nav-badge');
   const interval = document.getElementById('ap-interval');
   if (running && !autopilotRunning) {
     autopilotRunning = true;
     scheduleNextRun();
   }
-  if (btn) {
-    btn.textContent = autopilotRunning ? '⏸ Pausar AutoPilot' : '▶ Activar AutoPilot';
-    if (autopilotRunning) btn.style.background = 'var(--amber)';
-  }
   if (badge) badge.textContent = autopilotRunning ? 'ON' : 'OFF';
   if (interval) interval.value = getAutopilotInterval();
+  // Sync visual state via shared helper
+  if (autopilotRunning) {
+    updateAPStatus('running', 'AutoPilot activo — ciclo cada ' + getAutopilotInterval() + 'h');
+  } else {
+    updateAPStatus('idle', 'Configura ajustes y pulsa Ejecutar');
+  }
+  renderAutopilotSettings();
+  renderAPChannelList();
+  updateAPStats();
 }
 
 // ══════════════════════════════════════════════════════════

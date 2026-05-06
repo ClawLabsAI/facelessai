@@ -1247,8 +1247,6 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 </div>
 
 <!-- ════════════════ PIPELINE ════════════════ -->
-  <div class="card mt14" style="border-color:var(--amber)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:13px;font-weight:700">Detector de saturacion de nicho</div><div style="font-size:11px;color:var(--text3)">Antes de crear un canal, sabe si hay espacio</div></div></div><div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap"><select class="sel" id="sat-niche" style="flex:1;font-size:12px"><option value="legal">Legal ES</option><option value="historia">Historia ES</option><option value="truecrime">True Crime ES</option><option value="finanzas">Finanzas ES</option><option value="medicare">Medicare EN</option><option value="finance">Finance EN</option><option value="crypto">Crypto EN</option></select><select class="sel" id="sat-lang" style="font-size:12px"><option value="es">ES</option><option value="en">EN</option></select><button class="btn btn-p btn-sm" onclick="analyzeSaturation(document.getElementById('sat-niche').value,document.getElementById('sat-lang').value)">Analizar</button></div><div id="saturation-result"></div><div id="saturation-ai-insight" style="display:none"></div></div>
-  <div class="card mt14" style="border-color:var(--red)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:13px;font-weight:700">Outliers virales</div><div style="font-size:11px;color:var(--text3)">Canales pequenos con videos que explotan</div></div><button class="btn btn-p btn-sm" onclick="detectViralOutliers()" style="border-color:var(--red);color:var(--red)">Detectar</button></div><div id="viral-outliers-result"></div></div>
 
 <div class="view" id="view-score">
   <div class="sh mb14">
@@ -1401,8 +1399,12 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     </div>
   </div>
 
-</div>
+  <!-- Herramientas adicionales del Score -->
+  <div class="card mt14" style="border-color:var(--amber)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:13px;font-weight:700">Detector de saturacion de nicho</div><div style="font-size:11px;color:var(--text3)">Antes de crear un canal, sabe si hay espacio</div></div></div><div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap"><select class="sel" id="sat-niche" style="flex:1;font-size:12px"><option value="legal">Legal ES</option><option value="historia">Historia ES</option><option value="truecrime">True Crime ES</option><option value="finanzas">Finanzas ES</option><option value="medicare">Medicare EN</option><option value="finance">Finance EN</option><option value="crypto">Crypto EN</option></select><select class="sel" id="sat-lang" style="font-size:12px"><option value="es">ES</option><option value="en">EN</option></select><button class="btn btn-p btn-sm" onclick="analyzeSaturation(document.getElementById('sat-niche').value,document.getElementById('sat-lang').value)">Analizar</button></div><div id="saturation-result"></div><div id="saturation-ai-insight" style="display:none"></div></div>
+  <div class="card mt14" style="border-color:var(--red)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:13px;font-weight:700">Outliers virales</div><div style="font-size:11px;color:var(--text3)">Canales pequenos con videos que explotan</div></div><button class="btn btn-p btn-sm" onclick="detectViralOutliers()" style="border-color:var(--red);color:var(--red)">Detectar</button></div><div id="viral-outliers-result"></div></div>
   <div class="card mt14"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:12px;font-weight:700">A/B Test de hooks</div><div style="font-size:11px;color:var(--text3)">Genera 2 variantes del hook actual y elige la mejor</div></div><button class="btn btn-g btn-sm" onclick="generateABVariants()" style="border-color:var(--blue);color:var(--blue)">Generar A/B</button></div><div id="ab-test-panel" style="display:none"></div></div>
+
+</div>
 
 <div class="view" id="view-pipeline">
 

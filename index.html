@@ -3,7 +3,7 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.36 — Content Engine</title>
+<title>FacelessAI v4.37 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -322,7 +322,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.36</div>
+    <div class="logo-sub">Content Engine v4.37</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -2702,13 +2702,18 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
   <!-- TikTok API status -->
   <div style="background:#ff004f08;border:1px solid #ff004f33;border-radius:10px;padding:16px">
-    <div style="font-size:13px;font-weight:600;color:#ff004f;margin-bottom:8px">🔗 Integración TikTok API — En desarrollo</div>
-    <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px">
-      Para publicación automática necesitas una app aprobada por TikTok. El proceso toma 2-7 días. Mientras tanto puedes descargar los MP4 y subirlos manualmente.
+    <div style="font-size:13px;font-weight:600;color:#ff004f;margin-bottom:8px">🔗 Integración TikTok Content API v2</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px">
+      Para publicación automática necesitas una app TikTok aprobada. Proceso: <strong>1</strong> Crea app en developers.tiktok.com · <strong>2</strong> Solicita scopes <code>video.upload</code> + <code>video.publish</code> · <strong>3</strong> Pega el Client Key abajo y conecta tu cuenta.
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input class="inp" id="tt-client-key-inp" placeholder="TikTok Client Key (de developers.tiktok.com)" style="flex:1;font-size:12px;font-family:var(--mono)">
+      <button class="btn btn-g btn-sm" onclick="var v=document.getElementById('tt-client-key-inp').value.trim();if(v){localStorage.setItem('fai_tt_client_key',v);showToast('Client Key guardada');}">Guardar</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <a href="https://developers.tiktok.com" target="_blank" class="btn btn-g btn-sm">→ developers.tiktok.com</a>
-      <button class="btn btn-g btn-sm" onclick="showToast('📋 Guía de configuración TikTok API — próximamente')">📋 Ver guía de configuración</button>
+      <button class="btn btn-p btn-sm" onclick="startTikTokOAuth()" id="tt-oauth-btn">🔗 Conectar cuenta TikTok</button>
+      <span id="tt-oauth-badge" style="font-size:11px;color:var(--text3);align-self:center"></span>
     </div>
   </div>
 </div>
@@ -5043,6 +5048,101 @@ function updateYTOAuthStatus(connected){
   // Load saved token
   var t=localStorage.getItem('fai_yt_oauth_token');
   if(t){_ytOAuthToken=t;setTimeout(function(){updateYTOAuthStatus(true);},500);}
+})();
+
+// ─── TIKTOK OAUTH + PUBLISH ───────────────────────────────────
+var _ttOAuthToken = null;
+try { _ttOAuthToken = localStorage.getItem('fai_tt_oauth_token') || null; } catch(e) {}
+
+function startTikTokOAuth(){
+  var clientKey = localStorage.getItem('fai_tt_client_key') || '';
+  if(!clientKey){ showToast('Configura el TikTok Client Key en Configuración'); return; }
+  var redirect = window.location.origin + window.location.pathname;
+  var scope = 'user.info.basic,video.upload,video.publish';
+  var state = Math.random().toString(36).slice(2);
+  sessionStorage.setItem('fai_tt_oauth_state', state);
+  var authUrl = 'https://www.tiktok.com/v2/auth/authorize/'
+    + '?client_key=' + encodeURIComponent(clientKey)
+    + '&scope=' + encodeURIComponent(scope)
+    + '&response_type=code'
+    + '&redirect_uri=' + encodeURIComponent(redirect)
+    + '&state=' + state;
+  window.location.href = authUrl;
+}
+
+async function _ttExchangeCode(code, clientKey, redirect){
+  // TikTok requires server-side token exchange (client_secret needed).
+  // We proxy through the backend /tt/token endpoint if available.
+  var backend = BACKEND_URL || localStorage.getItem('fai_backend_url') || '';
+  if(!backend) throw new Error('Backend URL no configurada — necesario para exchange de código TikTok');
+  var resp = await fetch(backend + '/tt/token', {
+    method: 'POST',
+    headers: bkJsonHeaders(),
+    body: JSON.stringify({code: code, redirect_uri: redirect})
+  });
+  return resp.json();
+}
+
+async function publishToTikTok(draftId){
+  var draft = getDrafts().find(function(d){ return d.id == draftId; });
+  if(!draft){ showToast('Borrador no encontrado'); return; }
+  if(!draft.videoUrl){ showToast('⚠ Este borrador no tiene vídeo generado. Genera el MP4 primero.'); return; }
+  var token = _ttOAuthToken || localStorage.getItem('fai_tt_oauth_token') || '';
+  if(!token){ showToast('⚠ Conecta tu cuenta TikTok en Configuración → TikTok'); return; }
+  showToast('🚀 Iniciando subida a TikTok...');
+  try{
+    // Step 1: Init upload (TikTok Content Posting API v2)
+    var initResp = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
+      method: 'POST',
+      headers: {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json; charset=UTF-8'},
+      body: JSON.stringify({
+        post_info: {
+          title: (draft.hook || draft.title || 'FacelessAI').slice(0, 150),
+          privacy_level: 'PUBLIC_TO_EVERYONE',
+          disable_duet: false,
+          disable_comment: false,
+          disable_stitch: false
+        },
+        source_info: { source: 'PULL_FROM_URL', video_url: draft.videoUrl }
+      })
+    });
+    var initData = await initResp.json();
+    if(!initResp.ok || initData.error){ throw new Error(JSON.stringify(initData.error||initData)); }
+    var publishId = initData.data && initData.data.publish_id;
+    if(!publishId) throw new Error('No se recibió publish_id de TikTok');
+    // Update draft
+    var drafts = getDrafts();
+    var idx = drafts.findIndex(function(d){ return d.id == draftId; });
+    if(idx >= 0){ drafts[idx].ttPublishId = publishId; drafts[idx].ttStatus = 'publishing'; saveDrafts(drafts); }
+    showToast('✓ Vídeo enviado a TikTok — publish_id: ' + publishId);
+    renderDrafts();
+  } catch(e){
+    showToast('✗ TikTok publish error: ' + e.message);
+    console.error('TikTok publish:', e);
+  }
+}
+
+// Handle TikTok OAuth callback (?code=...&state=...)
+(function(){
+  var sp = new URLSearchParams(window.location.search);
+  var ttCode = sp.get('code');
+  var ttState = sp.get('state');
+  var savedState = sessionStorage.getItem('fai_tt_oauth_state');
+  if(ttCode && ttState && ttState === savedState){
+    sessionStorage.removeItem('fai_tt_oauth_state');
+    history.replaceState(null,'',window.location.pathname);
+    var clientKey = localStorage.getItem('fai_tt_client_key') || '';
+    var redirect = window.location.origin + window.location.pathname;
+    _ttExchangeCode(ttCode, clientKey, redirect).then(function(data){
+      if(data && data.access_token){
+        _ttOAuthToken = data.access_token;
+        localStorage.setItem('fai_tt_oauth_token', data.access_token);
+        showToast('✓ TikTok conectado correctamente');
+      } else {
+        showToast('TikTok OAuth: ' + (data && data.message ? data.message : 'Error desconocido'));
+      }
+    }).catch(function(e){ showToast('TikTok OAuth error: ' + e.message); });
+  }
 })();
 
 // ─── CTR INPUT IN DRAFT CARDS ─────────────────────────────────
@@ -9327,8 +9427,19 @@ function scheduleNextRun() {
   if (!autopilotRunning) return;
   const ms = getAutopilotInterval() * 3600000;
   const nextRun = new Date(Date.now() + ms);
+  localStorage.setItem('fai_ap_next_run', String(nextRun.getTime())); // persist across tab close
   updateAPStatus('running', '🟢 Próxima ejecución: ' + nextRun.toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'}));
   autopilotTimer = setTimeout(runAutopilotCycle, ms);
+}
+// On page load: check if a scheduled AutoPilot run was missed while tab was closed
+function checkMissedAutopilotRun() {
+  if (localStorage.getItem('fai_autopilot') !== '1') return;
+  const next = parseInt(localStorage.getItem('fai_ap_next_run') || '0');
+  if (next > 0 && Date.now() >= next && !autopilotRunning) {
+    autopilotRunning = true;
+    console.log('AutoPilot: ejecución perdida detectada — lanzando ciclo...');
+    setTimeout(runAutopilotCycle, 3000); // 3s delay to let app fully init
+  }
 }
 // Lightweight score call for AutoPilot (no DOM dependency, returns 0–100 int)
 async function scoreHookFast(hook, script, niche, lang) {
@@ -9810,7 +9921,7 @@ const TIERS = {
   opt:   { label:'OPTIMIZADO', color:'var(--amber)',  cost:'~0.60E',   llm:'Claude Sonnet',       tts:'ElevenLabs std',    video:'Kling API',              img:'DALL-E 3',      desc:'SWEET SPOT: mejor calidad/precio. Kling ~$0.04-0.09/seg. Multi-plataforma.' },
   prem:  { label:'PREMIUM',    color:'var(--purple)', cost:'~3.00E',   llm:'Claude Sonnet',       tts:'ElevenLabs HD',     video:'Kling + Runway',         img:'DALL-E HD',     desc:'Para YouTube serio y contenido de marca. Calidad broadcast.' },
   ultra: { label:'ULTRA',      color:'#ff6b35',       cost:'~10.00E',  llm:'Claude Opus',         tts:'EL clonada',        video:'Runway Gen-4 + HeyGen',  img:'Midjourney',    desc:'Avatar IA real. Nivel agencia. Cinematografico.' },
-  scale: { label:'SCALE',      color:'#a855f7',       cost:'~0.05E',   llm:'Groq + Haiku batch',  tts:'EL batch API',      video:'Kling + Wan batch',      img:'SDXL batch',    desc:'Automatizacion masiva. Multi-canal. Granjas de contenido IA.' },
+  scale: { label:'SCALE',      color:'#a855f7',       cost:'~0.05E',   llm:'Claude Haiku batch',  tts:'EL batch API',      video:'Pexels + Haiku',         img:'Pexels',        desc:'Automatizacion masiva. Multi-canal. Granjas de contenido IA.' },
 };
 activeTier = localStorage.getItem('fai_active_tier') || activeTier || 'opt';
 
@@ -10439,12 +10550,12 @@ const MODEL_CONFIG = {
     subs:  { model:'Whisper API', desc:'Transcripción profesional',           cost:0.006, quality:5 },
   },
   scale: {
-    ideas: { model:'Groq LLaMA 3',       desc:'Ultra-rapido, gratis, miles ideas/hora', cost:0.0005, quality:3 },
+    ideas: { model:'Claude Haiku batch', desc:'Ideas en batch, coste minimo',           cost:0.0005, quality:3 },
     script:{ model:'Claude Haiku batch', desc:'Scripts batch, coste minimo',            cost:0.002,  quality:3 },
-    score: { model:'Groq LLaMA',         desc:'Score rapido para filtrar ideas',        cost:0.0001, quality:2 },
+    score: { model:'Claude Haiku batch', desc:'Score rapido para filtrar ideas',        cost:0.0001, quality:3 },
     tts:   { model:'ElevenLabs batch',   desc:'TTS batch, maxima eficiencia',           cost:0.010,  quality:3 },
-    video: { model:'Kling + Wan batch',  desc:'Wan clips simples, Kling para top',      cost:0.030,  quality:3 },
-    img:   { model:'SDXL batch',         desc:'Thumbnails en batch',                    cost:0.001,  quality:3 },
+    video: { model:'Pexels + Haiku',     desc:'Stock video + narración Haiku',          cost:0.030,  quality:3 },
+    img:   { model:'Pexels',             desc:'Stock visuals de alta calidad',          cost:0.001,  quality:3 },
     subs:  { model:'Whisper local',      desc:'Transcripcion local masiva',             cost:0,      quality:3 },
   }
 };
@@ -10740,7 +10851,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.36';
+    data['_version'] = 'v4.37';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -13175,6 +13286,7 @@ try { updateCostEstimate(); } catch(e) {}
 try { nav('dashboard'); renderDashboard(); renderChannels(); renderSpikes(); } catch(e) { console.error('startup',e); }
 try { renderDrafts(); } catch(e) {}
 try { checkFirstVisit(); } catch(e) {}
+try { checkMissedAutopilotRun(); } catch(e) {}
 try { initSidebarCollapse(); } catch(e) {}
 try { renderUserPill(); } catch(e) {}
 </script>

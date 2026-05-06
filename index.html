@@ -3,7 +3,7 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.34 — Content Engine</title>
+<title>FacelessAI v4.35 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -322,7 +322,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.34</div>
+    <div class="logo-sub">Content Engine v4.35</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -4867,58 +4867,165 @@ async function generateABVariants(){
   }catch(e){showToast('Error: '+e.message);}
 }
 
-// ─── YOUTUBE OAUTH ────────────────────────────────────────────
+// ─── YOUTUBE OAUTH (PKCE Authorization Code Flow) ────────────
 var _ytOAuthToken = null;
+
 function saveYouTubeClientId(){
   var val=(document.getElementById('key-youtube-client-id')||{}).value||'';
   if(!val){showToast('Introduce el OAuth Client ID');return;}
   localStorage.setItem('fai_yt_client_id',val.trim());
   showToast('Client ID guardado — ahora pulsa Conectar YouTube');
 }
-function startYouTubeOAuth(){
-  // Prefer dedicated client ID field, fall back to youtube key (legacy)
-  var clientId=localStorage.getItem('fai_yt_client_id')||KEYS.youtube||localStorage.getItem('fai_key_youtube')||'';
-  if(!clientId){showToast('Configura el OAuth Client ID de YouTube en Configuración');nav('settings');return;}
+
+// PKCE helpers
+async function _ytGenPKCE(){
+  var arr=new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  var verifier=btoa(String.fromCharCode.apply(null,arr)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  var data=new TextEncoder().encode(verifier);
+  var hash=await crypto.subtle.digest('SHA-256',data);
+  var challenge=btoa(String.fromCharCode.apply(null,new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return {verifier:verifier,challenge:challenge};
+}
+
+async function startYouTubeOAuth(){
+  var clientId=localStorage.getItem('fai_yt_client_id')||KEYS.youtube||'';
+  if(!clientId){showToast('Configura el OAuth Client ID en Configuración → YouTube');nav('settings');return;}
   var redirect=window.location.origin+window.location.pathname;
   var scope='https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly';
-  var authUrl='https://accounts.google.com/o/oauth2/v2/auth?client_id='+encodeURIComponent(clientId)+'&redirect_uri='+encodeURIComponent(redirect)+'&response_type=token&scope='+encodeURIComponent(scope);
-  window.open(authUrl,'yt-auth','width=500,height=600');
-  showToast('Popup de autorizacion abierto. Tras autorizar, pega el token en Configuracion.');
+  try{
+    var pkce=await _ytGenPKCE();
+    sessionStorage.setItem('fai_yt_pkce_verifier',pkce.verifier);
+    sessionStorage.setItem('fai_yt_pkce_client',clientId);
+    sessionStorage.setItem('fai_yt_pkce_redirect',redirect);
+    var authUrl='https://accounts.google.com/o/oauth2/v2/auth'
+      +'?client_id='+encodeURIComponent(clientId)
+      +'&redirect_uri='+encodeURIComponent(redirect)
+      +'&response_type=code'
+      +'&scope='+encodeURIComponent(scope)
+      +'&code_challenge='+pkce.challenge
+      +'&code_challenge_method=S256'
+      +'&access_type=offline'
+      +'&prompt=consent';
+    window.location.href=authUrl;
+  }catch(e){
+    // Fallback: implicit flow (for older OAuth client configs)
+    var authUrl2='https://accounts.google.com/o/oauth2/v2/auth?client_id='+encodeURIComponent(clientId)+'&redirect_uri='+encodeURIComponent(redirect)+'&response_type=token&scope='+encodeURIComponent(scope);
+    window.open(authUrl2,'yt-auth','width=500,height=600');
+    showToast('Autenticación abierta en ventana emergente');
+  }
 }
+
+async function _ytExchangeCode(code,verifier,clientId,redirect){
+  var resp=await fetch('https://oauth2.googleapis.com/token',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({code:code,client_id:clientId,redirect_uri:redirect,code_verifier:verifier,grant_type:'authorization_code'})
+  });
+  return resp.json();
+}
+
+async function refreshYTToken(){
+  var rt=localStorage.getItem('fai_yt_refresh_token');
+  var cid=localStorage.getItem('fai_yt_client_id')||KEYS.youtube||'';
+  if(!rt||!cid)return null;
+  try{
+    var resp=await fetch('https://oauth2.googleapis.com/token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({refresh_token:rt,client_id:cid,grant_type:'refresh_token'})
+    });
+    var data=await resp.json();
+    if(data.access_token){
+      _ytOAuthToken=data.access_token;
+      localStorage.setItem('fai_yt_oauth_token',data.access_token);
+      localStorage.setItem('fai_yt_token_expires',String(Date.now()+(parseInt(data.expires_in||3600))*1000));
+      return data.access_token;
+    }
+  }catch(e){}
+  return null;
+}
+
+async function getYTToken(){
+  var expires=parseInt(localStorage.getItem('fai_yt_token_expires')||'0');
+  var stored=_ytOAuthToken||localStorage.getItem('fai_yt_oauth_token')||'';
+  if(stored&&Date.now()<expires-60000)return stored;
+  if(localStorage.getItem('fai_yt_refresh_token')){
+    var refreshed=await refreshYTToken();
+    if(refreshed)return refreshed;
+  }
+  return stored; // return even if expired (caller will get 401)
+}
+
 function saveYTToken(){
   var token=(document.getElementById('yt-token-inp')||{}).value||'';
   if(!token){showToast('Introduce el token');return;}
   _ytOAuthToken=token.trim();
   localStorage.setItem('fai_yt_oauth_token',_ytOAuthToken);
+  localStorage.setItem('fai_yt_token_expires',String(Date.now()+3600000));
   updateYTOAuthStatus(true);
   showToast('Token YouTube guardado');
 }
+
 function updateYTOAuthStatus(connected){
   var btn=document.getElementById('yt-oauth-status-btn');
   var badge=document.getElementById('yt-oauth-badge');
-  if(btn)btn.textContent=connected?'YouTube conectado ✓':'Conectar YouTube';
-  if(badge){badge.textContent=connected?'OAuth activo':'Sin conectar';badge.style.color=connected?'var(--green)':'var(--red)';}
+  var expires=parseInt(localStorage.getItem('fai_yt_token_expires')||'0');
+  var hasRefresh=!!localStorage.getItem('fai_yt_refresh_token');
+  var label=connected?(hasRefresh?'YouTube conectado ✓ (auto-refresh)':'YouTube conectado ✓'):'Conectar YouTube';
+  if(btn)btn.textContent=label;
+  if(badge){
+    var timeLeft=connected&&expires?Math.max(0,Math.round((expires-Date.now())/60000)):0;
+    badge.textContent=connected?(hasRefresh?'OAuth activo (refresh automático)':('OAuth activo — expira en ~'+timeLeft+'min')):'Sin conectar';
+    badge.style.color=connected?'var(--green)':'var(--red)';
+  }
 }
-// Load saved token + handle OAuth callback redirect
+
+// Handle OAuth callbacks on page load
 (function(){
-  // Handle OAuth2 implicit flow callback (access_token in URL hash)
+  // PKCE Authorization Code callback (?code=...)
+  var params=new URLSearchParams(window.location.search);
+  var code=params.get('code');
+  var verifier=sessionStorage.getItem('fai_yt_pkce_verifier');
+  if(code&&verifier){
+    var clientId=sessionStorage.getItem('fai_yt_pkce_client')||localStorage.getItem('fai_yt_client_id')||'';
+    var redirect=sessionStorage.getItem('fai_yt_pkce_redirect')||window.location.origin+window.location.pathname;
+    sessionStorage.removeItem('fai_yt_pkce_verifier');
+    sessionStorage.removeItem('fai_yt_pkce_client');
+    sessionStorage.removeItem('fai_yt_pkce_redirect');
+    history.replaceState(null,'',window.location.pathname);
+    _ytExchangeCode(code,verifier,clientId,redirect).then(function(data){
+      if(data.access_token){
+        _ytOAuthToken=data.access_token;
+        localStorage.setItem('fai_yt_oauth_token',data.access_token);
+        localStorage.setItem('fai_yt_token_expires',String(Date.now()+(parseInt(data.expires_in||3600))*1000));
+        if(data.refresh_token)localStorage.setItem('fai_yt_refresh_token',data.refresh_token);
+        setTimeout(function(){updateYTOAuthStatus(true);showToast('✓ YouTube conectado con PKCE'+(data.refresh_token?' y refresh token':''));},600);
+      }else{
+        showToast('Error OAuth: '+(data.error_description||data.error||'desconocido'));
+      }
+    }).catch(function(e){showToast('Error intercambiando código: '+e.message);});
+    return;
+  }
+  // Legacy implicit flow callback (access_token in URL hash)
   var hash=window.location.hash;
   if(hash&&hash.includes('access_token=')){
     try{
-      var params=new URLSearchParams(hash.substring(1));
-      var token=params.get('access_token');
+      var hp=new URLSearchParams(hash.substring(1));
+      var token=hp.get('access_token');
       if(token){
         _ytOAuthToken=token;
         localStorage.setItem('fai_yt_oauth_token',token);
-        // Clean hash from URL
+        localStorage.setItem('fai_yt_token_expires',String(Date.now()+3600000));
         history.replaceState(null,'',window.location.pathname+window.location.search);
-        setTimeout(function(){updateYTOAuthStatus(true);showToast('✓ YouTube conectado correctamente');},600);
+        setTimeout(function(){updateYTOAuthStatus(true);showToast('✓ YouTube conectado (token implícito — expira en 1h)');},600);
       }
     }catch(e){}
-  } else {
-    var t=localStorage.getItem('fai_yt_oauth_token');
-    if(t){_ytOAuthToken=t;setTimeout(function(){updateYTOAuthStatus(true);},500);}
+    return;
   }
+  // Load saved token
+  var t=localStorage.getItem('fai_yt_oauth_token');
+  if(t){_ytOAuthToken=t;setTimeout(function(){updateYTOAuthStatus(true);},500);}
 })();
 
 // ─── CTR INPUT IN DRAFT CARDS ─────────────────────────────────
@@ -4952,7 +5059,7 @@ function refreshAnalyticsChannels() {
   var backend = localStorage.getItem('fai_backend_url') || '';
   if(!backend) { showToast('Configura URL del backend en Configuracion'); return; }
   Promise.all(channels.map(function(ch) {
-    return fetch(backend+'/yt/channel-stats?channel_id='+encodeURIComponent(ch.ytChannelId)+'&access_token='+encodeURIComponent(token))
+    return fetch(backend+'/yt/channel-stats?channel_id='+encodeURIComponent(ch.ytChannelId), {headers:{'Authorization':'Bearer '+token}})
       .then(function(r){ return r.ok?r.json():null; })
       .then(function(stats){ return {channel:ch, stats:stats}; })
       .catch(function(){ return {channel:ch, stats:null}; });
@@ -10607,7 +10714,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.34';
+    data['_version'] = 'v4.35';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');

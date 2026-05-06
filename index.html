@@ -3,7 +3,7 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.32 — Content Engine</title>
+<title>FacelessAI v4.33 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -322,7 +322,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.32</div>
+    <div class="logo-sub">Content Engine v4.33</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -4979,7 +4979,7 @@ const TIER_CONFIG = {
   opt:     { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:0.60,  llmModel:'claude-sonnet-4-6',         ttsModel:'ElevenLabs std',        label:'OPTIMIZADO', video:'Kling API' },
   premium: { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:3.00,  llmModel:'claude-sonnet-4-6',         ttsModel:'ElevenLabs HD',         label:'PREMIUM',    video:'Kling + Runway' },
   ultra:   { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:10.00, llmModel:'claude-opus-4-6',           ttsModel:'EL clonada emocional',  label:'ULTRA',      video:'Runway Gen-4 + HeyGen' },
-  scale:   { llm:'groq',   tts:'11labs', img:'sdxl',   costPerVid:0.05,  llmModel:'groq-llama-3',              ttsModel:'EL batch API',          label:'SCALE',      video:'Kling + Wan batch' },
+  scale:   { llm:'claude', tts:'11labs', img:'pexels',  costPerVid:0.05,  llmModel:'claude-haiku-4-5-20251001', ttsModel:'EL batch API',          label:'SCALE',      video:'Kling + Wan batch' },
 };
 let activeTier = 'opt';
 try { activeTier = localStorage.getItem('fai_active_tier') || 'opt'; } catch(e) {}
@@ -9196,6 +9196,15 @@ function scheduleNextRun() {
   updateAPStatus('running', '🟢 Próxima ejecución: ' + nextRun.toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'}));
   autopilotTimer = setTimeout(runAutopilotCycle, ms);
 }
+// Lightweight score call for AutoPilot (no DOM dependency, returns 0–100 int)
+async function scoreHookFast(hook, script, niche, lang) {
+  try {
+    const p = `Evalúa brevemente el potencial viral de este hook/script para YouTube Shorts.\nNicho: ${niche}. Idioma: ${lang}.\nHook: "${hook}"\nScript (primeras 80 palabras): "${script.split(' ').slice(0,80).join(' ')}"\nResponde SOLO con un número entero del 0 al 100 (sin texto adicional).`;
+    const raw = await callClaude(p, 'claude-haiku-4-5-20251001', 10);
+    const n = parseInt(raw.replace(/\D/g,''));
+    return (n >= 0 && n <= 100) ? n : 72;
+  } catch(e) { return 72; }
+}
 async function runAutopilotCycle() {
   if (!autopilotRunning) return;
   if (!KEYS.anthropic) { showToast('⚠ AutoPilot necesita Anthropic API key'); return; }
@@ -9239,7 +9248,12 @@ Sin intros ni presentaciones. Empieza directo con el hook. Máximo 150 palabras.
     const script = await callClaude(scriptPrompt, null, 300);
     addLog('✓ Script generado (' + script.trim().split(' ').length + ' palabras)');
 
-    // Step 4: Save as draft
+    // Step 4: Score the idea with real AI (only if not free tier)
+    addLog('🎯 Calculando score con IA...');
+    const aiScore = (activeTier !== 'free') ? await scoreHookFast(hook.trim(), script.trim(), channel.niche, channel.lang) : Math.floor(72 + Math.random() * 20);
+    addLog('✓ Score: ' + aiScore + '/100');
+
+    // Step 5: Save as draft
     const draft = {
       id: Date.now(),
       hook: hook.trim().slice(0,80),
@@ -9248,7 +9262,7 @@ Sin intros ni presentaciones. Empieza directo con el hook. Máximo 150 palabras.
       lang: channel.lang,
       gender: channel.gender || 'm',
       status: 'pending',
-      score: Math.floor(72 + Math.random() * 20),
+      score: aiScore,
       cost: 0.004,
       createdAt: Date.now(),
       source: 'autopilot'
@@ -10592,7 +10606,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.32';
+    data['_version'] = 'v4.33';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -12539,7 +12553,7 @@ async function callClaude(prompt, model, maxTokens) {
   if (!KEYS.anthropic) throw new Error('Configura tu Anthropic API key en ⚙️ Configuración');
   if (typeof checkBudgetAlert !== 'undefined' && !checkBudgetAlert()) throw new Error('Límite de presupuesto alcanzado');
   // Map activeTier to TIER_CONFIG key
-  const tierKey = activeTier === 'prem' ? 'premium' : activeTier === 'ultra' ? 'premium' : (activeTier || 'eco');
+  const tierKey = activeTier === 'prem' ? 'premium' : activeTier === 'ultra' ? 'ultra' : (activeTier || 'eco');
   const cfg = TIER_CONFIG[tierKey] || TIER_CONFIG['eco'];
   const isFreeTier = activeTier === 'free';
   const VALID_CLAUDE = ['claude-haiku-4-5-20251001','claude-sonnet-4-6','claude-opus-4-6'];

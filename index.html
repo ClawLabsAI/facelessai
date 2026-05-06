@@ -3,7 +3,7 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.31 — Content Engine</title>
+<title>FacelessAI v4.32 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -322,7 +322,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.31</div>
+    <div class="logo-sub">Content Engine v4.32</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -7793,10 +7793,6 @@ function createChannelFromDisc(name, niche, lang) {
   if (lang) { chLang = lang; setLang(lang); }
   openModal();
 }
-function createChannelFromDisc(name) {
-  document.getElementById('ch-name').value = name;
-  openModal();
-}
 
 // ══════════════════════════════════════════════════════════
 // CLIPPING PIPELINE — funciones
@@ -7922,15 +7918,14 @@ function saveClipsToDrafts() {
 var _navCallbacks = {
   dashboard:     function() { try { renderDashboard(); } catch(e) { console.error(e); } },
   channels:      function() { try { renderChannels(); } catch(e) { console.error(e); } },
-  drafts:        function() { try { renderDrafts(); checkViralDrafts(); } catch(e) {} },        function() { try { renderDrafts(); } catch(e) { console.error(e); } },
+  drafts:        function() { try { renderDrafts(); checkViralDrafts(); } catch(e) {} },
   trends:           function() { try { loadTrendsChannels(); } catch(e) {} },
   influencer:        function() { try { renderInfluencer(); } catch(e) {} },
   'influencer-contenido': function() { try { loadInfluencerContenido(); } catch(e) {} },
   'influencer-video':     function() { try { loadInfluencerContenido(); switchVideoAITab('heygen'); } catch(e) {} },
-  score:         function() { try { renderScoreNichePills(); } catch(e) {} },
-         function() { try { loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e) {} },
-  templates:   function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
-  reuse:       function() { try { loadReuseDrafts(); } catch(e) {} },
+  score:         function() { try { renderScoreNichePills(); loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e) {} },
+  templates:     function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
+  reuse:         function() { try { loadReuseDrafts(); } catch(e) {} },
   analytics:     function() { try { renderAnalytics(); switchAnalyticsTab('log'); } catch(e) { console.error(e); } },
   clipping:      function() { try { renderClipChannels(); } catch(e) { console.error(e); } },
   clippipeline:  function() { try { setCPStep(0); } catch(e) {} },
@@ -7939,10 +7934,6 @@ var _navCallbacks = {
   budget:        function() { try { renderNicheCalculator(); renderProfitabilityDashboard(); renderENvsESComparison(); } catch(e) {} },
   autopilot:     function() { try { renderAutopilotSettings(); renderAPChannelList(); updateAPStats(); } catch(e) {} },
   models:        function() { try { renderModels(); } catch(e) { console.error('renderModels:', e); } },
-
-  templates:   function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
-  reuse:       function() { try { loadReuseDrafts(); } catch(e) {} },
-  analytics:   function() { try { switchAnalyticsTab('channels'); } catch(e) {} },
   tiktokauto:    function() { try { renderTikTokStrategy(); } catch(e) {} },
   spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); } catch(e) {} },
   clone:         function() { try { setClonerStep(0); } catch(e) {} },
@@ -7954,11 +7945,6 @@ var _navCallbacks = {
   'saas-onboarding': function() {},
   scheduler:     function() { try { renderPublishQueue(); } catch(e) {} },
   monetization:  function() { try { calcMultiMono(); } catch(e) {} },
-  templates:   function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
-  reuse:       function() { try { loadReuseDrafts(); } catch(e) {} },
-  analytics:   function() { try { switchAnalyticsTab('channels'); } catch(e) {} },
-  tiktokauto:    function() { try { renderTikTokStrategy(); } catch(e) {} },
-  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); } catch(e) {} },
   settings:      function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
 };
 
@@ -10606,7 +10592,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.31';
+    data['_version'] = 'v4.32';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -11560,16 +11546,6 @@ function globalSpyNiche(niche) {
   if (nicheEl) nicheEl.value = niche;
   showToast('🎯 Explorando nicho: ' + niche);
 }
-// ── INIT ──
-renderDashboard();
-renderChannels();
-renderSpikes();
-loadKeys();
-setTier(activeTier);
-updateCostEstimate();
-initLangVoice();
-initPreferences();
-renderDrafts();
 // Live preview for channel name in modal
 document.addEventListener('input', e => {
   if (e.target && e.target.id === 'ch-name') updateChPreview();
@@ -13044,7 +13020,12 @@ function deleteSavedIdea(i) {
 try { loadKeys(); } catch(e) {}
 try { loadENHooks(); } catch(e) {}
 try { initNotifications(); } catch(e) {}
-try { nav('dashboard'); renderDashboard(); } catch(e) { console.error('startup',e); }
+try { setTier(activeTier); } catch(e) {}
+try { initLangVoice(); } catch(e) {}
+try { initPreferences(); } catch(e) {}
+try { updateCostEstimate(); } catch(e) {}
+try { nav('dashboard'); renderDashboard(); renderChannels(); renderSpikes(); } catch(e) { console.error('startup',e); }
+try { renderDrafts(); } catch(e) {}
 try { checkFirstVisit(); } catch(e) {}
 try { initSidebarCollapse(); } catch(e) {}
 try { renderUserPill(); } catch(e) {}

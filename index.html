@@ -3,7 +3,7 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.37 — Content Engine</title>
+<title>FacelessAI v4.38 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -322,7 +322,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.37</div>
+    <div class="logo-sub">Content Engine v4.38</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -9381,13 +9381,19 @@ function toggleNavSection(el) {
   var collapsed = el.classList.toggle('nsl-col');
   var sib = el.nextElementSibling;
   while (sib && !sib.classList.contains('nsl')) {
-    if (sib.style.display === 'none' && !sib.dataset.sidebarHidden) {
-      // skip already-hidden elements (like the saas wrapper)
-    } else if (collapsed) {
-      sib.dataset.sidebarWas = sib.style.display || '';
-      sib.style.display = 'none';
+    if (collapsed) {
+      // Only hide elements currently visible; skip already-hidden wrappers
+      if (sib.style.display !== 'none') {
+        sib.dataset.sidebarWas = sib.style.display || '';
+        sib.dataset.sidebarCollapsed = '1';
+        sib.style.display = 'none';
+      }
     } else {
-      sib.style.display = sib.dataset.sidebarWas || '';
+      // Only restore elements we personally collapsed
+      if (sib.dataset.sidebarCollapsed === '1') {
+        sib.style.display = sib.dataset.sidebarWas || '';
+        sib.removeAttribute('data-sidebar-collapsed');
+      }
     }
     sib = sib.nextElementSibling;
   }
@@ -10851,7 +10857,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.37';
+    data['_version'] = 'v4.38';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');

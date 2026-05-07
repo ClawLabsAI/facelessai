@@ -3,7 +3,7 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacelessAI v4.38 — Content Engine</title>
+<title>FacelessAI v4.39 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -322,7 +322,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-mark">Faceless<span style="color:var(--blue)">AI</span></div>
-    <div class="logo-sub">Content Engine v4.38</div>
+    <div class="logo-sub">Content Engine v4.39</div>
   </div>
   <nav class="nav">
     <div class="nsl">Inicio</div>
@@ -3522,6 +3522,27 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <div id="status-msg-pexels" style="display:none"></div>
       </div>
 
+      <!-- FAL.AI -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div style="font-size:20px">🤖</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700">Fal.ai <span style="font-size:10px;background:var(--purple);color:#fff;padding:1px 6px;border-radius:99px;margin-left:4px">Ultra · Scale</span></div>
+            <div style="font-size:11px;color:var(--text3)">Vídeo IA generado — Kling v2 (Ultra) · Wan2.1 (Scale)</div>
+          </div>
+          <span class="tag" id="badge-fal" style="background:var(--bg3);color:var(--text3);border:1px solid var(--border)">Sin clave</span>
+        </div>
+        <label class="lbl">API Key <span style="color:var(--blue);font-weight:400">($5 crédito gratis al registrarse)</span></label>
+        <div style="display:flex;gap:8px">
+          <input class="inp" type="password" id="key-fal" placeholder="Tu Fal.ai API key..." style="flex:1;font-family:var(--mono);font-size:12px">
+          <button class="btn btn-p btn-sm" id="save-btn-fal" onclick="saveKey('fal')">Guardar</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px">
+          <a href="https://fal.ai/dashboard/keys" target="_blank" style="color:var(--blue)">fal.ai/dashboard/keys</a> · ~$0.04–0.15/vídeo · modelos: Kling v2 y Wan2.1
+        </div>
+        <div id="status-msg-fal" style="display:none"></div>
+      </div>
+
       <!-- ELEVENLABS -->
       <div class="card">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
@@ -4262,7 +4283,7 @@ const KEY_MAP = {
   elevenlabs:'fai_key_elevenlabs', youtube:'fai_key_youtube', github:'fai_key_github',
   heygen:'fai_key_heygen', did:'fai_key_did', runway:'fai_key_runway',
   pika:'fai_key_pika', kling:'fai_key_kling', hailuo:'fai_key_hailuo',
-  minimax:'fai_key_minimax', groq:'fai_key_groq',
+  minimax:'fai_key_minimax', groq:'fai_key_groq', fal:'fai_key_fal',
   socialblade:'fai_key_socialblade', kalodata:'fai_key_kalodata', hypeauditor:'fai_key_hypeauditor'
 };
 
@@ -4677,7 +4698,106 @@ async function apGenerateScript(hook,ch){var lang=ch.lang||'es';var niche=ch.nic
 function apScheduleDraft(draft,ch){try{var q=JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');var times={es:[6,12,18,21],en:[7,12,17,20],lat:[6,11,17,21]};var lang=draft.lang||'es';var hours=times[lang]||times.es;var now=new Date();var nextH=hours.find(function(h){return h>now.getHours();})||hours[0];var sd=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(nextH>now.getHours()?0:1),nextH,0);q.push({id:'sq_'+Date.now(),draftId:draft.id,title:draft.hook,channel:draft.channel,platforms:draft.platforms||['youtube'],scheduledAt:sd.getTime(),status:'pending',createdAt:Date.now()});localStorage.setItem('fai_publish_queue',JSON.stringify(q));}catch(e){}}
 function updateAPStatus(state,msg){var dot=document.getElementById('ap-running-dot');var title=document.getElementById('ap-status-title');var sub=document.getElementById('ap-status-sub');var dtitle=document.getElementById('dash-ap-title');var dsub=document.getElementById('dash-ap-sub');var ddot=document.getElementById('dash-ap-dot');var cols={running:'var(--green)',idle:'var(--text3)',error:'var(--red)'};var col=cols[state]||'var(--text3)';[dot,ddot].forEach(function(d){if(d)d.style.background=col;});if(title)title.textContent=state==='running'?'EN EJECUCION':state==='error'?'ERROR':'LISTO';if(sub)sub.textContent=msg;if(dtitle)dtitle.textContent=state==='running'?'AUTOPILOT ACTIVO':state==='error'?'ERROR':'MODO MANUAL ACTIVO';if(dsub)dsub.textContent=msg;}
 function updateAPLog(lines,col){var el=document.getElementById('ap-live-log');if(!el)return;el.innerHTML=lines.slice(-20).map(function(l,i){var isLast=i===Math.min(lines.length,20)-1;return'<div style="font-size:11px;padding:2px 0;color:'+(isLast?(col||'var(--text1)'):'var(--text3)')+'">'+new Date().toLocaleTimeString('es-ES')+' '+l+'</div>';}).join('');el.scrollTop=el.scrollHeight;}
-async function generateAutopilotVideo(draft,ch,addLog){var log=addLog||function(){};try{var backend=BACKEND_URL||localStorage.getItem('fai_backend_url')||'';if(!backend){log('[AP Video] ⚠ Backend URL no configurada — omitiendo vídeo','var(--amber)');return;}log('[AP Video] 🎤 Generando audio TTS...','');var scriptText=draft.script.split(' ').slice(0,150).join(' ');var voice=ch.voice||(ch.lang==='en'?'echo':'onyx');var ttsResp=await fetch(backend+'/tts',{method:'POST',headers:bkJsonHeaders(),body:JSON.stringify({text:scriptText,voice:voice,model:'tts-1',api_key:KEYS.openai||''})});if(!ttsResp.ok)throw new Error('TTS falló: '+ttsResp.status);var audioBlob=await ttsResp.blob();var audioB64Full=await blobToBase64(audioBlob);var audioB64=audioB64Full.includes(',')?audioB64Full.split(',')[1]:audioB64Full;log('[AP Video] ✓ Audio listo ('+Math.round(audioBlob.size/1024)+' KB)','');log('[AP Video] 🎬 Buscando clips Pexels...','');var pexQ=encodeURIComponent(ch.niche||'business');var pexKey=KEYS.pexels?'&api_key='+KEYS.pexels:'';var pexResp=await fetch(backend+'/pexels/search?query='+pexQ+'&per_page=5&orientation=portrait'+pexKey);if(!pexResp.ok)throw new Error('Pexels falló: '+pexResp.status);var pexData=await pexResp.json();var clips=(pexData.videos||[]).slice(0,5);var clipUrls=clips.map(function(v){var files=v.video_files||[];var best=files.find(function(f){return f.quality==='hd';})||files.find(function(f){return f.quality==='sd';})||files[0];return best?(best.link||best.url||''):''}).filter(function(u){return u.startsWith('http');});if(!clipUrls.length)throw new Error('Sin clips Pexels válidos');log('[AP Video] ✓ '+clipUrls.length+' clips listos','');log('[AP Video] 🚀 Enviando a Railway...','');var genResp=await fetch(backend+'/generate',{method:'POST',headers:bkJsonHeaders(),body:JSON.stringify({audio_b64:audioB64,audio_url:'',pexels_clips:clipUrls,script:draft.script,title:draft.hook,lang:draft.lang||'es',subtitle_style:'viral'})});if(!genResp.ok)throw new Error('Backend /generate falló: '+genResp.status);var genData=await genResp.json();var jobId=genData.job_id;log('[AP Video] ✓ Job: '+jobId+' procesando...','');var attempts=0;while(attempts<60){await new Promise(function(r){setTimeout(r,3000);});attempts++;var stResp=await fetch(backend+'/status/'+jobId,{headers:bkHeaders()});var st=await stResp.json();if(attempts%5===0)log('[AP Video] ['+st.progress+'%] '+st.message,'');if(st.status==='done'){var videoUrl=backend+(st.download_url||'/download/'+jobId);var allDrafts=getDrafts();var idx=allDrafts.findIndex(function(d){return d.id===draft.id;});if(idx>=0){allDrafts[idx].videoUrl=videoUrl;saveDrafts(allDrafts);}draft.videoUrl=videoUrl;log('[AP Video] ✅ MP4 listo — disponible en Borradores','var(--green)');return;}if(st.status==='error')throw new Error(st.message);}throw new Error('Timeout: vídeo tardó más de 3 minutos');}catch(e){log('[AP Video] ⚠ '+e.message+' (draft guardado sin vídeo)','var(--amber)');}}
+async function generateAutopilotVideo(draft, ch, addLog) {
+  var log = addLog || function(){};
+  try {
+    var backend = BACKEND_URL || localStorage.getItem('fai_backend_url') || '';
+    if (!backend) { log('[AP Video] ⚠ Backend URL no configurada — omitiendo vídeo', 'var(--amber)'); return; }
+
+    // ── Decide provider: Fal.ai (ultra/scale) or Pexels (resto) ──
+    var tier = activeTier || 'opt';
+    var useFal = !!(KEYS.fal && (tier === 'ultra' || tier === 'scale'));
+    var falModel = (TIER_CONFIG[tier] && TIER_CONFIG[tier].videoModel) || 'wan-1.3b';
+
+    // ── Step 1: TTS audio ──
+    log('[AP Video] 🎤 Generando audio TTS...', '');
+    var scriptText = draft.script.split(' ').slice(0, 150).join(' ');
+    var voice = ch.voice || (ch.lang === 'en' ? 'echo' : 'onyx');
+    var ttsResp = await fetch(backend + '/tts', { method:'POST', headers:bkJsonHeaders(), body:JSON.stringify({ text:scriptText, voice:voice, model:'tts-1', api_key:KEYS.openai||'' }) });
+    if (!ttsResp.ok) throw new Error('TTS falló: ' + ttsResp.status);
+    var audioBlob = await ttsResp.blob();
+    var audioB64Full = await blobToBase64(audioBlob);
+    var audioB64 = audioB64Full.includes(',') ? audioB64Full.split(',')[1] : audioB64Full;
+    log('[AP Video] ✓ Audio listo (' + Math.round(audioBlob.size / 1024) + ' KB)', '');
+
+    var clipUrls = [];
+
+    if (useFal) {
+      // ── Step 2a: Fal.ai AI video generation ──
+      var niche = ch.niche || 'business';
+      var hook  = (draft.hook || draft.title || '').slice(0, 80);
+      var falPrompt = 'Cinematic ' + niche + ' scene, ' + hook + '. Professional quality, vertical 9:16 format, no text overlays, smooth motion.';
+      log('[AP Video] 🤖 Fal.ai (' + falModel + ') — generando vídeo IA...', 'var(--blue)');
+
+      var falResp = await fetch(backend + '/fal/generate', { method:'POST', headers:bkJsonHeaders(),
+        body: JSON.stringify({ prompt:falPrompt, duration:6, resolution:'720p', model:falModel }) });
+      if (!falResp.ok) throw new Error('Fal.ai falló: ' + falResp.status);
+      var falJob = await falResp.json();
+      log('[AP Video] ✓ Fal.ai job: ' + falJob.job_id, '');
+
+      // Poll fal job (max ~7 min)
+      for (var fa = 0; fa < 84; fa++) {
+        await new Promise(function(r){ setTimeout(r, 5000); });
+        var falSt = await (await fetch(backend + '/status/' + falJob.job_id, { headers:bkHeaders() })).json();
+        if (fa % 6 === 0) log('[AP Video] 🎬 Fal.ai [' + falSt.progress + '%] ' + falSt.message, '');
+        if (falSt.status === 'done' && falSt.download_url) { clipUrls = [falSt.download_url]; break; }
+        if (falSt.status === 'error') throw new Error('Fal.ai: ' + falSt.message);
+      }
+      if (!clipUrls.length) throw new Error('Fal.ai timeout sin respuesta');
+      log('[AP Video] ✓ Vídeo IA listo', 'var(--green)');
+
+    } else {
+      // ── Step 2b: Pexels stock clips ──
+      log('[AP Video] 🎬 Buscando clips Pexels...', '');
+      var pexQ = encodeURIComponent(ch.niche || 'business');
+      var pexKey = KEYS.pexels ? '&api_key=' + KEYS.pexels : '';
+      var pexResp = await fetch(backend + '/pexels/search?query=' + pexQ + '&per_page=5&orientation=portrait' + pexKey);
+      if (!pexResp.ok) throw new Error('Pexels falló: ' + pexResp.status);
+      var pexData = await pexResp.json();
+      clipUrls = (pexData.videos || []).slice(0, 5).map(function(v) {
+        var files = v.video_files || [];
+        var best = files.find(function(f){ return f.quality === 'hd'; }) || files.find(function(f){ return f.quality === 'sd'; }) || files[0];
+        return best ? (best.link || best.url || '') : '';
+      }).filter(function(u){ return u.startsWith('http'); });
+      if (!clipUrls.length) throw new Error('Sin clips Pexels válidos');
+      log('[AP Video] ✓ ' + clipUrls.length + ' clips listos', '');
+    }
+
+    // ── Step 3: Ensamblar con FFmpeg (audio + vídeo) ──
+    log('[AP Video] 🚀 Enviando a Railway...', '');
+    var genResp = await fetch(backend + '/generate', { method:'POST', headers:bkJsonHeaders(),
+      body: JSON.stringify({ audio_b64:audioB64, audio_url:'', pexels_clips:clipUrls,
+        script:draft.script, title:draft.hook, lang:draft.lang||'es',
+        subtitle_style: useFal ? 'none' : 'viral',
+        zoom_effect: !useFal }) });
+    if (!genResp.ok) throw new Error('Backend /generate falló: ' + genResp.status);
+    var genData = await genResp.json();
+    var jobId = genData.job_id;
+    log('[AP Video] ✓ Job: ' + jobId + ' ensamblando...', '');
+
+    // Poll assemble job
+    for (var att = 0; att < 60; att++) {
+      await new Promise(function(r){ setTimeout(r, 3000); });
+      var stResp = await fetch(backend + '/status/' + jobId, { headers:bkHeaders() });
+      var st = await stResp.json();
+      if (att % 5 === 0) log('[AP Video] [' + st.progress + '%] ' + st.message, '');
+      if (st.status === 'done') {
+        var videoUrl = backend + (st.download_url || '/download/' + jobId);
+        var allDrafts = getDrafts();
+        var idx = allDrafts.findIndex(function(d){ return d.id === draft.id; });
+        if (idx >= 0) { allDrafts[idx].videoUrl = videoUrl; saveDrafts(allDrafts); }
+        draft.videoUrl = videoUrl;
+        log('[AP Video] ✅ MP4 listo' + (useFal ? ' (Fal.ai IA)' : '') + ' — disponible en Borradores', 'var(--green)');
+        return;
+      }
+      if (st.status === 'error') throw new Error(st.message);
+    }
+    throw new Error('Timeout: vídeo tardó más de 3 minutos');
+
+  } catch(e) {
+    log('[AP Video] ⚠ ' + e.message + ' (draft guardado sin vídeo)', 'var(--amber)');
+  }
+}
 async function runFullAutopilotCycle(){if(_apRunning){showToast('AutoPilot ya en ejecucion');return;}if(!KEYS.anthropic){showToast('Configura Anthropic API key');return;}var channels=getChannels().filter(function(ch){return ch.autopilot!==false;});if(!channels.length){showToast('No hay canales con AutoPilot activo');return;}var scoreThreshold=getAPSetting('score_threshold',70);var videosPerChan=getAPSetting('videos_per_cycle',1);var autoApprove=getAPSetting('auto_approve',true);var autoSchedule=getAPSetting('auto_schedule',true);var autoVideo=getAPSetting('auto_video',false);_apRunning=true;var log=[];var addLog=function(msg,col){log.push(msg);updateAPLog(log,col);};updateAPStatus('running','Iniciando ciclo...');try{addLog('AutoPilot: '+channels.length+' canales · umbral '+scoreThreshold,'var(--green)');for(var ci=0;ci<channels.length;ci++){var ch=channels[ci];addLog('Canal: '+ch.name+' ('+ch.niche+'·'+(ch.lang||'es')+')','var(--blue)');for(var v=0;v<videosPerChan;v++){addLog('['+ch.name+'] Generando idea...','');var idea=await apGenerateIdea(ch);if(!idea){addLog('['+ch.name+'] Sin idea — saltando','var(--red)');continue;}var score=await apQuickScore(idea.hook,ch.niche,ch);addLog('['+ch.name+'] "'+idea.hook.slice(0,40)+'" — Score: '+score,score>=scoreThreshold?'var(--green)':'var(--amber)');if(score<scoreThreshold){addLog('['+ch.name+'] Score bajo — saltando','var(--text3)');continue;}var script=await apGenerateScript(idea.hook,ch);if(!script){continue;}var scriptWA=typeof injectChannelAffiliates==='function'?injectChannelAffiliates(script,ch.name):script;var draft={id:'ap_'+Date.now()+'_'+Math.random().toString(36).slice(2,5),hook:idea.hook,title:idea.hook,script:scriptWA,niche:ch.niche,lang:ch.lang||'es',channel:ch.name,score:score,status:autoApprove&&score>=scoreThreshold?'approved':'pending',source:'autopilot',createdAt:Date.now(),platforms:ch.platforms||['youtube','tiktok']};addDraft(draft);if(autoVideo&&BACKEND_URL){await generateAutopilotVideo(draft,ch,addLog);}logAICall('claude','autopilot-cycle',0.015,800,ch.name);addLog('['+ch.name+'] Guardado: '+(draft.status==='approved'?'AUTO-APROBADO':'pendiente'),draft.status==='approved'?'var(--green)':'var(--amber)');if(autoSchedule&&draft.status==='approved'){apScheduleDraft(draft,ch);addLog('['+ch.name+'] Programado','var(--green)');}await new Promise(function(r){setTimeout(r,800);});}}var sum='Ciclo completado: '+channels.length+' canales procesados';addLog(sum,'var(--green)');updateAPStatus('idle',sum);showToast('AutoPilot: '+sum);}catch(e){addLog('ERROR: '+e.message,'var(--red)');updateAPStatus('error','Error: '+e.message);}finally{_apRunning=false;}}
 function renderAutopilotSettings(){var el=document.getElementById('ap-settings-panel');if(!el)return;var thr=getAPSetting('score_threshold',70);var per=getAPSetting('videos_per_cycle',1);var aa=getAPSetting('auto_approve',true);var as=getAPSetting('auto_schedule',true);var av=getAPSetting('auto_video',false);el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="lbl">Umbral de score para auto-aprobar</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="ap-threshold" min="50" max="95" value="'+thr+'" style="flex:1" oninput="document.getElementById(\'ap-threshold-val\').textContent=this.value"><span id="ap-threshold-val" style="font-family:var(--mono);font-weight:700;color:var(--amber);min-width:30px">'+thr+'</span></div></div><div><label class="lbl">Videos por canal por ciclo</label><select class="sel" id="ap-per-chan" style="font-size:12px">'+[1,2,3,5].map(function(n){return'<option value="'+n+'"'+(n===per?' selected':'')+'>'+n+' video'+(n>1?'s':'')+'</option>';}).join('')+'</select></div></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-approve"'+(aa?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-aprobar si score supera el umbral</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-schedule"'+(as?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-programar a hora optima del nicho</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-video"'+(av?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Generar vídeo MP4 auto <span style="color:var(--text3)">(requiere backend + claves TTS y Pexels)</span></span></div></div><button class="btn btn-p" style="width:100%;margin-top:12px" onclick="saveAPSettingsFromUI();showToast(\'Configuracion guardada\')">Guardar</button>';}
 function saveAPSettingsFromUI(){saveAPSettings({score_threshold:parseInt(document.getElementById('ap-threshold')&&document.getElementById('ap-threshold').value||70),videos_per_cycle:parseInt(document.getElementById('ap-per-chan')&&document.getElementById('ap-per-chan').value||1),auto_approve:document.getElementById('ap-auto-approve')&&document.getElementById('ap-auto-approve').checked,auto_schedule:document.getElementById('ap-auto-schedule')&&document.getElementById('ap-auto-schedule').checked,auto_video:document.getElementById('ap-auto-video')&&document.getElementById('ap-auto-video').checked});}
@@ -5203,8 +5323,8 @@ const TIER_CONFIG = {
   eco:     { llm:'claude', tts:'openai', img:'pexels', costPerVid:0.15,  llmModel:'claude-haiku-4-5-20251001', ttsModel:'OpenAI TTS-1',         label:'ECONOMICO',  video:'Hailuo API' },
   opt:     { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:0.60,  llmModel:'claude-sonnet-4-6',         ttsModel:'ElevenLabs std',        label:'OPTIMIZADO', video:'Kling API' },
   premium: { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:3.00,  llmModel:'claude-sonnet-4-6',         ttsModel:'ElevenLabs HD',         label:'PREMIUM',    video:'Kling + Runway' },
-  ultra:   { llm:'claude', tts:'11labs', img:'dalle',  costPerVid:10.00, llmModel:'claude-opus-4-6',           ttsModel:'EL clonada emocional',  label:'ULTRA',      video:'Runway Gen-4 + HeyGen' },
-  scale:   { llm:'claude', tts:'11labs', img:'pexels',  costPerVid:0.05,  llmModel:'claude-haiku-4-5-20251001', ttsModel:'EL batch API',          label:'SCALE',      video:'Kling + Wan batch' },
+  ultra:   { llm:'claude', tts:'11labs', img:'fal',    costPerVid:0.30,  llmModel:'claude-opus-4-6',           ttsModel:'EL clonada emocional',  label:'ULTRA',      video:'Fal.ai Kling v2',       videoModel:'kling-v2'  },
+  scale:   { llm:'claude', tts:'11labs', img:'fal',    costPerVid:0.08,  llmModel:'claude-haiku-4-5-20251001', ttsModel:'EL batch API',          label:'SCALE',      video:'Fal.ai Wan2.1 batch',   videoModel:'wan-1.3b'  },
 };
 let activeTier = 'opt';
 try { activeTier = localStorage.getItem('fai_active_tier') || 'opt'; } catch(e) {}
@@ -10548,21 +10668,22 @@ const MODEL_CONFIG = {
     subs:  { model:'Whisper API', desc:'Transcripción en la nube',         cost:0.006,  quality:5 },
   },
   ultra: {
-    ideas: { model:'Claude Opus', desc:'Ideas premium + contexto influencer', cost:0.015, quality:5 },
-    script:{ model:'Claude Opus', desc:'Script con personalidad del avatar',  cost:0.060, quality:5 },
-    score: { model:'Claude Opus', desc:'Score profesional',                   cost:0.015, quality:5 },
-    tts:   { model:'ElevenLabs clonada',desc:'Voz clonada del personaje',     cost:0.200, quality:5 },
-    video: { model:'HeyGen / Runway / D-ID / Pika',desc:'Avatar IA real',    cost:1.200, quality:5 },
-    subs:  { model:'Whisper API', desc:'Transcripción profesional',           cost:0.006, quality:5 },
+    ideas: { model:'Claude Opus',        desc:'Ideas premium + contexto influencer', cost:0.015,  quality:5 },
+    script:{ model:'Claude Opus',        desc:'Script con personalidad del avatar',  cost:0.060,  quality:5 },
+    score: { model:'Claude Opus',        desc:'Score profesional',                   cost:0.015,  quality:5 },
+    tts:   { model:'ElevenLabs clonada', desc:'Voz clonada del personaje',           cost:0.200,  quality:5 },
+    video: { model:'Fal.ai Kling v2',    desc:'Vídeo IA hiperrealista (9:16)',       cost:0.150,  quality:5 },
+    img:   { model:'Fal.ai Wan2.1 14B',  desc:'Imágenes IA máxima calidad',          cost:0.050,  quality:5 },
+    subs:  { model:'Whisper API',        desc:'Transcripción profesional',           cost:0.006,  quality:5 },
   },
   scale: {
-    ideas: { model:'Claude Haiku batch', desc:'Ideas en batch, coste minimo',           cost:0.0005, quality:3 },
-    script:{ model:'Claude Haiku batch', desc:'Scripts batch, coste minimo',            cost:0.002,  quality:3 },
-    score: { model:'Claude Haiku batch', desc:'Score rapido para filtrar ideas',        cost:0.0001, quality:3 },
-    tts:   { model:'ElevenLabs batch',   desc:'TTS batch, maxima eficiencia',           cost:0.010,  quality:3 },
-    video: { model:'Pexels + Haiku',     desc:'Stock video + narración Haiku',          cost:0.030,  quality:3 },
-    img:   { model:'Pexels',             desc:'Stock visuals de alta calidad',          cost:0.001,  quality:3 },
-    subs:  { model:'Whisper local',      desc:'Transcripcion local masiva',             cost:0,      quality:3 },
+    ideas: { model:'Claude Haiku batch', desc:'Ideas en batch, coste mínimo',        cost:0.0005, quality:3 },
+    script:{ model:'Claude Haiku batch', desc:'Scripts batch, coste mínimo',         cost:0.002,  quality:3 },
+    score: { model:'Claude Haiku batch', desc:'Score rápido para filtrar ideas',     cost:0.0001, quality:3 },
+    tts:   { model:'ElevenLabs batch',   desc:'TTS batch, máxima eficiencia',        cost:0.010,  quality:3 },
+    video: { model:'Fal.ai Wan2.1 1.3B', desc:'Vídeo IA rápido, producción masiva', cost:0.030,  quality:3 },
+    img:   { model:'Fal.ai Wan2.1 1.3B', desc:'Clips IA en batch, mínimo coste',    cost:0.005,  quality:3 },
+    subs:  { model:'Whisper local',      desc:'Transcripción local masiva',          cost:0,      quality:3 },
   }
 };
 
@@ -10857,7 +10978,7 @@ function exportAllData() {
       if (key && key.startsWith('fai_')) data[key] = localStorage.getItem(key);
     }
     data['_exported_at'] = new Date().toISOString();
-    data['_version'] = 'v4.38';
+    data['_version'] = 'v4.39';
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');

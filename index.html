@@ -1449,17 +1449,36 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="pipe-step" id="ps-5" onclick="setPStep(5)"><div class="ps-num">06</div><div class="ps-name">Publicar</div><div class="ps-cost">gratis</div></div>
   </div>
 
-  <!-- Step 0: Nicho -->
+  <!-- Step 0: Canal / Nicho -->
   <div class="pc act" id="p-0">
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
       <div>
-        <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 1/6 — Nicho y canal</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 1/6 — Canal y contexto</div>
         <div id="p0-channel-label" style="font-size:11px;color:var(--text3);margin-top:2px">Sin canal seleccionado — elige uno arriba o crea uno nuevo</div>
       </div>
       <div style="display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="nav('channels')">+ Canal</button><button class="btn btn-p btn-sm" onclick="setPStep(1)">Continuar →</button></div>
     </div>
-    <div class="sh"><h2>Selecciona el nicho</h2><button class="btn btn-g btn-sm" onclick="showToast('Tendencias actualizadas ✓')">↻ Actualizar</button></div>
+
+    <!-- Channel context card (shown when a channel is active) -->
+    <div id="p0-ch-ctx" style="display:none;background:var(--bdim);border:1px solid var(--gsoft);border-radius:var(--r);padding:12px 16px;margin-bottom:14px">
+      <div style="font-size:10px;color:var(--green);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">▶ Canal activo — ideas personalizadas</div>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <div id="p0-ch-ctx-name" style="font-size:16px;font-weight:700;color:var(--text1);margin-bottom:3px">—</div>
+          <div id="p0-ch-ctx-meta" style="font-size:11px;color:var(--text3)">—</div>
+          <div id="p0-ch-ctx-notes" style="display:none;font-size:12px;color:var(--text2);background:var(--bg2);border-radius:6px;padding:6px 10px;margin-top:7px;font-style:italic;border-left:2px solid var(--gsoft)">—</div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="nav('channels')" style="font-size:11px;flex-shrink:0">✏️ Editar</button>
+      </div>
+    </div>
+
+    <!-- No-channel hint (shown when no channel active) -->
+    <div id="p0-no-ch-hint" style="background:var(--bg2);border:1px dashed var(--border);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+      <div style="font-size:11px;color:var(--text3)">💡 <strong style="color:var(--text2)">Sin canal activo</strong> — las ideas se generarán por nicho genérico. Para ideas personalizadas, <button class="btn btn-g btn-sm" style="font-size:11px;padding:2px 10px;margin-left:4px" onclick="nav('channels')">crea un canal →</button></div>
+    </div>
+
+    <div class="sh"><h2 id="p0-niche-heading">Selecciona el nicho <span id="p0-niche-ovride" style="display:none;font-size:11px;font-weight:400;color:var(--text3);font-family:var(--mono)">(override del canal)</span></h2><button class="btn btn-g btn-sm" onclick="showToast('Tendencias actualizadas ✓')">↻ Actualizar</button></div>
     <div class="g3">
       <div class="nc sel" style="--ac:var(--green)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">💰</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Finanzas básicas</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:92%;background:var(--blue)"></div></div><div class="si-lbl">Viral 92</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:30%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 30</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:88%;background:var(--amber)"></div></div><div class="si-lbl">CPM $8.8</div></div></div></div>
       <div class="nc" style="--ac:var(--purple)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🧠</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Motivación / psicología</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:87%;background:var(--blue)"></div></div><div class="si-lbl">Viral 87</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:55%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 55</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:72%;background:var(--amber)"></div></div><div class="si-lbl">CPM $7.2</div></div></div></div>
@@ -8502,19 +8521,50 @@ function updatePipelineChannelSel(activeName) {
       ).join('');
     if (activeName) sel.value = activeName;
   }
-  // Also update step-0 sub-label
+  // Update step-0 sub-label
   const lbl = document.getElementById('p0-channel-label');
+  const ch = activeName ? getChannels().find(c => c.name === activeName) : null;
+  const flag = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' }[ch?.lang] || '';
+
   if (lbl) {
-    if (activeName) {
-      const ch = getChannels().find(c => c.name === activeName);
-      const flag = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' }[ch?.lang] || '';
+    if (activeName && ch) {
       lbl.innerHTML = '📺 <strong style="color:var(--blue)">' + activeName + '</strong>' +
-        (ch?.niche ? ' · ' + ch.niche.toUpperCase() : '') +
+        (ch.niche ? ' · ' + ch.niche.toUpperCase() : '') +
         (flag ? ' · ' + flag : '') +
-        ' — <span style="color:var(--green)">nicho pre-seleccionado abajo</span>';
+        ' — <span style="color:var(--green)">✓ contexto cargado</span>';
     } else {
       lbl.textContent = 'Sin canal seleccionado — elige uno arriba o crea uno nuevo';
     }
+  }
+
+  // Update channel context card in Step 0
+  const ctxCard  = document.getElementById('p0-ch-ctx');
+  const ctxName  = document.getElementById('p0-ch-ctx-name');
+  const ctxMeta  = document.getElementById('p0-ch-ctx-meta');
+  const ctxNotes = document.getElementById('p0-ch-ctx-notes');
+  const noChHint = document.getElementById('p0-no-ch-hint');
+  const ovride   = document.getElementById('p0-niche-ovride');
+  const psName   = document.querySelector('#ps-0 .ps-name');
+
+  if (activeName && ch) {
+    if (ctxCard)  ctxCard.style.display  = 'block';
+    if (noChHint) noChHint.style.display = 'none';
+    if (ovride)   ovride.style.display   = 'inline';
+    if (psName)   psName.textContent     = 'Canal';
+    if (ctxName)  ctxName.textContent    = ch.name;
+    var nicheLabel = ch.niche ? (ch.niche.charAt(0).toUpperCase() + ch.niche.slice(1)) : '';
+    var genderLabel = ch.gender === 'm' ? '♂ Voz masculina' : '♀ Voz femenina';
+    var langLabel   = ch.lang === 'es' ? '🇪🇸 Español' : ch.lang === 'lat' ? '🌎 Latino' : '🇺🇸 English';
+    if (ctxMeta)  ctxMeta.textContent = [langLabel, nicheLabel, genderLabel].filter(Boolean).join(' · ');
+    if (ctxNotes) {
+      if (ch.notes) { ctxNotes.textContent = '📝 ' + ch.notes; ctxNotes.style.display = 'block'; }
+      else            ctxNotes.style.display = 'none';
+    }
+  } else {
+    if (ctxCard)  ctxCard.style.display  = 'none';
+    if (noChHint) noChHint.style.display = 'flex';
+    if (ovride)   ovride.style.display   = 'none';
+    if (psName)   psName.textContent     = 'Nicho';
   }
 }
 
@@ -13546,15 +13596,32 @@ async function generateIdeasReal() {
   if (!container || !btn) return;
   btn.textContent = '⏳ Generando...'; btn.disabled = true;
   const langCfg = getLangCfg();
-  container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-family:var(--mono)">🤖 Claude generando ideas en ' + langCfg.label + ' para ' + selectedNiche + '...</div>';
 
-  const prompt = `You are an expert in viral AI-GENERATED content for YouTube Shorts. REGLA: El canal/contenido debe poder crearse con IA: voz en off + clips stock, imágenes IA, texto animado, avatar IA (HeyGen/D-ID), influencer IA, animación, infografía automatizada, o cualquier formato donde NO aparezca una persona real como protagonista habitual. Avatares IA con cara SÍ están permitidos. TikTok and Instagram Reels.
-Generate exactly 6 viral video ideas for the niche: "${selectedNiche}"
-Language: ${langCfg.promptLang}
+  // Channel-centric: use full channel context when available, fall back to niche
+  const activeChObj = workingChannel ? getChannels().find(c => c.name === workingChannel) : null;
+  const effectiveNiche = (activeChObj?.niche) || selectedNiche || 'general';
+  const contextLabel = activeChObj ? ('"' + activeChObj.name + '"') : selectedNiche;
+
+  container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-family:var(--mono)">🤖 Claude generando ideas para ' + contextLabel + ' en ' + langCfg.label + '...</div>';
+
+  // Build channel-specific or generic context block for the prompt
+  const channelBlock = activeChObj
+    ? `Channel name: "${activeChObj.name}"
+Niche/category: ${effectiveNiche}
+Language/market: ${langCfg.promptLang}
+Voice gender: ${activeChObj.gender === 'm' ? 'male narrator' : 'female narrator'}${activeChObj.notes ? '\nChannel style / positioning notes: ' + activeChObj.notes : ''}
+IMPORTANT: Ideas must be SPECIFICALLY tailored to the channel "${activeChObj.name}" — not generic niche ideas. The hook should feel like it belongs to this channel's established voice, audience and positioning.`
+    : `Niche/category: "${selectedNiche}"
+Language/market: ${langCfg.promptLang}`;
+
+  const prompt = `You are an expert in viral AI-GENERATED content for YouTube Shorts, TikTok and Instagram Reels.
+RULE: Content must be creatable with AI only — voiceover + stock clips, AI images, animated text, AI avatar (HeyGen/D-ID), AI influencer, animation, automated infographic, or any format where a real person does NOT appear as the regular protagonist. AI avatars with a face ARE allowed.
+
+${channelBlock}
 Currency symbol: ${langCfg.currency}
 Best publishing time for this market: ${langCfg.bestTime}
 
-Respond ONLY in valid JSON with this exact format:
+Generate exactly 6 viral video ideas. Respond ONLY in valid JSON with this exact format:
 [
   {
     "hook": "viral title with emoji at start — written in the correct language/dialect",
@@ -13574,7 +13641,7 @@ Hooks must be ultra viral, with concrete numbers or data when possible. Only JSO
     generatedIdeas = JSON.parse(clean);
     renderIdeas(generatedIdeas);
     const cfg = TIER_CONFIG[activeTier];
-    showToast('✓ ' + generatedIdeas.length + ' ideas generadas con Claude · ' + cfg.llmModel.split('-').slice(0,2).join('-'));
+    showToast('✓ ' + generatedIdeas.length + ' ideas para ' + contextLabel + ' · ' + cfg.llmModel.split('-').slice(0,2).join('-'));
   } catch(e) {
     container.innerHTML = '<div style="padding:16px;color:var(--red);font-family:var(--mono);font-size:13px">✕ Error: ' + e.message + '<br><br><button class="btn btn-g btn-sm" onclick="generateIdeasReal()">↻ Reintentar</button></div>';
     showToast('✕ Error generando ideas: ' + e.message);

@@ -1422,8 +1422,13 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <span style="font-size:10px;color:var(--border)">│</span>
       <span style="font-size:11px;color:var(--text3)">💰</span><span id="ptb-cost" style="font-size:11px;font-weight:700;color:var(--amber)">~$0.06/vídeo</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <span class="tag tb" id="pipe-channel-tag" style="font-size:11px">—</span>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:5px;background:var(--bg1);border:1px solid var(--border);border-radius:99px;padding:3px 10px 3px 8px">
+        <span style="font-size:10px;color:var(--text3)">📺</span>
+        <select id="pipe-channel-sel" onchange="switchPipelineChannel(this.value)" style="background:transparent;border:none;font-size:11px;font-weight:600;color:var(--text1);cursor:pointer;outline:none;max-width:160px">
+          <option value="">— Sin canal —</option>
+        </select>
+      </div>
       <span class="tag tg" id="pipe-score-tag" style="display:none;font-size:11px">Score: 85</span>
       <button onclick="nav('models')" style="background:none;border:1px solid var(--border);border-radius:99px;padding:2px 10px;font-size:10px;color:var(--text3);cursor:pointer">Cambiar tier →</button>
     </div>
@@ -1442,8 +1447,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   <div class="pc act" id="p-0">
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--bg2);border-radius:var(--r)">
-      <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 1/6 — Nicho y canal</div>
-      <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="setPStep(1)">Continuar →</button></div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2)">Paso 1/6 — Nicho y canal</div>
+        <div id="p0-channel-label" style="font-size:11px;color:var(--text3);margin-top:2px">Sin canal seleccionado — elige uno arriba o crea uno nuevo</div>
+      </div>
+      <div style="display:flex;gap:8px"><button class="btn btn-g btn-sm" onclick="nav('channels')">+ Canal</button><button class="btn btn-p btn-sm" onclick="setPStep(1)">Continuar →</button></div>
     </div>
     <div class="sh"><h2>Selecciona el nicho</h2><button class="btn btn-g btn-sm" onclick="showToast('Tendencias actualizadas ✓')">↻ Actualizar</button></div>
     <div class="g3">
@@ -1775,6 +1783,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div style="flex:1">
         <div style="font-size:16px;font-weight:700;color:var(--blue)">Vídeo listo para revisión</div>
         <div style="font-size:12px;color:var(--text3)">Revisa todo antes de publicar · Puedes editar, guardar como borrador o rechazar</div>
+        <div id="apv-channel-label" style="font-size:11px;color:var(--amber);margin-top:3px;font-family:var(--mono)">— Sin canal —</div>
       </div>
       <div style="text-align:right">
         <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">COSTE GENERADO</div>
@@ -5382,6 +5391,7 @@ function nav(id) {
   if (id === 'spychannels')  setTimeout(() => { if(typeof loadSpyHistory==='function') loadSpyHistory(); }, 50);
   if (id === 'affiliation')  setTimeout(() => { if(typeof renderAffiliates==='function') renderAffiliates(); }, 50);
   if (id === 'dashboard')    setTimeout(() => { renderDashboard(); renderWeeklyChart(); }, 30);
+  if (id === 'pipeline')     setTimeout(() => { updatePipelineChannelSel(workingChannel || ''); }, 80);
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -5395,8 +5405,15 @@ function setPStep(n) {
     document.getElementById('p-' + i)?.classList.toggle('act', i === n);
   }
   if (n === 5) { try { populateStep5(); } catch(e) { console.warn('populateStep5:', e); } }
-  if (n === 4) { try { applyTierToPipeline(); } catch(e) {} }
+  if (n === 4) { try { applyTierToPipeline(); syncStep4VoiceUI(); } catch(e) {} }
   if (n === 3) { try { applyTierToPipeline(); } catch(e) {} }
+  if (n === 0) {
+    updatePipelineChannelSel(workingChannel || '');
+    if (workingChannel) {
+      const _ch0 = getChannels().find(c => c.name === workingChannel);
+      if (_ch0?.niche) setTimeout(() => preselectNicheCard(_ch0.niche), 60);
+    }
+  }
   // When entering video step, auto-suggest Pexels query and check keys
   // When entering score step, pre-fill selected idea
   if (n === 2) {
@@ -6987,7 +7004,8 @@ function saveDraft() {
     audioUrl: audio?.url || null,
     videoUrl: window._finalVideoUrl || null,
     duration: audio?.duration || null,
-    description: desc
+    description: desc,
+    channel: workingChannel || '',
   });
   setTimeout(() => nav('drafts'), 800);
 }
@@ -7022,9 +7040,9 @@ function populateStep5() {
     descEl.value = firstPara + (affiliates ? '\n\n' + affiliates : '') + '\n\n💡 Sígueme para más contenido';
   }
 
-  // Hashtags — based on niche
+  // Hashtags — normalise niche key before lookup so "Finanzas básicas" → "finanzas"
   const nicheHashtags = {
-    finanzas:    '#finanzas #dinero #ahorrar #shorts #finanzaspersonales #invertsion',
+    finanzas:    '#finanzas #dinero #ahorrar #shorts #finanzaspersonales #inversion',
     motivacion:  '#motivacion #exito #mentalidad #shorts #desarrollo #psicologia',
     tecnologia:  '#tecnologia #ia #inteligenciaartificial #shorts #tech #futuro',
     salud:       '#salud #bienestar #fitness #shorts #habitos #vidanatural',
@@ -7034,7 +7052,21 @@ function populateStep5() {
     curiosidades:'#curiosidades #ciencia #datos #shorts #aprender #fascinante',
   };
   const tagsEl = document.getElementById('apv-tags');
-  if (tagsEl) tagsEl.value = nicheHashtags[niche] || '#shorts #viral #contenido';
+  if (tagsEl) tagsEl.value = nicheHashtags[normalizeNicheKey(niche)] || '#shorts #viral #contenido';
+
+  // Platforms — pre-toggle from working channel config
+  const _pubCh = getChannels().find(c => c.name === (workingChannel || ''));
+  const _plats = _pubCh?.platforms || ['youtube'];
+  const apvYt = document.getElementById('apv-yt');
+  const apvTt = document.getElementById('apv-tt');
+  const apvIg = document.getElementById('apv-ig');
+  if (apvYt) apvYt.classList.toggle('p-yt', _plats.includes('youtube'));
+  if (apvTt) apvTt.classList.toggle('p-tt', _plats.includes('tiktok'));
+  if (apvIg) apvIg.classList.toggle('p-ig', _plats.includes('instagram'));
+
+  // Show active channel name in step-6 header
+  const _pubChLabel = document.getElementById('apv-channel-label');
+  if (_pubChLabel) _pubChLabel.textContent = workingChannel ? ('📺 ' + workingChannel) : '— Sin canal —';
 
   // Cost — accumulated from pipeline
   const totalCost = ((window._pipelineCost || 0) + parseFloat(audio?.cost || 0)).toFixed(4);
@@ -7259,18 +7291,25 @@ function createChannel() {
   channels.push({ id:Date.now(), name:fullName, niche, lang:chLang, gender:chGender, voice, youtubeChannelId: document.getElementById('ch-yt-id')?.value.trim() || '', platforms:['youtube'], createdAt:new Date().toISOString(), status:'active' });
   saveChannels(channels);
   closeModal();
+  // Immediately set as working channel
+  workingChannel = fullName;
+  selectedNiche  = niche;
   setLang(chLang);
   setVoiceGender(chGender);
-  showToast('✓ Canal "' + fullName + '" creado · Voz: ' + voice + ' · Guardado');
+  renderChannels();
+  showToast('✓ Canal "' + fullName + '" creado — ir al pipeline para generar contenido');
 }
 
 // ── SELECT CHANNEL (loads lang/gender into topbar) ──
 function selectChannel(name, lang, gender, niche) {
+  workingChannel = name;
   setLang(lang);
   setVoiceGender(gender);
   if (niche) selectedNiche = niche;
-  showToast('✓ Canal activo: ' + name + ' · ' + LANG_CONFIG[lang]?.label + ' · ' + (gender === 'm' ? '♂' : '♀'));
   nav('pipeline');
+  updatePipelineChannelSel(name);
+  if (niche) setTimeout(() => preselectNicheCard(niche), 120);
+  showToast('📺 Canal activo: ' + name + ' · ' + (LANG_CONFIG[lang]?.label || lang) + ' · ' + (gender === 'm' ? '♂' : '♀'));
 }
 
 // ── AI CHANNEL DISCOVERY ──
@@ -7949,14 +7988,14 @@ function renderDashboard() {
         const flag  = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' }[ch.lang] || '🌐';
         const chDraftsThisMonth = thisDrafts.filter(d => d.channel === ch.name).length;
         const yt = ch.youtubeChannelId ? getChannelStats(ch.youtubeChannelId) : null;
-        return `<div class="chrow" onclick="workOnChannel('${ch.name.replace(/'/g,"\'")}')">
+        const isWorking = ch.name === workingChannel;
+        return `<div class="chrow" onclick="workOnChannel('${ch.name.replace(/'/g,"\\'")}')" style="${isWorking?'border-color:var(--blue);background:var(--bdim);':''}">
           <div class="ch-icon" style="background:${col}20;color:${col}">${emoji}</div>
           <div style="flex:1">
-            <div style="font-size:13px;font-weight:600">${ch.name}</div>
+            <div style="font-size:13px;font-weight:600">${ch.name}${isWorking?' <span style="font-size:9px;background:var(--blue);color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px;font-family:var(--mono)">ACTIVO</span>':''}</div>
             <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${(ch.niche||'').toUpperCase()} · ${flag}${yt?' · '+formatViews(yt.views)+' views':''}</div>
           </div>
-          <div style="width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0"></div>
-          <span style="font-size:11px;font-family:var(--mono);color:var(--text3)">${chDraftsThisMonth > 0 ? chDraftsThisMonth+' vídeo'+(chDraftsThisMonth>1?'s':'')+' este mes' : 'Activo'}</span>
+          <span style="font-size:11px;font-family:var(--mono);color:${isWorking?'var(--blue)':'var(--text3)'}">${isWorking?'▶ EN PIPELINE':chDraftsThisMonth > 0 ? chDraftsThisMonth+' vídeo'+(chDraftsThisMonth>1?'s':'')+' este mes' : 'Activo'}</span>
         </div>`;
       }).join('') + (channels.length > 4 ? `<div style="text-align:center;margin-top:8px"><button class="btn btn-g btn-sm" onclick="nav('channels')">Ver todos (${channels.length}) →</button></div>` : '');
     }
@@ -8227,7 +8266,9 @@ function renderChannels() {
 
       <!-- Actions -->
       <div style="display:flex;gap:8px">
-        <button class="btn btn-p btn-sm" style="flex:1" onclick="workOnChannel('${ch.name.replace(/'/g,"\'")}')">▶ Trabajar en este canal</button>
+        <button class="btn ${ch.name===workingChannel?'btn-p':'btn-g'} btn-sm" style="flex:1" onclick="workOnChannel('${ch.name.replace(/'/g,"\\'")}')">
+          ${ch.name===workingChannel?'▶ EN PIPELINE (activo)':'▶ Generar contenido →'}
+        </button>
       </div>
     </div>`;
   }).join('');
@@ -8318,16 +8359,126 @@ function deleteChannel(idx) {
   showToast('Canal eliminado');
 }
 function workOnChannel(name) {
-  // Set active channel and go to pipeline
   const channels = getChannels();
   const ch = channels.find(c => c.name === name);
   if (ch) {
-    if (ch.lang) setLang(ch.lang);
+    workingChannel = ch.name;
+    if (ch.lang)   setLang(ch.lang);
     if (ch.gender) setVoiceGender(ch.gender);
+    if (ch.niche)  selectedNiche = ch.niche;
+  } else {
+    workingChannel = name;
   }
   nav('pipeline');
-  showToast('Trabajando en: ' + name);
+  updatePipelineChannelSel(workingChannel);
+  setTimeout(() => {
+    if (ch?.niche) preselectNicheCard(ch.niche);
+  }, 120);
+  showToast('📺 Canal activo: ' + name);
 }
+// ─── CHANNEL-CENTRIC HELPERS ─────────────────────────────────────────────────
+
+// Normalises any niche string → short key for hashtag/card lookup
+function normalizeNicheKey(n) {
+  n = (n || '').toLowerCase();
+  if (n.includes('finanz') || n.includes('dinero') || n.includes('ahorro')) return 'finanzas';
+  if (n.includes('motiv') || n.includes('psicol') || n.includes('mente'))  return 'motivacion';
+  if (n.includes('curio'))                                                   return 'curiosidades';
+  if (n.includes('tecno') || n.includes(' ia') || n === 'ia' || n.includes('intelig')) return 'tecnologia';
+  if (n.includes('histor') || n.includes('reddit') || n.includes('relat'))  return 'historia';
+  if (n.includes('salud') || n.includes('bienes') || n.includes('fitness')) return 'salud';
+  if (n.includes('negoc') || n.includes('emprend') || n.includes('market')) return 'negocios';
+  if (n.includes('gaming') || n.includes('juego') || n.includes('gamer'))   return 'gaming';
+  return n.split(/[\s/]/)[0]; // fallback: first word
+}
+
+// Pre-selects the matching niche card in Step 1 grid
+function preselectNicheCard(niche) {
+  if (!niche) return;
+  const key = normalizeNicheKey(niche);
+  const keyMap = {
+    finanzas:     'finanz',
+    motivacion:   'motiv',
+    curiosidades: 'curio',
+    tecnologia:   'tecno',
+    historia:     'histor',
+    salud:        'salud',
+    negocios:     'negoc',
+    gaming:       'gaming',
+  };
+  const fragment = keyMap[key] || key;
+  let matched = false;
+  document.querySelectorAll('.nc').forEach(card => {
+    const nameEl = card.querySelector('div:nth-child(2)');
+    if (!nameEl) return;
+    const cardText = nameEl.textContent.trim().toLowerCase();
+    const isMatch  = cardText.includes(fragment);
+    card.classList.toggle('sel', isMatch);
+    if (isMatch && !matched) {
+      selectedNiche  = nameEl.textContent.trim();
+      matched = true;
+    }
+  });
+}
+
+// Rebuilds the pipeline channel <select> and marks the active one
+function updatePipelineChannelSel(activeName) {
+  const sel = document.getElementById('pipe-channel-sel');
+  if (sel) {
+    const channels = getChannels();
+    sel.innerHTML = '<option value="">— Sin canal —</option>' +
+      channels.map(ch =>
+        '<option value="' + ch.name + '"' + (ch.name === activeName ? ' selected' : '') + '>' +
+        ch.name + (ch.niche ? ' · ' + ch.niche : '') + '</option>'
+      ).join('');
+    if (activeName) sel.value = activeName;
+  }
+  // Also update step-0 sub-label
+  const lbl = document.getElementById('p0-channel-label');
+  if (lbl) {
+    if (activeName) {
+      const ch = getChannels().find(c => c.name === activeName);
+      const flag = { es:'🇪🇸', en:'🇺🇸', lat:'🌎' }[ch?.lang] || '';
+      lbl.innerHTML = '📺 <strong style="color:var(--blue)">' + activeName + '</strong>' +
+        (ch?.niche ? ' · ' + ch.niche.toUpperCase() : '') +
+        (flag ? ' · ' + flag : '') +
+        ' — <span style="color:var(--green)">nicho pre-seleccionado abajo</span>';
+    } else {
+      lbl.textContent = 'Sin canal seleccionado — elige uno arriba o crea uno nuevo';
+    }
+  }
+}
+
+// Called when user picks a channel from the pipeline dropdown
+function switchPipelineChannel(name) {
+  if (!name) { workingChannel = ''; return; }
+  workOnChannel(name);
+  setPStep(0); // go back to step 1 so niche is visible
+}
+
+// Syncs Step-4 lang/voice buttons to global state (called by setPStep(4))
+function syncStep4VoiceUI() {
+  const langMap = { es: 'pipe-lang-es', lat: 'pipe-lang-lat', en: 'pipe-lang-en' };
+  Object.entries(langMap).forEach(([l, id]) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    const active = (l === (activeLang || 'es'));
+    btn.style.background = active ? 'var(--text1)' : 'transparent';
+    btn.style.color       = active ? 'var(--bg)'   : 'var(--text3)';
+  });
+  const isM    = (activeGender || 'f') !== 'f';
+  const vmBtn  = document.getElementById('pipe-voice-m');
+  const vfBtn  = document.getElementById('pipe-voice-f');
+  if (vmBtn) { vmBtn.style.background = isM ? 'var(--text1)' : 'transparent'; vmBtn.style.color = isM ? 'var(--bg)' : 'var(--text3)'; }
+  if (vfBtn) { vfBtn.style.background = !isM ? 'var(--text1)' : 'transparent'; vfBtn.style.color = !isM ? 'var(--bg)' : 'var(--text3)'; }
+  const voiceSel = document.getElementById('tts-voice');
+  if (voiceSel) { try { voiceSel.value = getVoice(); } catch(_) {} }
+  // Also sync pipe-voice-id dropdown
+  const pipeVoiceId = document.getElementById('pipe-voice-id');
+  if (pipeVoiceId) { try { pipeVoiceId.value = getVoice(); } catch(_) {} }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 function discoverChannelsAI() {
   if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); return; }
   const market   = document.getElementById('disc-market')?.value   || 'all';

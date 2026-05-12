@@ -6945,6 +6945,7 @@ function approveAndPublish() {
     score:       window._lastScore || idea?.viralScore || null,
     cost:        audio?.cost || null,
     audioUrl:    audio?.url  || null,
+    videoUrl:    window._finalVideoUrl || null,
     duration:    audio?.duration || null,
     description: desc,
     channel:     channel,
@@ -6984,6 +6985,7 @@ function saveDraft() {
     score: window._lastScore || idea?.viralScore || null,
     cost: audio?.cost || null,
     audioUrl: audio?.url || null,
+    videoUrl: window._finalVideoUrl || null,
     duration: audio?.duration || null,
     description: desc
   });

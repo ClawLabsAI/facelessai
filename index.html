@@ -5377,12 +5377,15 @@ function nav(id) {
   const titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.textContent = TITLES[id] || id;
   window.scrollTo(0, 0);
+  const _contentEl = document.querySelector('.content');
+  if (_contentEl) _contentEl.scrollTop = 0;
 
   // ── View-specific on-show callbacks ──
   if (id === 'tiktokshop')   renderTTSChannels();
   if (id === 'tiktokproduct') setTSStep(0);
   if (id === 'settings')     setTimeout(() => { refreshSettingsDisplay(); initPreferences(); autoFillBackendUrl(); }, 50);
   if (id === 'drafts')       renderDrafts();
+  if (id === 'channels')     setTimeout(() => { if(typeof renderChannels==='function') renderChannels(); }, 50);
   if (id === 'templates')    setTimeout(() => { if(typeof renderScriptTemplates==='function') renderScriptTemplates(); if(typeof renderHooksGrid==='function') renderHooksGrid(); }, 50);
   if (id === 'scheduler')    setTimeout(() => { if(typeof renderScheduler==='function') renderScheduler(); }, 50);
   if (id === 'autopilot')    setTimeout(() => { if(typeof renderAutopilot==='function') renderAutopilot(); if(typeof renderAPChannelList==='function') renderAPChannelList(); if(typeof updateAPStats==='function') updateAPStats(); }, 50);
@@ -13826,7 +13829,7 @@ try { renderUserPill(); } catch(e) {}
 </script>
 
 <!-- ═══════════════ MOBILE BOTTOM NAV ═══════════════ -->
-<nav id="mob-bottom-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--bg1);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;align-items:center">
+<nav id="mob-bottom-nav" style="position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--bg1);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));justify-content:space-around;align-items:center">
   <button onclick="nav('dashboard')" id="mbn-dashboard" class="mbn-btn">
     <svg viewBox="0 0 16 16" fill="currentColor" style="width:20px;height:20px"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
     <span>Inicio</span>

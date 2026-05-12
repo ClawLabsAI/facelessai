@@ -325,6 +325,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="logo-sub">Content Engine v4.39</div>
   </div>
   <nav class="nav">
+
+    <!-- INICIO -->
     <div class="nsl">Inicio</div>
     <div class="ni active" data-view="dashboard">
       <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard
@@ -336,40 +338,46 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="2"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="8" y2="11"/></svg>Borradores<span class="nb nba" id="drafts-nav-badge">3</span>
     </div>
 
+    <!-- CREAR -->
     <div class="nsl" style="margin-top:6px" data-section="crear" onclick="toggleNavSection(this)">Crear<span class="nsl-ch">▾</span></div>
+    <div class="ni" data-view="pipeline">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><line x1="5" y1="3" x2="5" y2="13"/><line x1="11" y1="3" x2="11" y2="13"/></svg>Pipeline
+    </div>
     <div class="ni" data-view="trends">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="1 12 5 7 9 9 13 3 15 3"/><circle cx="13" cy="3" r="1.5" fill="currentColor" stroke="none"/></svg>Tendencias<span class="nb nbr">5🔥</span>
     </div>
     <div class="ni" data-view="score">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><path d="M8 4v4l3 3"/></svg>Score IA
     </div>
-    <div class="ni" data-view="pipeline">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><line x1="5" y1="3" x2="5" y2="13"/><line x1="11" y1="3" x2="11" y2="13"/></svg>Pipeline
-    </div>
     <div class="ni" data-view="url2video">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3H3a2 2 0 00-2 2v6a2 2 0 002 2h3M10 3h3a2 2 0 012 2v6a2 2 0 01-2 2h-3M5 8h6"/></svg>URL → Vídeo
     </div>
-
-    <div class="nsl" style="margin-top:6px" data-section="influencer" onclick="toggleNavSection(this)">Influencer IA<span class="nsl-ch">▾</span></div>
-      <div class="ni" data-view="influencer">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>Mis personajes
-        <span id="influencer-nav-badge" class="nbadge" style="display:none"></span>
-      </div>
-      <div class="ni" data-view="influencer-contenido">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H2v12h12V2z"/><path d="M5 6h6M5 9h4"/></svg>Contenido IA
-      </div>
-      <div class="ni" data-view="influencer-video">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 14,8 5,13"/></svg>Vídeo IA <span class="tag" style="font-size:9px;padding:1px 5px;margin-left:4px;background:var(--bdim);color:var(--purple);border:none">ULTRA</span>
-      </div>
-      <div class="nsl" style="margin-top:6px" data-section="biblioteca" onclick="toggleNavSection(this)">Biblioteca<span class="nsl-ch">▾</span></div>
     <div class="ni" data-view="templates">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="10" rx="2"/><line x1="4" y1="14" x2="12" y2="14"/><line x1="8" y1="11" x2="8" y2="14"/></svg>Plantillas virales<span class="nb nba">12</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="10" rx="2"/><line x1="5" y1="14" x2="11" y2="14"/><line x1="8" y1="11" x2="8" y2="14"/></svg>Plantillas<span class="nb nba">12</span>
     </div>
     <div class="ni" data-view="clone">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="10" height="11" rx="2"/><path d="M5 4V3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2h-1"/></svg>Clonar canal
     </div>
     <div class="ni" data-view="reuse">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8a7 7 0 0014 0M15 8a7 7 0 00-14 0"/><polyline points="12 5 15 8 12 11"/><polyline points="4 5 1 8 4 11"/></svg>Reutilizar
+    </div>
+
+    <!-- AUTOMATIZAR -->
+    <div class="nsl" style="margin-top:6px" data-section="automacion" onclick="toggleNavSection(this)">Automatizar<span class="nsl-ch">▾</span></div>
+    <div class="ni" data-view="autopilot">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>AutoPilot<span class="nb nbg" id="ap-nav-badge">ON</span>
+    </div>
+    <div class="ni" data-view="scheduler">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="12" rx="1"/><path d="M1 7h14M5 1v4M11 1v4"/></svg>Scheduler
+    </div>
+    <div class="ni" data-view="clipping">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3l10 10M13 3L3 13"/><circle cx="4" cy="4" r="2"/><circle cx="12" cy="12" r="2"/></svg>Canales Clipping
+    </div>
+    <div class="ni" data-view="clippipeline">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><polygon points="6,5 12,8 6,11"/></svg>Pipeline Clipping
+    </div>
+    <div class="ni" data-view="cliplibrary">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="11" rx="1"/><circle cx="5.5" cy="7.5" r="1.5"/><path d="M1 12l3.5-3 3 2.5 3-4 4.5 4.5"/></svg>Mis Clips
     </div>
 
     <!-- TIKTOK SHOP -->
@@ -384,60 +392,55 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 3L3 8l4 2 2 4 4-10z"/></svg>AutoPost Shop
     </div>
 
-    <div class="nsl" style="margin-top:6px" data-section="automacion" onclick="toggleNavSection(this)">Automatización<span class="nsl-ch">▾</span></div>
-    <div class="ni" data-view="autopilot">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>AutoPilot<span class="nb nbg" id="ap-nav-badge">ON</span>
+    <!-- PERSONAJES IA -->
+    <div class="nsl" style="margin-top:6px" data-section="influencer" onclick="toggleNavSection(this)">Personajes IA<span class="nsl-ch">▾</span></div>
+    <div class="ni" data-view="influencer">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>Mis personajes<span id="influencer-nav-badge" class="nbadge" style="display:none"></span>
     </div>
-      <div class="ni" data-view="scheduler" onclick="nav('scheduler')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="12" rx="1"/><path d="M1 7h14M5 1v4M11 1v4"/></svg>Scheduler</div>
+    <div class="ni" data-view="influencer-contenido">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H2v12h12V2z"/><path d="M5 6h6M5 9h4"/></svg>Contenido IA
+    </div>
+    <div class="ni" data-view="influencer-video">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 14,8 5,13"/></svg>Vídeo IA<span class="tag" style="font-size:9px;padding:1px 5px;margin-left:4px;background:var(--bdim);color:var(--purple);border:none">ULTRA</span>
+    </div>
+
+    <!-- INTELIGENCIA -->
+    <div class="nsl" style="margin-top:6px" data-section="inteligencia" onclick="toggleNavSection(this)">Inteligencia<span class="nsl-ch">▾</span></div>
+    <div class="ni" data-view="spychannels">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="4"/><path d="M10 10l4 4"/><path d="M6 3v1M6 9v1M3 6h1M9 6h1"/></svg>Espía de Canales<span class="tag" style="font-size:9px;padding:1px 5px;margin-left:4px;background:#fee2e2;color:var(--red);border:none">NEW</span>
+    </div>
+    <div class="ni" data-view="affiliation">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z"/></svg>Afiliados<span class="nb" style="background:#f472b620;color:#f472b6;border:1px solid #f472b640;font-size:9px;padding:1px 5px;border-radius:99px;margin-left:4px">NEW</span>
+    </div>
+    <div class="ni" data-view="analytics">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="1,12 5,7 8,9 11,4 15,6"/></svg>Analytics<span class="nb" style="background:#f472b620;color:#f472b6;border:1px solid #f472b640;font-size:9px;padding:1px 5px;border-radius:99px;margin-left:4px">NEW</span>
+    </div>
+    <div class="ni" data-view="monetization">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="1" x2="8" y2="15"/><path d="M11 4H6.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H5"/></svg>Monetización<span class="nb nbg">$1.2K</span>
+    </div>
+
+    <!-- SISTEMA -->
+    <div class="nsl" style="margin-top:6px" data-section="sistema" onclick="toggleNavSection(this)">Sistema<span class="nsl-ch">▾</span></div>
     <div class="ni" data-view="models">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="10" rx="2"/><line x1="5" y1="14" x2="11" y2="14"/><line x1="8" y1="11" x2="8" y2="14"/></svg>Modelos IA
     </div>
     <div class="ni" data-view="budget">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><path d="M8 4v4l3 3"/></svg>Presupuesto
     </div>
-
-    <div class="nsl" style="margin-top:6px" data-section="clipping" onclick="toggleNavSection(this)">Clipping<span class="nsl-ch">▾</span></div>
-    <div class="ni" data-view="clipping" onclick="nav('clipping')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3l10 10M13 3L3 13"/><circle cx="4" cy="4" r="2"/><circle cx="12" cy="12" r="2"/></svg>Canales Clipping
-    </div>
-    <div class="ni" data-view="clippipeline" onclick="nav('clippipeline')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><polygon points="6,5 12,8 6,11"/></svg>Pipeline Clipping
-    </div>
-
-    <div class="nsl" style="margin-top:6px" data-section="inteligencia" onclick="toggleNavSection(this)">Inteligencia<span class="nsl-ch">▾</span></div>
-      <div class="ni" data-view="spychannels">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="4"/><path d="M10 10l4 4"/><path d="M6 3v1M6 9v1M3 6h1M9 6h1"/></svg>Espía de Canales
-        <span class="tag" style="font-size:9px;padding:1px 5px;margin-left:4px;background:#fee2e2;color:var(--red);border:none">NEW</span>
-      </div>
-      <div class="nsl" style="margin-top:6px" data-section="marketing" onclick="toggleNavSection(this)">Marketing<span class="nsl-ch">▾</span></div>
-    <div class="ni" data-view="affiliation" onclick="nav('affiliation')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z"/></svg>Afiliados<span class="nb" style="background:#f472b620;color:#f472b6;border:1px solid #f472b640;font-size:9px;padding:1px 5px;border-radius:99px;margin-left:4px">NEW</span>
-    </div>
-    <div class="ni" data-view="admarketing" onclick="nav('admarketing')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="14" height="9" rx="2"/><path d="M5 4V3a2 2 0 014 0v1"/></svg>Publicidad<span class="nb" style="background:#94a3b820;color:var(--text3);border:1px solid #94a3b840;font-size:9px;padding:1px 5px;border-radius:99px;margin-left:4px">SOON</span>
-    </div>
-
-    <div class="nsl" style="margin-top:6px" data-section="datos" onclick="toggleNavSection(this)">Datos<span class="nsl-ch">▾</span></div>
-    <div class="ni" data-view="analytics" onclick="nav('analytics')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="1,12 5,7 8,9 11,4 15,6"/></svg>Analytics<span class="nb" style="background:#f472b620;color:#f472b6;border:1px solid #f472b640;font-size:9px;padding:1px 5px;border-radius:99px;margin-left:4px">NEW</span>
-    </div>
-    <div class="ni" data-view="monetization">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="1" x2="8" y2="15"/><path d="M11 4H6.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H5"/></svg>Monetización<span class="nb nbg">$1.2K</span>
-    </div>
     <div class="ni" data-view="settings">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>Configuración<span class="nb nba" id="settings-badge" style="display:none">!</span>
     </div>
-  
-      <!-- SaaS placeholder views hidden until implemented -->
-      <div style="display:none">
-      <div class="nsl" style="margin-top:10px;opacity:0.55">SaaS <span style="font-size:9px;background:var(--purple);color:var(--text1);padding:1px 5px;border-radius:3px;margin-left:4px">PROXIMAMENTE</span></div>
-      <div class="ni" data-view="saas-users" onclick="nav('saas-users')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 14s1-4 5-4 5 4 5 4"/></svg>Usuarios</div>
-      <div class="ni" data-view="saas-billing" onclick="nav('saas-billing')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 7h14"/></svg>Facturacion</div>
-      <div class="ni" data-view="saas-plans" onclick="nav('saas-plans')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l2 4 5 .7-3.5 3.5.8 5L8 13l-4.3 2.2.8-5L1 6.7 6 6z"/></svg>Planes</div>
-      <div class="ni" data-view="saas-admin" onclick="nav('saas-admin')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/></svg>Admin</div>
-      <div class="ni" data-view="saas-onboarding" onclick="nav('saas-onboarding')" style="opacity:0.6"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,8 6,12 14,4"/></svg>Onboarding</div>
-      </div>
-      <div class="ni" data-view="cliplibrary" onclick="nav('cliplibrary')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="11" rx="1"/><circle cx="5.5" cy="7.5" r="1.5"/><path d="M1 12l3.5-3 3 2.5 3-4 4.5 4.5"/></svg>Mis Clips</div></nav>
+
+    <!-- SaaS (hidden) -->
+    <div style="display:none">
+      <div class="ni" data-view="saas-users">Usuarios</div>
+      <div class="ni" data-view="saas-billing">Facturación</div>
+      <div class="ni" data-view="saas-plans">Planes</div>
+      <div class="ni" data-view="saas-admin">Admin</div>
+      <div class="ni" data-view="saas-onboarding">Onboarding</div>
+    </div>
+
+  </nav>
   <div class="sidebar-footer">
     <div class="user-pill" id="user-pill" onclick="nav('settings')">
       <div class="av" id="user-av">?</div>
@@ -851,6 +854,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="flex g8">
       <button class="btn btn-g btn-sm" onclick="approveAll()">✓ Aprobar todos pendientes</button>
       <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="clearAllDrafts()">🗑 Limpiar rechazados</button>
+      <button class="btn btn-g btn-sm" onclick="nav('scheduler')" style="margin-left:auto">📅 Scheduler →</button>
     </div>
   </div>
 
@@ -1091,6 +1095,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div style="display:flex;gap:8px">
         <button class="btn btn-p" onclick="runFullAutopilotCycle()" style="font-weight:700">▶ Ejecutar ciclo</button>
         <button class="btn btn-g btn-sm" onclick="nav('drafts')">Ver borradores →</button>
+        <button class="btn btn-g btn-sm" onclick="nav('scheduler')">📅 Scheduler →</button>
       </div>
     </div>
     <div id="ap-live-log" style="background:var(--bg);border-radius:var(--r);padding:8px 10px;min-height:60px;max-height:160px;overflow-y:auto;font-family:var(--mono)"><div style="font-size:11px;color:var(--text3)">Log del ciclo aqui...</div></div>
@@ -1259,6 +1264,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
     <h2>🎯 Score IA</h2>
     <span style="font-size:12px;color:var(--text3)">Analiza cualquier idea, contenido o canal</span>
+    <button class="btn btn-p btn-sm" onclick="nav('pipeline')" style="margin-left:auto">▶ Usar en Pipeline →</button>
   </div>
 
   <!-- TABS -->
@@ -2240,7 +2246,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   <!-- Income breakdown -->
   <div class="g4 mb16">
     <div class="money-card m-ads"><div class="sc-label">AdSense total</div><div class="sc-val" style="color:var(--blue)">$890</div><div style="font-size:12px;color:var(--text3)">↑ 92% vs trimestre anterior</div><div class="proj-bar mt8"><div class="proj-fill" style="width:72%"></div></div></div>
-    <div class="money-card m-aff"><div class="sc-label">Afiliación total</div><div class="sc-val" style="color:var(--amber)">$284</div><div style="font-size:12px;color:var(--text3)">Revolut + Amazon + DEGIRO</div><div class="proj-bar mt8"><div class="proj-fill" style="width:23%;background:var(--amber)"></div></div></div>
+    <div class="money-card m-aff" style="cursor:pointer" onclick="nav('affiliation')"><div class="sc-label">Afiliación total</div><div class="sc-val" style="color:var(--amber)">$284</div><div style="font-size:12px;color:var(--text3)">Revolut + Amazon + DEGIRO</div><div class="proj-bar mt8"><div class="proj-fill" style="width:23%;background:var(--amber)"></div></div><div style="font-size:10px;color:var(--amber);margin-top:6px;font-weight:600">Ver afiliados →</div></div>
     <div class="money-card m-cost"><div class="sc-label">Coste IA total</div><div class="sc-val" style="color:var(--red)">-$2.47</div><div style="font-size:12px;color:var(--text3)">96.8% bajo vs modo premium</div><div class="proj-bar mt8"><div class="proj-fill" style="width:2%;background:var(--red)"></div></div></div>
     <div class="money-card m-net"><div class="sc-label">Beneficio neto</div><div class="sc-val" style="color:var(--blue)">$1,172</div><div style="font-size:12px;color:var(--text3)">ROI: 47,449% sobre coste IA</div><div class="proj-bar mt8"><div class="proj-fill" style="width:95%;background:var(--blue)"></div></div></div>
   </div>
@@ -3225,6 +3231,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <div class="view" id="view-clippipeline">
   <div class="sh mb16">
     <h2>✂️ Pipeline Clipping</h2>
+    <button class="btn btn-g btn-sm" onclick="nav('cliplibrary')">🎞 Mis Clips →</button>
     <div class="flex g8" id="cp-step-indicator">
       <span class="cp-step-pill act" id="cpi-0">① URL</span>
       <span class="cp-step-pill" id="cpi-1">② Transcripción</span>
@@ -3341,20 +3348,15 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 </div>
 
 <!-- ════════════════ BUDGET ════════════════ -->
-  </div><!-- /lib-panel-hooks -->
-  <div id="lib-panel-templates" style="display:none"></div><!-- /lib-panel-templates -->
-
 <div class="view" id="view-budget">
   <div class="sh mb16">
-  <div style="display:flex;gap:6px;margin-bottom:14px"><button class="sty-btn act" id="lib-tab-hooks" onclick="switchLibTab('hooks')">Hooks (CTR)</button><button class="sty-btn" id="lib-tab-templates" onclick="switchLibTab('templates')">Plantillas de script</button></div>
-  <div id="lib-panel-hooks">
-
-  <div class="card mb14" style="border-color:var(--blue)"><div style="font-size:13px;font-weight:700;margin-bottom:12px">Calculadora de ingresos 2026</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="lbl">Nicho</label><select class="sel" id="calc-niche" onchange="renderNicheCalculator()" style="font-size:12px"><option value="finanzas">Finanzas $14.5</option><option value="cripto">Cripto $16.2</option><option value="legal">Legal $18.0</option><option value="tecnologia">Tech $11.5</option><option value="motivacion">Motivacion $8.5</option><option value="truecrime">True Crime $7.8</option><option value="historia">Historia $9.2</option><option value="salud">Salud $12.0</option></select></div><div><label class="lbl">Videos/mes</label><input class="inp" id="calc-vids-month" type="number" value="30" min="1" oninput="renderNicheCalculator()" style="font-size:13px"></div><div><label class="lbl">Tier IA</label><select class="sel" id="calc-tier-sel" onchange="renderNicheCalculator()" style="font-size:12px"><option value="free">Gratis</option><option value="eco">Eco $0.15</option><option value="opt" selected>Opt $0.60</option><option value="prem">Premium $3</option><option value="scale">Scale $0.05</option></select></div><div><label class="lbl">Plataforma</label><select class="sel" id="calc-plat" onchange="renderNicheCalculator()" style="font-size:12px"><option value="yt">YouTube</option><option value="tt">TikTok</option><option value="ig">Instagram</option></select></div></div><div id="niche-calc-result"></div></div>
-  <div class="card mb14" style="border-color:var(--blue)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:13px;font-weight:700">Comparativa ES vs EN</div><div style="font-size:11px;color:var(--text3)">El mercado ingles genera 3-6x mas CPM</div></div><div style="display:flex;gap:8px;align-items:center"><input class="inp" id="cmp-videos" type="number" value="30" style="width:60px;font-size:12px" oninput="renderENvsESComparison()"><select class="sel" id="cmp-tier" onchange="renderENvsESComparison()" style="font-size:11px"><option value="eco">Eco</option><option value="opt" selected>Opt</option><option value="scale">Scale</option></select></div></div><div id="en-vs-es-result"></div></div>
-
     <h2>💰 Presupuesto</h2>
     <button class="btn btn-g btn-sm" onclick="saveBudgetSettings()">💾 Guardar</button>
   </div>
+
+  <!-- Calculadora de ingresos -->
+  <div class="card mb14" style="border-color:var(--blue)"><div style="font-size:13px;font-weight:700;margin-bottom:12px">Calculadora de ingresos 2026</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="lbl">Nicho</label><select class="sel" id="calc-niche" onchange="renderNicheCalculator()" style="font-size:12px"><option value="finanzas">Finanzas $14.5</option><option value="cripto">Cripto $16.2</option><option value="legal">Legal $18.0</option><option value="tecnologia">Tech $11.5</option><option value="motivacion">Motivacion $8.5</option><option value="truecrime">True Crime $7.8</option><option value="historia">Historia $9.2</option><option value="salud">Salud $12.0</option></select></div><div><label class="lbl">Videos/mes</label><input class="inp" id="calc-vids-month" type="number" value="30" min="1" oninput="renderNicheCalculator()" style="font-size:13px"></div><div><label class="lbl">Tier IA</label><select class="sel" id="calc-tier-sel" onchange="renderNicheCalculator()" style="font-size:12px"><option value="free">Gratis</option><option value="eco">Eco $0.15</option><option value="opt" selected>Opt $0.60</option><option value="prem">Premium $3</option><option value="scale">Scale $0.05</option></select></div><div><label class="lbl">Plataforma</label><select class="sel" id="calc-plat" onchange="renderNicheCalculator()" style="font-size:12px"><option value="yt">YouTube</option><option value="tt">TikTok</option><option value="ig">Instagram</option></select></div></div><div id="niche-calc-result"></div></div>
+  <div class="card mb14" style="border-color:var(--blue)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:13px;font-weight:700">Comparativa ES vs EN</div><div style="font-size:11px;color:var(--text3)">El mercado ingles genera 3-6x mas CPM</div></div><div style="display:flex;gap:8px;align-items:center"><input class="inp" id="cmp-videos" type="number" value="30" style="width:60px;font-size:12px" oninput="renderENvsESComparison()"><select class="sel" id="cmp-tier" onchange="renderENvsESComparison()" style="font-size:11px"><option value="eco">Eco</option><option value="opt" selected>Opt</option><option value="scale">Scale</option></select></div></div><div id="en-vs-es-result"></div></div>
 
   <!-- GASTO ACTUAL -->
   <div class="g4 mb16">
@@ -13821,6 +13823,67 @@ try { checkFirstVisit(); } catch(e) {}
 try { checkMissedAutopilotRun(); } catch(e) {}
 try { initSidebarCollapse(); } catch(e) {}
 try { renderUserPill(); } catch(e) {}
+</script>
+
+<!-- ═══════════════ MOBILE BOTTOM NAV ═══════════════ -->
+<nav id="mob-bottom-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--bg1);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;align-items:center">
+  <button onclick="nav('dashboard')" id="mbn-dashboard" class="mbn-btn">
+    <svg viewBox="0 0 16 16" fill="currentColor" style="width:20px;height:20px"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+    <span>Inicio</span>
+  </button>
+  <button onclick="nav('pipeline')" id="mbn-pipeline" class="mbn-btn">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px"><rect x="1" y="3" width="14" height="10" rx="2"/><line x1="5" y1="3" x2="5" y2="13"/><line x1="11" y1="3" x2="11" y2="13"/></svg>
+    <span>Pipeline</span>
+  </button>
+  <button onclick="nav('drafts')" id="mbn-drafts" class="mbn-btn">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px"><rect x="2" y="1" width="12" height="14" rx="2"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="8" y2="11"/></svg>
+    <span>Borradores</span>
+  </button>
+  <button onclick="nav('autopilot')" id="mbn-autopilot" class="mbn-btn">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>
+    <span>AutoPilot</span>
+  </button>
+  <button onclick="nav('settings')" id="mbn-settings" class="mbn-btn">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>
+    <span>Config</span>
+  </button>
+</nav>
+<style>
+#mob-bottom-nav { display: none; }
+@media(max-width:768px) {
+  #mob-bottom-nav { display: flex !important; }
+  .content { padding-bottom: calc(70px + env(safe-area-inset-bottom)) !important; }
+}
+.mbn-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  color: var(--text3);
+  font-size: 10px;
+  font-family: var(--sans);
+  border-radius: var(--r);
+  transition: color .15s;
+  min-width: 52px;
+}
+.mbn-btn.act { color: var(--blue); }
+.mbn-btn:active { opacity: .7; }
+</style>
+<script>
+(function(){
+  var mbnMap = {dashboard:'mbn-dashboard',pipeline:'mbn-pipeline',drafts:'mbn-drafts',autopilot:'mbn-autopilot',settings:'mbn-settings'};
+  var _origNav = window.nav;
+  window.nav = function(id) {
+    _origNav(id);
+    Object.values(mbnMap).forEach(function(bid){ var b=document.getElementById(bid); if(b) b.classList.remove('act'); });
+    var mapped = mbnMap[id];
+    if (mapped) { var btn=document.getElementById(mapped); if(btn) btn.classList.add('act'); }
+  };
+})();
 </script>
 </body>
 </html>

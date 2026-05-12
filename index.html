@@ -4639,7 +4639,7 @@ function setPipeVoice(gender) {
   var s=document.getElementById('pipe-voice-id'); if(s) s.value=gender==='m'?'onyx':'nova';
 }
 // ─── MOBILE ──────────────────────────────────────────────────
-function toggleMobMenu(){var a=document.querySelector('aside'),ov=document.getElementById('mob-overlay');if(!a)return;var o=a.classList.toggle('mob-open');if(ov)ov.classList.toggle('active',o);}
+function toggleMobMenu(){var a=document.querySelector('aside'),ov=document.getElementById('mob-overlay'),btn=document.getElementById('mob-menu');if(!a)return;var o=a.classList.toggle('mob-open');if(ov)ov.classList.toggle('active',o);if(btn){btn.style.background=o?'var(--blue)':'';btn.style.color=o?'#fff':'';btn.innerHTML=o?'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 2l12 12M14 2L2 14"/></svg>':'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h12M2 8h12M2 12h12"/></svg>';}}
 // ─── NOTIFICATIONS ───────────────────────────────────────────
 function initNotifications(){if(!('Notification'in window))return;var b=document.getElementById('notif-toggle-btn');if(b)b.textContent=Notification.permission==='granted'?'Notificaciones ON':'Activar notificaciones';}
 async function requestNotificationPermission(){if(!('Notification'in window)){showToast('Sin soporte');return;}if(Notification.permission==='granted'){showToast('Ya activadas');return;}var p=await Notification.requestPermission();var b=document.getElementById('notif-toggle-btn');if(b)b.textContent=p==='granted'?'Notificaciones ON':'Activar notificaciones';showToast(p==='granted'?'Activadas':'Denegadas');}
@@ -5587,6 +5587,26 @@ function setTrendAndNav(topic) {
   document.getElementById('score-results').style.display = 'block';
   nav('score');
   showToast('Tendencia cargada en Score IA ✓');
+}
+function useTrendInPipeline(hook, suggestedChannel) {
+  // Load hook directly into pipeline as idea
+  window.currentIdea = hook;
+  const channels = getChannels();
+  const ch = channels.find(c => c.name === (suggestedChannel || workingChannel)) || channels[0];
+  if (ch) {
+    workingChannel = ch.name;
+    if (ch.lang)   setLang(ch.lang);
+    if (ch.gender) setVoiceGender(ch.gender);
+    if (ch.niche)  selectedNiche = ch.niche;
+  }
+  nav('pipeline');
+  setTimeout(() => {
+    updatePipelineChannelSel(workingChannel || '');
+    setPStep(1); // jump to step 2 (Ideas) with idea pre-filled
+    const ideaInput = document.getElementById('p1-custom-input') || document.getElementById('custom-idea-input');
+    if (ideaInput) { ideaInput.value = hook; ideaInput.dispatchEvent(new Event('input')); }
+    showToast('▶ Idea lista en pipeline: ' + hook.slice(0, 40));
+  }, 100);
 }
 
 // ── URL ──
@@ -6749,6 +6769,7 @@ function renderDrafts() {
           ${hasVideo ? `<button class="btn btn-g btn-sm" onclick="publishToYouTube(${d.id})" style="border-color:#ff4444;color:#ff4444">▶ YouTube</button>` : ''}
           ${hasAudio ? `<a class="btn btn-g btn-sm" href="${hasAudio}" download="audio-${d.id}.mp3" style="text-align:center;text-decoration:none">⬇ MP3</a>` : ''}
           ${hasVideo ? `<a class="btn btn-g btn-sm" href="${hasVideo}" download="video-${d.id}.mp4" style="text-align:center;text-decoration:none">⬇ MP4</a>` : ''}
+          <button class="btn btn-g btn-sm" onclick="continueDraftInPipeline(${d.id})" title="Reabrir idea en pipeline" style="border-color:var(--blue);color:var(--blue)">↩ Pipeline</button>
           ${d.status==='pending' ? `<button class="btn btn-g btn-sm" onclick="rejectDraft(${d.id})" style="border-color:var(--red);color:var(--red)">✕ Rechazar</button>` : ''}
           <button class="btn btn-g btn-sm" onclick="deleteDraft(${d.id})" style="color:var(--text3)">🗑 Borrar</button>
         </div>
@@ -6826,6 +6847,28 @@ function deleteDraft(id) {
   saveDrafts(drafts);
   renderDrafts();
   showToast('✕ Borrador eliminado');
+}
+function continueDraftInPipeline(id) {
+  const draft = getDrafts().find(d => d.id === id);
+  if (!draft) return;
+  window.currentIdea = draft.hook || draft.title || '';
+  if (draft.channel) {
+    workingChannel = draft.channel;
+    const ch = getChannels().find(c => c.name === draft.channel);
+    if (ch) {
+      if (ch.lang)   setLang(ch.lang);
+      if (ch.gender) setVoiceGender(ch.gender);
+      if (ch.niche)  selectedNiche = ch.niche;
+    }
+  }
+  nav('pipeline');
+  setTimeout(function() {
+    updatePipelineChannelSel(workingChannel || '');
+    setPStep(1);
+    var ideaInput = document.getElementById('p1-custom-input') || document.getElementById('custom-idea-input');
+    if (ideaInput) { ideaInput.value = window.currentIdea; ideaInput.dispatchEvent(new Event('input')); }
+    showToast('↩ Borrador cargado en pipeline: ' + (window.currentIdea||'').slice(0,40));
+  }, 100);
 }
 
 function approveAll() {
@@ -7766,7 +7809,7 @@ function renderScheduler() {
   let queue = [];
   try { queue = JSON.parse(localStorage.getItem('fai_publish_queue') || '[]'); } catch(e) {}
   if (!queue.length) {
-    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3)"><div style="font-size:36px;margin-bottom:12px">📅</div><div style="font-size:14px;font-weight:600;margin-bottom:6px">No hay vídeos programados</div><p style="font-size:12px;max-width:340px;margin:0 auto">Los vídeos auto-aprobados por el AutoPilot aparecen aquí. También puedes programar manualmente desde Borradores.</p></div>';
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3)"><div style="font-size:36px;margin-bottom:12px">📅</div><div style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text1)">No hay vídeos programados</div><p style="font-size:12px;max-width:340px;margin:0 auto 16px">Los vídeos auto-aprobados por el AutoPilot aparecen aquí. También puedes programar manualmente desde Borradores.</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-p btn-sm" onclick="nav(\'pipeline\')">▶ Ir al Pipeline →</button><button class="btn btn-g btn-sm" onclick="nav(\'drafts\')">📋 Ver Borradores</button><button class="btn btn-g btn-sm" onclick="nav(\'autopilot\')">🤖 AutoPilot</button></div></div>';
     return;
   }
   const platIcon = {youtube:'▶️',tiktok:'🎵',instagram:'📸'};
@@ -8101,6 +8144,25 @@ function renderDashboard() {
 // CHANNELS — render cards reales
 // ══════════════════════════════════════════════════════════
 function goToAnalyticsPlatforms(){nav("analytics");setTimeout(function(){switchAnalyticsTab("platforms");},80);}
+function renderChannelRecentVideos(ch, allDrafts) {
+  var recent = allDrafts.filter(function(d){ return d.channel === ch.name; })
+    .sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); })
+    .slice(0,3);
+  if (!recent.length) return '';
+  var rows = recent.map(function(d) {
+    var dot = d.status==='approved' ? 'var(--green)' : d.status==='rejected' ? 'var(--red)' : 'var(--amber)';
+    var title = (d.hook||d.title||'Sin título').slice(0,42);
+    var ago = getTimeAgo(new Date(d.createdAt||0).toISOString());
+    return '<div style="display:flex;align-items:center;gap:6px;padding:3px 0">' +
+      '<span style="width:6px;height:6px;border-radius:50%;background:' + dot + ';flex-shrink:0;display:inline-block"></span>' +
+      '<span style="flex:1;font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + title + '">' + title + '</span>' +
+      '<span style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap">' + ago + '</span>' +
+      '</div>';
+  }).join('');
+  return '<div style="margin-bottom:10px;border-top:1px solid var(--border);padding-top:8px">' +
+    '<div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Últimos vídeos</div>' +
+    rows + '</div>';
+}
 function renderChannelPlatStats(ch, i, yt, ttData, igData, currency) {
   const plats = ch.platforms || ['youtube'];
   let html = '';
@@ -8267,6 +8329,9 @@ function renderChannels() {
         ${chDraftsMonth > 0 ? `<span style="color:var(--text2)">${chDraftsMonth} vídeo${chDraftsMonth>1?'s':''} este mes</span> · ` : ''}
         ${chDraftsTotal} total${chDraftsTotal!==1?'es':''}
       </div>
+
+      <!-- Recent videos mini-log -->
+      ${renderChannelRecentVideos(ch, allDrafts)}
 
       <!-- Actions -->
       <div style="display:flex;gap:8px">
@@ -9104,23 +9169,7 @@ function checkBudgetAlert() {
 
 
 function createVideoForTrend(hook, suggestedChannel, idx) {
-  // If there's an active channel in the selector, use it; otherwise use suggested
-  const selCh = document.getElementById('trends-channel')?.value;
-  const channels = getChannels();
-  let targetCh = null;
-  if (selCh && selCh !== '__all__' && selCh !== '') {
-    targetCh = channels.find(c => c.name === selCh);
-  } else if (suggestedChannel) {
-    targetCh = channels.find(c => c.name === suggestedChannel);
-  }
-  // Set language and voice from channel if available
-  if (targetCh) {
-    if (targetCh.lang) setLang(targetCh.lang);
-    if (targetCh.gender) setVoiceGender(targetCh.gender);
-  }
-  setTrendAndNav(hook);
-  nav('pipeline');
-  showToast(targetCh ? '▶ Creando para: ' + targetCh.name : '▶ Yendo al pipeline');
+  useTrendInPipeline(hook, suggestedChannel);
 }
 
 
@@ -9245,10 +9294,11 @@ function switchScoreTab(tab) {
 }
 function loadScoreChannels() {
   const channels = getChannels();
+  const active = workingChannel || '';
   ['score-channel','score-mycanal'].forEach(id => {
     const sel = document.getElementById(id);
     if (!sel) return;
-    const cur = sel.value;
+    const cur = sel.value || active;
     sel.innerHTML = (id==='score-channel'?'<option value="">🌐 Sin canal</option>':'<option value="">— Selecciona un canal —</option>') +
       channels.map(ch=>`<option value="${ch.name}" ${cur===ch.name?'selected':''}>${ch.name}</option>`).join('');
   });
@@ -9557,14 +9607,6 @@ function createVideoFromUrl(idea) {
   nav('pipeline');
   showToast('▶ Idea cargada: ' + idea.slice(0,40));
 }
-function loadScoreChannels() {
-  const sel = document.getElementById('score-channel');
-  if (!sel) return;
-  const channels = getChannels();
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">🌐 Sin canal</option>' +
-    channels.map(ch => `<option value="${ch.name}" ${cur===ch.name?'selected':''}>${ch.name}</option>`).join('');
-}
 function loadTrendsChannels() {
   const sel = document.getElementById('trends-channel');
   if (!sel) return;
@@ -9701,13 +9743,17 @@ Responde SOLO en JSON: [{"hook":"...","category":"...","growth":340,"window_h":3
           ${t.why ? `<div style="font-size:11px;color:var(--text3);margin:6px 0;font-style:italic">💡 ${t.why}</div>` : ''}
           <div style="font-size:11px;color:var(--text3);margin-bottom:8px">🎬 ${t.idea}</div>
           <div style="display:flex;gap:6px">
-            <button class="btn btn-p btn-sm" style="flex:1" onclick="setTrendAndNav('${t.hook.replace(/'/g,"\'")}')">Evaluar score →</button>
-            <button class="btn btn-g btn-sm" onclick="createVideoForTrend('${t.hook.replace(/'/g,"\'")}','${(t.channel||'').replace(/'/g,"\'")}',${i})" title="Crear vídeo para canal">▶ Crear</button>
+            <button class="btn btn-g btn-sm" onclick="setTrendAndNav('${t.hook.replace(/'/g,"\'")}')">Score →</button>
+            <button class="btn btn-p btn-sm" style="flex:1" onclick="useTrendInPipeline('${t.hook.replace(/'/g,"\'")}','${(t.channel||'').replace(/'/g,"\'")}')">▶ Pipeline</button>
           </div>
         </div>`).join('')}</div>`;
     }
     logAICall('trends','trends',0.001,500);
-    showToast('✓ ' + trends.length + ' tendencias analizadas');
+    const trendCount = trends.length;
+    showToast('✓ ' + trendCount + ' tendencias analizadas');
+    // Update nav badge dynamically
+    const trendsBadge = document.querySelector('.ni[data-view="trends"] .nb');
+    if (trendsBadge) { trendsBadge.textContent = trendCount + '🔥'; }
   })
   .catch(e=>showToast('Error: '+e.message))
   .finally(()=>{ if(btn){btn.textContent='🤖 Analizar tendencias';btn.disabled=false;} });
@@ -9930,9 +9976,20 @@ function toggleNavSection(el) {
   localStorage.setItem(key, collapsed ? '1' : '0');
 }
 function initSidebarCollapse() {
+  var firstVisit = !localStorage.getItem('fai_nav_visited');
+  if (firstVisit) localStorage.setItem('fai_nav_visited', '1');
   document.querySelectorAll('.nsl[data-section]').forEach(function(el) {
-    var key = 'fai_nav_' + el.dataset.section;
-    if (localStorage.getItem(key) === '1') toggleNavSection(el);
+    var section = el.dataset.section;
+    var key = 'fai_nav_' + section;
+    // On first visit: collapse everything except 'crear' (Pipeline is there)
+    if (firstVisit) {
+      if (section !== 'crear') {
+        localStorage.setItem(key, '1');
+        toggleNavSection(el);
+      }
+    } else {
+      if (localStorage.getItem(key) === '1') toggleNavSection(el);
+    }
   });
 }
 
@@ -13885,6 +13942,47 @@ try { renderUserPill(); } catch(e) {}
     var mapped = mbnMap[id];
     if (mapped) { var btn=document.getElementById(mapped); if(btn) btn.classList.add('act'); }
   };
+})();
+</script>
+
+<!-- Update checker -->
+<script>
+(function(){
+  var CURRENT = 'v4.39';
+  var PAGES   = 'https://clawlabsai.github.io/facelessai/';
+  var _checked = false;
+
+  function showUpdateBanner(newVer) {
+    if (document.getElementById('fai-update-banner')) return;
+    var b = document.createElement('div');
+    b.id = 'fai-update-banner';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--blue);color:#fff;padding:9px 16px;display:flex;align-items:center;justify-content:space-between;font-size:13px;box-shadow:0 2px 12px rgba(0,0,0,.3)';
+    b.innerHTML = '<span>🚀 <strong>' + newVer + '</strong> disponible — recarga para actualizar</span>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button onclick="location.reload(true)" style="background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:6px;padding:4px 14px;cursor:pointer;font-size:12px;font-weight:700">↻ Actualizar</button>' +
+      '<button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:18px;line-height:1;padding:0 4px">×</button>' +
+      '</div>';
+    document.body.prepend(b);
+  }
+
+  function check() {
+    fetch(PAGES + '?v=' + Date.now(), { cache: 'no-store' })
+      .then(function(r){ return r.text(); })
+      .then(function(html){
+        var m = html.match(/FacelessAI\s+(v[\d.]+)/);
+        if (m && m[1] !== CURRENT) showUpdateBanner(m[1]);
+        _checked = true;
+      }).catch(function(){});
+  }
+
+  // First check after 8 s (let app settle), then every 12 min
+  setTimeout(check, 8000);
+  setInterval(check, 720000);
+
+  // Check on focus if away > 2 min
+  var _blur = 0;
+  window.addEventListener('blur', function(){ _blur = Date.now(); });
+  window.addEventListener('focus', function(){ if (Date.now() - _blur > 120000) check(); });
 })();
 </script>
 </body>

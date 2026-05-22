@@ -4825,7 +4825,7 @@ async function generateAutopilotVideo(draft, ch, addLog) {
   }
 }
 async function runFullAutopilotCycle(){if(_apRunning){showToast('AutoPilot ya en ejecucion');return;}if(!KEYS.anthropic){showToast('Configura Anthropic API key');return;}var channels=getChannels().filter(function(ch){return ch.autopilot!==false;});if(!channels.length){showToast('No hay canales con AutoPilot activo');return;}var scoreThreshold=getAPSetting('score_threshold',70);var videosPerChan=getAPSetting('videos_per_cycle',1);var autoApprove=getAPSetting('auto_approve',true);var autoSchedule=getAPSetting('auto_schedule',true);var autoVideo=getAPSetting('auto_video',false);_apRunning=true;var log=[];var addLog=function(msg,col){log.push(msg);updateAPLog(log,col);};updateAPStatus('running','Iniciando ciclo...');try{addLog('AutoPilot: '+channels.length+' canales · umbral '+scoreThreshold,'var(--green)');for(var ci=0;ci<channels.length;ci++){var ch=channels[ci];addLog('Canal: '+ch.name+' ('+ch.niche+'·'+(ch.lang||'es')+')','var(--blue)');for(var v=0;v<videosPerChan;v++){addLog('['+ch.name+'] Generando idea...','');var idea=await apGenerateIdea(ch);if(!idea){addLog('['+ch.name+'] Sin idea — saltando','var(--red)');continue;}var score=await apQuickScore(idea.hook,ch.niche,ch);addLog('['+ch.name+'] "'+idea.hook.slice(0,40)+'" — Score: '+score,score>=scoreThreshold?'var(--green)':'var(--amber)');if(score<scoreThreshold){addLog('['+ch.name+'] Score bajo — saltando','var(--text3)');continue;}var script=await apGenerateScript(idea.hook,ch);if(!script){continue;}var scriptWA=typeof injectChannelAffiliates==='function'?injectChannelAffiliates(script,ch.name):script;var draft={id:'ap_'+Date.now()+'_'+Math.random().toString(36).slice(2,5),hook:idea.hook,title:idea.hook,script:scriptWA,niche:ch.niche,lang:ch.lang||'es',channel:ch.name,score:score,status:autoApprove&&score>=scoreThreshold?'approved':'pending',source:'autopilot',createdAt:Date.now(),platforms:ch.platforms||['youtube','tiktok']};addDraft(draft);if(autoVideo&&BACKEND_URL){await generateAutopilotVideo(draft,ch,addLog);}logAICall('claude','autopilot-cycle',0.015,800,ch.name);addLog('['+ch.name+'] Guardado: '+(draft.status==='approved'?'AUTO-APROBADO':'pendiente'),draft.status==='approved'?'var(--green)':'var(--amber)');if(autoSchedule&&draft.status==='approved'){apScheduleDraft(draft,ch);addLog('['+ch.name+'] Programado','var(--green)');}await new Promise(function(r){setTimeout(r,800);});}}var sum='Ciclo completado: '+channels.length+' canales procesados';addLog(sum,'var(--green)');updateAPStatus('idle',sum);showToast('AutoPilot: '+sum);}catch(e){addLog('ERROR: '+e.message,'var(--red)');updateAPStatus('error','Error: '+e.message);}finally{_apRunning=false;}}
-function renderAutopilotSettings(){var el=document.getElementById('ap-settings-panel');if(!el)return;var thr=getAPSetting('score_threshold',70);var per=getAPSetting('videos_per_cycle',1);var aa=getAPSetting('auto_approve',true);var as=getAPSetting('auto_schedule',true);var av=getAPSetting('auto_video',false);el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="lbl">Umbral de score para auto-aprobar</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="ap-threshold" min="50" max="95" value="'+thr+'" style="flex:1" oninput="document.getElementById(\'ap-threshold-val\').textContent=this.value"><span id="ap-threshold-val" style="font-family:var(--mono);font-weight:700;color:var(--amber);min-width:30px">'+thr+'</span></div></div><div><label class="lbl">Videos por canal por ciclo</label><select class="sel" id="ap-per-chan" style="font-size:12px">'+[1,2,3,5].map(function(n){return'<option value="'+n+'"'+(n===per?' selected':'')+'>'+n+' video'+(n>1?'s':'')+'</option>';}).join('')+'</select></div></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-approve"'+(aa?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-aprobar si score supera el umbral</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-schedule"'+(as?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-programar a hora optima del nicho</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-video"'+(av?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Generar vídeo MP4 auto <span style="color:var(--text3)">(requiere backend + claves TTS y Pexels)</span></span></div></div><button class="btn btn-p" style="width:100%;margin-top:12px" onclick="saveAPSettingsFromUI();showToast(\'Configuracion guardada\')">Guardar</button>';}
+function renderAutopilotSettings(){var el=document.getElementById('ap-settings-panel');if(!el)return;var thr=getAPSetting('score_threshold',70);var per=getAPSetting('videos_per_cycle',1);var ivl=getAutopilotInterval();var aa=getAPSetting('auto_approve',true);var as=getAPSetting('auto_schedule',true);var av=getAPSetting('auto_video',false);el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div><label class="lbl">Umbral de score para auto-aprobar</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="ap-threshold" min="50" max="95" value="'+thr+'" style="flex:1" oninput="document.getElementById(\'ap-threshold-val\').textContent=this.value"><span id="ap-threshold-val" style="font-family:var(--mono);font-weight:700;color:var(--amber);min-width:30px">'+thr+'</span></div></div><div><label class="lbl">Videos por canal por ciclo</label><select class="sel" id="ap-per-chan" style="font-size:12px">'+[1,2,3,5].map(function(n){return'<option value="'+n+'"'+(n===per?' selected':'')+'>'+n+' video'+(n>1?'s':'')+'</option>';}).join('')+'</select></div><div><label class="lbl">Intervalo entre ciclos</label><select class="sel" id="ap-interval" style="font-size:12px" onchange="localStorage.setItem(\'fai_ap_interval\',this.value)">'+[2,4,6,12,24].map(function(h){return'<option value="'+h+'"'+(h===ivl?' selected':'')+'>Cada '+h+'h</option>';}).join('')+'</select></div></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-approve"'+(aa?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-aprobar si score supera el umbral</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-schedule"'+(as?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-programar a hora optima del nicho</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-video"'+(av?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Generar vídeo MP4 auto <span style="color:var(--text3)">(requiere backend + claves TTS y Pexels)</span></span></div></div><button class="btn btn-p" style="width:100%;margin-top:12px" onclick="saveAPSettingsFromUI();showToast(\'Configuracion guardada\')">Guardar</button>';}
 function saveAPSettingsFromUI(){saveAPSettings({score_threshold:parseInt(document.getElementById('ap-threshold')&&document.getElementById('ap-threshold').value||70),videos_per_cycle:parseInt(document.getElementById('ap-per-chan')&&document.getElementById('ap-per-chan').value||1),auto_approve:document.getElementById('ap-auto-approve')&&document.getElementById('ap-auto-approve').checked,auto_schedule:document.getElementById('ap-auto-schedule')&&document.getElementById('ap-auto-schedule').checked,auto_video:document.getElementById('ap-auto-video')&&document.getElementById('ap-auto-video').checked});}
 function renderAPChannelList(){var el=document.getElementById('ap-channel-list');if(!el)return;var chs=getChannels();if(!chs.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3)">No hay canales. <button class="btn btn-g btn-sm" onclick="nav(\'channels\')">+ Crear canal</button></div>';return;}el.innerHTML=chs.map(function(ch){var active=ch.autopilot!==false;return'<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px;border:1px solid '+(active?'var(--green)33':'var(--border)')+'"><label class="tgl"><input type="checkbox"'+(active?' checked':'')+' onchange="toggleChannelAP(\''+ch.name+'\',this.checked)"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><div style="flex:1"><div style="font-size:13px;font-weight:600">'+ch.name+'</div><div style="font-size:11px;color:var(--text3)">'+ch.niche+'·'+(ch.lang||'es').toUpperCase()+'</div></div><span class="tag '+(active?'tg':'')+'">'+(active?'Activo':'Inactivo')+'</span></div>';}).join('');}
 function toggleChannelAP(name,active){var chs=getChannels();var ch=chs.find(function(c){return c.name===name;});if(ch){ch.autopilot=active;localStorage.setItem('fai_channels',JSON.stringify(chs));}renderAPChannelList();showToast(name+': AutoPilot '+(active?'activado':'desactivado'));}
@@ -4998,7 +4998,7 @@ function renderScoreNichePills(){
   var badge=document.getElementById('score-cpm-badge');
   if(!pills)return;
   var current=selectedNiche||'general';
-  var ns=['finanzas','cripto','tecnologia','motivacion','truecrime','historia'];
+  var ns=['finanzas','cripto','tecnologia','motivacion','truecrime','historia','salud','negocios','gaming','curiosidades','kids educativo'];
   pills.innerHTML=ns.map(function(n){
     var active=n===current;
     var style='padding:2px 8px;border-radius:99px;cursor:pointer;font-size:10px;border:1px solid '+(active?'var(--amber)':'var(--border)')+';background:'+(active?'var(--adim)':'transparent')+';color:'+(active?'var(--amber)':'var(--text3)');
@@ -5409,7 +5409,7 @@ function nav(id) {
   if (id === 'autopilot')    setTimeout(() => { if(typeof renderAutopilot==='function') renderAutopilot(); if(typeof renderAPChannelList==='function') renderAPChannelList(); if(typeof updateAPStats==='function') updateAPStats(); }, 50);
   if (id === 'monetization') setTimeout(() => { if(typeof renderProfitabilityDashboard==='function') renderProfitabilityDashboard(); }, 50);
   if (id === 'analytics')    setTimeout(() => { if(typeof renderAnalytics==='function') renderAnalytics(); }, 50);
-  if (id === 'budget')       setTimeout(() => { if(typeof renderNicheCalculator==='function') renderNicheCalculator(); if(typeof renderNichesTableStatic==='function') renderNichesTableStatic(); }, 50);
+  if (id === 'budget')       setTimeout(() => { if(typeof renderNicheCalculator==='function') renderNicheCalculator(); if(typeof renderNichesTableStatic==='function') renderNichesTableStatic(); if(typeof renderProfitabilityDashboard==='function') renderProfitabilityDashboard(); if(typeof renderENvsESComparison==='function') renderENvsESComparison(); }, 50);
   if (id === 'cliplibrary')  setTimeout(() => { if(typeof renderClipLibrary==='function') renderClipLibrary(); }, 50);
   if (id === 'spychannels')  setTimeout(() => { if(typeof loadSpyHistory==='function') loadSpyHistory(); }, 50);
   if (id === 'affiliation')  setTimeout(() => { if(typeof renderAffiliates==='function') renderAffiliates(); }, 50);
@@ -6168,8 +6168,7 @@ async function runStep3Video() {
   }
 }
 
-function generateTTSOnly() { runStep1TTS(); }
-function startVidGen() { runStep3Video(); }
+// generateTTSOnly and startVidGen defined above as async functions (call runStep1TTS/runStep3Video)
 
 // ── BACKEND — Railway video generation
 // ═══════════════════════════════════════════════
@@ -6653,7 +6652,16 @@ async function renderVideoInBrowser() {
 
 // ═══════════════════════════════════════════════
 function getDrafts() {
-  try { return JSON.parse(localStorage.getItem('fai_drafts') || '[]'); } catch(e) { return []; }
+  try {
+    const raw = JSON.parse(localStorage.getItem('fai_drafts') || '[]');
+    // Normalize createdAt: old drafts stored ISO strings, new code uses numeric timestamps
+    return raw.map(function(d) {
+      if (d.createdAt && typeof d.createdAt === 'string') {
+        d = Object.assign({}, d, { createdAt: new Date(d.createdAt).getTime() || 0 });
+      }
+      return d;
+    });
+  } catch(e) { return []; }
 }
 function saveDrafts(drafts) {
   try { localStorage.setItem('fai_drafts', JSON.stringify(drafts)); } catch(e) {}
@@ -6662,12 +6670,11 @@ function saveDrafts(drafts) {
 function addDraft(draft) {
   const drafts = getDrafts();
   draft.id = Date.now();
-  draft.createdAt = new Date().toISOString();
-  draft.status = 'pending';
+  draft.createdAt = Date.now();                   // numeric timestamp, not ISO string
+  draft.status = draft.status || 'pending';       // preserve pre-set status (e.g. 'approved')
   drafts.unshift(draft);
   saveDrafts(drafts);
-  renderDrafts();
-  updateDraftBadge(drafts.length);
+  renderDrafts();                                 // renderDrafts already updates all badges correctly
   showToast('📋 Guardado en Borradores — revísalo cuando quieras');
 }
 
@@ -6890,19 +6897,7 @@ function continueDraftInPipeline(id) {
   }, 100);
 }
 
-function approveAll() {
-  const drafts = getDrafts().map(d => d.status === 'pending' ? {...d, status:'approved'} : d);
-  saveDrafts(drafts);
-  renderDrafts();
-  showToast('✓ Todos los borradores aprobados');
-}
-
-function clearAllDrafts() {
-  if (!confirm('¿Eliminar todos los borradores?')) return;
-  saveDrafts([]);
-  renderDrafts();
-  showToast('🗑 Borradores eliminados');
-}
+// approveAll and clearAllDrafts defined above (correct localStorage-based versions)
 
 // ═══════════════════════════════════════════════
 // PIPELINE SCORE — uses selected idea automatically
@@ -6977,7 +6972,7 @@ Only JSON, no additional text.`;
 
     const metrics = [
       { id:'sp-m1', bid:'sp-b1', val: data.prob100k+'%', pct: data.prob100k, color:'#2383e2' },
-      { id:'sp-m2', bid:'sp-b2', val: '$'+data.cpm, pct: data.cpm*10, color:'#fbbf24' },
+      { id:'sp-m2', bid:'sp-b2', val: '$'+data.cpm, pct: Math.min(data.cpm*10, 100), color:'#fbbf24' },
       { id:'sp-m3', bid:'sp-b3', val: data.saturacionLabel+' '+data.saturacion+'%', pct: data.saturacion, color:'#38bdf8' },
       { id:'sp-m4', bid:'sp-b4', val: data.afiliacion, pct: data.afiliacionPct, color:'#a78bfa' },
       { id:'sp-m5', bid:'sp-b5', val: data.retencion+'%', pct: data.retencionPct, color:'#2dd4bf' }
@@ -7008,6 +7003,8 @@ function getChannels() {
 }
 function saveChannels(channels) {
   try { localStorage.setItem('fai_channels', JSON.stringify(channels)); } catch(e) {}
+  // Refresh grid + badge without blocking the caller
+  setTimeout(function(){ try { if(typeof renderChannels==='function') renderChannels(); } catch(e){} }, 0);
 }
 function approveAndPublish() {
   const title  = document.getElementById('apv-title')?.value.trim() || '';
@@ -7203,72 +7200,7 @@ function setBestTime() {
   showToast('💡 Mejor hora: ' + d.toLocaleDateString('es-ES',{weekday:'long'}) + ' a las 18:00');
 }
 
-// ── DRAFT MANAGEMENT ──
-let draftCount = 3;
-
-function updateDraftBadge(delta) {
-  draftCount += delta;
-  const badge = document.getElementById('drafts-badge');
-  const navBadge = document.getElementById('drafts-nav-badge');
-  const tag = document.getElementById('drafts-count-tag');
-  if (badge) badge.textContent = draftCount;
-  if (navBadge) navBadge.textContent = draftCount;
-  if (tag) tag.textContent = `${draftCount} vídeo${draftCount !== 1 ? 's' : ''} esperando tu decisión`;
-  if (draftCount <= 0) {
-    document.getElementById('drafts-list').style.display = 'none';
-    document.getElementById('drafts-empty').style.display = 'block';
-  }
-}
-
-function approveDraft(id) {
-  const el = document.getElementById('draft-' + id);
-  if (!el) return;
-  el.style.transition = 'all .4s';
-  el.style.opacity = '0';
-  el.style.transform = 'translateX(20px)';
-  setTimeout(() => { el.style.display = 'none'; }, 400);
-  updateDraftBadge(-1);
-  showToast('✓ Vídeo ' + id + ' aprobado y programado para publicación');
-}
-
-function deleteDraft(id) {
-  if (!confirm('¿Rechazar este borrador? Se eliminará definitivamente.')) return;
-  const el = document.getElementById('draft-' + id);
-  if (!el) return;
-  el.style.transition = 'all .4s';
-  el.style.opacity = '0';
-  setTimeout(() => { el.style.display = 'none'; }, 400);
-  updateDraftBadge(-1);
-  showToast('✕ Borrador rechazado y eliminado');
-}
-
-function downloadDraft(id) {
-  showToast('⬇ Descargando borrador ' + id + ' como MP4...');
-}
-
-function editDraft(id) {
-  showToast('Abriendo borrador ' + id + ' en el pipeline para edición...');
-  setTimeout(() => { nav('pipeline'); setPStep(5); }, 800);
-}
-
-function approveAll() {
-  if (!confirm('¿Aprobar y programar los ' + draftCount + ' borradores pendientes?')) return;
-  [1,2,3].forEach(id => {
-    const el = document.getElementById('draft-' + id);
-    if (el && el.style.display !== 'none') {
-      el.style.transition = 'all .4s';
-      el.style.opacity = '0';
-      setTimeout(() => { el.style.display = 'none'; }, 400);
-    }
-  });
-  draftCount = 0;
-  updateDraftBadge(0);
-  showToast('🚀 Todos los borradores aprobados y programados');
-}
-
-function publishVideo() {
-  showToast('🚀 Publicando YT Shorts + TikTok + IG · Afiliados insertados · Programado 18:00 ✓');
-}
+// Draft management handled by renderDrafts() (correct localStorage-based versions above)
 
 // ── SPIKE CHARTS ──
 function renderSpikes() {
@@ -7880,11 +7812,11 @@ function renderWeeklyChart() {
   }
   const max = Math.max(...days, 1);
   chartEl.innerHTML = days.map((n,i) => {
-    const pct = Math.round((n / max) * 100);
+    const px = Math.max(Math.round((n / max) * 44), n > 0 ? 6 : 3);
     const isToday = i === 6;
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:flex-end;gap:2px">
       <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${n||''}</div>
-      <div style="width:100%;border-radius:3px 3px 0 0;background:${isToday?'var(--blue)':'var(--bg3)'};height:${Math.max(pct,4)}%;transition:height .4s ease;min-height:4px"></div>
+      <div style="width:100%;border-radius:3px 3px 0 0;background:${isToday?'var(--blue)':'var(--bg3)'};height:${px}px;transition:height .4s ease"></div>
     </div>`;
   }).join('');
   if (labelsEl) labelsEl.innerHTML = labels.map((l,i) => `<div style="flex:1;text-align:center;font-size:10px;color:${i===6?'var(--blue)':'var(--text3)'};font-weight:${i===6?'700':'400'}">${l}</div>`).join('');
@@ -9003,9 +8935,11 @@ function renderAffiliates() {
   const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
   setEl('aff-count', affs.length);
   const totalComm = affs.reduce((s,a) => s + (parseFloat(a.commission)||0), 0);
-  setEl('aff-commission', '$' + (totalComm * 10).toFixed(0));
-  setEl('aff-insertions', affs.reduce((s,a) => s+(a.insertions||0), 0));
-  const ctr = affs.length > 0 ? (2.3 + Math.random()*1.5).toFixed(1) : '0';
+  const avgComm = affs.length > 0 ? (totalComm / affs.length).toFixed(1) : '0';
+  setEl('aff-commission', avgComm + '%');
+  const totalInsertions = affs.reduce((s,a) => s+(a.insertions||0), 0);
+  setEl('aff-insertions', totalInsertions);
+  const ctr = affs.length > 0 ? Math.min((totalInsertions * 0.4 + 1.8), 8).toFixed(1) : '0';
   setEl('aff-ctr', ctr + '%');
 
   const list = document.getElementById('aff-list');
@@ -12053,7 +11987,7 @@ function renderSpyHistory(){
   }).join('');
 }
 function reuseSpyUrl(url){const el=document.getElementById('spy-url');if(el){el.value=url;spyAnalyzeChannel();}}
-function reuseSpyClone(url){document.getElementById('clone-url').value=url;nav('clone');setTimeout(()=>analyzeCloneSource(),300);}
+function reuseSpyClone(url){var el=document.getElementById('clone-url');if(el)el.value=url;nav('clone');setTimeout(()=>analyzeCloneSource(),300);}
 async function discoverTopChannels(){
   if(!KEYS.anthropic){showToast('⚠ Configura tu Anthropic API key');return;}
   const niche=document.getElementById('spy-top-niche')?.value||'finanzas';
@@ -13744,9 +13678,11 @@ Write naturally in the specified language, optimized for maximum retention. Scri
     area.innerHTML = formatScript(raw);
     if(['finanzas','cripto','tecnologia','legal','salud','negocios'].includes(selectedNiche)) setTimeout(()=>autoSuggestAffiliateLinks(raw,selectedNiche),800);
     const tokens = Math.round(raw.length / 4);
-    const cost = (tokens / 1000000 * (activeTier === 'opt' ? 3 : activeTier === 'premium' ? 15 : 0.25)).toFixed(4);
+    const _tierKey = activeTier === 'prem' ? 'premium' : activeTier;
+    const _rateMap = { opt: 3, premium: 15, prem: 15, ultra: 15, eco: 0.25, free: 0, scale: 0.25 };
+    const cost = (tokens / 1000000 * (_rateMap[activeTier] || 0.25)).toFixed(4);
     const costEl = document.getElementById('script-cost-info');
-    if (costEl) costEl.textContent = tokens + ' tokens · $' + cost + ' · ' + TIER_CONFIG[activeTier].llmModel;
+    if (costEl) costEl.textContent = tokens + ' tokens · $' + cost + ' · ' + (TIER_CONFIG[_tierKey] || TIER_CONFIG.eco).llmModel;
     showToast('✓ Script generado con Claude — $' + cost);
   } catch(e) {
     area.innerHTML = '<span style="color:var(--red)">✕ Error: ' + e.message + '</span>';

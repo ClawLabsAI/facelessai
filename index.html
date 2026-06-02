@@ -6590,17 +6590,46 @@ async function renderVideoInBrowser() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// SHARED HELPERS — DOM + localStorage (audit Phase 3)
+// ══════════════════════════════════════════════════════════
+// Lazily-initialized cache so hoist/TDZ ordering never bites.
+function _lsCacheStore() { if (!window.__lsCache) window.__lsCache = {}; return window.__lsCache; }
+// Memoized localStorage read. Caches the PARSED (optionally transformed) value keyed by the
+// raw string; auto-invalidates whenever the stored string changes (even from another writer),
+// so savers need no explicit invalidation. Arrays are returned as shallow copies so structural
+// mutations by callers (push/unshift/splice) never pollute the cache.
+function _memoLS(key, fallback, transform) {
+  var store = _lsCacheStore(), raw;
+  try { raw = localStorage.getItem(key); } catch(e) { return Array.isArray(fallback) ? fallback.slice() : fallback; }
+  if (raw == null) return Array.isArray(fallback) ? fallback.slice() : fallback;
+  var c = store[key];
+  if (c && c.raw === raw) return Array.isArray(c.val) ? c.val.slice() : c.val;
+  var val;
+  try { val = JSON.parse(raw); if (transform) val = transform(val); }
+  catch(e) { val = fallback; }
+  store[key] = { raw: raw, val: val };
+  return Array.isArray(val) ? val.slice() : val;
+}
+// Generic typed accessors (use for any fai_* JSON key without a dedicated getter).
+function loadLS(key, fallback) { return _memoLS(key, fallback !== undefined ? fallback : null); }
+function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+// DOM micro-helpers (replace the const setEl=(id,v)=>{…} pattern duplicated across the file).
+function setEl(id, v)    { var el = document.getElementById(id); if (el) el.textContent = v; }
+function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.innerHTML   = h; }
+// Schema version hook — currently a no-op; gives future migrations a place to land.
+(function(){ try { if (!localStorage.getItem('fai_schema_version')) localStorage.setItem('fai_schema_version', '1'); } catch(e) {} })();
+
 function getDrafts() {
-  try {
-    const raw = JSON.parse(localStorage.getItem('fai_drafts') || '[]');
-    // Normalize createdAt: old drafts stored ISO strings, new code uses numeric timestamps
+  // Normalize createdAt once (old drafts stored ISO strings, new code uses numeric timestamps).
+  return _memoLS('fai_drafts', [], function(raw) {
     return raw.map(function(d) {
       if (d.createdAt && typeof d.createdAt === 'string') {
         d = Object.assign({}, d, { createdAt: new Date(d.createdAt).getTime() || 0 });
       }
       return d;
     });
-  } catch(e) { return []; }
+  });
 }
 function saveDrafts(drafts) {
   try { localStorage.setItem('fai_drafts', JSON.stringify(drafts)); } catch(e) {}
@@ -6938,7 +6967,7 @@ Only JSON, no additional text.`;
 // CHANNELS — localStorage backed
 // ═══════════════════════════════════════════════
 function getChannels() {
-  try { return JSON.parse(localStorage.getItem('fai_channels') || '[]'); } catch(e) { return []; }
+  return _memoLS('fai_channels', []);
 }
 function saveChannels(channels) {
   try { localStorage.setItem('fai_channels', JSON.stringify(channels)); } catch(e) {}
@@ -7650,7 +7679,7 @@ document.addEventListener('click', e => {
 // ANALYTICS — log de llamadas IA
 // ══════════════════════════════════════════════════════════
 function getAnalyticsLog() {
-  try { return JSON.parse(localStorage.getItem('fai_analytics') || '[]'); } catch(e) { return []; }
+  return _memoLS('fai_analytics', []);
 }
 function saveAnalyticsLog(log) {
   try { localStorage.setItem('fai_analytics', JSON.stringify(log)); } catch(e) {}
@@ -8799,7 +8828,7 @@ function addClipChannelFromSug(name, niche) {
 // AFILIADOS — completo
 // ══════════════════════════════════════════════════════════
 function getAffiliates() {
-  try { return JSON.parse(localStorage.getItem('fai_affiliates') || '[]'); } catch(e) { return []; }
+  return _memoLS('fai_affiliates', []);
 }
 function saveAffiliates(affs) {
   try { localStorage.setItem('fai_affiliates', JSON.stringify(affs)); } catch(e) {}

@@ -6614,6 +6614,15 @@ function _memoLS(key, fallback, transform) {
 // Generic typed accessors (use for any fai_* JSON key without a dedicated getter).
 function loadLS(key, fallback) { return _memoLS(key, fallback !== undefined ? fallback : null); }
 function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+// Network helper: fetch() that aborts after `ms` (default 15s) so a hung request never
+// leaves the UI waiting forever. Returns a normal fetch promise; the timer is always cleared.
+function fetchWithTimeout(url, opts, ms) {
+  opts = opts || {};
+  var ctrl = ('AbortController' in window) ? new AbortController() : null;
+  if (ctrl) opts.signal = ctrl.signal;
+  var timer = ctrl ? setTimeout(function(){ try { ctrl.abort(); } catch(e) {} }, ms || 15000) : null;
+  return fetch(url, opts).finally(function(){ if (timer) clearTimeout(timer); });
+}
 // DOM micro-helpers (replace the const setEl=(id,v)=>{…} pattern duplicated across the file).
 function setEl(id, v)    { var el = document.getElementById(id); if (el) el.textContent = v; }
 function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.innerHTML   = h; }
@@ -6641,6 +6650,18 @@ function addDraft(draft) {
   draft.createdAt = Date.now();                   // numeric timestamp, not ISO string
   draft.status = draft.status || 'pending';       // preserve pre-set status (e.g. 'approved')
   drafts.unshift(draft);
+  // Phase 4: cap unbounded growth. Trim oldest drafts beyond a 500 ceiling, but NEVER drop
+  // approved/scheduled ones (they're the user's committed work). drafts is newest-first.
+  const MAX_DRAFTS = 500;
+  if (drafts.length > MAX_DRAFTS) {
+    let toDrop = drafts.length - MAX_DRAFTS;
+    for (let i = drafts.length - 1; i >= 0 && toDrop > 0; i--) {
+      if (drafts[i].status !== 'approved' && drafts[i].status !== 'scheduled') {
+        drafts.splice(i, 1);
+        toDrop--;
+      }
+    }
+  }
   saveDrafts(drafts);
   renderDrafts();                                 // renderDrafts already updates all badges correctly
   showToast('📋 Guardado en Borradores — revísalo cuando quieras');
@@ -13796,8 +13817,15 @@ try { setTier(activeTier); } catch(e) {}
 try { initLangVoice(); } catch(e) {}
 try { initPreferences(); } catch(e) {}
 try { updateCostEstimate(); } catch(e) {}
-try { nav('dashboard'); renderDashboard(); renderChannels(); renderSpikes(); } catch(e) { console.error('startup',e); }
-try { renderDrafts(); } catch(e) {}
+try { nav('dashboard'); } catch(e) { console.error('startup',e); }
+// Phase 4: nav('dashboard') already renders the dashboard (+ weekly chart). Defer the
+// hidden-view pre-render (channels grid, trend spikes, drafts list+badges) to idle so it
+// never blocks first paint. requestIdleCallback with a setTimeout fallback.
+(window.requestIdleCallback || function(f){ return setTimeout(f, 200); })(function(){
+  try { renderChannels(); } catch(e) {}
+  try { renderSpikes(); }   catch(e) {}
+  try { renderDrafts(); }   catch(e) {}
+});
 try { checkFirstVisit(); } catch(e) {}
 try { checkMissedAutopilotRun(); } catch(e) {}
 try { initSidebarCollapse(); } catch(e) {}
@@ -13885,14 +13913,22 @@ try { renderUserPill(); } catch(e) {}
     document.body.prepend(b);
   }
 
+  var _inflight = false;
   function check() {
-    fetch(PAGES + '?v=' + Date.now(), { cache: 'no-store' })
+    if (_inflight) return;                       // never let checks overlap
+    _inflight = true;
+    var doFetch = (typeof fetchWithTimeout === 'function')
+      ? fetchWithTimeout(PAGES + '?v=' + Date.now(), { cache: 'no-store' }, 6000)
+      : fetch(PAGES + '?v=' + Date.now(), { cache: 'no-store' });
+    doFetch
       .then(function(r){ return r.text(); })
       .then(function(html){
         var m = html.match(/FacelessAI\s+(v[\d.]+)/);
         if (m && m[1] !== CURRENT) showUpdateBanner(m[1]);
         _checked = true;
-      }).catch(function(){});
+      })
+      .catch(function(){})
+      .finally(function(){ _inflight = false; });
   }
 
   // First check after 8 s (let app settle), then every 12 min

@@ -5529,13 +5529,8 @@ function toggleAP(on) {
 }
 
 // ── SCORE ──
-function runScore() {
-  const v = document.getElementById('score-input').value;
-  if (!v.trim()) { showToast('Introduce una idea primero'); return; }
-  document.getElementById('score-placeholder').style.display = 'none';
-  document.getElementById('score-results').style.display = 'block';
-  showToast('✓ Score calculado: 85/100 — APROBADO');
-}
+// NOTE: runScore() (live) is the forwarder to the real async scorer runScoreReal(),
+// defined later. An earlier hardcoded "85/100" stub here was removed in audit Phase 6.
 
 // Trend → Score
 function setTrendAndNav(topic) {

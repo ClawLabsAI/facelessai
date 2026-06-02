@@ -4313,33 +4313,9 @@ const KEY_MAP = {
   socialblade:'fai_key_socialblade', kalodata:'fai_key_kalodata', hypeauditor:'fai_key_hypeauditor'
 };
 
-function loadKeys() {
-  Object.entries(KEY_MAP).forEach(([name, lsKey]) => {
-    const val = localStorage.getItem(lsKey) || '';
-    KEYS[name] = val;
-    const inp = document.getElementById('key-' + name);
-    if (inp && val && !inp.value) inp.value = val.slice(0,4) + String.fromCharCode(8226).repeat(8);
-    const st = document.getElementById('key-status-' + name);
-    if (st) { st.textContent = val ? 'Configurada' : '--'; st.style.color = val ? 'var(--green)' : 'var(--text3)'; }
-  });
-  refreshSettingsDisplay();
-}
-
-function saveKey(name) {
-  const inp = document.getElementById('key-' + name);
-  if (!inp) return;
-  const val = inp.value.trim();
-  if (!val || val.charCodeAt(4) === 8226) { showToast('Introduce una key valida'); return; }
-  const lsKey = KEY_MAP[name];
-  if (!lsKey) { showToast('API key no reconocida: ' + name); return; }
-  localStorage.setItem(lsKey, val);
-  KEYS[name] = val;
-  inp.value = val.slice(0,4) + String.fromCharCode(8226).repeat(8);
-  const st = document.getElementById('key-status-' + name);
-  if (st) { st.textContent = 'Guardada'; st.style.color = 'var(--green)'; }
-  showToast('API key guardada: ' + name);
-  refreshSettingsDisplay();
-}
+// NOTE: loadKeys() and saveKey() are defined later (single source of truth) using the
+// badge-/status-* DOM scheme that matches the Settings HTML. Earlier KEY_MAP-based
+// duplicates removed in audit Phase 1 (they targeted non-existent key-status-* IDs).
 
 async function testKey(name) {
   const key = KEYS[name] || localStorage.getItem(KEY_MAP[name] || '') || '';
@@ -4366,62 +4342,10 @@ async function testKey(name) {
   }
 }
 
-function clearAllKeys() {
-  if (!confirm('Borrar todas las API keys guardadas?')) return;
-  Object.values(KEY_MAP).forEach(k => localStorage.removeItem(k));
-  Object.keys(KEYS).forEach(k => delete KEYS[k]);
-  document.querySelectorAll('[id^="key-"]').forEach(el => {
-    if (el.tagName === 'INPUT') el.value = '';
-    if (el.tagName === 'SPAN' && !el.id.includes('label')) { el.textContent = '--'; el.style.color = 'var(--text3)'; }
-  });
-  showToast('Todas las API keys eliminadas');
-}
+// NOTE: clearAllKeys(), refreshSettingsDisplay() and saveBackendUrl() are defined later
+// (single source of truth). Earlier KEY_MAP-based duplicates removed in audit Phase 1.
+// YouTube OAuth badge refresh is handled by the dedicated updateYTOAuthStatus().
 
-function refreshSettingsDisplay() {
-  const st = document.getElementById('settings-status');
-  if (!st) return;
-  const n = Object.values(KEY_MAP).filter(k => localStorage.getItem(k)).length;
-  st.textContent = n + ' keys configuradas';
-  st.style.color = n > 0 ? 'var(--green)' : 'var(--text3)';
-  // Populate all API key inputs with saved values
-  Object.entries(KEY_MAP).forEach(function([name, lsKey]) {
-    var inp = document.getElementById('key-' + name);
-    if (inp && !inp.value) {
-      var val = localStorage.getItem(lsKey) || '';
-      inp.value = val ? '•'.repeat(Math.min(val.length, 24)) : '';
-    }
-  });
-  // YouTube OAuth Client ID
-  var ytClientInp = document.getElementById('key-youtube-client-id');
-  if (ytClientInp && !ytClientInp.value) {
-    var savedClientId = localStorage.getItem('fai_yt_client_id') || '';
-    if (savedClientId) ytClientInp.value = savedClientId.slice(0,20) + '...';
-  }
-  // OAuth connection badge
-  var oauthBadge = document.getElementById('yt-oauth-badge');
-  var oauthBtn   = document.getElementById('yt-oauth-status-btn');
-  var token = localStorage.getItem('fai_yt_oauth_token') || window._ytOAuthToken || '';
-  if (oauthBadge) {
-    oauthBadge.textContent = token ? '✓ YouTube conectado' : 'Sin conectar';
-    oauthBadge.style.color = token ? 'var(--green)' : 'var(--text3)';
-  }
-  if (oauthBtn) {
-    oauthBtn.textContent = token ? '↺ Reconectar' : 'Conectar YouTube';
-    oauthBtn.style.background = token ? '' : 'var(--blue)';
-    oauthBtn.style.color = token ? '' : '#fff';
-  }
-  // Display name
-  var nameInp = document.getElementById('settings-display-name');
-  if (nameInp && !nameInp.value) nameInp.value = localStorage.getItem('fai_display_name') || '';
-}
-
-function saveBackendUrl() {
-  const inp = document.getElementById('backend-url-inp');
-  if (!inp) return;
-  localStorage.setItem('fai_backend_url', inp.value.trim());
-  window.BACKEND_URL = inp.value.trim();
-  showToast('Backend URL guardada');
-}
 function saveBackendKey() {
   const inp = document.getElementById('backend-key-inp');
   if (!inp) return;
@@ -5415,6 +5339,19 @@ function nav(id) {
   if (id === 'affiliation')  setTimeout(() => { if(typeof renderAffiliates==='function') renderAffiliates(); }, 50);
   if (id === 'dashboard')    setTimeout(() => { renderDashboard(); renderWeeklyChart(); }, 30);
   if (id === 'pipeline')     setTimeout(() => { updatePipelineChannelSel(workingChannel || ''); }, 80);
+  // Views whose init previously lived ONLY in the (now-removed) _navCallbacks object — wired
+  // here in audit Phase 1 so they actually initialize on navigation. All guarded.
+  if (id === 'trends')             setTimeout(() => { try { loadTrendsChannels(); } catch(e){} }, 50);
+  if (id === 'influencer')         setTimeout(() => { try { renderInfluencer(); } catch(e){} }, 50);
+  if (id === 'influencer-contenido') setTimeout(() => { try { loadInfluencerContenido(); } catch(e){} }, 50);
+  if (id === 'influencer-video')   setTimeout(() => { try { loadInfluencerContenido(); switchVideoAITab('heygen'); } catch(e){} }, 50);
+  if (id === 'score')              setTimeout(() => { try { renderScoreNichePills(); loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e){} }, 50);
+  if (id === 'reuse')              setTimeout(() => { try { loadReuseDrafts(); } catch(e){} }, 50);
+  if (id === 'clipping')           setTimeout(() => { try { renderClipChannels(); } catch(e){} }, 50);
+  if (id === 'clippipeline')       setTimeout(() => { try { setCPStep(0); } catch(e){} }, 50);
+  if (id === 'models')             setTimeout(() => { try { renderModels(); } catch(e){} }, 50);
+  if (id === 'tiktokauto')         setTimeout(() => { try { renderTikTokStrategy(); } catch(e){} }, 50);
+  if (id === 'clone')              setTimeout(() => { try { setClonerStep(0); } catch(e){} }, 50);
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -7722,14 +7659,6 @@ function logAICall(type, channel, cost, tokens) {
   if (log.length > 500) log.splice(500);
   saveAnalyticsLog(log);
 }
-function switchAnalyticsTab(tab) {
-  ['log','summary','channels'].forEach(t => {
-    const btn = document.getElementById('an-tab-' + t);
-    const panel = document.getElementById('an-panel-' + t);
-    if (btn) btn.classList.toggle('act', t === tab);
-    if (panel) panel.style.display = t === tab ? 'block' : 'none';
-  });
-}
 function exportAnalyticsCSV() {
   const log = getAnalyticsLog();
   if (!log.length) { showToast('No hay datos en el log'); return; }
@@ -8735,41 +8664,9 @@ function saveClipsToDrafts() {
   showToast('Clips guardados como borradores');
 }
 
-// ══════════════════════════════════════════════════════════
-// NAV CALLBACKS — trigger on view change
-// ══════════════════════════════════════════════════════════
-var _navCallbacks = {
-  dashboard:     function() { try { renderDashboard(); } catch(e) { console.error(e); } },
-  channels:      function() { try { renderChannels(); } catch(e) { console.error(e); } },
-  drafts:        function() { try { renderDrafts(); checkViralDrafts(); } catch(e) {} },
-  trends:           function() { try { loadTrendsChannels(); } catch(e) {} },
-  influencer:        function() { try { renderInfluencer(); } catch(e) {} },
-  'influencer-contenido': function() { try { loadInfluencerContenido(); } catch(e) {} },
-  'influencer-video':     function() { try { loadInfluencerContenido(); switchVideoAITab('heygen'); } catch(e) {} },
-  score:         function() { try { renderScoreNichePills(); loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e) {} },
-  templates:     function() { try { loadSavedHooks(); filterHooks(); } catch(e) {} },
-  reuse:         function() { try { loadReuseDrafts(); } catch(e) {} },
-  analytics:     function() { try { renderAnalytics(); switchAnalyticsTab('log'); } catch(e) { console.error(e); } },
-  clipping:      function() { try { renderClipChannels(); } catch(e) { console.error(e); } },
-  clippipeline:  function() { try { setCPStep(0); } catch(e) {} },
-  pipeline:      function() { try { setPStep(0); applyTierToPipeline(); } catch(e) {} },
-  affiliation:   function() { try { renderAffiliates(); } catch(e) { console.error(e); } },
-  budget:        function() { try { renderNicheCalculator(); renderProfitabilityDashboard(); renderENvsESComparison(); } catch(e) {} },
-  autopilot:     function() { try { renderAutopilotSettings(); renderAPChannelList(); updateAPStats(); } catch(e) {} },
-  models:        function() { try { renderModels(); } catch(e) { console.error('renderModels:', e); } },
-  tiktokauto:    function() { try { renderTikTokStrategy(); } catch(e) {} },
-  spychannels:   function() { try { loadSpyHistory(); switchSpyTab('manual'); renderSpyPremiumStatus(); } catch(e) {} },
-  clone:         function() { try { setClonerStep(0); } catch(e) {} },
-  cliplibrary:   function() { try { renderClipLibrary(); } catch(e) {} },
-  'saas-users':  function() {},
-  'saas-billing': function() {},
-  'saas-plans':  function() {},
-  'saas-admin':  function() {},
-  'saas-onboarding': function() {},
-  scheduler:     function() { try { renderPublishQueue(); } catch(e) {} },
-  monetization:  function() { try { calcMultiMono(); } catch(e) {} },
-  settings:      function() { setTimeout(function() { try{refreshSettingsDisplay();}catch(e){} try{initPreferences();}catch(e){} }, 50); }
-};
+// NAV CALLBACKS — removed in audit Phase 1. This object was never invoked (dead code);
+// view-init is now wired directly inside nav(). Views that previously had init logic ONLY
+// here (score, models, trends, clone, influencer, reuse, clipping, etc.) are now wired in nav().
 
 
 // ══════════════════════════════════════════════════════════
@@ -10479,7 +10376,7 @@ function renderAnalytics() {
 }
 
 function switchAnalyticsTab(tab) {
-  ['platforms','channels','summary','log'].forEach(t => {
+  ['channels','tiktok','costs','log'].forEach(t => {
     const btn = document.getElementById('an-tab-' + t);
     const panel = document.getElementById('an-panel-' + t);
     if (btn) btn.classList.toggle('act', t === tab);

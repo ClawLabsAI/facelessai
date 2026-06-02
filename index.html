@@ -685,18 +685,21 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><div style="font-size:11px;font-weight:700;color:var(--blue)">ECONÓMICO</div></div>
       <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.02</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
     </div>
-    <div onclick="setActiveTier('opt','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--amber);background:rgba(251,191,36,0.08)">
+    <div onclick="setActiveTier('opt','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber)"></div><div style="font-size:11px;font-weight:700;color:var(--amber)">OPTIMIZADO</div></div>
-      <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:var(--amber)">$0.06</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
-      <div style="font-size:9px;color:var(--amber);margin-top:4px;font-weight:700">✓ ACTIVO</div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.06</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
     </div>
     <div onclick="setActiveTier('prem','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple)"></div><div style="font-size:11px;font-weight:700;color:var(--purple)">PREMIUM</div></div>
       <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$0.25</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
     </div>
     <div onclick="setActiveTier('ultra','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#ff6b35"></div><div style="font-size:11px;font-weight:700;color:#ff6b35">ULTRA</div><div onclick="setActiveTier('scale','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#a855f7"></div><div style="font-size:11px;font-weight:700;color:#a855f7">SCALE</div></div><div style="font-size:18px;font-weight:800;font-family:var(--mono)">~0.05E</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div><div style="font-size:9px;color:var(--text3);margin-top:4px">Masivo</div></div></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#ff6b35"></div><div style="font-size:11px;font-weight:700;color:#ff6b35">ULTRA</div></div>
       <div style="font-size:18px;font-weight:800;font-family:var(--mono)">$1.47</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
+    </div>
+    <div onclick="setActiveTier('scale','')" style="cursor:pointer;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:#a855f7"></div><div style="font-size:11px;font-weight:700;color:#a855f7">SCALE</div></div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono)">~$0.05</div><div style="font-size:9px;color:var(--text3);margin-top:2px">por vídeo</div>
     </div>
   </div>
 
@@ -1591,9 +1594,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div style="margin-left:auto;display:flex;gap:6px">
         <button class="btn btn-p btn-sm" id="script-gen-btn" onclick="generateScriptReal()">🤖 Generar con Claude</button>
         <button class="btn btn-g btn-sm" onclick="pasteScript()" title="Pegar script desde portapapeles">📥 Pegar</button>
-        <button class="btn btn-g btn-sm" onclick="toggleScriptEdit()" id="script-edit-btn" title="Editar manualmente">✏️</button>
+        <button class="btn btn-g btn-sm" onclick="toggleScriptEdit()" id="script-edit-btn" title="Editar manualmente">✏️ Editar</button>
         <button class="btn btn-g btn-sm" onclick="copyScript()">📋 Copiar</button>
-        <button class="btn btn-g btn-sm" id="script-edit-btn" onclick="toggleEditScript()">✏️ Editar</button>
       </div>
     </div>
     <div class="script-area" id="script-content" contenteditable="false" style="min-height:200px;outline:none">
@@ -5479,14 +5481,14 @@ function toggleScriptEdit() {
     area.style.outline = '';
     // Save changes to currentScript
     currentScript = area.innerText;
-    if (btn) btn.style.color = '';
+    if (btn) { btn.style.color = ''; btn.textContent = '✏️ Editar'; }
     showToast('✓ Script guardado');
   } else {
     area.contentEditable = 'true';
     area.style.borderColor = '#38bdf8';
     area.style.outline = 'none';
     area.focus();
-    if (btn) btn.style.color = '#38bdf8';
+    if (btn) { btn.style.color = '#38bdf8'; btn.textContent = '💾 Guardar'; }
     showToast('✏️ Modo edición — escribe directamente en el script');
   }
 }
@@ -8672,33 +8674,9 @@ function saveClipsToDrafts() {
 // ══════════════════════════════════════════════════════════
 // SCRIPT EDIT INLINE (pipeline paso 3)
 // ══════════════════════════════════════════════════════════
-var scriptEditMode = false;
-function toggleEditScript() {
-  const area = document.getElementById('script-content');
-  const btn = document.getElementById('script-edit-btn');
-  if (!area) return;
-  scriptEditMode = !scriptEditMode;
-  if (scriptEditMode) {
-    area.contentEditable = 'true';
-    area.style.border = '2px solid var(--blue)';
-    area.style.borderRadius = 'var(--r)';
-    area.style.padding = '12px';
-    area.style.outline = 'none';
-    area.focus();
-    if (btn) { btn.textContent = '💾 Guardar edición'; btn.style.color = 'var(--blue)'; }
-    showToast('✏️ Modo edición activo — edita el script directamente');
-  } else {
-    area.contentEditable = 'false';
-    area.style.border = '';
-    area.style.padding = '';
-    // Save edited content back to currentScript
-    if (typeof currentScript !== 'undefined') {
-      currentScript = area.innerText || area.textContent;
-    }
-    if (btn) { btn.textContent = '✏️ Editar'; btn.style.color = ''; }
-    showToast('✓ Cambios guardados en el script');
-  }
-}
+// NOTE: toggleEditScript() + scriptEditMode removed in audit Phase 2 — duplicate of
+// toggleScriptEdit() (which reads contentEditable from the DOM instead of a separate
+// flag that could desync). Single source of truth now lives in toggleScriptEdit().
 
 // ══════════════════════════════════════════════════════════
 // CLIPPING CANALES — localStorage

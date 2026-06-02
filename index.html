@@ -194,11 +194,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 .pipe-step{flex:1;padding:10px 12px;background:var(--bg1);cursor:pointer;transition:all .15s;border-right:1px solid var(--border);user-select:none;}
 .pipe-step:last-child{border-right:none;}
 .pipe-step:hover{background:var(--bg2);}
-.pipe-step.act{background:var(--gdim);border-bottom:2px solid var(--green);}
+.pipe-step.act{background:var(--gdim);border-bottom:3px solid var(--green);}
 .ps-num{font-size:10px;color:var(--text3);font-family:var(--mono);}
 .pipe-step.act .ps-num{color:var(--green);}
 .ps-name{font-size:11px;font-weight:600;color:var(--text2);}
-.pipe-step.act .ps-name{color:var(--green);}
+.pipe-step.act .ps-name{color:var(--green);font-weight:700;}
 .ps-cost{font-size:10px;color:var(--text3);font-family:var(--mono);}
 .pc{display:none;}.pc.act{display:block;}
 
@@ -311,8 +311,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 .cp-step-pill.act{background:var(--gdim);color:var(--green);border-color:var(--gsoft);}
 
 /* MOBILE */
-@media(max-width:768px){.layout{grid-template-columns:1fr!important}aside{position:fixed;left:-260px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.4)}aside.mob-open{left:0}.content{padding:12px!important}.topbar{padding:8px 12px!important;flex-wrap:wrap}.g4,.g3{grid-template-columns:1fr 1fr!important}.g2{grid-template-columns:1fr!important}#mob-menu{display:flex!important}#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}#mob-overlay.active{display:block}}
-@media(max-width:480px){.g4{grid-template-columns:1fr!important}.budget-pill{display:none}}
+@media(max-width:768px){.layout{grid-template-columns:1fr!important}aside{position:fixed;left:-260px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.4)}aside.mob-open{left:0}.content{padding:12px!important}.topbar{padding:8px 12px!important;flex-wrap:wrap}.g4,.g3{grid-template-columns:1fr 1fr!important}.g2{grid-template-columns:1fr!important}#mob-menu{display:flex!important}#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}#mob-overlay.active{display:block}#models-tier-grid{grid-template-columns:repeat(3,1fr)!important}}
+@media(max-width:480px){.g4{grid-template-columns:1fr!important}#models-tier-grid{grid-template-columns:repeat(2,1fr)!important}.budget-pill{display:none}}
 
 .topbar-title{font-size:14px;font-weight:600;color:var(--text1);flex:1;}
 </style>
@@ -531,7 +531,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <div class="view active" id="view-dashboard">
 
   <!-- STATS ROW — mes actual + diferencia vs mes anterior -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+  <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
 
     <div class="sc">
       <div class="sc-label">Vídeos este mes</div>
@@ -946,14 +946,14 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   <div class="g3 mb24" id="channels-grid"><!-- rendered by renderChannels() --></div>
 
   <!-- EDIT CHANNEL MODAL — full settings -->
-  <div id="edit-channel-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0">
+  <div id="edit-channel-modal" role="dialog" aria-modal="true" aria-labelledby="edit-ch-title" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0">
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:520px;max-width:95vw;margin:auto">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
         <div>
           <div style="font-size:16px;font-weight:700" id="edit-ch-title">✏️ Configuración del canal</div>
           <div style="font-size:12px;color:var(--text3);margin-top:2px" id="edit-ch-subtitle">Edita los parámetros del canal</div>
         </div>
-        <button onclick="closeEditChannelModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px">×</button>
+        <button onclick="closeEditChannelModal()" aria-label="Cerrar" title="Cerrar" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px">×</button>
       </div>
       <input type="hidden" id="edit-ch-idx">
 
@@ -4648,7 +4648,7 @@ async function apGenerateIdea(ch,avoidHook){var lang=ch.lang||'es';var niche=ch.
 async function apQuickScore(hook,niche,ch){var score=65;var len=hook.length;if(len>=50&&len<=100)score+=8;else if(len>=30&&len<50)score+=4;var pw=['secreto','nunca','error','perdiste','gratis','legal','tienes derecho','free','never told','secret','mistake','you\'re losing'];var hl=hook.toLowerCase();pw.forEach(function(w){if(hl.includes(w))score+=4;});if(/\d/.test(hook))score+=5;if(hook.includes('?'))score+=3;if(['legal','medicare','finance','finanzas','cripto'].includes(niche))score+=4;return Math.min(99,Math.max(30,score));}
 async function apGenerateScript(hook,ch){var lang=ch.lang||'es';var niche=ch.niche||'general';var aff=typeof getChannelAffiliates==='function'?getChannelAffiliates(ch.name):[];var affCTA=aff.length?'\n\nIncluye esta CTA al final: '+aff[0].cta:'';var prompt=lang==='en'?'Write a 60-second YouTube Shorts script for: "'+hook+'"\nNiche: '+niche+'. Faceless AI channel.'+affCTA+'\nJust the script.':'Escribe un script de 60s para YouTube Shorts: "'+hook+'"\nNicho: '+niche+'.'+affCTA+'\nSolo el script.';try{var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:prompt}]})});var data=await resp.json();return(data.content&&data.content[0]&&data.content[0].text||'').trim()||null;}catch(e){return null;}}
 function apScheduleDraft(draft,ch){try{var q=JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');var times={es:[6,12,18,21],en:[7,12,17,20],lat:[6,11,17,21]};var lang=draft.lang||'es';var hours=times[lang]||times.es;var now=new Date();var nextH=hours.find(function(h){return h>now.getHours();})||hours[0];var sd=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(nextH>now.getHours()?0:1),nextH,0);q.push({id:'sq_'+Date.now(),draftId:draft.id,title:draft.hook,channel:draft.channel,platforms:draft.platforms||['youtube'],scheduledAt:sd.getTime(),status:'pending',createdAt:Date.now()});localStorage.setItem('fai_publish_queue',JSON.stringify(q));}catch(e){}}
-function updateAPStatus(state,msg){var dot=document.getElementById('ap-running-dot');var title=document.getElementById('ap-status-title');var sub=document.getElementById('ap-status-sub');var dtitle=document.getElementById('dash-ap-title');var dsub=document.getElementById('dash-ap-sub');var ddot=document.getElementById('dash-ap-dot');var cols={running:'var(--green)',idle:'var(--text3)',error:'var(--red)'};var col=cols[state]||'var(--text3)';[dot,ddot].forEach(function(d){if(d)d.style.background=col;});if(title)title.textContent=state==='running'?'EN EJECUCION':state==='error'?'ERROR':'LISTO';if(sub)sub.textContent=msg;if(dtitle)dtitle.textContent=state==='running'?'AUTOPILOT ACTIVO':state==='error'?'ERROR':'MODO MANUAL ACTIVO';if(dsub)dsub.textContent=msg;}
+function updateAPStatus(state,msg){var dot=document.getElementById('ap-running-dot');var title=document.getElementById('ap-status-title');var sub=document.getElementById('ap-status-sub');var dtitle=document.getElementById('dash-ap-title');var dsub=document.getElementById('dash-ap-sub');var ddot=document.getElementById('dash-ap-dot');var cols={running:'var(--green)',idle:'var(--blue)',error:'var(--red)'};var col=cols[state]||'var(--text3)';[dot,ddot].forEach(function(d){if(d)d.style.background=col;});if(title)title.textContent=state==='running'?'EN EJECUCION':state==='error'?'ERROR':'LISTO';if(sub)sub.textContent=msg;if(dtitle)dtitle.textContent=state==='running'?'AUTOPILOT ACTIVO':state==='error'?'ERROR':'MODO MANUAL ACTIVO';if(dsub)dsub.textContent=msg;}
 function updateAPLog(lines,col){var el=document.getElementById('ap-live-log');if(!el)return;el.innerHTML=lines.slice(-20).map(function(l,i){var isLast=i===Math.min(lines.length,20)-1;return'<div style="font-size:11px;padding:2px 0;color:'+(isLast?(col||'var(--text1)'):'var(--text3)')+'">'+new Date().toLocaleTimeString('es-ES')+' '+l+'</div>';}).join('');el.scrollTop=el.scrollHeight;}
 async function generateAutopilotVideo(draft, ch, addLog) {
   var log = addLog || function(){};

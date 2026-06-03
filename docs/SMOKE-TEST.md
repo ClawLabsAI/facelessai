@@ -124,3 +124,35 @@ Con el canal seleccionado (verás su contexto en el Paso 0):
 ✅ Si **Nivel A** pasa entero → la IA de texto funciona end-to-end (el corazón del producto).
 ✅ Si **Nivel C** pasa → produces y descargas un MP4 real → producto completo.
 ⚠️ Cualquier paso que falle: anota el mensaje de consola y el paso exacto — con eso se diagnostica en minutos.
+
+---
+
+## Registro de validación
+
+### Integración (mockeada) — ✅ PASA
+Prueba end-to-end con las respuestas de API **simuladas** (sin claves ni coste). Valida que la
+app construye las peticiones, **parsea** las respuestas, **renderiza** y **degrada ante fallos**
+— es decir, toda la fontanería entre la UI y las APIs.
+
+| Etapa | Resultado |
+|-------|-----------|
+| Paso 1 — Ideas (parse de array JSON → tarjetas) | ✅ 6 ideas parseadas y renderizadas |
+| Paso 2 — Score (parse de objeto JSON → métricas) | ✅ Score 84 · "✓ APROBADO" |
+| Paso 3 — Guion (texto plano → formato + coste) | ✅ Guion formateado + coste/tokens |
+| Paso 5 — Export a borrador (con guion) | ✅ Borrador creado con `script` |
+| Manejo de errores (respuesta JSON malformada) | ✅ Error con gracia + "Reintentar", sin crash |
+
+Consola: **0 errores** durante todo el recorrido.
+
+**Qué prueba:** si la API real responde con la forma esperada, el flujo idea→score→guion→borrador
+funciona de principio a fin, y si responde algo roto, la app avisa sin romperse.
+**Qué NO prueba:** que la API real devuelva esa forma con tu key → eso lo cierra el **Nivel A real**.
+
+### Validación con claves reales (Niveles A/B/C)
+Pendiente — ejecutar con tu Anthropic key (y opcionalmente backend) siguiendo los pasos de arriba.
+
+| Nivel | Fecha | Resultado | Notas |
+|-------|-------|-----------|-------|
+| A (texto) | — | ⬜ pendiente | |
+| B (+audio) | — | ⬜ pendiente | |
+| C (MP4) | — | ⬜ pendiente | |

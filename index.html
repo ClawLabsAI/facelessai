@@ -3467,6 +3467,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     ⚠️ <strong>Tu navegador está bloqueando localStorage.</strong> Las keys no se pueden guardar. Prueba: desactivar el modo incógnito, o ir a Configuración del navegador → Privacidad → permitir cookies y datos de sitios.
   </div>
 
+  <!-- B13: honest security disclosure — keys are local-only, never sent to a FacelessAI server -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.5">
+    🔒 <strong>Privacidad de tus claves.</strong> Tus API keys se guardan <strong>solo en este navegador</strong> (localStorage de tu dispositivo) y se envían <strong>únicamente</strong> a la API de cada proveedor (Anthropic, OpenAI, etc.) en cada petición. <strong>Nunca</strong> pasan por ningún servidor de FacelessAI. No las escribas en un equipo compartido y usa “Borrar todas las keys” antes de prestar el dispositivo.
+  </div>
+
   <!-- localStorage test button -->
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
     <div style="flex:1;font-size:12px;color:var(--text3)">

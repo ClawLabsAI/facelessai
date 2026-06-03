@@ -318,6 +318,22 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 /* MOBILE */
 @media(max-width:768px){.layout{grid-template-columns:1fr!important}aside{position:fixed;left:-260px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.4)}aside.mob-open{left:0}.content{padding:12px!important}.topbar{padding:8px 12px!important;flex-wrap:wrap}.g4,.g3{grid-template-columns:1fr 1fr!important}.g2{grid-template-columns:1fr!important}#mob-menu{display:flex!important}#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}#mob-overlay.active{display:block}#models-tier-grid{grid-template-columns:repeat(3,1fr)!important}}
 @media(max-width:480px){.g4{grid-template-columns:1fr!important}#models-tier-grid{grid-template-columns:repeat(2,1fr)!important}.budget-pill{display:none}}
+/* B5: make every inline repeat(N,1fr) grid responsive without editing each one. The
+   property-prefixed attribute selector matches the inline style string and intentionally
+   EXCLUDES "grid-template-columns:auto repeat(...)" rows (analytics tables) which must keep
+   their leading auto column. !important is required to beat the inline declaration. */
+@media(max-width:768px){
+  [style*="grid-template-columns:repeat(6,1fr)"]{grid-template-columns:repeat(3,1fr)!important}
+  [style*="grid-template-columns:repeat(5,1fr)"]{grid-template-columns:repeat(3,1fr)!important}
+  [style*="grid-template-columns:repeat(4,1fr)"]{grid-template-columns:repeat(2,1fr)!important}
+  [style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:repeat(2,1fr)!important}
+}
+@media(max-width:480px){
+  [style*="grid-template-columns:repeat(6,1fr)"],
+  [style*="grid-template-columns:repeat(5,1fr)"],
+  [style*="grid-template-columns:repeat(4,1fr)"]{grid-template-columns:repeat(2,1fr)!important}
+  [style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr!important}
+}
 
 .topbar-title{font-size:14px;font-weight:600;color:var(--text1);flex:1;}
 </style>
@@ -492,7 +508,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   </div>
 
   <!-- DEPLOY MODAL -->
-  <div id="deploy-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center">
+  <div id="deploy-modal" role="dialog" aria-modal="true" aria-label="Desplegar aplicación" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center">
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-width:95vw">
       <div style="font-size:16px;font-weight:700;margin-bottom:4px">🚀 Deploy a GitHub Pages</div>
       <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Sube la última versión directamente a <strong style="color:var(--blue)">clawlabsai.github.io/facelessai</strong></div>
@@ -2163,7 +2179,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   </div>
 
   <!-- MODAL añadir afiliado -->
-  <div id="aff-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center">
+  <div id="aff-add-modal" role="dialog" aria-modal="true" aria-label="Añadir afiliado" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center">
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-width:95vw">
       <div style="font-size:15px;font-weight:700;margin-bottom:16px">⭐ Nuevo afiliado</div>
       <div style="display:flex;flex-direction:column;gap:10px">
@@ -2762,7 +2778,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 </div>
 
 <!-- TIKTOK SHOP MODAL -->
-<div id="tts-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center">
+<div id="tts-modal" role="dialog" aria-modal="true" aria-label="TikTok Shop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center">
   <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:500px;max-width:95vw">
     <div style="font-size:16px;font-weight:700;margin-bottom:4px">🛍️ Crear canal TikTok Shop</div>
     <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal de afiliado — idioma y nicho definen todo el contenido</div>
@@ -2872,7 +2888,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   </div>
 
   <!-- Modal crear personaje -->
-  <div id="persona-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0">
+  <div id="persona-modal" role="dialog" aria-modal="true" aria-label="Configuración de persona" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0">
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:560px;max-width:95vw;margin:auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
         <div style="font-size:16px;font-weight:700">👤 Nuevo personaje IA</div>
@@ -3226,7 +3242,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   </div>
 
   <!-- MODAL crear canal clipping -->
-  <div id="clip-channel-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center">
+  <div id="clip-channel-modal" role="dialog" aria-modal="true" aria-label="Canal de clips" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center">
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:440px;max-width:95vw">
       <div style="font-size:15px;font-weight:700;margin-bottom:16px">✂️ Nuevo canal de clipping</div>
       <div style="display:flex;flex-direction:column;gap:10px">
@@ -4183,7 +4199,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 </div><!-- /main -->
 
 <!-- MODAL: Nuevo Canal -->
-<div class="modal-ov" id="modal-ov" onclick="if(event.target===this)closeModal()">
+<div class="modal-ov" id="modal-ov" role="dialog" aria-modal="true" aria-label="Diálogo" onclick="if(event.target===this)closeModal()">
   <div class="modal" style="width:520px;max-width:96vw">
     <div style="font-size:16px;font-weight:700;margin-bottom:4px">✨ Crear nuevo canal</div>
     <div style="font-size:13px;color:var(--text3);margin-bottom:18px">Configura el canal IA — el idioma y voz definen toda la producción</div>
@@ -4466,7 +4482,7 @@ const HOOKS_DB = [
   { id:'mi1',niche:'misterio',  plat:'youtube',   type:'dato',     lang:'es', ctr:9.1, hook:'Esta foto de 1923 muestra algo que no deberia existir. Los expertos no tienen respuesta.' },
   { id:'s1', niche:'salud',     plat:'youtube',   type:'dato',     lang:'es', ctr:8.4, hook:'El alimento que comes cada dia esta destruyendo tu cerebro y no es el azucar' },
 ];
-function loadSavedHooks() { try { const s=JSON.parse(localStorage.getItem('fai_hooks_db')||'[]'); s.forEach(h=>{if(!HOOKS_DB.find(x=>x.id===h.id))HOOKS_DB.push(h);}); } catch(e){} }
+function loadSavedHooks() { try { const s=JSON.parse(localStorage.getItem('fai_hooks_db')||'[]'); s.forEach(h=>{if(!HOOKS_DB.find(x=>x.id===h.id))HOOKS_DB.push(h);}); } catch(e){_diag(e);} }
 function filterHooks() {
   const ni=document.getElementById('hooks-niche-filter')?.value||'all';
   const pl=document.getElementById('hooks-plat-filter')?.value||'all';
@@ -4652,7 +4668,7 @@ function getAPSetting(key,def){var s=loadAPSettings();return s[key]!==undefined?
 async function apGenerateIdea(ch,avoidHook){var lang=ch.lang||'es';var niche=ch.niche||'general';var avoid=avoidHook?'\nEvita: "'+avoidHook+'"':'';var prompt=lang==='en'?'Generate ONE viral YouTube Shorts hook for '+niche+' niche, US market, AI faceless channel.'+avoid+'\nRespond ONLY with the hook text.':'Genera UN hook viral para YouTube Shorts en el nicho '+niche+'.'+avoid+'\nResponde SOLO con el texto del hook.';try{var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:100,messages:[{role:'user',content:prompt}]})});var data=await resp.json();var hook=(data.content&&data.content[0]&&data.content[0].text||'').trim().replace(/^["']|["']$/g,'');return hook?{hook,niche,lang}:null;}catch(e){return null;}}
 async function apQuickScore(hook,niche,ch){var score=65;var len=hook.length;if(len>=50&&len<=100)score+=8;else if(len>=30&&len<50)score+=4;var pw=['secreto','nunca','error','perdiste','gratis','legal','tienes derecho','free','never told','secret','mistake','you\'re losing'];var hl=hook.toLowerCase();pw.forEach(function(w){if(hl.includes(w))score+=4;});if(/\d/.test(hook))score+=5;if(hook.includes('?'))score+=3;if(['legal','medicare','finance','finanzas','cripto'].includes(niche))score+=4;return Math.min(99,Math.max(30,score));}
 async function apGenerateScript(hook,ch){var lang=ch.lang||'es';var niche=ch.niche||'general';var aff=typeof getChannelAffiliates==='function'?getChannelAffiliates(ch.name):[];var affCTA=aff.length?'\n\nIncluye esta CTA al final: '+aff[0].cta:'';var prompt=lang==='en'?'Write a 60-second YouTube Shorts script for: "'+hook+'"\nNiche: '+niche+'. Faceless AI channel.'+affCTA+'\nJust the script.':'Escribe un script de 60s para YouTube Shorts: "'+hook+'"\nNicho: '+niche+'.'+affCTA+'\nSolo el script.';try{var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:prompt}]})});var data=await resp.json();return(data.content&&data.content[0]&&data.content[0].text||'').trim()||null;}catch(e){return null;}}
-function apScheduleDraft(draft,ch){try{var q=JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');var times={es:[6,12,18,21],en:[7,12,17,20],lat:[6,11,17,21]};var lang=draft.lang||'es';var hours=times[lang]||times.es;var now=new Date();var nextH=hours.find(function(h){return h>now.getHours();})||hours[0];var sd=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(nextH>now.getHours()?0:1),nextH,0);q.push({id:'sq_'+Date.now(),draftId:draft.id,title:draft.hook,channel:draft.channel,platforms:draft.platforms||['youtube'],scheduledAt:sd.getTime(),status:'pending',createdAt:Date.now()});localStorage.setItem('fai_publish_queue',JSON.stringify(q));}catch(e){}}
+function apScheduleDraft(draft,ch){try{var q=JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');var times={es:[6,12,18,21],en:[7,12,17,20],lat:[6,11,17,21]};var lang=draft.lang||'es';var hours=times[lang]||times.es;var now=new Date();var nextH=hours.find(function(h){return h>now.getHours();})||hours[0];var sd=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(nextH>now.getHours()?0:1),nextH,0);q.push({id:'sq_'+Date.now(),draftId:draft.id,title:draft.hook,channel:draft.channel,platforms:draft.platforms||['youtube'],scheduledAt:sd.getTime(),status:'pending',createdAt:Date.now()});localStorage.setItem('fai_publish_queue',JSON.stringify(q));}catch(e){_diag(e);}}
 function updateAPStatus(state,msg){var dot=document.getElementById('ap-running-dot');var title=document.getElementById('ap-status-title');var sub=document.getElementById('ap-status-sub');var dtitle=document.getElementById('dash-ap-title');var dsub=document.getElementById('dash-ap-sub');var ddot=document.getElementById('dash-ap-dot');var cols={running:'var(--green)',idle:'var(--blue)',error:'var(--red)'};var col=cols[state]||'var(--text3)';[dot,ddot].forEach(function(d){if(d)d.style.background=col;});if(title)title.textContent=state==='running'?'EN EJECUCION':state==='error'?'ERROR':'LISTO';if(sub)sub.textContent=msg;if(dtitle)dtitle.textContent=state==='running'?'AUTOPILOT ACTIVO':state==='error'?'ERROR':'MODO MANUAL ACTIVO';if(dsub)dsub.textContent=msg;}
 function updateAPLog(lines,col){var el=document.getElementById('ap-live-log');if(!el)return;el.innerHTML=lines.slice(-20).map(function(l,i){var isLast=i===Math.min(lines.length,20)-1;return'<div style="font-size:11px;padding:2px 0;color:'+(isLast?(col||'var(--text1)'):'var(--text3)')+'">'+new Date().toLocaleTimeString('es-ES')+' '+l+'</div>';}).join('');el.scrollTop=el.scrollHeight;}
 async function generateAutopilotVideo(draft, ch, addLog) {
@@ -4762,7 +4778,7 @@ function renderAPChannelList(){var el=document.getElementById('ap-channel-list')
 function toggleChannelAP(name,active){var chs=getChannels();var ch=chs.find(function(c){return c.name===name;});if(ch){ch.autopilot=active;localStorage.setItem('fai_channels',JSON.stringify(chs));}renderAPChannelList();showToast(name+': AutoPilot '+(active?'activado':'desactivado'));}
 function updateAPStats(){var log=getAnalyticsLog().filter(function(e){return e.task==='autopilot-cycle';});var apDs=getDrafts().filter(function(d){return d.source==='autopilot';});var cost=log.reduce(function(s,e){return s+(e.cost||0);},0);var appr=apDs.filter(function(d){return d.status==='approved';}).length;var se=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};se('ap-stat-cycles',Math.ceil(log.length/3)||0);se('ap-stat-videos',apDs.length);se('ap-stat-approved',appr);se('ap-stat-cost','$'+cost.toFixed(2));}
 // ─── BATCH GENERATION ────────────────────────────────────────
-async function generateBatch(){var chName=(document.getElementById('batch-channel')||{}).value||workingChannel;var count=parseInt((document.getElementById('batch-count')||{}).value||'5');var scoreMin=parseInt((document.getElementById('batch-score-min')||{}).value||'65');var autoSched=(document.getElementById('batch-auto-sched')||{}).checked!==false;if(!chName){showToast('Selecciona un canal');return;}if(!KEYS.anthropic){showToast('Configura Anthropic API key');return;}var ch=getChannels().find(function(c){return c.name===chName;});if(!ch){showToast('Canal no encontrado');return;}var btn=document.getElementById('batch-run-btn');if(btn){btn.disabled=true;btn.textContent='Generando...';}var logEl=document.getElementById('batch-log');if(logEl)logEl.innerHTML='';var progress=function(msg,col){if(logEl){var d=document.createElement('div');d.style.cssText='font-size:11px;padding:2px 0;color:'+(col||'var(--text2)');d.textContent=new Date().toLocaleTimeString('es-ES')+' '+msg;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}};var generated=[];var skipped=0;progress('Batch: '+count+' videos para '+chName,'var(--blue)');for(var i=0;i<count;i++){progress('['+(i+1)+'/'+count+'] Generando...','');var idea=await apGenerateIdea(ch,generated.slice(-2).map(function(d){return d.hook;}).join(' | '));if(!idea){skipped++;continue;}var score=await apQuickScore(idea.hook,ch.niche,ch);progress('['+(i+1)+'] "'+idea.hook.slice(0,40)+'" Score: '+score,score>=scoreMin?'var(--green)':'var(--amber)');if(score<scoreMin){skipped++;continue;}var script=await apGenerateScript(idea.hook,ch);if(!script){skipped++;continue;}var draft={id:'batch_'+Date.now()+'_'+i,hook:idea.hook,title:idea.hook,script:typeof injectChannelAffiliates==='function'?injectChannelAffiliates(script,chName):script,niche:ch.niche,lang:ch.lang||'es',channel:chName,score:score,status:'pending',source:'batch',createdAt:Date.now()+i*1000,platforms:ch.platforms||['youtube','tiktok']};addDraft(draft);generated.push(draft);logAICall('claude','batch-generation',0.012,600,chName);if(autoSched){try{var q=JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');var times={es:[6,12,18,21],en:[7,12,17,20],lat:[6,11,17,21]};var hours=times[ch.lang||'es']||times.es;var dayOff=Math.floor(i/hours.length);var hourIdx=i%hours.length;var sd=new Date();sd.setDate(sd.getDate()+dayOff+1);sd.setHours(hours[hourIdx],0,0,0);q.push({id:'sq_'+Date.now()+'_'+i,draftId:draft.id,title:draft.hook,channel:chName,platforms:draft.platforms,scheduledAt:sd.getTime(),status:'pending',createdAt:Date.now()});localStorage.setItem('fai_publish_queue',JSON.stringify(q));}catch(e){}}await new Promise(function(r){setTimeout(r,600);});}var sum=generated.length+' scripts · '+skipped+' saltados';progress('Completado: '+sum,'var(--green)');showToast('Batch: '+sum);if(btn){btn.disabled=false;btn.textContent='Generar batch';}renderDashboard();}
+async function generateBatch(){var chName=(document.getElementById('batch-channel')||{}).value||workingChannel;var count=parseInt((document.getElementById('batch-count')||{}).value||'5');var scoreMin=parseInt((document.getElementById('batch-score-min')||{}).value||'65');var autoSched=(document.getElementById('batch-auto-sched')||{}).checked!==false;if(!chName){showToast('Selecciona un canal');return;}if(!KEYS.anthropic){showToast('Configura Anthropic API key');return;}var ch=getChannels().find(function(c){return c.name===chName;});if(!ch){showToast('Canal no encontrado');return;}var btn=document.getElementById('batch-run-btn');if(btn){btn.disabled=true;btn.textContent='Generando...';}var logEl=document.getElementById('batch-log');if(logEl)logEl.innerHTML='';var progress=function(msg,col){if(logEl){var d=document.createElement('div');d.style.cssText='font-size:11px;padding:2px 0;color:'+(col||'var(--text2)');d.textContent=new Date().toLocaleTimeString('es-ES')+' '+msg;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}};var generated=[];var skipped=0;progress('Batch: '+count+' videos para '+chName,'var(--blue)');for(var i=0;i<count;i++){progress('['+(i+1)+'/'+count+'] Generando...','');var idea=await apGenerateIdea(ch,generated.slice(-2).map(function(d){return d.hook;}).join(' | '));if(!idea){skipped++;continue;}var score=await apQuickScore(idea.hook,ch.niche,ch);progress('['+(i+1)+'] "'+idea.hook.slice(0,40)+'" Score: '+score,score>=scoreMin?'var(--green)':'var(--amber)');if(score<scoreMin){skipped++;continue;}var script=await apGenerateScript(idea.hook,ch);if(!script){skipped++;continue;}var draft={id:'batch_'+Date.now()+'_'+i,hook:idea.hook,title:idea.hook,script:typeof injectChannelAffiliates==='function'?injectChannelAffiliates(script,chName):script,niche:ch.niche,lang:ch.lang||'es',channel:chName,score:score,status:'pending',source:'batch',createdAt:Date.now()+i*1000,platforms:ch.platforms||['youtube','tiktok']};addDraft(draft);generated.push(draft);logAICall('claude','batch-generation',0.012,600,chName);if(autoSched){try{var q=JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');var times={es:[6,12,18,21],en:[7,12,17,20],lat:[6,11,17,21]};var hours=times[ch.lang||'es']||times.es;var dayOff=Math.floor(i/hours.length);var hourIdx=i%hours.length;var sd=new Date();sd.setDate(sd.getDate()+dayOff+1);sd.setHours(hours[hourIdx],0,0,0);q.push({id:'sq_'+Date.now()+'_'+i,draftId:draft.id,title:draft.hook,channel:chName,platforms:draft.platforms,scheduledAt:sd.getTime(),status:'pending',createdAt:Date.now()});localStorage.setItem('fai_publish_queue',JSON.stringify(q));}catch(e){_diag(e);}}await new Promise(function(r){setTimeout(r,600);});}var sum=generated.length+' scripts · '+skipped+' saltados';progress('Completado: '+sum,'var(--green)');showToast('Batch: '+sum);if(btn){btn.disabled=false;btn.textContent='Generar batch';}renderDashboard();}
 // ─── CANAL CLONER MEJORADO ────────────────────────────────────
 async function cloneChannelToMarket(srcName,tgtLang){var ch=getChannels().find(function(c){return c.name===srcName;});if(!ch){showToast('Canal no encontrado');return;}var tgtName=ch.name+'_'+(tgtLang||'en').toUpperCase();var channels=getChannels();if(channels.find(function(x){return x.name===tgtName;})){showToast('Ya existe '+tgtName);return;}var cloned=Object.assign({},ch,{name:tgtName,lang:tgtLang||'en',autopilot:false,clonedFrom:srcName,createdAt:Date.now(),ytChannelId:'',subs:0,views:0});channels.push(cloned);localStorage.setItem('fai_channels',JSON.stringify(channels));var affDB=tgtLang==='en'?(typeof AFFILIATE_DB_EN!=='undefined'?AFFILIATE_DB_EN:{}):(typeof AFFILIATE_DB!=='undefined'?AFFILIATE_DB:{});var newAff=affDB[ch.niche]||[];if(typeof setChannelAffiliates==='function'&&newAff.length)setChannelAffiliates(tgtName,newAff.slice(0,2));showToast('Canal '+tgtName+' creado con afiliados '+(tgtLang||'en').toUpperCase());renderDashboard();nav('channels');}
 // ─── SMART SCORE ──────────────────────────────────────────────
@@ -5041,7 +5057,7 @@ async function refreshYTToken(){
       localStorage.setItem('fai_yt_token_expires',String(Date.now()+(parseInt(data.expires_in||3600))*1000));
       return data.access_token;
     }
-  }catch(e){}
+  }catch(e){_diag(e);}
   return null;
 }
 
@@ -5119,7 +5135,7 @@ function updateYTOAuthStatus(connected){
         history.replaceState(null,'',window.location.pathname+window.location.search);
         setTimeout(function(){updateYTOAuthStatus(true);showToast('✓ YouTube conectado (token implícito — expira en 1h)');},600);
       }
-    }catch(e){}
+    }catch(e){_diag(e);}
     return;
   }
   // Load saved token
@@ -5129,7 +5145,7 @@ function updateYTOAuthStatus(connected){
 
 // ─── TIKTOK OAUTH + PUBLISH ───────────────────────────────────
 var _ttOAuthToken = null;
-try { _ttOAuthToken = localStorage.getItem('fai_tt_oauth_token') || null; } catch(e) {}
+try { _ttOAuthToken = localStorage.getItem('fai_tt_oauth_token') || null; } catch(e) {_diag(e);}
 
 function startTikTokOAuth(){
   var clientKey = localStorage.getItem('fai_tt_client_key') || '';
@@ -5284,7 +5300,7 @@ const TIER_CONFIG = {
   scale:   { llm:'claude', tts:'11labs', img:'fal',    costPerVid:0.08,  llmModel:'claude-haiku-4-5-20251001', ttsModel:'EL batch API',          label:'SCALE',      video:'Fal.ai Wan2.1 batch',   videoModel:'wan-1.3b'  },
 };
 let activeTier = 'opt';
-try { activeTier = localStorage.getItem('fai_active_tier') || 'opt'; } catch(e) {}
+try { activeTier = localStorage.getItem('fai_active_tier') || 'opt'; } catch(e) {_diag(e);}
 
 // ── LANGUAGE & VOICE CONFIG ──
 const LANG_CONFIG = {
@@ -5294,7 +5310,7 @@ const LANG_CONFIG = {
 };
 let activeLang   = 'es';
 let activeGender = 'm';
-try { activeLang = localStorage.getItem('fai_lang') || 'es'; activeGender = localStorage.getItem('fai_gender') || 'm'; } catch(e) {}
+try { activeLang = localStorage.getItem('fai_lang') || 'es'; activeGender = localStorage.getItem('fai_gender') || 'm'; } catch(e) {_diag(e);}
 function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
 function getVoice()   { return getLangCfg().voices[activeGender]; }
 
@@ -5348,17 +5364,17 @@ function nav(id) {
   if (id === 'pipeline')     setTimeout(() => { updatePipelineChannelSel(workingChannel || ''); }, 80);
   // Views whose init previously lived ONLY in the (now-removed) _navCallbacks object — wired
   // here in audit Phase 1 so they actually initialize on navigation. All guarded.
-  if (id === 'trends')             setTimeout(() => { try { loadTrendsChannels(); } catch(e){} }, 50);
-  if (id === 'influencer')         setTimeout(() => { try { renderInfluencer(); } catch(e){} }, 50);
-  if (id === 'influencer-contenido') setTimeout(() => { try { loadInfluencerContenido(); } catch(e){} }, 50);
-  if (id === 'influencer-video')   setTimeout(() => { try { loadInfluencerContenido(); switchVideoAITab('heygen'); } catch(e){} }, 50);
-  if (id === 'score')              setTimeout(() => { try { renderScoreNichePills(); loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e){} }, 50);
-  if (id === 'reuse')              setTimeout(() => { try { loadReuseDrafts(); } catch(e){} }, 50);
-  if (id === 'clipping')           setTimeout(() => { try { renderClipChannels(); } catch(e){} }, 50);
-  if (id === 'clippipeline')       setTimeout(() => { try { setCPStep(0); } catch(e){} }, 50);
-  if (id === 'models')             setTimeout(() => { try { renderModels(); } catch(e){} }, 50);
-  if (id === 'tiktokauto')         setTimeout(() => { try { renderTikTokStrategy(); } catch(e){} }, 50);
-  if (id === 'clone')              setTimeout(() => { try { setClonerStep(0); } catch(e){} }, 50);
+  if (id === 'trends')             setTimeout(() => { try { loadTrendsChannels(); } catch(e){_diag(e);} }, 50);
+  if (id === 'influencer')         setTimeout(() => { try { renderInfluencer(); } catch(e){_diag(e);} }, 50);
+  if (id === 'influencer-contenido') setTimeout(() => { try { loadInfluencerContenido(); } catch(e){_diag(e);} }, 50);
+  if (id === 'influencer-video')   setTimeout(() => { try { loadInfluencerContenido(); switchVideoAITab('heygen'); } catch(e){_diag(e);} }, 50);
+  if (id === 'score')              setTimeout(() => { try { renderScoreNichePills(); loadScoreChannels(); renderSavedIdeas(); switchScoreTab('idea'); } catch(e){_diag(e);} }, 50);
+  if (id === 'reuse')              setTimeout(() => { try { loadReuseDrafts(); } catch(e){_diag(e);} }, 50);
+  if (id === 'clipping')           setTimeout(() => { try { renderClipChannels(); } catch(e){_diag(e);} }, 50);
+  if (id === 'clippipeline')       setTimeout(() => { try { setCPStep(0); } catch(e){_diag(e);} }, 50);
+  if (id === 'models')             setTimeout(() => { try { renderModels(); } catch(e){_diag(e);} }, 50);
+  if (id === 'tiktokauto')         setTimeout(() => { try { renderTikTokStrategy(); } catch(e){_diag(e);} }, 50);
+  if (id === 'clone')              setTimeout(() => { try { setClonerStep(0); } catch(e){_diag(e);} }, 50);
 }
 
 document.querySelectorAll('.ni[data-view]').forEach(el => {
@@ -5372,8 +5388,8 @@ function setPStep(n) {
     document.getElementById('p-' + i)?.classList.toggle('act', i === n);
   }
   if (n === 5) { try { populateStep5(); } catch(e) { console.warn('populateStep5:', e); } }
-  if (n === 4) { try { applyTierToPipeline(); syncStep4VoiceUI(); } catch(e) {} }
-  if (n === 3) { try { applyTierToPipeline(); } catch(e) {} }
+  if (n === 4) { try { applyTierToPipeline(); syncStep4VoiceUI(); } catch(e) {_diag(e);} }
+  if (n === 3) { try { applyTierToPipeline(); } catch(e) {_diag(e);} }
   if (n === 0) {
     updatePipelineChannelSel(workingChannel || '');
     if (workingChannel) {
@@ -5603,12 +5619,16 @@ function setMode(m) {
 
 function setLang(lang) {
   activeLang = lang;
-  try { localStorage.setItem('fai_lang', lang); } catch(e) {}
+  try { localStorage.setItem('fai_lang', lang); } catch(e) {_diag(e);}
   ['es','en','lat'].forEach(l => {
     const btn = document.getElementById('lang-' + l);
     if (!btn) return;
-    btn.style.background = l === lang ? '#e2e8f0' : 'transparent';
-    btn.style.color      = l === lang ? '#060910' : '#475569';
+    const on = l === lang;
+    btn.style.background = on ? '#e2e8f0' : 'transparent';
+    btn.style.color      = on ? '#060910' : '#475569';
+    btn.style.fontWeight = on ? '700' : '400';                 // B7: non-color cue (weight)
+    btn.style.boxShadow  = on ? 'inset 0 0 0 2px #2383e2' : 'none'; // B7: ring shape cue
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
   // Auto-update voice selector
   const voiceSel = document.getElementById('tts-voice');
@@ -5618,12 +5638,16 @@ function setLang(lang) {
 
 function setVoiceGender(g) {
   activeGender = g;
-  try { localStorage.setItem('fai_gender', g); } catch(e) {}
+  try { localStorage.setItem('fai_gender', g); } catch(e) {_diag(e);}
   ['m','f'].forEach(x => {
     const btn = document.getElementById('voice-' + x);
     if (!btn) return;
-    btn.style.background = x === g ? '#e2e8f0' : 'transparent';
-    btn.style.color      = x === g ? '#060910' : '#475569';
+    const on = x === g;
+    btn.style.background = on ? '#e2e8f0' : 'transparent';
+    btn.style.color      = on ? '#060910' : '#475569';
+    btn.style.fontWeight = on ? '700' : '400';                 // B7: non-color cue (weight)
+    btn.style.boxShadow  = on ? 'inset 0 0 0 2px #2383e2' : 'none'; // B7: ring shape cue
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
   const voiceSel = document.getElementById('tts-voice');
   if (voiceSel) voiceSel.value = getVoice();
@@ -5898,11 +5922,11 @@ try {
   activeUILang     = localStorage.getItem('fai_ui_lang')    || 'es';
   activeCurrency   = localStorage.getItem('fai_currency')   || 'EUR';
   activeDateFormat = localStorage.getItem('fai_date_fmt')   || 'eu';
-} catch(e) {}
+} catch(e) {_diag(e);}
 
 function setTheme(t) {
   activeTheme = t;
-  try { localStorage.setItem('fai_theme', t); } catch(e) {}
+  try { localStorage.setItem('fai_theme', t); } catch(e) {_diag(e);}
 
   // Apply theme to body
   document.body.classList.toggle('theme-light', t === 'light');
@@ -5924,7 +5948,7 @@ function setTheme(t) {
 
 function setUILang(lang) {
   activeUILang = lang;
-  try { localStorage.setItem('fai_ui_lang', lang); } catch(e) {}
+  try { localStorage.setItem('fai_ui_lang', lang); } catch(e) {_diag(e);}
   ['es','en'].forEach(x => {
     const el = document.getElementById('ui-lang-' + x);
     if (!el) return;
@@ -5942,7 +5966,7 @@ function setUILang(lang) {
 
 function setCurrency(cur) {
   activeCurrency = cur;
-  try { localStorage.setItem('fai_currency', cur); } catch(e) {}
+  try { localStorage.setItem('fai_currency', cur); } catch(e) {_diag(e);}
 
   const symbols = { EUR:'€', USD:'$', GBP:'£' };
   const symbol = symbols[cur] || '$';
@@ -5974,7 +5998,7 @@ function setCurrency(cur) {
 
 function setDateFormat(fmt) {
   activeDateFormat = fmt;
-  try { localStorage.setItem('fai_date_fmt', fmt); } catch(e) {}
+  try { localStorage.setItem('fai_date_fmt', fmt); } catch(e) {_diag(e);}
   ['eu','us'].forEach(x => {
     const el = document.getElementById('fmt-' + x);
     if (!el) return;
@@ -6112,7 +6136,7 @@ async function runStep3Video() {
 // ── BACKEND — Railway video generation
 // ═══════════════════════════════════════════════
 let BACKEND_URL = '';
-try { BACKEND_URL = localStorage.getItem('fai_backend_url') || ''; } catch(e) {}
+try { BACKEND_URL = localStorage.getItem('fai_backend_url') || ''; } catch(e) {_diag(e);}
 
 // Returns headers for all backend calls (adds X-FAI-Key if configured)
 function bkHeaders(extra) {
@@ -6153,7 +6177,7 @@ function renderUserPill() {
     if (avEl) avEl.textContent = avText;
     if (nameEl) nameEl.textContent = dispName;
     if (tierEl) { tierEl.textContent = costStr; tierEl.style.color = cost > 0 ? 'var(--green)' : 'var(--blue)'; }
-  } catch(e) {}
+  } catch(e) {_diag(e);}
 }
 
 function saveBackendUrl() {
@@ -6162,7 +6186,7 @@ function saveBackendUrl() {
   if (!val) { setStatus('backend', 'warn', '⚠ Pega la URL de tu servidor Railway'); return; }
   val = val.replace(/\/$/, '');
   BACKEND_URL = val;
-  try { localStorage.setItem('fai_backend_url', val); } catch(e) {}
+  try { localStorage.setItem('fai_backend_url', val); } catch(e) {_diag(e);}
   inp.value = '';
   inp.placeholder = val;
   const display = document.getElementById('backend-url-display');
@@ -6290,7 +6314,7 @@ async function generateRealVideo() {
       const rawText = await r.text().catch(() => '{}');
       addLog('🔴 Respuesta del servidor: ' + rawText.slice(0, 300), '#f87171');
       let err = {};
-      try { err = JSON.parse(rawText); } catch(e) {}
+      try { err = JSON.parse(rawText); } catch(e) {_diag(e);}
       const errText = Array.isArray(err.detail)
         ? err.detail.map(e => e.msg + ' (' + (e.loc||[]).join('.') + ')').join(' | ')
         : (typeof err.detail === 'string' ? err.detail : rawText.slice(0, 200));
@@ -6613,14 +6637,14 @@ function _memoLS(key, fallback, transform) {
 }
 // Generic typed accessors (use for any fai_* JSON key without a dedicated getter).
 function loadLS(key, fallback) { return _memoLS(key, fallback !== undefined ? fallback : null); }
-function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {_diag(e);} }
 // Network helper: fetch() that aborts after `ms` (default 15s) so a hung request never
 // leaves the UI waiting forever. Returns a normal fetch promise; the timer is always cleared.
 function fetchWithTimeout(url, opts, ms) {
   opts = opts || {};
   var ctrl = ('AbortController' in window) ? new AbortController() : null;
   if (ctrl) opts.signal = ctrl.signal;
-  var timer = ctrl ? setTimeout(function(){ try { ctrl.abort(); } catch(e) {} }, ms || 15000) : null;
+  var timer = ctrl ? setTimeout(function(){ try { ctrl.abort(); } catch(e) {_diag(e);} }, ms || 15000) : null;
   return (window.__origFetch || fetch)(url, opts).finally(function(){ if (timer) clearTimeout(timer); });
 }
 // B1: universal fetch timeout. Wrap window.fetch ONCE so every API call (all ~70 sites)
@@ -6636,7 +6660,7 @@ function fetchWithTimeout(url, opts, ms) {
     if (opts.signal) return _orig(url, opts);          // respect caller's own abort control
     var ctrl = new AbortController();
     opts.signal = ctrl.signal;
-    var timer = setTimeout(function(){ try { ctrl.abort(); } catch(e){} }, opts.__timeoutMs || 30000);
+    var timer = setTimeout(function(){ try { ctrl.abort(); } catch(e){_diag(e);} }, opts.__timeoutMs || 30000);
     return _orig(url, opts).finally(function(){ clearTimeout(timer); });
   };
   window.__fetchPatched = true;
@@ -6644,8 +6668,12 @@ function fetchWithTimeout(url, opts, ms) {
 // DOM micro-helpers (replace the const setEl=(id,v)=>{…} pattern duplicated across the file).
 function setEl(id, v)    { var el = document.getElementById(id); if (el) el.textContent = v; }
 function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.innerHTML   = h; }
+// B8: gated diagnostics. Empty catch blocks now call _diag(e) instead of swallowing silently.
+// Silent by default (no console noise); run localStorage.setItem('fai_debug','1') in the
+// console to surface every caught error. Uses catch(_) so it never matches its own pattern.
+function _diag(e) { try { if (localStorage.getItem('fai_debug') === '1') console.warn('[caught]', e); } catch(_) {} }
 // Schema version hook — currently a no-op; gives future migrations a place to land.
-(function(){ try { if (!localStorage.getItem('fai_schema_version')) localStorage.setItem('fai_schema_version', '1'); } catch(e) {} })();
+(function(){ try { if (!localStorage.getItem('fai_schema_version')) localStorage.setItem('fai_schema_version', '1'); } catch(e) {_diag(e);} })();
 
 function getDrafts() {
   // Normalize createdAt once (old drafts stored ISO strings, new code uses numeric timestamps).
@@ -6659,7 +6687,7 @@ function getDrafts() {
   });
 }
 function saveDrafts(drafts) {
-  try { localStorage.setItem('fai_drafts', JSON.stringify(drafts)); } catch(e) {}
+  try { localStorage.setItem('fai_drafts', JSON.stringify(drafts)); } catch(e) {_diag(e);}
 }
 
 function addDraft(draft) {
@@ -7009,9 +7037,9 @@ function getChannels() {
   return _memoLS('fai_channels', []);
 }
 function saveChannels(channels) {
-  try { localStorage.setItem('fai_channels', JSON.stringify(channels)); } catch(e) {}
+  try { localStorage.setItem('fai_channels', JSON.stringify(channels)); } catch(e) {_diag(e);}
   // Refresh grid + badge without blocking the caller
-  setTimeout(function(){ try { if(typeof renderChannels==='function') renderChannels(); } catch(e){} }, 0);
+  setTimeout(function(){ try { if(typeof renderChannels==='function') renderChannels(); } catch(e){_diag(e);} }, 0);
 }
 function approveAndPublish() {
   const title  = document.getElementById('apv-title')?.value.trim() || '';
@@ -7721,7 +7749,7 @@ function getAnalyticsLog() {
   return _memoLS('fai_analytics', []);
 }
 function saveAnalyticsLog(log) {
-  try { localStorage.setItem('fai_analytics', JSON.stringify(log)); } catch(e) {}
+  try { localStorage.setItem('fai_analytics', JSON.stringify(log)); } catch(e) {_diag(e);}
 }
 function logAICall(type, channel, cost, tokens) {
   const log = getAnalyticsLog();
@@ -7757,7 +7785,7 @@ function renderScheduler() {
   const el = document.getElementById('scheduler-queue');
   if (!el) return;
   let queue = [];
-  try { queue = JSON.parse(localStorage.getItem('fai_publish_queue') || '[]'); } catch(e) {}
+  try { queue = JSON.parse(localStorage.getItem('fai_publish_queue') || '[]'); } catch(e) {_diag(e);}
   if (!queue.length) {
     el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3)"><div style="font-size:36px;margin-bottom:12px">📅</div><div style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text1)">No hay vídeos programados</div><p style="font-size:12px;max-width:340px;margin:0 auto 16px">Los vídeos auto-aprobados por el AutoPilot aparecen aquí. También puedes programar manualmente desde Borradores.</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-p btn-sm" onclick="nav(\'pipeline\')">▶ Ir al Pipeline →</button><button class="btn btn-g btn-sm" onclick="nav(\'drafts\')">📋 Ver Borradores</button><button class="btn btn-g btn-sm" onclick="nav(\'autopilot\')">🤖 AutoPilot</button></div></div>';
     return;
@@ -7788,7 +7816,7 @@ function removeFromQueue(id) {
     localStorage.setItem('fai_publish_queue', JSON.stringify(q));
     renderScheduler();
     showToast('Eliminado de la cola');
-  } catch(e) {}
+  } catch(e) {_diag(e);}
 }
 
 // ══════════════════════════════════════════════════════════
@@ -8753,7 +8781,7 @@ function getClipChannels() {
   try { return JSON.parse(localStorage.getItem('fai_clip_channels') || '[]'); } catch(e) { return []; }
 }
 function saveClipChannels(chs) {
-  try { localStorage.setItem('fai_clip_channels', JSON.stringify(chs)); } catch(e) {}
+  try { localStorage.setItem('fai_clip_channels', JSON.stringify(chs)); } catch(e) {_diag(e);}
 }
 function renderClipChannels() {
   const chs = getClipChannels();
@@ -8870,7 +8898,7 @@ function getAffiliates() {
   return _memoLS('fai_affiliates', []);
 }
 function saveAffiliates(affs) {
-  try { localStorage.setItem('fai_affiliates', JSON.stringify(affs)); } catch(e) {}
+  try { localStorage.setItem('fai_affiliates', JSON.stringify(affs)); } catch(e) {_diag(e);}
 }
 function renderAffiliates() {
   const affs = getAffiliates();
@@ -9773,7 +9801,7 @@ async function publishToYouTube(draftId) {
         try {
           const r = await fetch(fullUrl);
           if (r.ok) videoBlob = await r.blob();
-        } catch(e) {}
+        } catch(e) {_diag(e);}
       }
     }
 
@@ -10128,7 +10156,9 @@ function savePlatformData_store(platform, data) {
   localStorage.setItem('fai_plat_' + platform, JSON.stringify({...data, updatedAt: Date.now()}));
 }
 function getChannelStats(channelId) {
-  try { return JSON.parse(localStorage.getItem('fai_yt_' + channelId) || 'null'); } catch(e) { return null; }
+  // B9: memoized — renderChannels()/renderAnalytics() call this 30+ times per render.
+  // Keyed per channel (fai_yt_<id>); auto-invalidates when saveChannelStats rewrites it.
+  return _memoLS('fai_yt_' + channelId, null);
 }
 function saveChannelStats(channelId, stats) {
   localStorage.setItem('fai_yt_' + channelId, JSON.stringify({...stats, fetchedAt: Date.now()}));
@@ -12372,7 +12402,7 @@ function loadKeys() {
     try {
       const v = localStorage.getItem('fai_key_' + k);
       if (v && v.length > 5) KEYS[k] = v;
-    } catch(e) {}
+    } catch(e) {_diag(e);}
   });
 }
 
@@ -12380,7 +12410,7 @@ function refreshSettingsDisplay() {
   const names = ['anthropic','openai','pexels','elevenlabs'];
   names.forEach(k => {
     let v = null;
-    try { v = localStorage.getItem('fai_key_' + k); } catch(e) {}
+    try { v = localStorage.getItem('fai_key_' + k); } catch(e) {_diag(e);}
 
     if (v && v.length > 5) {
       KEYS[k] = v;
@@ -12459,7 +12489,7 @@ function refreshSettingsDisplay() {
       if (display) display.textContent = savedBackend;
       setStatus('backend', 'ok', '✓ URL configurada · Pulsa "Probar" para verificar');
     }
-  } catch(e) {}
+  } catch(e) {_diag(e);}
 }
 
 // ═══════════════════════════════════════════════
@@ -12474,7 +12504,7 @@ let ttsPexelsClips = [];
 let ttsSelectedScript = '';
 let ttsChannels = [];
 
-try { ttsChannels = JSON.parse(localStorage.getItem('fai_tts_channels') || '[]'); } catch(e) {}
+try { ttsChannels = JSON.parse(localStorage.getItem('fai_tts_channels') || '[]'); } catch(e) {_diag(e);}
 
 // ── MODAL ──
 function openTTSModal() {
@@ -12503,7 +12533,7 @@ function createTTSChannel() {
 
   const ch = { id: Date.now(), name, niche, nicheLabel: nicheLabels[niche], lang: ttsActiveLang, langLabel: langLabels[ttsActiveLang], style, videos: 0, earnings: '$0', createdAt: new Date().toISOString() };
   ttsChannels.push(ch);
-  try { localStorage.setItem('fai_tts_channels', JSON.stringify(ttsChannels)); } catch(e) {}
+  try { localStorage.setItem('fai_tts_channels', JSON.stringify(ttsChannels)); } catch(e) {_diag(e);}
 
   closeTTSModal();
   renderTTSChannels();
@@ -12755,7 +12785,7 @@ function useScript(i, body, hook) {
 async function pasteTSScript() {
   // Try clipboard first
   let text = '';
-  try { text = await navigator.clipboard.readText(); } catch(e) {}
+  try { text = await navigator.clipboard.readText(); } catch(e) {_diag(e);}
 
   const container = document.getElementById('ts-scripts-container');
   if (!container) return;
@@ -13117,7 +13147,7 @@ function diagStorage() {
 function clearAllKeys() {
   if (!confirm('¿Borrar todas las API keys guardadas?')) return;
   ['anthropic','openai','pexels','elevenlabs'].forEach(k => {
-    try { localStorage.removeItem('fai_key_' + k); } catch(e) {}
+    try { localStorage.removeItem('fai_key_' + k); } catch(e) {_diag(e);}
     delete KEYS[k];
     updateKeyBadge(k, false);
     const inp = document.getElementById('key-' + k);
@@ -13797,7 +13827,7 @@ function saveScoredIdea() {
     localStorage.setItem('fai_scored_ideas', JSON.stringify(saved.slice(0,20)));
     renderSavedIdeas();
     showToast('✓ Idea guardada');
-  } catch(e) {}
+  } catch(e) {_diag(e);}
 }
 function renderSavedIdeas() {
   const saved = JSON.parse(localStorage.getItem('fai_scored_ideas')||'[]');
@@ -13830,26 +13860,26 @@ function deleteSavedIdea(i) {
   renderSavedIdeas();
 }
 
-try { loadKeys(); } catch(e) {}
-try { loadENHooks(); } catch(e) {}
-try { initNotifications(); } catch(e) {}
-try { setTier(activeTier); } catch(e) {}
-try { initLangVoice(); } catch(e) {}
-try { initPreferences(); } catch(e) {}
-try { updateCostEstimate(); } catch(e) {}
+try { loadKeys(); } catch(e) {_diag(e);}
+try { loadENHooks(); } catch(e) {_diag(e);}
+try { initNotifications(); } catch(e) {_diag(e);}
+try { setTier(activeTier); } catch(e) {_diag(e);}
+try { initLangVoice(); } catch(e) {_diag(e);}
+try { initPreferences(); } catch(e) {_diag(e);}
+try { updateCostEstimate(); } catch(e) {_diag(e);}
 try { nav('dashboard'); } catch(e) { console.error('startup',e); }
 // Phase 4: nav('dashboard') already renders the dashboard (+ weekly chart). Defer the
 // hidden-view pre-render (channels grid, trend spikes, drafts list+badges) to idle so it
 // never blocks first paint. requestIdleCallback with a setTimeout fallback.
 (window.requestIdleCallback || function(f){ return setTimeout(f, 200); })(function(){
-  try { renderChannels(); } catch(e) {}
-  try { renderSpikes(); }   catch(e) {}
-  try { renderDrafts(); }   catch(e) {}
+  try { renderChannels(); } catch(e) {_diag(e);}
+  try { renderSpikes(); }   catch(e) {_diag(e);}
+  try { renderDrafts(); }   catch(e) {_diag(e);}
 });
-try { checkFirstVisit(); } catch(e) {}
-try { checkMissedAutopilotRun(); } catch(e) {}
-try { initSidebarCollapse(); } catch(e) {}
-try { renderUserPill(); } catch(e) {}
+try { checkFirstVisit(); } catch(e) {_diag(e);}
+try { checkMissedAutopilotRun(); } catch(e) {_diag(e);}
+try { initSidebarCollapse(); } catch(e) {_diag(e);}
+try { renderUserPill(); } catch(e) {_diag(e);}
 </script>
 
 <!-- ═══════════════ MOBILE BOTTOM NAV ═══════════════ -->

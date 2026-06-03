@@ -6673,7 +6673,36 @@ function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.inne
 // console to surface every caught error. Uses catch(_) so it never matches its own pattern.
 function _diag(e) { try { if (localStorage.getItem('fai_debug') === '1') console.warn('[caught]', e); } catch(_) {/* noop: never recurse */} }
 // Schema version hook — currently a no-op; gives future migrations a place to land.
-(function(){ try { if (!localStorage.getItem('fai_schema_version')) localStorage.setItem('fai_schema_version', '1'); } catch(e) {_diag(e);} })();
+// B12: localStorage schema migrations. Ordered, idempotent, applied once on load. Bump
+// FAI_SCHEMA_VERSION and add a FAI_MIGRATIONS[n] entry to evolve stored data safely.
+var FAI_SCHEMA_VERSION = 2;
+var FAI_MIGRATIONS = {
+  // v1 -> v2: normalize draft.createdAt from ISO strings to numeric timestamps AT REST
+  // (getDrafts already normalizes on read; this fixes the stored copy once so the read
+  // path can stay a cheap pass-through).
+  2: function() {
+    var raw = localStorage.getItem('fai_drafts');
+    if (!raw) return;
+    var drafts = JSON.parse(raw), changed = false;
+    drafts = drafts.map(function(d){
+      if (d && typeof d.createdAt === 'string') { d.createdAt = new Date(d.createdAt).getTime() || 0; changed = true; }
+      return d;
+    });
+    if (changed) localStorage.setItem('fai_drafts', JSON.stringify(drafts));
+  }
+};
+function runMigrations() {
+  try {
+    var cur = parseInt(localStorage.getItem('fai_schema_version') || '1', 10) || 1;
+    for (var v = cur + 1; v <= FAI_SCHEMA_VERSION; v++) {
+      try { if (typeof FAI_MIGRATIONS[v] === 'function') FAI_MIGRATIONS[v](); }
+      catch(e) { _diag(e); }                       // a failing migration must not brick load
+      localStorage.setItem('fai_schema_version', String(v));
+    }
+    if (cur < 1) localStorage.setItem('fai_schema_version', String(FAI_SCHEMA_VERSION));
+  } catch(e) { _diag(e); }
+}
+runMigrations();   // runs here (during script init), before any startup render reads data
 
 function getDrafts() {
   // Normalize createdAt once (old drafts stored ISO strings, new code uses numeric timestamps).

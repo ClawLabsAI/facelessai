@@ -6607,7 +6607,7 @@ async function renderVideoInBrowser() {
     if (idleEl)    idleEl.style.display    = 'block';
     if (genBtn)    { genBtn.textContent = '③ 🎥 Generar MP4'; genBtn.disabled = false; genBtn.onclick = runStep3Video; }
     if (vid && document.body.contains(vid)) document.body.removeChild(vid);
-    if (audioCtx)  try { audioCtx.close(); } catch(_) {}
+    if (audioCtx)  try { audioCtx.close(); } catch(_) {_diag(_);}
     showToast('✕ ' + e.message.slice(0, 80));
   }
 }
@@ -6671,7 +6671,7 @@ function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.inne
 // B8: gated diagnostics. Empty catch blocks now call _diag(e) instead of swallowing silently.
 // Silent by default (no console noise); run localStorage.setItem('fai_debug','1') in the
 // console to surface every caught error. Uses catch(_) so it never matches its own pattern.
-function _diag(e) { try { if (localStorage.getItem('fai_debug') === '1') console.warn('[caught]', e); } catch(_) {} }
+function _diag(e) { try { if (localStorage.getItem('fai_debug') === '1') console.warn('[caught]', e); } catch(_) {/* noop: never recurse */} }
 // Schema version hook — currently a no-op; gives future migrations a place to land.
 (function(){ try { if (!localStorage.getItem('fai_schema_version')) localStorage.setItem('fai_schema_version', '1'); } catch(e) {_diag(e);} })();
 
@@ -8563,10 +8563,10 @@ function syncStep4VoiceUI() {
   if (vmBtn) { vmBtn.style.background = isM ? 'var(--text1)' : 'transparent'; vmBtn.style.color = isM ? 'var(--bg)' : 'var(--text3)'; }
   if (vfBtn) { vfBtn.style.background = !isM ? 'var(--text1)' : 'transparent'; vfBtn.style.color = !isM ? 'var(--bg)' : 'var(--text3)'; }
   const voiceSel = document.getElementById('tts-voice');
-  if (voiceSel) { try { voiceSel.value = getVoice(); } catch(_) {} }
+  if (voiceSel) { try { voiceSel.value = getVoice(); } catch(_) {_diag(_);} }
   // Also sync pipe-voice-id dropdown
   const pipeVoiceId = document.getElementById('pipe-voice-id');
-  if (pipeVoiceId) { try { pipeVoiceId.value = getVoice(); } catch(_) {} }
+  if (pipeVoiceId) { try { pipeVoiceId.value = getVoice(); } catch(_) {_diag(_);} }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -11456,7 +11456,7 @@ function importData(input) {
       if (status) { status.style.display='block'; status.textContent='✓ Importadas ' + count + ' entradas'; status.style.color='var(--green)'; }
       showToast('✓ Importadas ' + count + ' entradas');
       input.value = '';
-      try { refreshSettingsDisplay(); } catch(err) {}
+      try { refreshSettingsDisplay(); } catch(err) {_diag(err);}
     } catch(err) {
       if (status) { status.style.display='block'; status.textContent='✗ Error: '+err.message; status.style.color='var(--red)'; }
       showToast('✗ Error al importar: ' + err.message);
@@ -13409,7 +13409,7 @@ async function callClaude(prompt, model, maxTokens) {
       };
       const cost = (costMap[useModel] || 0.003) * (tokens / 1000);
       logAICall('claude', (typeof activeChan !== 'undefined' ? activeChan : null) || 'general', cost, tokens);
-    } catch(e2) {}
+    } catch(e2) {_diag(e2);}
     return text;
   } catch(e) {
     clearTimeout(timeout);

@@ -1,0 +1,12 @@
+{
+  "name": "facelessai",
+  "version": "4.39.0",
+  "private": true,
+  "description": "FacelessAI — single-file SPA for AI faceless-video generation (GitHub Pages).",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/check.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "license": "UNLICENSED"
+}

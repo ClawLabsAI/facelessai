@@ -4330,6 +4330,10 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
 <script>
 // ── GLOBALS — must be first to avoid ReferenceError anywhere in script ──
+// workingChannel was only ever ASSIGNED (implicit global), so reading it before the first
+// assignment (e.g. renderChannels on a fresh load) threw ReferenceError per channel card.
+// Declared here so it's always defined. `var` so window.workingChannel also resolves.
+var workingChannel = workingChannel || '';
 
 // ─── CORE KEY MANAGEMENT ─────────────────────────────────
 const KEY_MAP = {
@@ -5333,7 +5337,9 @@ const TITLES = {
   cliplibrary:'📦 Mis Clips', spychannels:'🔍 Espía de Canales', monetization:'💸 Monetización',
   clipping:'✂️ Clipping', clippipeline:'✂️ Pipeline Clipping',
   affiliation:'⭐ Afiliados', admarketing:'📢 Publicidad', analytics:'📊 Analytics',
-  settings:'⚙️ Configuración'
+  settings:'⚙️ Configuración',
+  'saas-users':'👥 Usuarios', 'saas-billing':'💳 Facturación', 'saas-plans':'🎟️ Planes',
+  'saas-admin':'🛠️ Admin', 'saas-onboarding':'🚀 Onboarding'
 };
 
 function nav(id) {
@@ -5581,9 +5587,8 @@ function useTrendInPipeline(hook, suggestedChannel) {
   nav('pipeline');
   setTimeout(() => {
     updatePipelineChannelSel(workingChannel || '');
-    setPStep(1); // jump to step 2 (Ideas) with idea pre-filled
-    const ideaInput = document.getElementById('p1-custom-input') || document.getElementById('custom-idea-input');
-    if (ideaInput) { ideaInput.value = hook; ideaInput.dispatchEvent(new Event('input')); }
+    setPStep(1); // jump to step 2 (Ideas) with the idea pre-loaded as a selectable card
+    seedPipelineIdea(hook);
     showToast('▶ Idea lista en pipeline: ' + hook.slice(0, 40));
   }, 100);
 }
@@ -6993,8 +6998,7 @@ function continueDraftInPipeline(id) {
   setTimeout(function() {
     updatePipelineChannelSel(workingChannel || '');
     setPStep(1);
-    var ideaInput = document.getElementById('p1-custom-input') || document.getElementById('custom-idea-input');
-    if (ideaInput) { ideaInput.value = window.currentIdea; ideaInput.dispatchEvent(new Event('input')); }
+    seedPipelineIdea(window.currentIdea);
     showToast('↩ Borrador cargado en pipeline: ' + (window.currentIdea||'').slice(0,40));
   }, 100);
 }
@@ -13757,6 +13761,17 @@ function renderIdeas(ideas) {
       </div>
     </div>`).join('');
   if (ideas.length > 0) selectedIdeaIndex = 0;
+}
+
+// Seed the Ideas step with a single carried-over idea (from "↩ Pipeline" on a draft, or
+// "use trend"). Renders it as the selected idea card so it's visible AND so the Score/Script
+// steps pick it up via generatedIdeas[selectedIdeaIndex]. Fixes the previously-broken
+// continueDraftInPipeline()/useTrendInPipeline() which targeted a non-existent input.
+function seedPipelineIdea(hook) {
+  if (!hook) return;
+  generatedIdeas = [{ hook: hook, formato: 'Manual', viralScore: '—', cpm: '—', monetizacion: 'idea cargada' }];
+  selectedIdeaIndex = 0;
+  try { renderIdeas(generatedIdeas); } catch(e) { _diag(e); }
 }
 
 let selectedIdeaIndex = 0;

@@ -6677,6 +6677,39 @@ function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.inne
 // Silent by default (no console noise); run localStorage.setItem('fai_debug','1') in the
 // console to surface every caught error. Uses catch(_) so it never matches its own pattern.
 function _diag(e) { try { if (localStorage.getItem('fai_debug') === '1') console.warn('[caught]', e); } catch(_) {/* noop: never recurse */} }
+// B11: read-only state inspector. The app keeps ~12 mutable globals (currentIdea,
+// currentScript, selectedNiche, workingChannel, activeTier…) mutated from 100+ sites. A
+// full migration to getters/setters would touch every one of those sites; instead this is a
+// single, safe observation point for debugging state/race issues without changing behavior.
+// In the console: AppState.snapshot() dumps current values; AppState.trace('label') logs
+// them when localStorage fai_debug=1. Getters are lazy + guarded (never throw).
+function _gs(fn){ try { return fn(); } catch(e) { return undefined; } }
+window.AppState = {
+  get currentIdea()      { return _gs(function(){ return currentIdea; }); },
+  get currentScript()    { return _gs(function(){ return currentScript; }); },
+  get selectedNiche()    { return _gs(function(){ return selectedNiche; }); },
+  get workingChannel()   { return _gs(function(){ return workingChannel; }); },
+  get activeTier()       { return _gs(function(){ return activeTier; }); },
+  get activeLang()       { return _gs(function(){ return activeLang; }); },
+  get activeGender()     { return _gs(function(){ return activeGender; }); },
+  get generatedIdeas()   { return _gs(function(){ return generatedIdeas; }); },
+  get selectedIdeaIndex(){ return _gs(function(){ return selectedIdeaIndex; }); },
+  get autopilotRunning() { return _gs(function(){ return autopilotRunning; }); },
+  get apBusy()           { return _gs(function(){ return _apRunning; }); },
+  get currentMode()      { return _gs(function(){ return currentMode; }); },
+  snapshot: function() {
+    var s = this;
+    return {
+      currentIdea: s.currentIdea,
+      currentScript: (s.currentScript || '').slice(0, 60),
+      selectedNiche: s.selectedNiche, workingChannel: s.workingChannel,
+      activeTier: s.activeTier, activeLang: s.activeLang, activeGender: s.activeGender,
+      ideas: (s.generatedIdeas || []).length, selectedIdeaIndex: s.selectedIdeaIndex,
+      autopilotRunning: s.autopilotRunning, apBusy: s.apBusy, currentMode: s.currentMode
+    };
+  },
+  trace: function(label) { try { if (localStorage.getItem('fai_debug') === '1') console.log('[AppState' + (label ? ' ' + label : '') + ']', this.snapshot()); } catch(e) { _diag(e); } }
+};
 // Schema version hook — currently a no-op; gives future migrations a place to land.
 // B12: localStorage schema migrations. Ordered, idempotent, applied once on load. Bump
 // FAI_SCHEMA_VERSION and add a FAI_MIGRATIONS[n] entry to evolve stored data safely.

@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Local backend scratch / embedded clone (not part of the deployed app)
+_backend_tmp/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log

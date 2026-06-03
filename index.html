@@ -7876,6 +7876,109 @@ function renderScheduler() {
     </div>`;
   }).join('');
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// Inline handlers that were referenced in the HTML but never defined (surfaced by
+// scripts/verify-handlers.mjs). Implemented here.
+// ════════════════════════════════════════════════════════════════════════════
+
+// Scheduler "↻ Actualizar" — alias to the real renderer.
+function renderPublishQueue() { try { renderScheduler(); } catch(e) { _diag(e); } }
+
+// ── TikTok / Instagram manual stats (Analytics → TikTok/IG tab) ──
+function getTTStats() { return _memoLS('fai_tt_stats', {}); }
+function populateTTChannelSel() {
+  var sel = document.getElementById('tt-channel-sel');
+  if (!sel) return;
+  var current = sel.value;
+  var opts = getChannels().map(function(c){
+    var n = String(c.name).replace(/"/g, '&quot;');
+    return '<option value="' + n + '">' + c.name + '</option>';
+  }).join('');
+  sel.innerHTML = '<option value="">-- Selecciona canal --</option>' + opts;
+  if (current) sel.value = current;
+}
+function loadTTStats() {
+  var sel = document.getElementById('tt-channel-sel');
+  var panel = document.getElementById('tt-stats-panel');
+  if (!sel || !panel) return;
+  var name = sel.value;
+  if (!name) { panel.style.display = 'none'; setHTML('tt-stats-display', ''); return; }
+  panel.style.display = 'block';
+  var st = getTTStats()[name] || {};
+  var setV = function(id, v){ var el = document.getElementById(id); if (el) el.value = (v != null ? v : ''); };
+  setV('tt-followers', st.ttFollowers);
+  setV('tt-views-month', st.ttViews);
+  setV('ig-followers', st.igFollowers);
+  renderTTStatsDisplay(name);
+}
+function saveTTStats() {
+  var sel = document.getElementById('tt-channel-sel');
+  if (!sel || !sel.value) { showToast('Selecciona un canal primero'); return; }
+  var name = sel.value;
+  var num = function(id){ var el = document.getElementById(id); return el && el.value ? (parseInt(el.value, 10) || 0) : 0; };
+  var all = getTTStats();
+  all[name] = { ttFollowers: num('tt-followers'), ttViews: num('tt-views-month'), igFollowers: num('ig-followers'), savedAt: Date.now() };
+  saveLS('fai_tt_stats', all);
+  renderTTStatsDisplay(name);
+  showToast('✓ Stats de ' + name + ' guardadas');
+}
+function renderTTStatsDisplay(name) {
+  var st = getTTStats()[name];
+  var el = document.getElementById('tt-stats-display');
+  if (!el) return;
+  if (!st) { el.innerHTML = ''; return; }
+  var fmt = function(v){ return v ? v.toLocaleString('es-ES') : '—'; };
+  var rows = [['TikTok seguidores', fmt(st.ttFollowers)], ['TikTok views/mes', fmt(st.ttViews)], ['Instagram seguidores', fmt(st.igFollowers)]];
+  el.innerHTML = '<div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px">' +
+    rows.map(function(r){ return '<div style="background:var(--bg2);border-radius:var(--r);padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;font-family:var(--mono)">' + r[1] + '</div><div style="font-size:10px;color:var(--text3);margin-top:2px">' + r[0] + '</div></div>'; }).join('') +
+    '</div>';
+}
+function analyzeTTPerformance() {
+  var sel = document.getElementById('tt-channel-sel');
+  if (!sel || !sel.value) { showToast('Selecciona un canal primero'); return; }
+  var st = getTTStats()[sel.value];
+  if (!st || (!st.ttFollowers && !st.ttViews)) { showToast('Guarda primero los datos del canal'); return; }
+  // Deterministic local analysis — no API call needed.
+  var followers = st.ttFollowers || 0, views = st.ttViews || 0, ig = st.igFollowers || 0;
+  var vpf = followers ? (views / followers) : 0;                 // monthly views per follower
+  var band = vpf >= 8 ? ['Excelente', 'var(--green)']
+    : vpf >= 3 ? ['Buena', 'var(--amber)']
+    : vpf > 0 ? ['Baja — no estás llegando a no-seguidores', 'var(--red)']
+    : ['Sin datos de views', 'var(--text3)'];
+  var crossover = followers ? Math.round((ig / followers) * 100) : 0;
+  var tips = [];
+  if (vpf > 0 && vpf < 3) tips.push('Views/seguidor bajas: refuerza el hook de 0-3s y publica en horas pico (18-21h).');
+  if (vpf >= 8) tips.push('Gran alcance viral: añade más CTAs a afiliados y cross-postea a IG Reels.');
+  if (ig === 0) tips.push('Sin Instagram: replica tus TikToks como Reels para duplicar alcance sin coste extra.');
+  else if (crossover < 25) tips.push('Audiencia de IG pequeña vs TikTok (' + crossover + '%): añade CTA "sígueme en Instagram".');
+  if (!tips.length) tips.push('Métricas equilibradas. Mantén la cadencia y prueba 1-2 nichos adyacentes.');
+  setHTML('tt-stats-display',
+    '<div style="margin-top:12px;background:var(--bg2);border-left:3px solid ' + band[1] + ';border-radius:var(--r);padding:12px 14px">' +
+    '<div style="font-size:13px;font-weight:700;margin-bottom:6px">📊 Análisis de ' + sel.value + '</div>' +
+    '<div style="font-size:12px;color:var(--text2)">Alcance: <strong style="color:' + band[1] + '">' + band[0] + '</strong> · ' + vpf.toFixed(1) + ' views por seguidor/mes</div>' +
+    '<ul style="font-size:12px;color:var(--text2);margin:8px 0 0 16px;line-height:1.7">' + tips.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul></div>');
+  showToast('✓ Análisis generado');
+}
+
+// ── Niche suggestion card → start a channel pre-seeded with that niche ──
+function applyNicheToChannel(name, category) {
+  try {
+    selectedNiche = name;
+    if (typeof openModal === 'function') openModal();
+    setTimeout(function(){
+      var nameInp = document.getElementById('ch-name');
+      if (nameInp && !nameInp.value) nameInp.value = String(name).replace(/[^\w\sáéíóúñÁÉÍÓÚÑ]/gi, '').trim().slice(0, 24);
+      var nicheSel = document.getElementById('ch-niche');
+      if (nicheSel) {
+        var want = String(category || name || '').toLowerCase();
+        Array.prototype.forEach.call(nicheSel.options, function(o){ if (o.value && want.indexOf(o.value) !== -1) nicheSel.value = o.value; });
+      }
+    }, 60);
+    showToast('✨ Nicho "' + name + '" — completa los datos del canal');
+  } catch(e) { _diag(e); showToast('No se pudo aplicar el nicho'); }
+}
+
 function removeFromQueue(id) {
   try {
     let q = JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');
@@ -10527,6 +10630,7 @@ function switchAnalyticsTab(tab) {
     if (btn) btn.classList.toggle('act', t === tab);
     if (panel) panel.style.display = t === tab ? 'block' : 'none';
   });
+  if (tab === 'tiktok') { try { populateTTChannelSel(); } catch(e) { _diag(e); } }
 }
 
 function openChannelRpmModal(channelName) {

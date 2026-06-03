@@ -8,10 +8,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const file = process.argv[2] ? join(root, process.argv[2]) : join(root, 'dist/index.html');
 const html = readFileSync(file, 'utf8');
 
+// JS keywords that can legitimately start an inline handler (e.g. onclick="if(...)").
+const KEYWORDS = new Set(['if', 'for', 'while', 'switch', 'return', 'do', 'try', 'with', 'void', 'new', 'delete', 'typeof', 'throw']);
 const names = new Set();
 const handlerRe = /\son[a-z]+="([A-Za-z_$][\w$]*)\s*\(/g;
 let m;
-while ((m = handlerRe.exec(html))) names.add(m[1]);
+while ((m = handlerRe.exec(html))) if (!KEYWORDS.has(m[1])) names.add(m[1]);
 
 const js = (html.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gi) || []).join('\n');
 

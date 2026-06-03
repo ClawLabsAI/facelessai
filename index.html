@@ -1502,7 +1502,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div style="font-size:11px;color:var(--text3)">💡 <strong style="color:var(--text2)">Sin canal activo</strong> — las ideas se generarán por nicho genérico. Para ideas personalizadas, <button class="btn btn-g btn-sm" style="font-size:11px;padding:2px 10px;margin-left:4px" onclick="nav('channels')">crea un canal →</button></div>
     </div>
 
-    <div class="sh"><h2 id="p0-niche-heading">Selecciona el nicho <span id="p0-niche-ovride" style="display:none;font-size:11px;font-weight:400;color:var(--text3);font-family:var(--mono)">(override del canal)</span></h2><button class="btn btn-g btn-sm" onclick="showToast('Tendencias actualizadas ✓')">↻ Actualizar</button></div>
+    <div class="sh"><h2 id="p0-niche-heading">Selecciona el nicho <span id="p0-niche-ovride" style="display:none;font-size:11px;font-weight:400;color:var(--text3);font-family:var(--mono)">(override del canal)</span></h2><button class="btn btn-g btn-sm" onclick="refreshPipelineStep0()">↻ Actualizar</button></div>
     <div class="g3">
       <div class="nc sel" style="--ac:var(--green)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">💰</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Finanzas básicas</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:92%;background:var(--blue)"></div></div><div class="si-lbl">Viral 92</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:30%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 30</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:88%;background:var(--amber)"></div></div><div class="si-lbl">CPM $8.8</div></div></div></div>
       <div class="nc" style="--ac:var(--purple)" onclick="selectNiche(this)"><div style="font-size:22px;margin-bottom:6px">🧠</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Motivación / psicología</div><div class="score-row"><div class="si"><div class="si-bar"><div class="si-fill" style="width:87%;background:var(--blue)"></div></div><div class="si-lbl">Viral 87</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:55%;background:var(--blue)"></div></div><div class="si-lbl">Sat. 55</div></div><div class="si"><div class="si-bar"><div class="si-fill" style="width:72%;background:var(--amber)"></div></div><div class="si-lbl">CPM $7.2</div></div></div></div>
@@ -1971,7 +1971,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px" id="url-summary">Más de 4,200 trabajadores del sector tecnológico han perdido su empleo en Q1 2026, mientras grandes empresas adoptan IA para automatizar tareas de soporte, análisis de datos y desarrollo de software básico. La tendencia se acelera en startups de Series B+.</div>
         <div class="flex g6 fw">
           <span class="tag tr">Trending +620%</span>
-          <span class="tag ta">Score predictivo: 91/100</span>
+          <span class="tag ta" id="url-score-tag">Score predictivo: —</span>
           <span class="tag tb">Ventana: 18h restantes</span>
         </div>
       </div>
@@ -2057,6 +2057,9 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div style="font-size:11px;color:var(--text3);margin-top:7px">Analiza títulos, duración, frecuencia, hooks y patrones de los vídeos más virales. No copia contenido, extrae la fórmula.</div>
   </div>
 
+  <!-- Real analysis result (filled by analyzeChannel) -->
+  <div id="clone-analysis-result" class="card mb14" style="display:none;border-color:var(--blue)"></div>
+
   <!-- Demo results always shown -->
   <div style="background:#fef3c7;border:1px solid #fbbf2422;border-radius:var(--rl);padding:11px 14px;margin-bottom:14px;font-size:13px">
     <span style="color:var(--amber);font-weight:600">Analizando:</span> <span>@Graham Stephan — 4.8M subs · 312 vídeos procesados · datos extraídos</span>
@@ -2092,7 +2095,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <tr><td style="color:var(--text3)">CTA más efectivo</td><td style="color:var(--text1)">Pregunta en comentarios</td></tr>
         <tr><td style="color:var(--text3)">Patrón de interrupción</td><td style="color:var(--text1)">Cada 7–10 segundos</td></tr>
       </table>
-      <button class="btn btn-p btn-w mt12" onclick="showToast('✓ Perfil de canal aplicado al pipeline')">Aplicar perfil a mi pipeline →</button>
+      <button class="btn btn-p btn-w mt12" onclick="applyChannelProfileToPipeline()">Aplicar perfil a mi pipeline →</button>
     </div>
   </div>
 
@@ -2211,7 +2214,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   </div>
 
   <div class="card mb16">
-    <div class="sh"><h2>Vídeos con potencial de reutilización</h2><button class="btn btn-g btn-sm" onclick="showToast('Analizando retención de todos los vídeos...')">Analizar todos</button></div>
+    <div class="sh"><h2>Vídeos con potencial de reutilización</h2><button class="btn btn-g btn-sm" onclick="reuseAnalyzeAll()">Analizar todos</button></div>
+    <div style="font-size:11px;color:var(--text3);background:var(--bg2);border-radius:var(--r);padding:8px 12px;margin-bottom:12px">ℹ️ Ejemplos. Para cortar clips reales de un vídeo tuyo usa el <strong>Pipeline de Clipping</strong> (URL → transcripción → cortes).</div>
 
     <div class="vrow">
       <div class="vthumb">💰</div>
@@ -2226,8 +2230,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 5 clips — coste: $0.00')">Generar 5 clips</button>
-        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok e IG...')">Cross-post</button>
+        <button class="btn btn-p btn-sm" onclick="reuseGenerateClips()">Generar 5 clips</button>
+        <button class="btn btn-g btn-sm" onclick="reuseCrossPost()">Cross-post</button>
       </div>
     </div>
 
@@ -2244,8 +2248,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 7 clips — coste: $0.00')">Generar 7 clips</button>
-        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok...')">Cross-post</button>
+        <button class="btn btn-p btn-sm" onclick="reuseGenerateClips()">Generar 7 clips</button>
+        <button class="btn btn-g btn-sm" onclick="reuseCrossPost()">Cross-post</button>
       </div>
     </div>
 
@@ -2261,8 +2265,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <button class="btn btn-p btn-sm" onclick="showToast('✓ Generando 7 clips — coste: $0.00')">Generar 7 clips</button>
-        <button class="btn btn-g btn-sm" onclick="showToast('Adaptando para TikTok + IG...')">Cross-post</button>
+        <button class="btn btn-p btn-sm" onclick="reuseGenerateClips()">Generar 7 clips</button>
+        <button class="btn btn-g btn-sm" onclick="reuseCrossPost()">Cross-post</button>
       </div>
     </div>
   </div>
@@ -2372,13 +2376,13 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div style="display:flex;flex-direction:column;gap:12px">
         <div>
           <label class="lbl">Límite mensual total ($)</label>
-          <input class="inp" type="number" value="50">
+          <input class="inp" type="number" value="50" id="bl-monthly">
           <div style="margin-top:5px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px"><span>$2.47 gastado</span><span>4.9%</span></div><div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden"><div style="width:4.9%;height:100%;background:var(--blue);border-radius:3px"></div></div></div>
         </div>
-        <div><label class="lbl">Límite diario AutoPilot ($)</label><input class="inp" type="number" value="2"></div>
-        <div><label class="lbl">Coste máximo por vídeo ($)</label><input class="inp" type="number" value="0.10" step="0.01"></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Pausar AutoPilot al alcanzar límite</span></div>
-        <button class="btn btn-p" style="align-self:flex-end" onclick="showToast('✓ Límites de presupuesto guardados')">Guardar</button>
+        <div><label class="lbl">Límite diario AutoPilot ($)</label><input class="inp" type="number" value="2" id="bl-daily"></div>
+        <div><label class="lbl">Coste máximo por vídeo ($)</label><input class="inp" type="number" value="0.10" step="0.01" id="bl-per-video"></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" checked id="bl-pause"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Pausar AutoPilot al alcanzar límite</span></div>
+        <button class="btn btn-p" style="align-self:flex-end" onclick="saveBudgetLimits()">Guardar</button>
       </div>
     </div>
   </div>
@@ -2715,7 +2719,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div style="font-size:14px;font-weight:600;margin-bottom:12px">⚙️ Configuración AutoPost</div>
       <div style="margin-bottom:10px">
         <label class="lbl">Vídeos por producto por día</label>
-        <select class="sel">
+        <select class="sel" id="ttauto-perday">
           <option>1 variante/día</option>
           <option selected>2 variantes/día</option>
           <option>3 variantes/día</option>
@@ -2723,7 +2727,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       </div>
       <div style="margin-bottom:10px">
         <label class="lbl">Rotación de hooks</label>
-        <select class="sel">
+        <select class="sel" id="ttauto-rotation">
           <option selected>Automática (IA elige el mejor)</option>
           <option>Review → Problema → Tutorial → Antes/Después</option>
           <option>Solo el mejor performer</option>
@@ -2731,16 +2735,16 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       </div>
       <div style="margin-bottom:10px">
         <label class="lbl">Límite de gasto diario</label>
-        <input class="inp" value="$0.50" style="font-size:13px">
+        <input class="inp" value="$0.50" style="font-size:13px" id="ttauto-daily">
       </div>
       <div style="margin-bottom:10px">
         <label class="lbl">Publicación</label>
-        <select class="sel">
+        <select class="sel" id="ttauto-publish">
           <option>Manual (descargo MP4)</option>
           <option>API TikTok (próximamente)</option>
         </select>
       </div>
-      <button class="btn btn-p btn-sm" style="width:100%" onclick="showToast('⚡ AutoPost configurado — generará vídeos según programación')">Guardar configuración</button>
+      <button class="btn btn-p btn-sm" style="width:100%" onclick="saveTikTokAutoConfig()">Guardar configuración</button>
     </div>
 
     <div class="card">
@@ -5367,7 +5371,7 @@ function nav(id) {
   if (id === 'autopilot')    setTimeout(() => { if(typeof renderAutopilot==='function') renderAutopilot(); if(typeof renderAPChannelList==='function') renderAPChannelList(); if(typeof updateAPStats==='function') updateAPStats(); }, 50);
   if (id === 'monetization') setTimeout(() => { if(typeof renderProfitabilityDashboard==='function') renderProfitabilityDashboard(); }, 50);
   if (id === 'analytics')    setTimeout(() => { if(typeof renderAnalytics==='function') renderAnalytics(); }, 50);
-  if (id === 'budget')       setTimeout(() => { if(typeof renderNicheCalculator==='function') renderNicheCalculator(); if(typeof renderNichesTableStatic==='function') renderNichesTableStatic(); if(typeof renderProfitabilityDashboard==='function') renderProfitabilityDashboard(); if(typeof renderENvsESComparison==='function') renderENvsESComparison(); }, 50);
+  if (id === 'budget')       setTimeout(() => { if(typeof renderNicheCalculator==='function') renderNicheCalculator(); if(typeof renderNichesTableStatic==='function') renderNichesTableStatic(); if(typeof renderProfitabilityDashboard==='function') renderProfitabilityDashboard(); if(typeof renderENvsESComparison==='function') renderENvsESComparison(); if(typeof loadBudgetLimits==='function') loadBudgetLimits(); }, 50);
   if (id === 'cliplibrary')  setTimeout(() => { if(typeof renderClipLibrary==='function') renderClipLibrary(); }, 50);
   if (id === 'spychannels')  setTimeout(() => { if(typeof loadSpyHistory==='function') loadSpyHistory(); }, 50);
   if (id === 'affiliation')  setTimeout(() => { if(typeof renderAffiliates==='function') renderAffiliates(); }, 50);
@@ -5384,7 +5388,7 @@ function nav(id) {
   if (id === 'clipping')           setTimeout(() => { try { renderClipChannels(); } catch(e){_diag(e);} }, 50);
   if (id === 'clippipeline')       setTimeout(() => { try { setCPStep(0); } catch(e){_diag(e);} }, 50);
   if (id === 'models')             setTimeout(() => { try { renderModels(); } catch(e){_diag(e);} }, 50);
-  if (id === 'tiktokauto')         setTimeout(() => { try { renderTikTokStrategy(); } catch(e){_diag(e);} }, 50);
+  if (id === 'tiktokauto')         setTimeout(() => { try { renderTikTokStrategy(); } catch(e){_diag(e);} try { loadTikTokAutoConfig(); } catch(e){_diag(e);} }, 50);
   if (id === 'clone')              setTimeout(() => { try { setClonerStep(0); } catch(e){_diag(e);} }, 50);
 }
 
@@ -5593,22 +5597,113 @@ function useTrendInPipeline(hook, suggestedChannel) {
   }, 100);
 }
 
-// ── URL ──
-function analyzeURL() {
-  const url = document.getElementById('url-input').value;
+// ── URL → Vídeo (real Claude analysis) ──
+async function analyzeURL() {
+  var url = (document.getElementById('url-input') || {}).value || '';
   if (!url.trim()) { showToast('Introduce una URL primero'); return; }
-  showToast('✓ URL analizada · Contenido extraído · Score predictivo: 91/100');
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key en ⚙️ Configuración'); setTimeout(function(){ nav('settings'); }, 800); return; }
+  var btn = document.querySelector('#view-url2video .btn-p');
+  if (btn) { btn.disabled = true; btn.dataset.lbl = btn.textContent; btn.textContent = '⏳ Analizando...'; }
+  try {
+    var prompt = 'Analiza este contenido para convertirlo en un vídeo corto faceless (YouTube Shorts/TikTok). URL: ' + url +
+      '\nResponde SOLO JSON: {"titulo":"titular gancho del vídeo","resumen":"resumen de 1-2 frases","angulo":"Datos impactantes / shock|Análisis + solución práctica|Top 5 puntos clave|Historia narrativa|Educativo simplificado","score":85,"hook":"primera frase del guion (0-3s)"}';
+    var raw = await callClaude(prompt, null, 500);
+    var r = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    window._urlAnalysis = r;
+    setEl('url-title', '🤖 ' + (r.titulo || ''));
+    setEl('url-summary', r.resumen || '');
+    setEl('url-score-tag', 'Score predictivo: ' + (r.score != null ? r.score : '—') + '/100');
+    var ang = document.getElementById('url-angle');
+    if (ang && r.angulo) Array.prototype.forEach.call(ang.options, function(o){ if (o.value === r.angulo || o.textContent === r.angulo) ang.value = o.value; });
+    var pv = document.getElementById('url-preview'); if (pv) pv.style.display = 'block';
+    if (typeof logAICall === 'function') logAICall('claude', 'url2video-analyze', 0.003, 300);
+    showToast('✓ URL analizada · Score ' + (r.score != null ? r.score : '—') + '/100');
+  } catch(e) { showToast('✗ ' + e.message); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = btn.dataset.lbl || 'Analizar URL'; } }
 }
 function generateFromURL() {
-  showToast('✓ Generando vídeo desde URL — redirigiendo al pipeline...');
-  setTimeout(() => nav('pipeline'), 1200);
+  var r = window._urlAnalysis;
+  var hook = r ? (r.hook || r.titulo) : '';
+  if (!hook) { showToast('Analiza una URL primero'); return; }
+  window.currentIdea = hook;
+  nav('pipeline');
+  setTimeout(function(){ setPStep(1); seedPipelineIdea(hook); showToast('▶ Idea desde URL cargada en pipeline'); }, 120);
 }
 
-// ── CLONE ──
-function analyzeChannel() {
-  const url = document.getElementById('clone-url').value;
-  showToast('Analizando canal... 312 vídeos procesados ✓');
+// ── CLONE — real channel analysis ──
+async function analyzeChannel() {
+  var url = (document.getElementById('clone-url') || {}).value || '';
+  if (!url.trim()) { showToast('Introduce la URL del canal'); return; }
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key en ⚙️ Configuración'); setTimeout(function(){ nav('settings'); }, 800); return; }
+  showToast('🤖 Analizando canal con Claude...');
+  try {
+    var prompt = 'Analiza este canal de vídeo faceless para clonar su fórmula a otro mercado/idioma (sin copiar contenido). URL: ' + url +
+      '\nResponde SOLO JSON: {"nicho":"nicho principal","formato":"formato de los vídeos","idioma":"idioma detectado","fortalezas":"qué hace bien","oportunidad":"oportunidad de clonación a otro mercado","sugerencia":"recomendación concreta y accionable"}';
+    var raw = await callClaude(prompt, null, 500);
+    var r = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    window._cloneAnalysis = r;
+    var box = document.getElementById('clone-analysis-result');
+    if (box) {
+      box.style.display = 'block';
+      box.innerHTML = '<div style="font-size:13px;font-weight:700;margin-bottom:8px">📊 Análisis del canal (Claude)</div>' +
+        '<div style="font-size:12px;color:var(--text2);line-height:1.8">' +
+        '<div><strong>Nicho:</strong> ' + (r.nicho || '—') + '</div>' +
+        '<div><strong>Formato:</strong> ' + (r.formato || '—') + '</div>' +
+        '<div><strong>Idioma:</strong> ' + (r.idioma || '—') + '</div>' +
+        '<div><strong>Fortalezas:</strong> ' + (r.fortalezas || '—') + '</div>' +
+        '<div style="color:var(--green)"><strong>Oportunidad:</strong> ' + (r.oportunidad || '—') + '</div>' +
+        '<div style="color:var(--amber)"><strong>Sugerencia:</strong> ' + (r.sugerencia || '—') + '</div></div>';
+    }
+    if (typeof logAICall === 'function') logAICall('claude', 'clone-analyze', 0.003, 300);
+    showToast('✓ Canal analizado');
+  } catch(e) { showToast('✗ ' + e.message); }
 }
+
+// ── Budget limits — real persistence (fai_budget_limits) ──
+function saveBudgetLimits() {
+  var n = function(id){ var el = document.getElementById(id); return el && el.value !== '' ? (parseFloat(el.value) || 0) : 0; };
+  saveLS('fai_budget_limits', {
+    monthly:  n('bl-monthly'),
+    daily:    n('bl-daily'),
+    perVideo: n('bl-per-video'),
+    pauseOnLimit: !!(document.getElementById('bl-pause') || {}).checked,
+    savedAt: Date.now()
+  });
+  showToast('✓ Límites de presupuesto guardados');
+}
+function loadBudgetLimits() {
+  var l = loadLS('fai_budget_limits', null);
+  if (!l) return;
+  var set = function(id, v){ var el = document.getElementById(id); if (el && v != null) el.value = v; };
+  set('bl-monthly', l.monthly); set('bl-daily', l.daily); set('bl-per-video', l.perVideo);
+  var p = document.getElementById('bl-pause'); if (p) p.checked = l.pauseOnLimit !== false;
+}
+
+// ── TikTok AutoPost config — real persistence (fai_tiktok_auto_config) ──
+function saveTikTokAutoConfig() {
+  var v = function(id){ var el = document.getElementById(id); return el ? el.value : ''; };
+  saveLS('fai_tiktok_auto_config', { perDay: v('ttauto-perday'), rotation: v('ttauto-rotation'), daily: v('ttauto-daily'), publish: v('ttauto-publish'), savedAt: Date.now() });
+  showToast('⚡ AutoPost configurado y guardado');
+}
+function loadTikTokAutoConfig() {
+  var c = loadLS('fai_tiktok_auto_config', null);
+  if (!c) return;
+  var set = function(id, val){ var el = document.getElementById(id); if (el && val != null && val !== '') el.value = val; };
+  set('ttauto-perday', c.perDay); set('ttauto-rotation', c.rotation); set('ttauto-daily', c.daily); set('ttauto-publish', c.publish);
+}
+
+// ── Pipeline step-0 refresh (real, replaces a fake toast) ──
+function refreshPipelineStep0() {
+  try { updatePipelineChannelSel(workingChannel || ''); } catch(e) { _diag(e); }
+  try { if (typeof renderScoreNichePills === 'function') renderScoreNichePills(); } catch(e) { _diag(e); }
+  showToast('↻ Contexto del pipeline actualizado');
+}
+
+// ── Reuse view — honest redirects to the real clip/scheduler features ──
+function reuseAnalyzeAll() { showToast('Pega la URL de tu vídeo en el Pipeline de Clipping para analizarlo de verdad'); nav('clippipeline'); }
+function reuseGenerateClips() { showToast('Genera clips reales en el Pipeline de Clipping (URL → transcripción → cortes)'); nav('clippipeline'); }
+function reuseCrossPost() { showToast('Programa la publicación multiplataforma en el Scheduler'); nav('scheduler'); }
+function applyChannelProfileToPipeline() { showToast('▶ Abriendo pipeline'); nav('pipeline'); }
 
 // ── MODE SWITCH ──
 let currentMode = 'manual';

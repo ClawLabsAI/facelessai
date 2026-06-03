@@ -11,12 +11,18 @@ import { dirname, join } from 'node:path';
 import vm from 'node:vm';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const file = join(root, 'index.html');
+const file = process.argv[2] ? join(root, process.argv[2]) : join(root, 'index.html');
+console.log(`Checking ${file.replace(root, '.')}\n`);
 const html = readFileSync(file, 'utf8');
+
+// Minified build artifacts legitimately strip comments (turning comment-only catches empty)
+// and have no source formatting — so style lints (empty catch, debugger) apply to SOURCE only.
+const isArtifact = /dist[\\/]/.test(file);
 
 let failures = 0;
 const fail = (msg) => { console.error('  ✗ ' + msg); failures++; };
 const ok   = (msg) => console.log('  ✓ ' + msg);
+const skip = (msg) => console.log('  – ' + msg + ' (skipped for build artifact)');
 
 // 1) Inline <script> syntax ----------------------------------------------------
 console.log('JS syntax (inline <script> blocks):');
@@ -46,17 +52,23 @@ else ok('no duplicate named functions');
 
 // 3) Empty catch blocks (must use _diag) ---------------------------------------
 console.log('Empty catch blocks:');
-// try/catch only: a single identifier param (excludes promise .catch(function(){})), not
-// preceded by '.' or a word char (excludes `.catch`). A `{ }` with a comment is non-empty.
-const emptyCatch = (allJs.match(/(?<![.\w])catch\s*\(\s*[A-Za-z_$][\w$]*\s*\)\s*\{\s*\}/g) || []).length;
-if (emptyCatch) fail(`${emptyCatch} empty catch block(s) — use _diag(e) instead`);
-else ok('no empty catch blocks');
+if (isArtifact) skip('empty-catch lint');
+else {
+  // try/catch only: a single identifier param (excludes promise .catch(function(){})), not
+  // preceded by '.' or a word char (excludes `.catch`). A `{ }` with a comment is non-empty.
+  const emptyCatch = (allJs.match(/(?<![.\w])catch\s*\(\s*[A-Za-z_$][\w$]*\s*\)\s*\{\s*\}/g) || []).length;
+  if (emptyCatch) fail(`${emptyCatch} empty catch block(s) — use _diag(e) instead`);
+  else ok('no empty catch blocks');
+}
 
 // 4) Leftover debug markers ----------------------------------------------------
 console.log('Debug markers:');
-const debuggers = (allJs.match(/\bdebugger\b/g) || []).length;
-if (debuggers) fail(`${debuggers} debugger statement(s) left in code`);
-else ok('no debugger statements');
+if (isArtifact) skip('debugger lint');
+else {
+  const debuggers = (allJs.match(/\bdebugger\b/g) || []).length;
+  if (debuggers) fail(`${debuggers} debugger statement(s) left in code`);
+  else ok('no debugger statements');
+}
 
 // 5) Single-file invariant -----------------------------------------------------
 console.log('Deploy invariant:');

@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Optional minified build artifact (regenerate with `npm run build`)
+dist/
+
 # Local backend scratch / embedded clone (not part of the deployed app)
 _backend_tmp/
 

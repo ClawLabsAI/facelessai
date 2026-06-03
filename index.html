@@ -310,6 +310,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 .cp-step-pill{padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:var(--bg2);color:var(--text3);border:1px solid var(--border);font-family:var(--mono);}
 .cp-step-pill.act{background:var(--gdim);color:var(--green);border-color:var(--gsoft);}
 
+/* B3: base rule so the mobile menu backdrop is hidden at ALL widths by default; the
+   media query below only restyles it for mobile. Without this, above 768px #mob-overlay
+   had no display rule and defaulted to block (harmless 0-width, but now correct). */
+#mob-overlay{display:none;}
+
 /* MOBILE */
 @media(max-width:768px){.layout{grid-template-columns:1fr!important}aside{position:fixed;left:-260px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.4)}aside.mob-open{left:0}.content{padding:12px!important}.topbar{padding:8px 12px!important;flex-wrap:wrap}.g4,.g3{grid-template-columns:1fr 1fr!important}.g2{grid-template-columns:1fr!important}#mob-menu{display:flex!important}#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}#mob-overlay.active{display:block}#models-tier-grid{grid-template-columns:repeat(3,1fr)!important}}
 @media(max-width:480px){.g4{grid-template-columns:1fr!important}#models-tier-grid{grid-template-columns:repeat(2,1fr)!important}.budget-pill{display:none}}
@@ -6616,8 +6621,26 @@ function fetchWithTimeout(url, opts, ms) {
   var ctrl = ('AbortController' in window) ? new AbortController() : null;
   if (ctrl) opts.signal = ctrl.signal;
   var timer = ctrl ? setTimeout(function(){ try { ctrl.abort(); } catch(e) {} }, ms || 15000) : null;
-  return fetch(url, opts).finally(function(){ if (timer) clearTimeout(timer); });
+  return (window.__origFetch || fetch)(url, opts).finally(function(){ if (timer) clearTimeout(timer); });
 }
+// B1: universal fetch timeout. Wrap window.fetch ONCE so every API call (all ~70 sites)
+// gets a safety abort and can't hang forever. Respects a caller-provided signal (update
+// checker, AbortSignal.timeout, fetchWithTimeout) — only adds a controller when none exists.
+// 30s default is generous enough never to abort a legitimate API response.
+(function(){
+  if (window.__fetchPatched || typeof window.fetch !== 'function' || !('AbortController' in window)) return;
+  var _orig = window.fetch.bind(window);
+  window.__origFetch = _orig;
+  window.fetch = function(url, opts){
+    opts = opts || {};
+    if (opts.signal) return _orig(url, opts);          // respect caller's own abort control
+    var ctrl = new AbortController();
+    opts.signal = ctrl.signal;
+    var timer = setTimeout(function(){ try { ctrl.abort(); } catch(e){} }, opts.__timeoutMs || 30000);
+    return _orig(url, opts).finally(function(){ clearTimeout(timer); });
+  };
+  window.__fetchPatched = true;
+})();
 // DOM micro-helpers (replace the const setEl=(id,v)=>{…} pattern duplicated across the file).
 function setEl(id, v)    { var el = document.getElementById(id); if (el) el.textContent = v; }
 function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.innerHTML   = h; }
@@ -10004,7 +10027,9 @@ Sin intros ni presentaciones. Empieza directo con el hook. Máximo 150 palabras.
 
     // Step 4: Score the idea with real AI (only if not free tier)
     addLog('🎯 Calculando score con IA...');
-    const aiScore = (activeTier !== 'free') ? await scoreHookFast(hook.trim(), script.trim(), channel.niche, channel.lang) : Math.floor(72 + Math.random() * 20);
+    // B4: free tier now uses the deterministic local heuristic (apQuickScore) instead of a
+    // random 72-91, so the same hook always yields the same score.
+    const aiScore = (activeTier !== 'free') ? await scoreHookFast(hook.trim(), script.trim(), channel.niche, channel.lang) : await apQuickScore(hook.trim(), channel.niche, channel);
     addLog('✓ Score: ' + aiScore + '/100');
 
     // Step 5: Save as draft

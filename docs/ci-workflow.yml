@@ -1,0 +1,28 @@
+# GitHub Actions CI for FacelessAI.
+#
+# NOTE: this file lives in docs/ because the push token lacked the `workflow` scope,
+# which GitHub requires to create files under .github/workflows/. To ENABLE CI:
+#   Option A — copy this file to .github/workflows/ci.yml and push with a token that
+#              has the `workflow` scope.
+#   Option B — in the GitHub web UI: Actions → New workflow → paste this content.
+#
+# It runs the static checker (npm test) on every push/PR to main.
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Static checks (syntax, duplicates, empty catches, deploy invariant)
+        run: npm test

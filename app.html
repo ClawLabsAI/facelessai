@@ -14,7 +14,9 @@
      producto. El tráfico orgánico debe entrar por la landing (/). -->
 <meta name="robots" content="noindex, nofollow">
 <title>FacelessAI v4.39 — Content Engine</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Rendimiento (Sprint 5 · M1): eliminada una segunda hoja de Google Fonts que cargaba
+     Space Mono y Outfit (7 pesos en total) sin usarse en ninguna regla CSS. Era una
+     petición que bloqueaba el renderizado a cambio de nada. -->
 <style>
 :root{
   --bg:#fff;--bg1:#f7f7f5;--bg2:#f0f0ee;--bg3:#e8e8e6;
@@ -325,6 +327,19 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
    had no display rule and defaulted to block (harmless 0-width, but now correct). */
 #mob-overlay{display:none;}
 
+/* ACCESIBILIDAD (Sprint 5 · A5) ------------------------------------------------
+   Foco visible para quien navega con teclado. Se usa :focus-visible para no mostrar
+   el anillo en clics de ratón, sólo cuando realmente ayuda. */
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+button:focus-visible,a:focus-visible,.ni:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* Enlace para saltar la navegación (visible sólo al tabular). */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:9999;background:var(--blue);color:#fff;padding:10px 18px;border-radius:0 0 8px 0;font-size:14px;font-weight:600}
+.skip-link:focus{left:0}
+/* Respeta a quien pide menos animación por accesibilidad (vestibular). */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
 /* MOBILE */
 @media(max-width:768px){.layout{grid-template-columns:1fr!important}.main{margin-left:0!important}aside.sidebar{position:fixed;left:-260px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.4)}aside.sidebar.mob-open{left:0}.content{padding:12px!important}.topbar{padding:8px 12px!important;flex-wrap:wrap}.g4,.g3{grid-template-columns:1fr 1fr!important}.g2{grid-template-columns:1fr!important}#mob-menu{display:flex!important}#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}#mob-overlay.active{display:block}#models-tier-grid{grid-template-columns:repeat(3,1fr)!important}}
 @media(max-width:480px){.g4{grid-template-columns:1fr!important}#models-tier-grid{grid-template-columns:repeat(2,1fr)!important}.budget-pill{display:none}}
@@ -349,6 +364,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 </style>
 </head>
 <body>
+<a href="#contenido-principal" class="skip-link">Saltar al contenido principal</a>
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo">
@@ -461,6 +477,9 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="ni" data-view="settings">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M11.54 3.05l-1.41 1.41M3.05 11.54l1.41 1.41"/></svg>Configuración<span class="nb nba" id="settings-badge" style="display:none">!</span>
     </div>
+    <div class="ni" data-view="help">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6a1.9 1.9 0 1 1 2.4 2.2c-.4.2-.6.5-.6.9v.4"/><circle cx="8" cy="11.6" r=".7" fill="currentColor" stroke="none"/></svg>Ayuda
+    </div>
 
     <!-- SaaS (hidden) -->
     <div style="display:none">
@@ -486,7 +505,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
 <!-- MAIN -->
 <div class="main">
-  <div class="topbar">
+  <div class="topbar" role="banner">
     <span id="page-title" class="topbar-title">Dashboard</span>
     <button id="mob-menu" onclick="toggleMobMenu()" style="display:none;align-items:center;justify-content:center;width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
 
@@ -557,7 +576,72 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     </div>
   </div>
 
-  <div class="content">
+  <div class="content" role="main" id="contenido-principal">
+
+<!-- ════════════════ AYUDA Y GUÍAS (Sprint 5 · A6) ════════════════ -->
+<div class="view" id="view-help">
+  <div class="sh mb16"><h2>❓ Ayuda y guías</h2><span class="tag tb">Todo lo que necesitas para empezar</span></div>
+
+  <div class="card mb14" style="border-color:var(--blue)">
+    <div class="stl mb12">🚀 Guía rápida — tu primer vídeo en 5 pasos</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="width:24px;height:24px;border-radius:50%;background:var(--bdim);color:var(--blue);display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--mono);flex-shrink:0">1</span><div><strong style="font-size:13px">Configura tu clave de Anthropic</strong><div style="font-size:12.5px;color:var(--text2)">Ve a <a href="#" onclick="nav('settings');return false" style="color:var(--blue)">Configuración</a>, pégala y pulsa «Probar». Es la única imprescindible.</div></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="width:24px;height:24px;border-radius:50%;background:var(--bdim);color:var(--blue);display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--mono);flex-shrink:0">2</span><div><strong style="font-size:13px">Elige un nivel de calidad</strong><div style="font-size:12.5px;color:var(--text2)">En <a href="#" onclick="nav('models');return false" style="color:var(--blue)">Modelos IA</a>. Empieza por <strong>Económico</strong> (~$0,02/vídeo) para probar sin gastar.</div></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="width:24px;height:24px;border-radius:50%;background:var(--bdim);color:var(--blue);display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--mono);flex-shrink:0">3</span><div><strong style="font-size:13px">Crea un canal</strong><div style="font-size:12.5px;color:var(--text2)">En <a href="#" onclick="nav('channels');return false" style="color:var(--blue)">Mis canales</a>. El nicho, idioma y voz que elijas guiarán todo lo que genere la IA.</div></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="width:24px;height:24px;border-radius:50%;background:var(--bdim);color:var(--blue);display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--mono);flex-shrink:0">4</span><div><strong style="font-size:13px">Recorre el Pipeline</strong><div style="font-size:12.5px;color:var(--text2)">En <a href="#" onclick="nav('pipeline');return false" style="color:var(--blue)">Pipeline</a>: idea → score → guion → voz → vídeo. Puedes parar en cualquier paso.</div></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="width:24px;height:24px;border-radius:50%;background:var(--bdim);color:var(--blue);display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--mono);flex-shrink:0">5</span><div><strong style="font-size:13px">Aprueba y programa</strong><div style="font-size:12.5px;color:var(--text2)">El borrador queda en <a href="#" onclick="nav('drafts');return false" style="color:var(--blue)">Borradores</a>; al aprobarlo puedes programarlo en el Scheduler.</div></div></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px">
+    <div class="card">
+      <div class="stl mb10">💰 ¿Cuánto cuesta cada vídeo?</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 0">Económico</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">~$0,02</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 0">Optimizado</td><td style="text-align:right;font-family:var(--mono);color:var(--green)">~$0,06</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 0">Premium</td><td style="text-align:right;font-family:var(--mono);color:var(--amber)">~$0,25</td></tr>
+        <tr><td style="padding:6px 0">Ultra</td><td style="text-align:right;font-family:var(--mono);color:var(--amber)">~$1,47</td></tr>
+      </table>
+      <div style="font-size:11.5px;color:var(--text3);margin-top:10px">Lo pagas directamente a cada proveedor. El consumo real se registra en <a href="#" onclick="nav('analytics');return false" style="color:var(--blue)">Analytics</a>.</div>
+    </div>
+    <div class="card">
+      <div class="stl mb10">🔑 ¿Qué clave necesito para qué?</div>
+      <div style="font-size:12.5px;color:var(--text2);line-height:2">
+        <div><strong style="color:var(--text1)">Anthropic</strong> — ideas, guiones y score <span style="color:var(--red)">(obligatoria)</span></div>
+        <div><strong style="color:var(--text1)">OpenAI</strong> o <strong style="color:var(--text1)">ElevenLabs</strong> — voz</div>
+        <div><strong style="color:var(--text1)">Pexels</strong> — clips de vídeo de stock</div>
+        <div><strong style="color:var(--text1)">HeyGen / D-ID / Runway</strong> — avatar y vídeo IA</div>
+        <div><strong style="color:var(--text1)">Backend propio</strong> — montaje final del MP4</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb14">
+    <div class="stl mb12">🔧 Problemas frecuentes</div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:12.5px">
+      <div><strong style="color:var(--amber)">«Configura tu Anthropic API key»</strong><div style="color:var(--text2)">La clave no está guardada o es inválida. Ve a Configuración, pégala completa (empieza por <code style="font-family:var(--mono)">sk-ant-</code>) y pulsa «Probar».</div></div>
+      <div><strong style="color:var(--amber)">El tier GRATIS da error</strong><div style="color:var(--text2)">Requiere Ollama corriendo en tu equipo (localhost:11434). Si no lo tienes, cambia a <strong>Económico</strong> en Modelos IA.</div></div>
+      <div><strong style="color:var(--amber)">No se genera el MP4</strong><div style="color:var(--text2)">El montaje final necesita un backend con FFmpeg. Sin él puedes generar igualmente idea, guion, voz y clips.</div></div>
+      <div><strong style="color:var(--amber)">Perdí mis datos al cambiar de navegador</strong><div style="color:var(--text2)">Todo se guarda en el almacenamiento local de <em>este</em> navegador. No se sincroniza entre dispositivos ni entre navegadores.</div></div>
+      <div><strong style="color:var(--amber)">Quiero ver qué falla por dentro</strong><div style="color:var(--text2)">Abre la consola (F12) y ejecuta <code style="font-family:var(--mono);color:var(--blue)">localStorage.setItem('fai_debug','1')</code>. A partir de ahí verás los errores que la app captura.</div></div>
+    </div>
+  </div>
+
+  <div class="card mb14" style="border-left:3px solid var(--green)">
+    <div class="stl mb10">🔒 Privacidad</div>
+    <div style="font-size:12.5px;color:var(--text2);line-height:1.8">Tus claves y todos tus datos (canales, borradores, ajustes) se guardan <strong>únicamente en este navegador</strong>. Las claves viajan sólo al proveedor correspondiente en cada petición: <strong>no pasan por ningún servidor de FacelessAI</strong>. Si compartes el equipo, usa «Borrar todas las keys» en Configuración antes de cederlo.</div>
+  </div>
+
+  <div class="card">
+    <div class="stl mb10">👀 ¿Quieres explorar sin configurar nada?</div>
+    <div style="font-size:12.5px;color:var(--text2);margin-bottom:12px">Carga canales y borradores de ejemplo para ver cómo funciona todo. Van claramente marcados como demo y puedes borrarlos de una vez sin tocar tu contenido real.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-g btn-sm" onclick="loadDemoData()">👀 Cargar datos de ejemplo</button>
+      <button class="btn btn-g btn-sm" onclick="showOnboarding()">🚀 Repetir la guía inicial</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════════ DASHBOARD ════════════════ -->
 <div class="view active" id="view-dashboard">
 
@@ -838,10 +922,10 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="card">
       <div class="stl mb12">⚙️ Optimización automática</div>
       <div style="display:flex;flex-direction:column;gap:9px">
-        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-cache" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Caché de outputs (no regenerar si existe)</span></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-batch" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Batch processing — 10× más barato en lotes</span></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-fallback" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Fallback automático si modelo local falla</span></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" id="opt-score-gate"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Premium solo si Score IA &gt; 90/100</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Caché de outputs (no regenerar si existe)" id="opt-cache" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Caché de outputs (no regenerar si existe)</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Batch processing — 10× más barato en lotes" id="opt-batch" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Batch processing — 10× más barato en lotes</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Fallback automático si modelo local falla" id="opt-fallback" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Fallback automático si modelo local falla</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Premium solo si Score IA > 90/100" id="opt-score-gate"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Premium solo si Score IA &gt; 90/100</span></div>
       </div>
     </div>
   </div>
@@ -1000,7 +1084,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <!-- Identidad -->
         <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px">Identidad del canal</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div><label class="lbl">Nicho</label>
+          <div><label class="lbl" for="edit-ch-niche">Nicho</label>
             <select class="sel" id="edit-ch-niche">
               <option value="finanzas">💰 Finanzas</option><option value="motivacion">🔥 Motivación</option>
               <option value="tecnologia">💻 Tech / IA</option><option value="salud">🏃 Salud</option>
@@ -1008,7 +1092,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
               <option value="historia">📚 Historia</option><option value="curiosidades">🤔 Curiosidades</option>
             </select>
           </div>
-          <div><label class="lbl">Idioma</label>
+          <div><label class="lbl" for="edit-ch-lang">Idioma</label>
             <select class="sel" id="edit-ch-lang">
               <option value="es">🇪🇸 Español</option>
               <option value="lat">🌎 Latino</option>
@@ -1017,7 +1101,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div><label class="lbl">Género de voz</label>
+          <div><label class="lbl" for="edit-ch-gender">Género de voz</label>
             <select class="sel" id="edit-ch-gender">
               <option value="m">♂ Hombre</option>
               <option value="f">♀ Mujer</option>
@@ -1034,16 +1118,16 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
         <!-- Analytics -->
         <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:4px">Analytics y monetización</div>
-        <div><label class="lbl">YouTube Channel ID</label>
+        <div><label class="lbl" for="edit-ch-yt-id">YouTube Channel ID</label>
           <input class="inp" id="edit-ch-yt-id" placeholder="UC..." style="font-family:var(--mono);font-size:12px">
           <div style="font-size:10px;color:var(--text3);margin-top:3px">YouTube Studio → Configuración → Canal → Información básica · <a href="https://www.youtube.com/account_advanced" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">Abrir ↗</a></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div><label class="lbl">RPM estimado ($/1000 views)</label>
+          <div><label class="lbl" for="edit-ch-rpm">RPM estimado ($/1000 views)</label>
             <input class="inp" id="edit-ch-rpm" type="number" step="0.5" placeholder="ej. 4.5">
             <div style="font-size:10px;color:var(--text3);margin-top:3px">Finanzas ~$4-8 · Tech ~$3-6 · Motivación ~$2-4</div>
           </div>
-          <div><label class="lbl">Score mínimo para AutoPilot</label>
+          <div><label class="lbl" for="edit-ch-min-score">Score mínimo para AutoPilot</label>
             <input class="inp" id="edit-ch-min-score" type="number" step="1" min="0" max="100" placeholder="ej. 75">
             <div style="font-size:10px;color:var(--text3);margin-top:3px">AutoPilot descarta ideas con score menor</div>
           </div>
@@ -1071,7 +1155,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   <div class="stl mb10">🔍 Descubrir oportunidades de canal con IA</div>
   <div class="card mb14">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">
-      <div><label class="lbl">Idioma objetivo</label>
+      <div><label class="lbl" for="disc-market">Idioma objetivo</label>
         <select class="sel" id="disc-market">
           <option value="all">🌍 Todos los mercados</option>
           <option value="es">🇪🇸 Español España</option>
@@ -1079,7 +1163,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <option value="us">🇺🇸 English US</option>
         </select>
       </div>
-      <div><label class="lbl">Inversión por vídeo</label>
+      <div><label class="lbl" for="disc-budget">Inversión por vídeo</label>
         <select class="sel" id="disc-budget">
           <option value="free">🟢 Gratis — $0.00</option>
           <option value="eco" selected>🟡 Económico — ~$0.01</option>
@@ -1087,7 +1171,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <option value="prem">🔴 Premium — ~$0.25</option>
         </select>
       </div>
-      <div><label class="lbl">Objetivo principal</label>
+      <div><label class="lbl" for="disc-goal">Objetivo principal</label>
         <select class="sel" id="disc-goal">
           <option value="monetize">💰 Monetizar rápido</option>
           <option value="grow">📈 Crecer audiencia</option>
@@ -1096,7 +1180,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <option value="brand">🏷️ Marca personal</option>
         </select>
       </div>
-      <div><label class="lbl">Plataforma principal</label>
+      <div><label class="lbl" for="disc-platform">Plataforma principal</label>
         <select class="sel" id="disc-platform">
           <option value="youtube">▶ YouTube Shorts</option>
           <option value="tiktok">♪ TikTok</option>
@@ -1134,16 +1218,16 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     </div>
     <div id="ap-live-log" style="background:var(--bg);border-radius:var(--r);padding:8px 10px;min-height:60px;max-height:160px;overflow-y:auto;font-family:var(--mono)"><div style="font-size:11px;color:var(--text3)">Log del ciclo aqui...</div></div>
   </div>
-  <div class="card mb14"><div class="stl mb12">Configuracion</div><div id="ap-settings-panel"></div></div>
+  <div class="card mb14"><div class="stl mb12">Configuración</div><div id="ap-settings-panel"></div></div>
   <div class="card mb14"><div class="stl mb12">Canales en AutoPilot</div><div id="ap-channel-list"></div></div>
   <div class="card mb14" style="border-color:var(--purple)">
     <div class="stl mb12">Batch generation — semana completa de una vez</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
-      <div><label class="lbl">Canal</label><select class="sel" id="batch-channel" style="font-size:12px" onclick="this.innerHTML=getChannels().map(function(c){return'<option value=\''+c.name+'\'>'+c.name+'</option>';}).join('')"><option value="">-- Canal --</option></select></div>
-      <div><label class="lbl">Cantidad</label><select class="sel" id="batch-count" style="font-size:12px"><option value="3">3</option><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option></select></div>
-      <div><label class="lbl">Score minimo</label><select class="sel" id="batch-score-min" style="font-size:12px"><option value="55">55+</option><option value="65" selected>65+</option><option value="75">75+</option><option value="85">85+</option></select></div>
+      <div><label class="lbl" for="batch-channel">Canal</label><select class="sel" id="batch-channel" style="font-size:12px" onclick="this.innerHTML=getChannels().map(function(c){return'<option value=\''+c.name+'\'>'+c.name+'</option>';}).join('')"><option value="">-- Canal --</option></select></div>
+      <div><label class="lbl" for="batch-count">Cantidad</label><select class="sel" id="batch-count" style="font-size:12px"><option value="3">3</option><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option></select></div>
+      <div><label class="lbl" for="batch-score-min">Score minimo</label><select class="sel" id="batch-score-min" style="font-size:12px"><option value="55">55+</option><option value="65" selected>65+</option><option value="75">75+</option><option value="85">85+</option></select></div>
     </div>
-    <div class="tw mb10"><label class="tgl"><input type="checkbox" id="batch-auto-sched" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Distribuir en Scheduler automaticamente</span></div>
+    <div class="tw mb10"><label class="tgl"><input type="checkbox" aria-label="Distribuir en Scheduler automaticamente" id="batch-auto-sched" checked><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Distribuir en Scheduler automaticamente</span></div>
     <button class="btn btn-p" id="batch-run-btn" onclick="generateBatch()" style="width:100%;margin-bottom:10px">Generar batch</button>
     <div id="batch-log" style="background:var(--bg);border-radius:var(--r);padding:8px;min-height:40px;max-height:120px;overflow-y:auto;font-family:var(--mono);font-size:11px;color:var(--text3)"></div>
     <div style="font-size:10px;color:var(--text3);margin-top:6px">Coste estimado: $0.012/video · 5 videos = $0.06</div>
@@ -1215,11 +1299,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="card-d mb14" style="padding:10px 14px">
       <div class="flex fic g16 fw">
         <span style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px">Fuentes:</span>
-        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-yt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">YouTube</span></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-tt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">TikTok</span></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-gt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Google Trends</span></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" checked id="src-reddit"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Reddit</span></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" id="src-twitter"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Twitter/X</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="YouTube" checked id="src-yt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">YouTube</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="TikTok" checked id="src-tt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">TikTok</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Google Trends" checked id="src-gt"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Google Trends</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Reddit" checked id="src-reddit"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Reddit</span></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Twitter/X" id="src-twitter"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Twitter/X</span></div>
         <span style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto">Claude analiza el momento actual</span>
       </div>
     </div>
@@ -1319,17 +1403,17 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <button class="btn btn-p" id="score-run-btn" onclick="runScoreReal()">🤖 Analizar</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div><label class="lbl">Canal</label>
+        <div><label class="lbl" for="score-channel">Canal</label>
           <select class="sel" id="score-channel" style="font-size:12px" onchange="scoreChannelChanged()">
             <option value="">🌐 Sin canal</option>
           </select>
         </div>
-        <div><label class="lbl">Mercado</label>
+        <div><label class="lbl" for="score-market">Mercado</label>
           <select class="sel" id="score-market" style="font-size:12px">
             <option value="es">🇪🇸 España</option><option value="lat">🌎 LATAM</option><option value="us">🇺🇸 English</option>
           </select>
         </div>
-        <div><label class="lbl">Plataforma</label>
+        <div><label class="lbl" for="score-platform">Plataforma</label>
           <select class="sel" id="score-platform" style="font-size:12px">
             <option value="youtube">▶ YouTube Shorts</option><option value="tiktok">♪ TikTok</option><option value="instagram">◈ Instagram</option>
           </select>
@@ -1338,7 +1422,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     </div>
     <div id="score-trend-bar" style="display:none;background:#fee2e2;border:1px solid #f8717133;border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:13px">
       <div class="flex fic g8"><span style="font-size:16px">🔥</span><span style="color:var(--text2)">Idea cargada desde <strong style="color:var(--text1)">Tendencias</strong></span>
-        <button class="btn btn-g btn-sm" style="margin-left:auto" onclick="document.getElementById('score-trend-bar').style.display='none'">×</button>
+        <button aria-label="Cerrar aviso" title="Cerrar aviso" class="btn btn-g btn-sm" style="margin-left:auto" onclick="document.getElementById('score-trend-bar').style.display='none'">×</button>
       </div>
     </div>
     <div id="score-placeholder" style="text-align:center;padding:40px;color:var(--text3)">
@@ -1402,12 +1486,12 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <button class="btn btn-p" onclick="runUrlScore()">🤖 Analizar</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div><label class="lbl">Tu mercado objetivo</label>
+        <div><label class="lbl" for="score-url-market">Tu mercado objetivo</label>
           <select class="sel" id="score-url-market" style="font-size:12px">
             <option value="es">🇪🇸 España</option><option value="lat">🌎 LATAM</option><option value="us">🇺🇸 English</option>
           </select>
         </div>
-        <div><label class="lbl">Objetivo</label>
+        <div><label class="lbl" for="score-url-goal">Objetivo</label>
           <select class="sel" id="score-url-goal" style="font-size:12px">
             <option value="replicate">Replicar el estilo</option>
             <option value="improve">Mejorar el concepto</option>
@@ -1704,7 +1788,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <div class="lbl mb8">🎤 Voz TTS — genera el audio del script</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div>
-              <label class="lbl" style="font-size:10px">Motor de voz</label>
+              <label class="lbl" for="tts-engine" style="font-size:10px">Motor de voz</label>
               <select class="sel" id="tts-engine" onchange="updateTTSConfig()">
                 <option value="openai-tts1">OpenAI TTS-1 — $0.006/vídeo</option>
                 <option value="openai-tts1hd">OpenAI TTS-1 HD — $0.012/vídeo</option>
@@ -1712,7 +1796,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
               </select>
             </div>
             <div>
-              <label class="lbl" style="font-size:10px">Voz</label>
+              <label class="lbl" for="tts-voice" style="font-size:10px">Voz</label>
               <select class="sel" id="tts-voice">
                 <option value="alloy">Alloy (neutra)</option>
                 <option value="echo">Echo (masculina)</option>
@@ -1733,11 +1817,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <div class="lbl mb8">🎬 Clips de vídeo — Pexels API (GRATIS)</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div>
-              <label class="lbl" style="font-size:10px">Búsqueda de clips</label>
+              <label class="lbl" for="pexels-query" style="font-size:10px">Búsqueda de clips</label>
               <input class="inp" id="pexels-query" placeholder="Ej: money finance savings" style="font-size:12px">
             </div>
             <div>
-              <label class="lbl" style="font-size:10px">Número de clips</label>
+              <label class="lbl" for="pexels-count" style="font-size:10px">Número de clips</label>
               <select class="sel" id="pexels-count">
                 <option value="3">3 clips</option>
                 <option value="5" selected>5 clips</option>
@@ -1883,14 +1967,14 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
         <!-- Title editing -->
         <div>
-          <label class="lbl">Título — editable antes de publicar</label>
+          <label class="lbl" for="apv-title">Título — editable antes de publicar</label>
           <input class="inp" id="apv-title" value="❌ El ERROR que te cuesta $300 al mes sin saberlo #shorts" style="font-size:13px">
           <div style="font-size:11px;color:var(--text3);margin-top:4px">💡 IA sugiere: incluir número + emoji + #shorts · max 100 chars</div>
         </div>
 
         <!-- Description -->
         <div>
-          <label class="lbl">Descripción / caption</label>
+          <label class="lbl" for="apv-desc">Descripción / caption</label>
           <textarea class="inp" id="apv-desc" rows="3" style="resize:vertical;font-size:12px;line-height:1.6">¿Sabías que probablemente estás pagando comisiones bancarias innecesarias? En este vídeo te explico cómo solucionarlo en 7 minutos.
 
 🔗 Cuenta sin comisiones: [link afiliado Revolut]
@@ -1899,7 +1983,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
         <!-- Hashtags -->
         <div>
-          <label class="lbl">Hashtags</label>
+          <label class="lbl" for="apv-tags">Hashtags</label>
           <input class="inp" id="apv-tags" value="#finanzas #ahorrar #dinero #shorts #trucosfinanzas #españa #finanzaspersonales" style="font-size:12px">
         </div>
 
@@ -1987,7 +2071,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
         <div><label class="lbl">Canal destino</label><select class="sel"><option>FinanceFacts ES</option><option>MindHacks Daily</option><option>CurioMundo</option></select></div>
-        <div><label class="lbl">Ángulo del vídeo</label>
+        <div><label class="lbl" for="url-angle">Ángulo del vídeo</label>
           <select class="sel" id="url-angle">
             <option>Datos impactantes / shock</option>
             <option>Análisis + solución práctica</option>
@@ -2050,7 +2134,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 <!-- ════════════════ 1 · CLONE ════════════════ -->
 <div class="view" id="view-clone">
   <div class="sh mb14">
-  <div class="card mb14" style="border-color:var(--blue)"><div style="font-size:12px;font-weight:700;margin-bottom:10px">Clonar al mercado contrario</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label class="lbl">Canal origen</label><select class="sel" id="clone-src-ch" style="font-size:12px" onclick="this.innerHTML=getChannels().map(function(c){return'<option value=\''+c.name+'\'>'+c.name+' ('+(c.lang||'es').toUpperCase()+')</option>';}).join('')"><option value="">-- Selecciona --</option></select></div><div><label class="lbl">Mercado destino</label><select class="sel" id="clone-tgt-lang" style="font-size:12px"><option value="en">EN — CPM 3-6x mayor</option><option value="es">ES</option><option value="lat">LAT</option></select></div></div><button class="btn btn-p" onclick="cloneChannelToMarket(document.getElementById('clone-src-ch').value,document.getElementById('clone-tgt-lang').value)" style="width:100%">Clonar canal al mercado</button></div>
+  <div class="card mb14" style="border-color:var(--blue)"><div style="font-size:12px;font-weight:700;margin-bottom:10px">Clonar al mercado contrario</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label class="lbl" for="clone-src-ch">Canal origen</label><select class="sel" id="clone-src-ch" style="font-size:12px" onclick="this.innerHTML=getChannels().map(function(c){return'<option value=\''+c.name+'\'>'+c.name+' ('+(c.lang||'es').toUpperCase()+')</option>';}).join('')"><option value="">-- Selecciona --</option></select></div><div><label class="lbl" for="clone-tgt-lang">Mercado destino</label><select class="sel" id="clone-tgt-lang" style="font-size:12px"><option value="en">EN — CPM 3-6x mayor</option><option value="es">ES</option><option value="lat">LAT</option></select></div></div><button class="btn btn-p" onclick="cloneChannelToMarket(document.getElementById('clone-src-ch').value,document.getElementById('clone-tgt-lang').value)" style="width:100%">Clonar canal al mercado</button></div>
 <h2>Clonar canal IA</h2><span class="tag tb">Clona cualquier canal IA y adáptalo a tu mercado</span></div>
 
   <div class="card mb14">
@@ -2154,7 +2238,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   <div class="card mb16">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end">
       <div>
-        <label class="lbl">Nicho de tu canal</label>
+        <label class="lbl" for="aff-sug-niche">Nicho de tu canal</label>
         <select class="sel" id="aff-sug-niche">
           <option value="finanzas">💰 Finanzas</option><option value="tecnologia">💻 Tech / IA</option>
           <option value="negocios">📈 Negocios</option><option value="salud">🏃 Salud</option>
@@ -2162,13 +2246,13 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div>
-        <label class="lbl">Mercado</label>
+        <label class="lbl" for="aff-sug-market">Mercado</label>
         <select class="sel" id="aff-sug-market">
           <option value="es">🇪🇸 España</option><option value="lat">🌎 LATAM</option><option value="us">🇺🇸 US</option>
         </select>
       </div>
       <div>
-        <label class="lbl">Tipo</label>
+        <label class="lbl" for="aff-sug-type">Tipo</label>
         <select class="sel" id="aff-sug-type">
           <option value="recurrente">💎 Recurrente</option>
           <option value="alto">💰 Alto valor</option>
@@ -2196,10 +2280,10 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-width:95vw">
       <div style="font-size:15px;font-weight:700;margin-bottom:16px">⭐ Nuevo afiliado</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div><label class="lbl">Nombre del programa</label><input class="inp" id="aff-name" placeholder="ej. Amazon Associates, Hotmart..."></div>
-        <div><label class="lbl">Link de afiliado</label><input class="inp" id="aff-link" placeholder="https://..."></div>
-        <div><label class="lbl">Comisión (%)</label><input class="inp" id="aff-comm" type="number" placeholder="5" style="width:120px"></div>
-        <div><label class="lbl">CTA sugerido para vídeos</label><input class="inp" id="aff-cta" placeholder="ej. Link en la descripción 👇"></div>
+        <div><label class="lbl" for="aff-name">Nombre del programa</label><input class="inp" id="aff-name" placeholder="ej. Amazon Associates, Hotmart..."></div>
+        <div><label class="lbl" for="aff-link">Link de afiliado</label><input class="inp" id="aff-link" placeholder="https://..."></div>
+        <div><label class="lbl" for="aff-comm">Comisión (%)</label><input class="inp" id="aff-comm" type="number" placeholder="5" style="width:120px"></div>
+        <div><label class="lbl" for="aff-cta">CTA sugerido para vídeos</label><input class="inp" id="aff-cta" placeholder="ej. Link en la descripción 👇"></div>
       </div>
       <div class="flex g8 mt16">
         <button class="btn btn-g btn-sm" onclick="closeAffModal()">Cancelar</button>
@@ -2385,13 +2469,13 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div class="stl mb12">Límites de presupuesto</div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <div>
-          <label class="lbl">Límite mensual total ($)</label>
+          <label class="lbl" for="bl-monthly">Límite mensual total ($)</label>
           <input class="inp" type="number" value="50" id="bl-monthly">
           <div style="margin-top:5px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px"><span>$2.47 gastado</span><span>4.9%</span></div><div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden"><div style="width:4.9%;height:100%;background:var(--blue);border-radius:3px"></div></div></div>
         </div>
-        <div><label class="lbl">Límite diario AutoPilot ($)</label><input class="inp" type="number" value="2" id="bl-daily"></div>
-        <div><label class="lbl">Coste máximo por vídeo ($)</label><input class="inp" type="number" value="0.10" step="0.01" id="bl-per-video"></div>
-        <div class="tw"><label class="tgl"><input type="checkbox" checked id="bl-pause"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Pausar AutoPilot al alcanzar límite</span></div>
+        <div><label class="lbl" for="bl-daily">Límite diario AutoPilot ($)</label><input class="inp" type="number" value="2" id="bl-daily"></div>
+        <div><label class="lbl" for="bl-per-video">Coste máximo por vídeo ($)</label><input class="inp" type="number" value="0.10" step="0.01" id="bl-per-video"></div>
+        <div class="tw"><label class="tgl"><input type="checkbox" aria-label="Pausar AutoPilot al alcanzar límite" checked id="bl-pause"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Pausar AutoPilot al alcanzar límite</span></div>
         <button class="btn btn-p" style="align-self:flex-end" onclick="saveBudgetLimits()">Guardar</button>
       </div>
     </div>
@@ -2439,7 +2523,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Claude analiza tendencias de TikTok Shop y te sugiere los nichos más rentables para afiliados</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
       <div>
-        <label class="lbl">Mercado</label>
+        <label class="lbl" for="tts-disc-lang">Mercado</label>
         <select class="sel" id="tts-disc-lang">
           <option value="es">🇪🇸 España</option>
           <option value="en" selected>🇺🇸 USA (mayor CPM)</option>
@@ -2447,7 +2531,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div>
-        <label class="lbl">Categoría</label>
+        <label class="lbl" for="tts-disc-cat">Categoría</label>
         <select class="sel" id="tts-disc-cat">
           <option value="all">Todas</option>
           <option value="beauty">💄 Belleza y cuidado</option>
@@ -2459,7 +2543,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div>
-        <label class="lbl">Comisión mínima</label>
+        <label class="lbl" for="tts-disc-commission">Comisión mínima</label>
         <select class="sel" id="tts-disc-commission">
           <option value="5">5%+</option>
           <option value="10" selected>10%+</option>
@@ -2728,7 +2812,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="card">
       <div style="font-size:14px;font-weight:600;margin-bottom:12px">⚙️ Configuración AutoPost</div>
       <div style="margin-bottom:10px">
-        <label class="lbl">Vídeos por producto por día</label>
+        <label class="lbl" for="ttauto-perday">Vídeos por producto por día</label>
         <select class="sel" id="ttauto-perday">
           <option>1 variante/día</option>
           <option selected>2 variantes/día</option>
@@ -2736,7 +2820,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div style="margin-bottom:10px">
-        <label class="lbl">Rotación de hooks</label>
+        <label class="lbl" for="ttauto-rotation">Rotación de hooks</label>
         <select class="sel" id="ttauto-rotation">
           <option selected>Automática (IA elige el mejor)</option>
           <option>Review → Problema → Tutorial → Antes/Después</option>
@@ -2744,11 +2828,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div style="margin-bottom:10px">
-        <label class="lbl">Límite de gasto diario</label>
+        <label class="lbl" for="ttauto-daily">Límite de gasto diario</label>
         <input class="inp" value="$0.50" style="font-size:13px" id="ttauto-daily">
       </div>
       <div style="margin-bottom:10px">
-        <label class="lbl">Publicación</label>
+        <label class="lbl" for="ttauto-publish">Publicación</label>
         <select class="sel" id="ttauto-publish">
           <option>Manual (descargo MP4)</option>
           <option>API TikTok (próximamente)</option>
@@ -2799,11 +2883,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
-        <label class="lbl">Nombre del canal</label>
+        <label class="lbl" for="tts-ch-name">Nombre del canal</label>
         <input class="inp" id="tts-ch-name" placeholder="Ej: BeautyHacks">
       </div>
       <div>
-        <label class="lbl">Nicho de producto</label>
+        <label class="lbl" for="tts-ch-niche">Nicho de producto</label>
         <select class="sel" id="tts-ch-niche">
           <option value="beauty">💄 Belleza y skincare</option>
           <option value="home">🏠 Hogar y cocina</option>
@@ -2835,7 +2919,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     </div>
 
     <div style="margin-bottom:12px">
-      <label class="lbl">Estilo de vídeo principal</label>
+      <label class="lbl" for="tts-ch-style">Estilo de vídeo principal</label>
       <select class="sel" id="tts-ch-style">
         <option value="review">⭐ Reviews honestas (mayor confianza)</option>
         <option value="problem">😤 Problema → Solución (mayor conversión)</option>
@@ -2906,25 +2990,25 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:560px;max-width:95vw;margin:auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
         <div style="font-size:16px;font-weight:700">👤 Nuevo personaje IA</div>
-        <button onclick="closePersonaModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px">×</button>
+        <button aria-label="Cerrar" title="Cerrar" onclick="closePersonaModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px">×</button>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px">
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div><label class="lbl">Nombre del personaje</label>
+          <div><label class="lbl" for="prs-name">Nombre del personaje</label>
             <input class="inp" id="prs-name" placeholder="ej. Luna García, Alex Chen..."></div>
-          <div><label class="lbl">Edad aparente</label>
+          <div><label class="lbl" for="prs-age">Edad aparente</label>
             <input class="inp" id="prs-age" type="number" placeholder="25" min="18" max="60"></div>
         </div>
 
-        <div><label class="lbl">Descripción física / look</label>
+        <div><label class="lbl" for="prs-look">Descripción física / look</label>
           <input class="inp" id="prs-look" placeholder="ej. Mujer latina, pelo oscuro, estilo profesional casual..."></div>
 
-        <div><label class="lbl">Personalidad y tono de voz</label>
+        <div><label class="lbl" for="prs-personality">Personalidad y tono de voz</label>
           <textarea class="inp" id="prs-personality" rows="2" placeholder="ej. Motivadora, cercana, usa humor inteligente, habla como una amiga experta en finanzas..." style="resize:vertical"></textarea></div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-          <div><label class="lbl">Nicho principal</label>
+          <div><label class="lbl" for="prs-niche">Nicho principal</label>
             <select class="sel" id="prs-niche">
               <option value="finanzas">💰 Finanzas</option>
               <option value="motivacion">🔥 Motivación</option>
@@ -2936,14 +3020,14 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
               <option value="fitness">🏋️ Fitness</option>
             </select>
           </div>
-          <div><label class="lbl">Idioma</label>
+          <div><label class="lbl" for="prs-lang">Idioma</label>
             <select class="sel" id="prs-lang">
               <option value="es">🇪🇸 Español</option>
               <option value="lat">🌎 Latino</option>
               <option value="en">🇺🇸 English</option>
             </select>
           </div>
-          <div><label class="lbl">Género de voz</label>
+          <div><label class="lbl" for="prs-gender">Género de voz</label>
             <select class="sel" id="prs-gender">
               <option value="f">♀ Femenino</option>
               <option value="m">♂ Masculino</option>
@@ -2996,7 +3080,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div class="stl mb10">💡 Idea o tendencia</div>
       <textarea class="inp" id="inf-content-idea" rows="3" placeholder="ej. 5 errores de finanzas que cometen los millennials..." style="resize:vertical;margin-bottom:10px"></textarea>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div><label class="lbl">Formato</label>
+        <div><label class="lbl" for="inf-content-format">Formato</label>
           <select class="sel" id="inf-content-format" style="font-size:12px">
             <option value="short">📱 Short / Reel (60s)</option>
             <option value="vlog">🎬 Vlog style (3-5min)</option>
@@ -3005,7 +3089,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
             <option value="story">📖 Historia personal</option>
           </select>
         </div>
-        <div><label class="lbl">Tono</label>
+        <div><label class="lbl" for="inf-content-tone">Tono</label>
           <select class="sel" id="inf-content-tone" style="font-size:12px">
             <option value="auto">🤖 Auto (según personaje)</option>
             <option value="energico">⚡ Enérgico</option>
@@ -3070,19 +3154,19 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <div class="stl mb10">👤 HeyGen — Avatar hablando</div>
         <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Ideal para influencer IA. El avatar habla directamente a cámara con tu script. ~$0.50-1/min</div>
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div><label class="lbl">Personaje / Avatar ID</label>
+          <div><label class="lbl" for="hg-persona-sel">Personaje / Avatar ID</label>
             <select class="sel" id="hg-persona-sel" style="font-size:12px"><option value="">— Selecciona personaje —</option></select>
           </div>
-          <div><label class="lbl">Script (texto que dirá el avatar)</label>
+          <div><label class="lbl" for="hg-script">Script (texto que dirá el avatar)</label>
             <textarea class="inp" id="hg-script" rows="4" placeholder="Pega aquí el guión generado o escribe directamente..." style="resize:vertical"></textarea>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div><label class="lbl">Idioma de voz</label>
+            <div><label class="lbl" for="hg-lang">Idioma de voz</label>
               <select class="sel" id="hg-lang" style="font-size:12px">
                 <option value="es">🇪🇸 Español</option><option value="lat">🌎 Latino</option><option value="en">🇺🇸 English</option>
               </select>
             </div>
-            <div><label class="lbl">Ratio</label>
+            <div><label class="lbl" for="hg-ratio">Ratio</label>
               <select class="sel" id="hg-ratio" style="font-size:12px">
                 <option value="9:16">📱 9:16 (Shorts/Reels)</option>
                 <option value="16:9">🖥 16:9 (YouTube)</option>
@@ -3114,15 +3198,15 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div class="stl mb10">🎭 D-ID — Avatar hablando</div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Similar a HeyGen, algo más económico. Buena calidad para Shorts. ~$0.30-0.60/min</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div><label class="lbl">URL de imagen del presentador</label>
+        <div><label class="lbl" for="did-image-url">URL de imagen del presentador</label>
           <input class="inp" id="did-image-url" placeholder="https://... (imagen del rostro del influencer IA)">
           <div style="font-size:10px;color:var(--text3);margin-top:3px">Usa una imagen generada por Midjourney o FLUX de tu personaje</div>
         </div>
-        <div><label class="lbl">Script</label>
+        <div><label class="lbl" for="did-script">Script</label>
           <textarea class="inp" id="did-script" rows="4" placeholder="Guión para el avatar..." style="resize:vertical"></textarea>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label class="lbl">Voz (D-ID TTS)</label>
+          <div><label class="lbl" for="did-voice">Voz (D-ID TTS)</label>
             <select class="sel" id="did-voice" style="font-size:12px">
               <option value="es-ES-AlvaroNeural">🇪🇸 Álvaro (♂ ES)</option>
               <option value="es-ES-ElviraNeural">🇪🇸 Elvira (♀ ES)</option>
@@ -3146,19 +3230,19 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div class="stl mb10">🎨 Runway Gen-3 — Vídeo generativo</div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Genera vídeo a partir de imagen + prompt. Más artístico, ideal para B-roll o intros. ~$0.05-0.15/seg</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div><label class="lbl">Imagen de referencia (URL)</label>
+        <div><label class="lbl" for="rw-image-url">Imagen de referencia (URL)</label>
           <input class="inp" id="rw-image-url" placeholder="https://... (imagen base para el vídeo)">
         </div>
-        <div><label class="lbl">Prompt de vídeo</label>
+        <div><label class="lbl" for="rw-prompt">Prompt de vídeo</label>
           <textarea class="inp" id="rw-prompt" rows="3" placeholder="ej. A young woman smiling and talking to camera in a modern office, professional lighting, cinematic..." style="resize:vertical"></textarea>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-          <div><label class="lbl">Duración</label>
+          <div><label class="lbl" for="rw-duration">Duración</label>
             <select class="sel" id="rw-duration" style="font-size:12px">
               <option value="5">5 segundos</option><option value="10">10 segundos</option>
             </select>
           </div>
-          <div><label class="lbl">Ratio</label>
+          <div><label class="lbl" for="rw-ratio">Ratio</label>
             <select class="sel" id="rw-ratio" style="font-size:12px">
               <option value="9:16">📱 9:16</option><option value="16:9">🖥 16:9</option>
             </select>
@@ -3178,11 +3262,11 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div class="stl mb10">✨ Pika — Vídeo IA</div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Alternativa a Runway, más accesible. Bueno para efectos visuales y transiciones. ~$0.02-0.08/seg</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div><label class="lbl">Prompt de vídeo</label>
+        <div><label class="lbl" for="pika-prompt">Prompt de vídeo</label>
           <textarea class="inp" id="pika-prompt" rows="3" placeholder="ej. Cinematic shot of a confident woman explaining finance tips, bokeh background..." style="resize:vertical"></textarea>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label class="lbl">Imagen base (opcional)</label>
+          <div><label class="lbl" for="pika-image">Imagen base (opcional)</label>
             <input class="inp" id="pika-image" placeholder="URL de imagen...">
           </div>
           <div style="display:flex;align-items:flex-end">
@@ -3220,7 +3304,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   <div class="card mb14">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px">
       <div>
-        <label class="lbl">Nicho</label>
+        <label class="lbl" for="cs-niche">Nicho</label>
         <select class="sel" id="cs-niche">
           <option value="negocios">📈 Negocios</option>
           <option value="divulgacion">🔬 Divulgación</option>
@@ -3233,7 +3317,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div>
-        <label class="lbl">Idioma</label>
+        <label class="lbl" for="cs-lang">Idioma</label>
         <select class="sel" id="cs-lang">
           <option value="es">🇪🇸 Español</option>
           <option value="en">🇺🇸 English</option>
@@ -3241,7 +3325,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div>
-        <label class="lbl">Estilo</label>
+        <label class="lbl" for="cs-style">Estilo</label>
         <select class="sel" id="cs-style">
           <option value="viral">Más viral</option>
           <option value="edu">Más educativo</option>
@@ -3260,8 +3344,8 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div style="background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px;width:440px;max-width:95vw">
       <div style="font-size:15px;font-weight:700;margin-bottom:16px">✂️ Nuevo canal de clipping</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div><label class="lbl">Nombre del canal</label><input class="inp" id="cc-name" placeholder="ej. FinanceClips ES"></div>
-        <div><label class="lbl">Nicho</label>
+        <div><label class="lbl" for="cc-name">Nombre del canal</label><input class="inp" id="cc-name" placeholder="ej. FinanceClips ES"></div>
+        <div><label class="lbl" for="cc-niche">Nicho</label>
           <select class="sel" id="cc-niche">
             <option value="negocios">📈 Negocios</option><option value="finanzas">💰 Finanzas</option>
             <option value="motivacion">🔥 Motivación</option><option value="tecnologia">💻 Tech</option>
@@ -3305,7 +3389,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <input class="inp mb12" id="cp-yt-url" placeholder="https://www.youtube.com/watch?v=...">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
         <div>
-          <label class="lbl">Duración máxima de cada clip</label>
+          <label class="lbl" for="cp-clip-duration">Duración máxima de cada clip</label>
           <select class="sel" id="cp-clip-duration">
             <option value="30">30 segundos</option>
             <option value="45">45 segundos</option>
@@ -3314,7 +3398,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           </select>
         </div>
         <div>
-          <label class="lbl">Número de clips a generar</label>
+          <label class="lbl" for="cp-clip-count">Número de clips a generar</label>
           <select class="sel" id="cp-clip-count">
             <option value="3">3 clips</option>
             <option value="5" selected>5 clips</option>
@@ -3411,7 +3495,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   </div>
 
   <!-- Calculadora de ingresos -->
-  <div class="card mb14" style="border-color:var(--blue)"><div style="font-size:13px;font-weight:700;margin-bottom:12px">Calculadora de ingresos 2026</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="lbl">Nicho</label><select class="sel" id="calc-niche" onchange="renderNicheCalculator()" style="font-size:12px"><option value="finanzas">Finanzas $14.5</option><option value="cripto">Cripto $16.2</option><option value="legal">Legal $18.0</option><option value="tecnologia">Tech $11.5</option><option value="motivacion">Motivacion $8.5</option><option value="truecrime">True Crime $7.8</option><option value="historia">Historia $9.2</option><option value="salud">Salud $12.0</option></select></div><div><label class="lbl">Videos/mes</label><input class="inp" id="calc-vids-month" type="number" value="30" min="1" oninput="renderNicheCalculator()" style="font-size:13px"></div><div><label class="lbl">Tier IA</label><select class="sel" id="calc-tier-sel" onchange="renderNicheCalculator()" style="font-size:12px"><option value="free">Gratis</option><option value="eco">Eco $0.15</option><option value="opt" selected>Opt $0.60</option><option value="prem">Premium $3</option><option value="scale">Scale $0.05</option></select></div><div><label class="lbl">Plataforma</label><select class="sel" id="calc-plat" onchange="renderNicheCalculator()" style="font-size:12px"><option value="yt">YouTube</option><option value="tt">TikTok</option><option value="ig">Instagram</option></select></div></div><div id="niche-calc-result"></div></div>
+  <div class="card mb14" style="border-color:var(--blue)"><div style="font-size:13px;font-weight:700;margin-bottom:12px">Calculadora de ingresos 2026</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="lbl" for="calc-niche">Nicho</label><select class="sel" id="calc-niche" onchange="renderNicheCalculator()" style="font-size:12px"><option value="finanzas">Finanzas $14.5</option><option value="cripto">Cripto $16.2</option><option value="legal">Legal $18.0</option><option value="tecnologia">Tech $11.5</option><option value="motivacion">Motivacion $8.5</option><option value="truecrime">True Crime $7.8</option><option value="historia">Historia $9.2</option><option value="salud">Salud $12.0</option></select></div><div><label class="lbl" for="calc-vids-month">Videos/mes</label><input class="inp" id="calc-vids-month" type="number" value="30" min="1" oninput="renderNicheCalculator()" style="font-size:13px"></div><div><label class="lbl" for="calc-tier-sel">Tier IA</label><select class="sel" id="calc-tier-sel" onchange="renderNicheCalculator()" style="font-size:12px"><option value="free">Gratis</option><option value="eco">Eco $0.15</option><option value="opt" selected>Opt $0.60</option><option value="prem">Premium $3</option><option value="scale">Scale $0.05</option></select></div><div><label class="lbl" for="calc-plat">Plataforma</label><select class="sel" id="calc-plat" onchange="renderNicheCalculator()" style="font-size:12px"><option value="yt">YouTube</option><option value="tt">TikTok</option><option value="ig">Instagram</option></select></div></div><div id="niche-calc-result"></div></div>
   <div class="card mb14" style="border-color:var(--blue)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:13px;font-weight:700">Comparativa ES vs EN</div><div style="font-size:11px;color:var(--text3)">El mercado ingles genera 3-6x mas CPM</div></div><div style="display:flex;gap:8px;align-items:center"><input class="inp" id="cmp-videos" type="number" value="30" style="width:60px;font-size:12px" oninput="renderENvsESComparison()"><select class="sel" id="cmp-tier" onchange="renderENvsESComparison()" style="font-size:11px"><option value="eco">Eco</option><option value="opt" selected>Opt</option><option value="scale">Scale</option></select></div></div><div id="en-vs-es-result"></div></div>
 
   <!-- GASTO ACTUAL -->
@@ -3427,12 +3511,12 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div class="stl mb12">⚠️ Límites de gasto</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div>
-        <label class="lbl">Límite diario ($)</label>
+        <label class="lbl" for="bud-limit-day">Límite diario ($)</label>
         <input class="inp" id="bud-limit-day" type="number" step="0.5" placeholder="2.00" value="2">
         <div style="font-size:11px;color:var(--text3);margin-top:4px">Se mostrará aviso al 80% y se bloqueará al 100%</div>
       </div>
       <div>
-        <label class="lbl">Límite mensual ($)</label>
+        <label class="lbl" for="bud-limit-month">Límite mensual ($)</label>
         <input class="inp" id="bud-limit-month" type="number" step="1" placeholder="30.00" value="30">
         <div style="font-size:11px;color:var(--text3);margin-top:4px">Bloquea todas las llamadas IA al alcanzarlo</div>
       </div>
@@ -3957,14 +4041,14 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <button class="btn btn-p" id="spy-analyze-btn" onclick="spyAnalyzeChannel()">🔍 Analizar</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div><label class="lbl">Plataforma</label>
+        <div><label class="lbl" for="spy-platform">Plataforma</label>
           <select class="sel" id="spy-platform" style="font-size:12px">
             <option value="youtube">▶️ YouTube</option>
             <option value="tiktok">🎵 TikTok</option>
             <option value="instagram">📷 Instagram</option>
           </select>
         </div>
-        <div><label class="lbl">Idioma del canal</label>
+        <div><label class="lbl" for="spy-lang">Idioma del canal</label>
           <select class="sel" id="spy-lang" style="font-size:12px">
             <option value="en">🇺🇸 English</option>
             <option value="es">🇪🇸 Español</option>
@@ -3972,7 +4056,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
             <option value="pt">🇧🇷 Português</option>
           </select>
         </div>
-        <div><label class="lbl">Objetivo</label>
+        <div><label class="lbl" for="spy-goal">Objetivo</label>
           <select class="sel" id="spy-goal" style="font-size:12px">
             <option value="clone">🧬 Quiero clonarlo</option>
             <option value="compete">⚔️ Quiero competir</option>
@@ -4007,7 +4091,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <button class="btn btn-p" id="spy-global-btn" onclick="fetchGlobalTopChannels()">🤖 Analizar mercado</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div><label class="lbl">Plataforma</label>
+        <div><label class="lbl" for="spy-global-plat">Plataforma</label>
           <select class="sel" id="spy-global-plat" style="font-size:12px">
             <option value="all">📡 Todas las plataformas</option>
             <option value="youtube">▶️ YouTube</option>
@@ -4015,7 +4099,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
             <option value="instagram">📷 Instagram</option>
           </select>
         </div>
-        <div><label class="lbl">Mercado</label>
+        <div><label class="lbl" for="spy-global-market">Mercado</label>
           <select class="sel" id="spy-global-market" style="font-size:12px">
             <option value="all">🌍 Global (todos)</option>
             <option value="en">🇺🇸 English (mayor CPM)</option>
@@ -4023,7 +4107,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
             <option value="lat">🌎 Español Latino</option>
           </select>
         </div>
-        <div><label class="lbl">Ordenar por</label>
+        <div><label class="lbl" for="spy-global-sort">Ordenar por</label>
           <select class="sel" id="spy-global-sort" style="font-size:12px">
             <option value="revenue">💰 Más rentables</option>
             <option value="views">👁️ Más visitas</option>
@@ -4080,7 +4164,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <div class="stl mb10">🏆 Top canales de contenido IA por nicho</div>
       <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Claude identifica los mejores canales IA en tu nicho. Capa gratuita.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
-        <div><label class="lbl">Nicho</label>
+        <div><label class="lbl" for="spy-top-niche">Nicho</label>
           <select class="sel" id="spy-top-niche" style="font-size:12px">
             <option value="finanzas">💰 Finanzas</option>
             <option value="cripto">₿ Cripto/Trading</option>
@@ -4094,14 +4178,14 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
             <option value="salud">🏃 Salud</option>
           </select>
         </div>
-        <div><label class="lbl">Idioma</label>
+        <div><label class="lbl" for="spy-top-lang">Idioma</label>
           <select class="sel" id="spy-top-lang" style="font-size:12px">
             <option value="en">🇺🇸 English (más CPM)</option>
             <option value="es">🇪🇸 Español España</option>
             <option value="lat">🌎 Español Latino</option>
           </select>
         </div>
-        <div><label class="lbl">Plataforma</label>
+        <div><label class="lbl" for="spy-top-plat">Plataforma</label>
           <select class="sel" id="spy-top-plat" style="font-size:12px">
             <option value="youtube">▶️ YouTube</option>
             <option value="tiktok">🎵 TikTok</option>
@@ -4196,9 +4280,9 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <select class="sel" id="tt-channel-sel" style="width:100%;font-size:12px;margin-bottom:10px" onchange="loadTTStats()"><option value="">-- Selecciona canal --</option></select>
       <div id="tt-stats-panel" style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
-          <div><label class="lbl">Seguidores TT</label><input class="inp" id="tt-followers" type="number" placeholder="12400"></div>
-          <div><label class="lbl">Views/mes TT</label><input class="inp" id="tt-views-month" type="number" placeholder="145000"></div>
-          <div><label class="lbl">Seguidores IG</label><input class="inp" id="ig-followers" type="number" placeholder="3200"></div>
+          <div><label class="lbl" for="tt-followers">Seguidores TT</label><input class="inp" id="tt-followers" type="number" placeholder="12400"></div>
+          <div><label class="lbl" for="tt-views-month">Views/mes TT</label><input class="inp" id="tt-views-month" type="number" placeholder="145000"></div>
+          <div><label class="lbl" for="ig-followers">Seguidores IG</label><input class="inp" id="ig-followers" type="number" placeholder="3200"></div>
         </div>
         <div style="display:flex;gap:8px"><button class="btn btn-p" style="flex:1" onclick="saveTTStats()">Guardar</button><button class="btn btn-g btn-sm" onclick="analyzeTTPerformance()">Analizar IA</button></div>
       </div>
@@ -4209,7 +4293,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
   <div id="an-panel-log" style="display:none"><div id="an-log-content"></div></div>
 </div>
 
-<div class="view" id="view-cliplibrary"><div class="sh mb16"><h2>Mis Clips</h2></div><div class="card mb14" style="border-color:var(--blue)"><div style="font-size:12px;font-weight:700;margin-bottom:10px">Generar clip con Kling</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label class="lbl">Nicho</label><select class="sel" id="clip-gen-niche" style="font-size:12px"><option value="finanzas">Finanzas</option><option value="truecrime">True Crime</option><option value="historia">Historia</option><option value="general">General</option></select></div><div><label class="lbl">Mood</label><select class="sel" id="clip-gen-mood" style="font-size:12px"><option value="dramatic">Dramatico</option><option value="uplifting">Motivador</option><option value="neutral">Neutral</option></select></div></div><div style="margin-bottom:10px"><label class="lbl">Prompt (ingles)</label><input class="inp" id="clip-gen-prompt" placeholder="Close-up of hands counting money, dramatic lighting" style="font-size:13px"></div><div style="display:flex;gap:8px;margin-bottom:4px"><button class="btn btn-p" id="clip-gen-btn" onclick="generateLibraryClip()" style="flex:1">Generar clip</button><button class="btn btn-g btn-sm" onclick="addExternalClip()">+ URL externa</button></div><div style="font-size:10px;color:var(--text3)">Requiere Kling API key · ~$0.05/clip · Reutilizable infinito</div></div><div style="display:flex;gap:8px;margin-bottom:14px"><select class="sel" id="clip-lib-niche" onchange="renderClipLibrary()" style="font-size:12px"><option value="all">Todos</option><option value="finanzas">Finanzas</option><option value="truecrime">True Crime</option><option value="general">General</option></select><select class="sel" id="clip-lib-mood" onchange="renderClipLibrary()" style="font-size:12px"><option value="all">Todos</option><option value="dramatic">Dramatico</option><option value="uplifting">Motivador</option></select><input class="inp" id="clip-lib-search" placeholder="Buscar..." oninput="renderClipLibrary()" style="flex:1;font-size:12px"><button class="btn btn-g btn-sm" onclick="renderClipLibrary()">↻</button></div><div id="clip-library-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px"></div></div>
+<div class="view" id="view-cliplibrary"><div class="sh mb16"><h2>Mis Clips</h2></div><div class="card mb14" style="border-color:var(--blue)"><div style="font-size:12px;font-weight:700;margin-bottom:10px">Generar clip con Kling</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label class="lbl" for="clip-gen-niche">Nicho</label><select class="sel" id="clip-gen-niche" style="font-size:12px"><option value="finanzas">Finanzas</option><option value="truecrime">True Crime</option><option value="historia">Historia</option><option value="general">General</option></select></div><div><label class="lbl" for="clip-gen-mood">Mood</label><select class="sel" id="clip-gen-mood" style="font-size:12px"><option value="dramatic">Dramatico</option><option value="uplifting">Motivador</option><option value="neutral">Neutral</option></select></div></div><div style="margin-bottom:10px"><label class="lbl" for="clip-gen-prompt">Prompt (ingles)</label><input class="inp" id="clip-gen-prompt" placeholder="Close-up of hands counting money, dramatic lighting" style="font-size:13px"></div><div style="display:flex;gap:8px;margin-bottom:4px"><button class="btn btn-p" id="clip-gen-btn" onclick="generateLibraryClip()" style="flex:1">Generar clip</button><button class="btn btn-g btn-sm" onclick="addExternalClip()">+ URL externa</button></div><div style="font-size:10px;color:var(--text3)">Requiere Kling API key · ~$0.05/clip · Reutilizable infinito</div></div><div style="display:flex;gap:8px;margin-bottom:14px"><select class="sel" id="clip-lib-niche" onchange="renderClipLibrary()" style="font-size:12px"><option value="all">Todos</option><option value="finanzas">Finanzas</option><option value="truecrime">True Crime</option><option value="general">General</option></select><select class="sel" id="clip-lib-mood" onchange="renderClipLibrary()" style="font-size:12px"><option value="all">Todos</option><option value="dramatic">Dramatico</option><option value="uplifting">Motivador</option></select><input class="inp" id="clip-lib-search" placeholder="Buscar..." oninput="renderClipLibrary()" style="flex:1;font-size:12px"><button aria-label="Actualizar biblioteca" title="Actualizar biblioteca" class="btn btn-g btn-sm" onclick="renderClipLibrary()">↻</button></div><div id="clip-library-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px"></div></div>
 <div class="view" id="view-saas-users"><div class="sh mb16"><h2>Usuarios</h2><span class="tag" style="background:var(--purple);color:var(--text1);border:none">Proximamente</span></div><div style="text-align:center;padding:60px 20px;color:var(--text3)"><div style="font-size:48px">👥</div><div style="font-size:18px;font-weight:700;color:var(--text2);margin-top:16px">Supabase Auth + PostgreSQL</div></div></div>
 <div class="view" id="view-saas-billing"><div class="sh mb16"><h2>Facturacion</h2><span class="tag" style="background:var(--purple);color:var(--text1);border:none">Proximamente</span></div><div style="text-align:center;padding:60px 20px;color:var(--text3)"><div style="font-size:48px">💳</div><div style="font-size:18px;font-weight:700;color:var(--text2);margin-top:16px">Stripe Subscriptions</div></div></div>
 <div class="view" id="view-saas-plans"><div class="sh mb16"><h2>Planes</h2><span class="tag" style="background:var(--purple);color:var(--text1);border:none">Proximamente</span></div><div style="padding:20px 0"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;max-width:700px;margin:0 auto"><div style="background:var(--bg2);border-radius:var(--rl);padding:20px;border:1px solid var(--border)"><div style="font-size:13px;font-weight:700;margin-bottom:6px">Free</div><div style="font-size:28px;font-weight:800;font-family:var(--mono)">0€</div><div style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.8">3 videos/mes · 1 canal</div></div><div style="background:var(--bg2);border-radius:var(--rl);padding:20px;border:2px solid var(--amber)"><div style="font-size:10px;font-weight:700;color:var(--amber)">POPULAR</div><div style="font-size:13px;font-weight:700;margin-bottom:6px">Pro</div><div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--amber)">29€</div><div style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.8">50 videos/mes · 5 canales · AutoPilot</div></div><div style="background:var(--bg2);border-radius:var(--rl);padding:20px;border:1px solid var(--purple)"><div style="font-size:13px;font-weight:700;margin-bottom:6px">Agency</div><div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--purple)">99€</div><div style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.8">Ilimitado · Multi-usuario</div></div></div></div></div>
@@ -4280,9 +4364,9 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <div id="ob-2" style="display:none;padding:22px 26px 26px">
       <div style="font-size:21px;font-weight:800;margin-bottom:6px">Crea tu primer canal</div>
       <p style="font-size:13.5px;color:var(--text2);margin-bottom:20px">Todo lo que genere la IA se adaptará a este canal: su nicho, su idioma y su estilo.</p>
-      <label class="lbl">Nombre del canal</label>
+      <label class="lbl" for="ob-ch-name">Nombre del canal</label>
       <input class="inp" id="ob-ch-name" placeholder="ej. FinanzasClaras" style="font-size:14px;margin-bottom:14px">
-      <label class="lbl">Idioma / mercado</label>
+      <label class="lbl" for="ob-ch-lang">Idioma / mercado</label>
       <select class="sel" id="ob-ch-lang" style="font-size:13px;margin-bottom:20px">
         <option value="es">🇪🇸 Español (España)</option>
         <option value="lat">🌎 Español (Latinoamérica)</option>
@@ -4317,7 +4401,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <!-- Row 1: Name + Niche -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
-        <label class="lbl">Nombre del canal</label>
+        <label class="lbl" for="ch-name">Nombre del canal</label>
         <input class="inp" id="ch-name" placeholder="Ej: FinanceFacts" style="font-size:13px">
         <div style="font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--mono)" id="ch-name-preview">El sufijo se añade automáticamente</div>
       </div>
@@ -4327,7 +4411,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <div style="font-size:10px;color:var(--text3);margin-top:3px">YouTube Studio → Configuración → Canal → Información básica</div>
       </div>
       <div>
-        <label class="lbl">Nicho principal</label>
+        <label class="lbl" for="ch-niche">Nicho principal</label>
         <select class="sel" id="ch-niche">
           <option value="finanzas">💰 Finanzas básicas — CPM $8-15</option>
           <option value="tech">🤖 Tecnología / IA — CPM $9-18</option>
@@ -4392,7 +4476,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
     <!-- Row 5: Mode + Frequency -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
-        <label class="lbl">Modo de operación</label>
+        <label class="lbl" for="ch-mode">Modo de operación</label>
         <select class="sel" id="ch-mode">
           <option>🤖 AutoPilot — genera y publica solo</option>
           <option>✋ Semiautomático — apruebo cada vídeo</option>
@@ -4400,7 +4484,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         </select>
       </div>
       <div>
-        <label class="lbl">Frecuencia de publicación</label>
+        <label class="lbl" for="ch-freq">Frecuencia de publicación</label>
         <select class="sel" id="ch-freq">
           <option>1 vídeo/día</option>
           <option>2 vídeos/día</option>
@@ -4552,7 +4636,7 @@ async function generateKineticFallback() {
     '.text { color:#fff; font-size:72px; font-weight:900; text-align:center; line-height:1.2; padding:60px; }',
     '.accent { color:#fbbf24; }',
     '</style></head><body>',
-    '<div class="text"><span class="accent">' + hook + '</span></div>',
+    '<div class="text"><span class="accent">' + escapeHtml(hook) + '</span></div>',
     '</body></html>'
   ];
   const kineticHTML = parts.join('\n');
@@ -4764,7 +4848,7 @@ async function getAISaturationInsight(niche,lang){var el=document.getElementById
 function getClipLibrary(){try{return JSON.parse(localStorage.getItem('fai_clip_library')||'[]');}catch(e){return[];}}
 function saveClipLibrary(clips){localStorage.setItem('fai_clip_library',JSON.stringify(clips));}
 function addToClipLibrary(url,meta){var clips=getClipLibrary();var entry={id:'clip_'+Date.now(),url,niche:meta.niche||'general',mood:meta.mood||'neutral',tags:meta.tags||[],duration:meta.duration||5,source:meta.source||'kling',prompt:meta.prompt||'',uses:0,addedAt:Date.now()};clips.unshift(entry);saveClipLibrary(clips.slice(0,500));return entry;}
-function renderClipLibrary(){var el=document.getElementById('clip-library-grid');if(!el)return;var clips=getClipLibrary();var niche=(document.getElementById('clip-lib-niche')||{}).value||'all';var mood=(document.getElementById('clip-lib-mood')||{}).value||'all';var search=((document.getElementById('clip-lib-search')||{}).value||'').toLowerCase();var f=clips.filter(function(cl){return(niche==='all'||cl.niche===niche)&&(mood==='all'||cl.mood===mood)&&(!search||(cl.prompt||'').toLowerCase().includes(search));});if(!f.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3)">'+(clips.length===0?'Biblioteca vacia. Genera clips con Kling.':'Sin clips para estos filtros.')+'</div>';return;}el.innerHTML=f.map(function(cl){return'<div style="background:var(--bg2);border-radius:var(--r);overflow:hidden;border:1px solid var(--border)"><div style="background:var(--bg);aspect-ratio:9/16;display:flex;align-items:center;justify-content:center;max-height:120px;font-size:32px">🎬</div><div style="padding:8px"><div style="font-size:10px;color:var(--text3);margin-bottom:3px">'+cl.niche+' · '+cl.mood+'</div><div style="font-size:11px;color:var(--text2);margin-bottom:6px">'+(cl.prompt||'').slice(0,50)+'</div><div style="display:flex;gap:4px"><button class="btn btn-p btn-sm" style="flex:1;font-size:10px" data-url="'+(cl.url||'')+'" onclick="useClipInPipeline(this.dataset.url)">Usar</button><button class="btn btn-g btn-sm" style="font-size:10px;color:var(--red)" data-id="'+cl.id+'" onclick="deleteClip(this.dataset.id)">X</button></div></div></div>';}).join('');}
+function renderClipLibrary(){var el=document.getElementById('clip-library-grid');if(!el)return;var clips=getClipLibrary();var niche=(document.getElementById('clip-lib-niche')||{}).value||'all';var mood=(document.getElementById('clip-lib-mood')||{}).value||'all';var search=((document.getElementById('clip-lib-search')||{}).value||'').toLowerCase();var f=clips.filter(function(cl){return(niche==='all'||cl.niche===niche)&&(mood==='all'||cl.mood===mood)&&(!search||(cl.prompt||'').toLowerCase().includes(search));});if(!f.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3)">'+(clips.length===0?'Biblioteca vacia. Genera clips con Kling.':'Sin clips para estos filtros.')+'</div>';return;}el.innerHTML=f.map(function(cl){return'<div style="background:var(--bg2);border-radius:var(--r);overflow:hidden;border:1px solid var(--border)"><div style="background:var(--bg);aspect-ratio:9/16;display:flex;align-items:center;justify-content:center;max-height:120px;font-size:32px">🎬</div><div style="padding:8px"><div style="font-size:10px;color:var(--text3);margin-bottom:3px">'+cl.niche+' · '+cl.mood+'</div><div style="font-size:11px;color:var(--text2);margin-bottom:6px">'+(cl.prompt||'').slice(0,50)+'</div><div style="display:flex;gap:4px"><button class="btn btn-p btn-sm" style="flex:1;font-size:10px" data-url="'+(cl.url||'')+'" onclick="useClipInPipeline(this.dataset.url)">Usar</button><button aria-label="Cerrar" title="Cerrar" class="btn btn-g btn-sm" style="font-size:10px;color:var(--red)" data-id="'+cl.id+'" onclick="deleteClip(this.dataset.id)">X</button></div></div></div>';}).join('');}
 function useClipInPipeline(url){if(!window._pexelsVideos)window._pexelsVideos=[];window._pexelsVideos.unshift({id:'own_'+Date.now(),video_files:[{quality:'hd',link:url}],url});nav('pipeline');showToast('Clip cargado en Pipeline');}
 function deleteClip(id){saveClipLibrary(getClipLibrary().filter(function(cl){return cl.id!==id;}));renderClipLibrary();showToast('Eliminado');}
 async function generateLibraryClip(){var kk=KEYS.kling||localStorage.getItem('fai_key_kling')||'';var prompt=(document.getElementById('clip-gen-prompt')||{}).value||'';var niche=(document.getElementById('clip-gen-niche')||{}).value||'general';var mood=(document.getElementById('clip-gen-mood')||{}).value||'neutral';var dur=parseInt((document.getElementById('clip-gen-dur')||{}).value||'5');var btn=document.getElementById('clip-gen-btn');if(!prompt){showToast('Escribe un prompt');return;}if(!kk){showToast('Necesitas Kling API key');return;}if(btn){btn.disabled=true;btn.textContent='Generando...';}try{showToast('Generando con Kling...');var r=await fetch('https://api.klingai.com/v1/videos/text2video',{method:'POST',headers:{'Authorization':'Bearer '+kk,'Content-Type':'application/json'},body:JSON.stringify({prompt,model:'kling-v1',duration:Math.min(dur,10),aspect_ratio:'9:16',mode:'std'})});if(!r.ok)throw new Error('Kling '+r.status);var data=await r.json();var taskId=data.data&&data.data.task_id;if(!taskId)throw new Error('Sin task_id');var url=null;for(var i=0;i<40;i++){await new Promise(function(res){setTimeout(res,3000);});var sr=await fetch('https://api.klingai.com/v1/videos/text2video/'+taskId,{headers:{'Authorization':'Bearer '+kk}});var s=await sr.json();if(s.data&&s.data.task_status==='succeed'){url=s.data.task_result&&s.data.task_result.videos&&s.data.task_result.videos[0]&&s.data.task_result.videos[0].url;break;}if(s.data&&s.data.task_status==='failed')break;}if(url){addToClipLibrary(url,{niche,mood,duration:dur,source:'kling',prompt,tags:[niche,mood]});renderClipLibrary();showToast('Clip generado y guardado');logAICall('kling','clip-library',0.05,0);}else showToast('No se pudo generar');}catch(e){showToast('Error: '+e.message);}finally{if(btn){btn.disabled=false;btn.textContent='Generar clip';}}}
@@ -4886,7 +4970,7 @@ async function generateAutopilotVideo(draft, ch, addLog) {
   }
 }
 async function runFullAutopilotCycle(){if(_apRunning){showToast('AutoPilot ya en ejecucion');return;}if(!KEYS.anthropic){showToast('Configura Anthropic API key');return;}var channels=getChannels().filter(function(ch){return ch.autopilot!==false;});if(!channels.length){showToast('No hay canales con AutoPilot activo');return;}var scoreThreshold=getAPSetting('score_threshold',70);var videosPerChan=getAPSetting('videos_per_cycle',1);var autoApprove=getAPSetting('auto_approve',true);var autoSchedule=getAPSetting('auto_schedule',true);var autoVideo=getAPSetting('auto_video',false);_apRunning=true;var log=[];var addLog=function(msg,col){log.push(msg);updateAPLog(log,col);};updateAPStatus('running','Iniciando ciclo...');try{addLog('AutoPilot: '+channels.length+' canales · umbral '+scoreThreshold,'var(--green)');for(var ci=0;ci<channels.length;ci++){var ch=channels[ci];addLog('Canal: '+ch.name+' ('+ch.niche+'·'+(ch.lang||'es')+')','var(--blue)');for(var v=0;v<videosPerChan;v++){addLog('['+ch.name+'] Generando idea...','');var idea=await apGenerateIdea(ch);if(!idea){addLog('['+ch.name+'] Sin idea — saltando','var(--red)');continue;}var score=await apQuickScore(idea.hook,ch.niche,ch);addLog('['+ch.name+'] "'+idea.hook.slice(0,40)+'" — Score: '+score,score>=scoreThreshold?'var(--green)':'var(--amber)');if(score<scoreThreshold){addLog('['+ch.name+'] Score bajo — saltando','var(--text3)');continue;}var script=await apGenerateScript(idea.hook,ch);if(!script){continue;}var scriptWA=typeof injectChannelAffiliates==='function'?injectChannelAffiliates(script,ch.name):script;var draft={id:'ap_'+Date.now()+'_'+Math.random().toString(36).slice(2,5),hook:idea.hook,title:idea.hook,script:scriptWA,niche:ch.niche,lang:ch.lang||'es',channel:ch.name,score:score,status:autoApprove&&score>=scoreThreshold?'approved':'pending',source:'autopilot',createdAt:Date.now(),platforms:ch.platforms||['youtube','tiktok']};addDraft(draft);if(autoVideo&&BACKEND_URL){await generateAutopilotVideo(draft,ch,addLog);}logAICall('claude','autopilot-cycle',0.015,800,ch.name);addLog('['+ch.name+'] Guardado: '+(draft.status==='approved'?'AUTO-APROBADO':'pendiente'),draft.status==='approved'?'var(--green)':'var(--amber)');if(autoSchedule&&draft.status==='approved'){apScheduleDraft(draft,ch);addLog('['+ch.name+'] Programado','var(--green)');}await new Promise(function(r){setTimeout(r,800);});}}var sum='Ciclo completado: '+channels.length+' canales procesados';addLog(sum,'var(--green)');updateAPStatus('idle',sum);showToast('AutoPilot: '+sum);}catch(e){addLog('ERROR: '+e.message,'var(--red)');updateAPStatus('error','Error: '+e.message);}finally{_apRunning=false;}}
-function renderAutopilotSettings(){var el=document.getElementById('ap-settings-panel');if(!el)return;var thr=getAPSetting('score_threshold',70);var per=getAPSetting('videos_per_cycle',1);var ivl=getAutopilotInterval();var aa=getAPSetting('auto_approve',true);var as=getAPSetting('auto_schedule',true);var av=getAPSetting('auto_video',false);el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div><label class="lbl">Umbral de score para auto-aprobar</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="ap-threshold" min="50" max="95" value="'+thr+'" style="flex:1" oninput="document.getElementById(\'ap-threshold-val\').textContent=this.value"><span id="ap-threshold-val" style="font-family:var(--mono);font-weight:700;color:var(--amber);min-width:30px">'+thr+'</span></div></div><div><label class="lbl">Videos por canal por ciclo</label><select class="sel" id="ap-per-chan" style="font-size:12px">'+[1,2,3,5].map(function(n){return'<option value="'+n+'"'+(n===per?' selected':'')+'>'+n+' video'+(n>1?'s':'')+'</option>';}).join('')+'</select></div><div><label class="lbl">Intervalo entre ciclos</label><select class="sel" id="ap-interval" style="font-size:12px" onchange="localStorage.setItem(\'fai_ap_interval\',this.value)">'+[2,4,6,12,24].map(function(h){return'<option value="'+h+'"'+(h===ivl?' selected':'')+'>Cada '+h+'h</option>';}).join('')+'</select></div></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-approve"'+(aa?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-aprobar si score supera el umbral</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-schedule"'+(as?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-programar a hora optima del nicho</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-video"'+(av?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Generar vídeo MP4 auto <span style="color:var(--text3)">(requiere backend + claves TTS y Pexels)</span></span></div></div><button class="btn btn-p" style="width:100%;margin-top:12px" onclick="saveAPSettingsFromUI();showToast(\'Configuracion guardada\')">Guardar</button>';}
+function renderAutopilotSettings(){var el=document.getElementById('ap-settings-panel');if(!el)return;var thr=getAPSetting('score_threshold',70);var per=getAPSetting('videos_per_cycle',1);var ivl=getAutopilotInterval();var aa=getAPSetting('auto_approve',true);var as=getAPSetting('auto_schedule',true);var av=getAPSetting('auto_video',false);el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div><label class="lbl">Umbral de score para auto-aprobar</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="ap-threshold" min="50" max="95" value="'+thr+'" style="flex:1" oninput="document.getElementById(\'ap-threshold-val\').textContent=this.value"><span id="ap-threshold-val" style="font-family:var(--mono);font-weight:700;color:var(--amber);min-width:30px">'+thr+'</span></div></div><div><label class="lbl" for="ap-per-chan">Videos por canal por ciclo</label><select class="sel" id="ap-per-chan" style="font-size:12px">'+[1,2,3,5].map(function(n){return'<option value="'+n+'"'+(n===per?' selected':'')+'>'+n+' video'+(n>1?'s':'')+'</option>';}).join('')+'</select></div><div><label class="lbl" for="ap-interval">Intervalo entre ciclos</label><select class="sel" id="ap-interval" style="font-size:12px" onchange="localStorage.setItem(\'fai_ap_interval\',this.value)">'+[2,4,6,12,24].map(function(h){return'<option value="'+h+'"'+(h===ivl?' selected':'')+'>Cada '+h+'h</option>';}).join('')+'</select></div></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><div class="tw"><label class="tgl"><input type="checkbox" aria-label="Auto-aprobar si score supera el umbral" id="ap-auto-approve"'+(aa?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-aprobar si score supera el umbral</span></div><div class="tw"><label class="tgl"><input type="checkbox" aria-label="Auto-programar a hora optima del nicho" id="ap-auto-schedule"'+(as?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Auto-programar a hora optima del nicho</span></div><div class="tw"><label class="tgl"><input type="checkbox" id="ap-auto-video"'+(av?' checked':'')+' onchange="saveAPSettingsFromUI()"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><span style="font-size:13px">Generar vídeo MP4 auto <span style="color:var(--text3)">(requiere backend + claves TTS y Pexels)</span></span></div></div><button class="btn btn-p" style="width:100%;margin-top:12px" onclick="saveAPSettingsFromUI();showToast(\'Configuracion guardada\')">Guardar</button>';}
 function saveAPSettingsFromUI(){saveAPSettings({score_threshold:parseInt(document.getElementById('ap-threshold')&&document.getElementById('ap-threshold').value||70),videos_per_cycle:parseInt(document.getElementById('ap-per-chan')&&document.getElementById('ap-per-chan').value||1),auto_approve:document.getElementById('ap-auto-approve')&&document.getElementById('ap-auto-approve').checked,auto_schedule:document.getElementById('ap-auto-schedule')&&document.getElementById('ap-auto-schedule').checked,auto_video:document.getElementById('ap-auto-video')&&document.getElementById('ap-auto-video').checked});}
 function renderAPChannelList(){var el=document.getElementById('ap-channel-list');if(!el)return;var chs=getChannels();if(!chs.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3)">No hay canales. <button class="btn btn-g btn-sm" onclick="nav(\'channels\')">+ Crear canal</button></div>';return;}el.innerHTML=chs.map(function(ch){var active=ch.autopilot!==false;return'<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px;border:1px solid '+(active?'var(--green)33':'var(--border)')+'"><label class="tgl"><input type="checkbox"'+(active?' checked':'')+' onchange="toggleChannelAP(\''+ch.name+'\',this.checked)"><div class="tgl-track"></div><div class="tgl-thumb"></div></label><div style="flex:1"><div style="font-size:13px;font-weight:600">'+ch.name+'</div><div style="font-size:11px;color:var(--text3)">'+ch.niche+'·'+(ch.lang||'es').toUpperCase()+'</div></div><span class="tag '+(active?'tg':'')+'">'+(active?'Activo':'Inactivo')+'</span></div>';}).join('');}
 function toggleChannelAP(name,active){var chs=getChannels();var ch=chs.find(function(c){return c.name===name;});if(ch){ch.autopilot=active;localStorage.setItem('fai_channels',JSON.stringify(chs));}renderAPChannelList();showToast(name+': AutoPilot '+(active?'activado':'desactivado'));}
@@ -5378,7 +5462,7 @@ function refreshAnalyticsChannels() {
     return;
   }
   var token = _ytOAuthToken || localStorage.getItem('fai_yt_oauth_token') || '';
-  if(!token) { el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)">Conecta YouTube OAuth en Configuracion para ver datos reales.</div>'; return; }
+  if(!token) { el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)">Conecta YouTube OAuth en Configuración para ver datos reales.</div>'; return; }
   el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">Cargando datos de YouTube...</div>';
   var backend = localStorage.getItem('fai_backend_url') || '';
   if(!backend) { showToast('Configura URL del backend en Configuracion'); return; }
@@ -5429,7 +5513,7 @@ function getLangCfg() { return LANG_CONFIG[activeLang] || LANG_CONFIG.es; }
 function getVoice()   { return getLangCfg().voices[activeGender]; }
 
 // ── NAVIGATION ──
-const VIEWS = ['dashboard','channels','drafts','trends','score','pipeline','url2video','influencer','influencer-contenido','influencer-video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','scheduler','models','budget','affiliation','admarketing','analytics','monetization','saas-onboarding','saas-admin','saas-plans','saas-billing','saas-users','cliplibrary','settings','spychannels'];
+const VIEWS = ['help','dashboard','channels','drafts','trends','score','pipeline','url2video','influencer','influencer-contenido','influencer-video','clipping','clippipeline','templates','clone','reuse','tiktokshop','tiktokproduct','tiktokauto','autopilot','scheduler','models','budget','affiliation','admarketing','analytics','monetization','saas-onboarding','saas-admin','saas-plans','saas-billing','saas-users','cliplibrary','settings','spychannels'];
 const TITLES = {
   dashboard:'Dashboard', channels:'Mis canales', drafts:'Borradores',
   trends:'Tendencias — ventana 48h', score:'Score predictivo IA', pipeline:'Pipeline IA',
@@ -5442,7 +5526,7 @@ const TITLES = {
   cliplibrary:'📦 Mis Clips', spychannels:'🔍 Espía de Canales', monetization:'💸 Monetización',
   clipping:'✂️ Clipping', clippipeline:'✂️ Pipeline Clipping',
   affiliation:'⭐ Afiliados', admarketing:'📢 Publicidad', analytics:'📊 Analytics',
-  settings:'⚙️ Configuración',
+  settings:'⚙️ Configuración', help:'❓ Ayuda y guías',
   'saas-users':'👥 Usuarios', 'saas-billing':'💳 Facturación', 'saas-plans':'🎟️ Planes',
   'saas-admin':'🛠️ Admin', 'saas-onboarding':'🚀 Onboarding'
 };
@@ -8062,7 +8146,7 @@ function renderScheduler() {
         <div style="font-size:11px;color:var(--text3);margin-top:2px">${plats} · ${item.channel||''} · ${d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'})} ${d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</div>
       </div>
       <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${statusCol}22;color:${statusCol};font-family:var(--mono);white-space:nowrap">${item.status==='published'?'✓ publicado':item.status==='failed'?'✕ error':isPast?'⏰ pendiente':'⏳ programado'}</span>
-      <button class="btn btn-g btn-sm" style="font-size:10px;color:var(--red)" onclick="removeFromQueue('${item.id}')">×</button>
+      <button aria-label="Quitar de la cola" title="Quitar de la cola" class="btn btn-g btn-sm" style="font-size:10px;color:var(--red)" onclick="removeFromQueue('${item.id}')">×</button>
     </div>`;
   }).join('');
 }
@@ -8651,7 +8735,7 @@ function renderChannels() {
         '</div>' +
         '<div style="display:flex;gap:4px">' +
           '<button onclick="openEditChannelModal(' + i + ')" class="btn btn-g btn-sm" style="font-size:11px;padding:3px 10px">✏️ Editar</button>' +
-          '<button onclick="deleteChannel(' + i + ')" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:13px;padding:3px 8px">×</button>' +
+          '<button aria-label="Eliminar canal" title="Eliminar canal" onclick="deleteChannel(' + i + ')" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:13px;padding:3px 8px">×</button>' +
         '</div>' +
       '</div>' +
       '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">' +
@@ -8688,7 +8772,7 @@ function renderChannels() {
         '<div style="font-size:11px;color:var(--text3);margin-bottom:10px">' + (ch.niche||'general') + ' · ' + (ch.lang||'es') + '</div>' +
         '<div style="display:flex;gap:8px">' +
           '<button class="btn btn-g btn-sm" style="flex:1" onclick="workOnChannel(\'' + ch.name.replace(/'/g,"\\'") + '\')">▶ Generar contenido</button>' +
-          '<button onclick="openEditChannelModal(' + i + ')" class="btn btn-g btn-sm">✏️</button>' +
+          '<button aria-label="Editar canal" title="Editar canal" onclick="openEditChannelModal(' + i + ')" class="btn btn-g btn-sm">✏️</button>' +
         '</div></div>';
     }).join('');
   }
@@ -9165,7 +9249,7 @@ function renderClipChannels() {
           <div style="font-weight:700;font-size:14px">${ch.name}</div>
           <div style="font-size:11px;color:var(--text3)">${ch.niche} · ${(ch.platforms||[]).join(' · ')}</div>
         </div>
-        <button onclick="deleteClipChannel(${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px">×</button>
+        <button aria-label="Eliminar canal de clips" title="Eliminar canal de clips" onclick="deleteClipChannel(${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px">×</button>
       </div>
       <button class="btn btn-p btn-sm" style="width:100%" onclick="nav('clippipeline')">✂️ Clipear vídeo</button>
     </div>`;
@@ -9294,7 +9378,7 @@ function renderAffiliates() {
           <div style="display:flex;gap:8px">
             <button class="btn btn-g btn-sm" onclick="copyAffLink(${i})">📋 Copiar link</button>
             <button class="btn btn-p btn-sm" onclick="useAffInVideo(${i})">▶ Usar en vídeo</button>
-            <button class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="deleteAffiliate(${i})">✕</button>
+            <button aria-label="Cerrar" title="Cerrar" class="btn btn-g btn-sm" style="color:var(--red);border-color:var(--red)" onclick="deleteAffiliate(${i})">✕</button>
           </div>
         </div>
       </div>
@@ -10607,7 +10691,7 @@ function openPlatformModal(platform) {
   if (title) title.textContent = cfg.title;
   if (fields) fields.innerHTML = cfg.fields.map(f => `
     <div>
-      <label class="lbl">${f.label}</label>
+      <label class="lbl" for="pm-${f.id}">${f.label}</label>
       <input class="inp" id="pm-${f.id}" type="number" step="any" placeholder="${f.placeholder}" value="${f.val||''}">
     </div>`).join('');
   const m = document.getElementById('platform-modal');
@@ -10971,8 +11055,8 @@ function renderInfluencer() {
           <div style="font-size:11px;color:var(--text3)">${flag} ${(p.niche||'').toUpperCase()} · ${p.gender==='f'?'♀':'♂'} · ${p.age||'?'} años</div>
         </div>
         <div style="display:flex;gap:4px">
-          <button class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px" onclick="editPersona(${i})">✏️</button>
-          <button onclick="deletePersona(${i})" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 6px">×</button>
+          <button aria-label="Editar" title="Editar" class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px" onclick="editPersona(${i})">✏️</button>
+          <button aria-label="Cerrar" title="Cerrar" onclick="deletePersona(${i})" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 6px">×</button>
         </div>
       </div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.5;max-height:40px;overflow:hidden">${p.personality||'Sin descripción'}</div>
@@ -14289,7 +14373,7 @@ function renderSavedIdeas() {
       <div style="flex:1;min-width:0">
         <div style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.idea}</div>
         <div style="font-size:10px;color:var(--text3)">${getTimeAgo(s.savedAt)}            <button class="btn btn-p btn-sm" onclick="loadSavedIdea(${i})">▶ Usar</button>
-      <button class="btn btn-g btn-sm" style="color:var(--red)" onclick="deleteSavedIdea(${i})">×</button>
+      <button aria-label="Cerrar" title="Cerrar" class="btn btn-g btn-sm" style="color:var(--red)" onclick="deleteSavedIdea(${i})">×</button>
     </div>`).join('');
 }
 function loadSavedIdea(i) {
@@ -14405,7 +14489,7 @@ try { renderUserPill(); } catch(e) {_diag(e);}
     b.innerHTML = '<span>🚀 <strong>' + newVer + '</strong> disponible — recarga para actualizar</span>' +
       '<div style="display:flex;gap:8px">' +
       '<button onclick="location.reload(true)" style="background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:6px;padding:4px 14px;cursor:pointer;font-size:12px;font-weight:700">↻ Actualizar</button>' +
-      '<button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:18px;line-height:1;padding:0 4px">×</button>' +
+      '<button aria-label="Cerrar" title="Cerrar" onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:18px;line-height:1;padding:0 4px">×</button>' +
       '</div>';
     document.body.prepend(b);
   }

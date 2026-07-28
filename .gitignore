@@ -11,3 +11,12 @@ _backend_tmp/
 .DS_Store
 Thumbs.db
 *.log
+
+# Versiones antiguas y artefactos de desarrollo (limpieza auditoría A8)
+files.zip
+replace_nav.py
+facelessai-dashboard*.html
+
+# Python
+__pycache__/
+*.pyc

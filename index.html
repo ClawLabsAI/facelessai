@@ -3,6 +3,12 @@
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- SEGURIDAD (C3): CSP conservadora. NOTA HONESTA: la app usa manejadores inline (onclick),
+     por lo que 'unsafe-inline' en script-src es obligatorio y la CSP NO bloquea XSS inline —
+     la defensa real es escapeHtml() en los puntos de inyección. Lo que sí aporta esta CSP:
+     bloquea plugins (object-src), secuestro de <base> y envío de formularios a terceros.
+     frame-ancestors/sandbox se ignoran en <meta>: requieren cabecera HTTP en el servidor. -->
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>FacelessAI v4.39 — Content Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -316,7 +322,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 #mob-overlay{display:none;}
 
 /* MOBILE */
-@media(max-width:768px){.layout{grid-template-columns:1fr!important}aside{position:fixed;left:-260px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.4)}aside.mob-open{left:0}.content{padding:12px!important}.topbar{padding:8px 12px!important;flex-wrap:wrap}.g4,.g3{grid-template-columns:1fr 1fr!important}.g2{grid-template-columns:1fr!important}#mob-menu{display:flex!important}#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}#mob-overlay.active{display:block}#models-tier-grid{grid-template-columns:repeat(3,1fr)!important}}
+@media(max-width:768px){.layout{grid-template-columns:1fr!important}.main{margin-left:0!important}aside.sidebar{position:fixed;left:-260px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.4)}aside.sidebar.mob-open{left:0}.content{padding:12px!important}.topbar{padding:8px 12px!important;flex-wrap:wrap}.g4,.g3{grid-template-columns:1fr 1fr!important}.g2{grid-template-columns:1fr!important}#mob-menu{display:flex!important}#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}#mob-overlay.active{display:block}#models-tier-grid{grid-template-columns:repeat(3,1fr)!important}}
 @media(max-width:480px){.g4{grid-template-columns:1fr!important}#models-tier-grid{grid-template-columns:repeat(2,1fr)!important}.budget-pill{display:none}}
 /* B5: make every inline repeat(N,1fr) grid responsive without editing each one. The
    property-prefixed attribute selector matches the inline style string and intentionally
@@ -532,7 +538,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <button class="btn btn-p btn-sm" onclick="saveGithubToken()">Guardar token</button>
         </div>
         <div style="font-size:11px;color:var(--text3);line-height:1.6">
-          Créalo en <a href="https://github.com/settings/tokens/new?scopes=repo&description=FacelessAI+Deploy" target="_blank" style="color:var(--blue)">github.com/settings/tokens</a> → Generate new token (classic) → marca solo ✅ <strong>repo</strong> → Generate
+          Créalo en <a href="https://github.com/settings/tokens/new?scopes=repo&description=FacelessAI+Deploy" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">github.com/settings/tokens</a> → Generate new token (classic) → marca solo ✅ <strong>repo</strong> → Generate
         </div>
         <div id="status-msg-github" style="display:none;margin-top:8px"></div>
       </div>
@@ -1026,7 +1032,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:4px">Analytics y monetización</div>
         <div><label class="lbl">YouTube Channel ID</label>
           <input class="inp" id="edit-ch-yt-id" placeholder="UC..." style="font-family:var(--mono);font-size:12px">
-          <div style="font-size:10px;color:var(--text3);margin-top:3px">YouTube Studio → Configuración → Canal → Información básica · <a href="https://www.youtube.com/account_advanced" target="_blank" style="color:var(--blue)">Abrir ↗</a></div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">YouTube Studio → Configuración → Canal → Información básica · <a href="https://www.youtube.com/account_advanced" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">Abrir ↗</a></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div><label class="lbl">RPM estimado ($/1000 views)</label>
@@ -2774,7 +2780,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
       <button class="btn btn-g btn-sm" onclick="var v=document.getElementById('tt-client-key-inp').value.trim();if(v){localStorage.setItem('fai_tt_client_key',v);showToast('Client Key guardada');}">Guardar</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a href="https://developers.tiktok.com" target="_blank" class="btn btn-g btn-sm">→ developers.tiktok.com</a>
+      <a href="https://developers.tiktok.com" target="_blank" rel="noopener noreferrer" class="btn btn-g btn-sm">→ developers.tiktok.com</a>
       <button class="btn btn-p btn-sm" onclick="startTikTokOAuth()" id="tt-oauth-btn">🔗 Conectar cuenta TikTok</button>
       <span id="tt-oauth-badge" style="font-size:11px;color:var(--text3);align-self:center"></span>
     </div>
@@ -3531,7 +3537,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <button class="btn btn-g btn-sm" onclick="testKey('anthropic')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
-          Consíguela gratis en <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--blue)">console.anthropic.com</a> · ~$0.003/script con Haiku
+          Consíguela gratis en <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">console.anthropic.com</a> · ~$0.003/script con Haiku
         </div>
         <div id="status-msg-anthropic" style="display:none"></div>
       </div>
@@ -3553,7 +3559,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <button class="btn btn-g btn-sm" onclick="testKey('openai')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
-          <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--blue)">platform.openai.com</a> · ~$0.006/vídeo TTS-1 · ~$0.012/vídeo TTS-1 HD
+          <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">platform.openai.com</a> · ~$0.006/vídeo TTS-1 · ~$0.012/vídeo TTS-1 HD
         </div>
         <div id="status-msg-openai" style="display:none"></div>
       </div>
@@ -3575,7 +3581,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <button class="btn btn-g btn-sm" onclick="testKey('pexels')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
-          <a href="https://www.pexels.com/api/" target="_blank" style="color:var(--blue)">pexels.com/api</a> · Registro gratis · clave instantánea
+          <a href="https://www.pexels.com/api/" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">pexels.com/api</a> · Registro gratis · clave instantánea
         </div>
         <div id="status-msg-pexels" style="display:none"></div>
       </div>
@@ -3596,7 +3602,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <button class="btn btn-p btn-sm" id="save-btn-fal" onclick="saveKey('fal')">Guardar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
-          <a href="https://fal.ai/dashboard/keys" target="_blank" style="color:var(--blue)">fal.ai/dashboard/keys</a> · ~$0.04–0.15/vídeo · modelos: Kling v2 y Wan2.1
+          <a href="https://fal.ai/dashboard/keys" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">fal.ai/dashboard/keys</a> · ~$0.04–0.15/vídeo · modelos: Kling v2 y Wan2.1
         </div>
         <div id="status-msg-fal" style="display:none"></div>
       </div>
@@ -3618,7 +3624,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
           <button class="btn btn-g btn-sm" onclick="testKey('elevenlabs')">Probar</button>
         </div>
         <div style="font-size:11px;color:var(--text3);margin-top:6px">
-          <a href="https://elevenlabs.io" target="_blank" style="color:var(--blue)">elevenlabs.io</a> · Plan gratis limitado · ~$0.05/vídeo en pago
+          <a href="https://elevenlabs.io" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">elevenlabs.io</a> · Plan gratis limitado · ~$0.05/vídeo en pago
         </div>
         <div id="status-msg-elevenlabs" style="display:none"></div>
       </div>
@@ -3643,7 +3649,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
             <button class="btn btn-p btn-sm" onclick="saveKey('youtube')">Guardar</button>
           </div>
           <div style="font-size:10px;color:var(--text3);margin-top:4px">
-            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">Google Cloud Console</a> → Activar YouTube Data API v3 → Crear API Key
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">Google Cloud Console</a> → Activar YouTube Data API v3 → Crear API Key
           </div>
         </div>
         <!-- Campo 2: OAuth Client ID (para publicar vídeos) -->
@@ -3658,7 +3664,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
             <span id="yt-oauth-badge" style="font-size:10px;color:var(--text3)">Sin conectar</span>
           </div>
           <div style="font-size:10px;color:var(--text3);margin-top:6px">
-            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--blue)">Google Cloud Console</a> → Credenciales → OAuth 2.0 Client ID → Tipo: Aplicación web → URI redirección: <span style="font-family:var(--mono);color:var(--text1)">https://clawlabsai.github.io/facelessai/</span>
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">Google Cloud Console</a> → Credenciales → OAuth 2.0 Client ID → Tipo: Aplicación web → URI redirección: <span style="font-family:var(--mono);color:var(--text1)">https://clawlabsai.github.io/facelessai/</span>
           </div>
         </div>
         <!-- Campo 3: token manual (fallback) -->
@@ -3804,7 +3810,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
 
       <!-- BACKEND URL -->
             <div class="card mb14"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:12px;font-weight:600">Notificaciones browser</div><div style="font-size:11px;color:var(--text3)">Avisa cuando hay borradores pendientes</div></div><button class="btn btn-g btn-sm" id="notif-toggle-btn" onclick="requestNotificationPermission()">Activar</button></div></div>
-      <div class="card mb14"><div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:10px">Video APIs</div><div style="margin-bottom:10px"><label class="lbl">Creatomate API Key <span style="font-size:10px;color:var(--blue)">Alternativa fiable a Railway</span></label><div style="display:flex;gap:8px"><input class="inp" id="key-creatomate" placeholder="Creatomate API key..." style="flex:1;font-size:12px;font-family:var(--mono)"><button class="btn btn-p btn-sm" onclick="saveKey('creatomate')">Guardar</button></div><div style="font-size:10px;color:var(--text3);margin-top:3px">Registro gratis en <a href="https://creatomate.com" target="_blank" style="color:var(--blue)">creatomate.com</a> · ~$0.10-0.30/video · Sin servidor propio</div></div></div>
+      <div class="card mb14"><div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:10px">Video APIs</div><div style="margin-bottom:10px"><label class="lbl">Creatomate API Key <span style="font-size:10px;color:var(--blue)">Alternativa fiable a Railway</span></label><div style="display:flex;gap:8px"><input class="inp" id="key-creatomate" placeholder="Creatomate API key..." style="flex:1;font-size:12px;font-family:var(--mono)"><button class="btn btn-p btn-sm" onclick="saveKey('creatomate')">Guardar</button></div><div style="font-size:10px;color:var(--text3);margin-top:3px">Registro gratis en <a href="https://creatomate.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">creatomate.com</a> · ~$0.10-0.30/video · Sin servidor propio</div></div></div>
       <div class="card mb14"><div style="font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:10px">YouTube OAuth</div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div><div style="font-size:12px;font-weight:600">Conectar YouTube <span id="yt-oauth-badge" style="font-size:10px;color:var(--red);margin-left:6px">Sin conectar</span></div><div style="font-size:11px;color:var(--text3)">Para subir videos directamente desde FacelessAI</div></div><button class="btn btn-p btn-sm" id="yt-oauth-status-btn" onclick="startYouTubeOAuth()">Conectar YouTube</button></div><div style="display:flex;gap:8px"><input class="inp" id="yt-token-inp" placeholder="Pega aqui el access_token tras autorizar..." style="flex:1;font-size:11px;font-family:var(--mono)"><button class="btn btn-g btn-sm" onclick="saveYTToken()">Guardar token</button></div></div>
       <!-- Display name -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px">
@@ -4122,7 +4128,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <input class="inp" id="spy-key-socialblade" placeholder="Social Blade API key..." style="flex:1;font-size:12px;font-family:var(--mono)">
         <button class="btn btn-p btn-sm" onclick="saveSocialBladeKey()">Guardar</button>
       </div>
-      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://socialblade.com/app" target="_blank" style="color:var(--blue)">socialblade.com/app</a></div>
+      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://socialblade.com/app" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">socialblade.com/app</a></div>
     </div>
     <div class="card mb10">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
@@ -4134,7 +4140,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <input class="inp" id="spy-key-kalodata" placeholder="Kalodata API key..." style="flex:1;font-size:12px;font-family:var(--mono)">
         <button class="btn btn-p btn-sm" onclick="saveKalodataKey()">Guardar</button>
       </div>
-      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://www.kalodata.com" target="_blank" style="color:var(--blue)">kalodata.com</a></div>
+      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://www.kalodata.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">kalodata.com</a></div>
     </div>
     <div class="card mb10">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
@@ -4146,7 +4152,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:1
         <input class="inp" id="spy-key-hypeauditor" placeholder="HypeAuditor API key..." style="flex:1;font-size:12px;font-family:var(--mono)">
         <button class="btn btn-p btn-sm" onclick="saveHypeAuditorKey()">Guardar</button>
       </div>
-      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://hypeauditor.com/api/" target="_blank" style="color:var(--blue)">hypeauditor.com/api</a></div>
+      <div style="font-size:10px;color:var(--text3)">Obtén tu key en <a href="https://hypeauditor.com/api/" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">hypeauditor.com/api</a></div>
     </div>
     <div class="card" style="background:var(--bg2)">
       <div class="stl mb8">Estado de APIs premium</div>
@@ -4683,7 +4689,7 @@ async function apQuickScore(hook,niche,ch){var score=65;var len=hook.length;if(l
 async function apGenerateScript(hook,ch){var lang=ch.lang||'es';var niche=ch.niche||'general';var aff=typeof getChannelAffiliates==='function'?getChannelAffiliates(ch.name):[];var affCTA=aff.length?'\n\nIncluye esta CTA al final: '+aff[0].cta:'';var prompt=lang==='en'?'Write a 60-second YouTube Shorts script for: "'+hook+'"\nNiche: '+niche+'. Faceless AI channel.'+affCTA+'\nJust the script.':'Escribe un script de 60s para YouTube Shorts: "'+hook+'"\nNicho: '+niche+'.'+affCTA+'\nSolo el script.';try{var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEYS.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:prompt}]})});var data=await resp.json();return(data.content&&data.content[0]&&data.content[0].text||'').trim()||null;}catch(e){return null;}}
 function apScheduleDraft(draft,ch){try{var q=JSON.parse(localStorage.getItem('fai_publish_queue')||'[]');var times={es:[6,12,18,21],en:[7,12,17,20],lat:[6,11,17,21]};var lang=draft.lang||'es';var hours=times[lang]||times.es;var now=new Date();var nextH=hours.find(function(h){return h>now.getHours();})||hours[0];var sd=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(nextH>now.getHours()?0:1),nextH,0);q.push({id:'sq_'+Date.now(),draftId:draft.id,title:draft.hook,channel:draft.channel,platforms:draft.platforms||['youtube'],scheduledAt:sd.getTime(),status:'pending',createdAt:Date.now()});localStorage.setItem('fai_publish_queue',JSON.stringify(q));}catch(e){_diag(e);}}
 function updateAPStatus(state,msg){var dot=document.getElementById('ap-running-dot');var title=document.getElementById('ap-status-title');var sub=document.getElementById('ap-status-sub');var dtitle=document.getElementById('dash-ap-title');var dsub=document.getElementById('dash-ap-sub');var ddot=document.getElementById('dash-ap-dot');var cols={running:'var(--green)',idle:'var(--blue)',error:'var(--red)'};var col=cols[state]||'var(--text3)';[dot,ddot].forEach(function(d){if(d)d.style.background=col;});if(title)title.textContent=state==='running'?'EN EJECUCION':state==='error'?'ERROR':'LISTO';if(sub)sub.textContent=msg;if(dtitle)dtitle.textContent=state==='running'?'AUTOPILOT ACTIVO':state==='error'?'ERROR':'MODO MANUAL ACTIVO';if(dsub)dsub.textContent=msg;}
-function updateAPLog(lines,col){var el=document.getElementById('ap-live-log');if(!el)return;el.innerHTML=lines.slice(-20).map(function(l,i){var isLast=i===Math.min(lines.length,20)-1;return'<div style="font-size:11px;padding:2px 0;color:'+(isLast?(col||'var(--text1)'):'var(--text3)')+'">'+new Date().toLocaleTimeString('es-ES')+' '+l+'</div>';}).join('');el.scrollTop=el.scrollHeight;}
+function updateAPLog(lines,col){var el=document.getElementById('ap-live-log');if(!el)return;el.innerHTML=lines.slice(-20).map(function(l,i){var isLast=i===Math.min(lines.length,20)-1;return'<div style="font-size:11px;padding:2px 0;color:'+(isLast?(col||'var(--text1)'):'var(--text3)')+'">'+new Date().toLocaleTimeString('es-ES')+' '+escapeHtml(l)+'</div>';}).join('');el.scrollTop=el.scrollHeight;}
 async function generateAutopilotVideo(draft, ch, addLog) {
   var log = addLog || function(){};
   try {
@@ -5293,7 +5299,7 @@ function refreshAnalyticsChannels() {
       return '<div class="card mb8"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+
         (s.thumbnail?'<img src="'+s.thumbnail+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover">':'')+
         '<div style="flex:1"><div style="font-weight:600">'+s.title+'</div><div style="font-size:11px;color:var(--text3)">'+ch.name+'</div></div>'+
-        '<a href="https://youtube.com/channel/'+ch.ytChannelId+'" target="_blank" class="btn btn-g btn-sm" style="font-size:10px;text-decoration:none">Ver ↗</a></div>'+
+        '<a href="https://youtube.com/channel/'+ch.ytChannelId+'" target="_blank" rel="noopener noreferrer" class="btn btn-g btn-sm" style="font-size:10px;text-decoration:none">Ver ↗</a></div>'+
         '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+
           '<div class="sc"><div class="sc-label">Suscriptores</div><div class="sc-val" style="color:var(--blue)">'+(s.subscribers||0).toLocaleString()+'</div></div>'+
           '<div class="sc"><div class="sc-label">Views totales</div><div class="sc-val">'+(s.total_views||0).toLocaleString()+'</div></div>'+
@@ -5647,12 +5653,12 @@ async function analyzeChannel() {
       box.style.display = 'block';
       box.innerHTML = '<div style="font-size:13px;font-weight:700;margin-bottom:8px">📊 Análisis del canal (Claude)</div>' +
         '<div style="font-size:12px;color:var(--text2);line-height:1.8">' +
-        '<div><strong>Nicho:</strong> ' + (r.nicho || '—') + '</div>' +
-        '<div><strong>Formato:</strong> ' + (r.formato || '—') + '</div>' +
-        '<div><strong>Idioma:</strong> ' + (r.idioma || '—') + '</div>' +
-        '<div><strong>Fortalezas:</strong> ' + (r.fortalezas || '—') + '</div>' +
-        '<div style="color:var(--green)"><strong>Oportunidad:</strong> ' + (r.oportunidad || '—') + '</div>' +
-        '<div style="color:var(--amber)"><strong>Sugerencia:</strong> ' + (r.sugerencia || '—') + '</div></div>';
+        '<div><strong>Nicho:</strong> ' + escapeHtml(r.nicho || '—') + '</div>' +
+        '<div><strong>Formato:</strong> ' + escapeHtml(r.formato || '—') + '</div>' +
+        '<div><strong>Idioma:</strong> ' + escapeHtml(r.idioma || '—') + '</div>' +
+        '<div><strong>Fortalezas:</strong> ' + escapeHtml(r.fortalezas || '—') + '</div>' +
+        '<div style="color:var(--green)"><strong>Oportunidad:</strong> ' + escapeHtml(r.oportunidad || '—') + '</div>' +
+        '<div style="color:var(--amber)"><strong>Sugerencia:</strong> ' + escapeHtml(r.sugerencia || '—') + '</div></div>';
     }
     if (typeof logAICall === 'function') logAICall('claude', 'clone-analyze', 0.003, 300);
     showToast('✓ Canal analizado');
@@ -6773,6 +6779,15 @@ function fetchWithTimeout(url, opts, ms) {
 // DOM micro-helpers (replace the const setEl=(id,v)=>{…} pattern duplicated across the file).
 function setEl(id, v)    { var el = document.getElementById(id); if (el) el.textContent = v; }
 function setHTML(id, h)  { var el = document.getElementById(id); if (el) el.innerHTML   = h; }
+// SEGURIDAD (C3): escapa datos NO confiables antes de interpolarlos en innerHTML.
+// Fuentes no confiables = respuestas de la IA (pueden traer HTML si una web analizada
+// contiene prompt injection), contenido scrapeado, y texto introducido por el usuario.
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
 // B8: gated diagnostics. Empty catch blocks now call _diag(e) instead of swallowing silently.
 // Silent by default (no console noise); run localStorage.setItem('fai_debug','1') in the
 // console to surface every caught error. Uses catch(_) so it never matches its own pattern.
@@ -7854,9 +7869,9 @@ async function confirmDeploy() {
     statusEl.innerHTML =
       '✅ <strong>Gist actualizado correctamente</strong><br>' +
       'El GitHub Action sincronizará tu repo en ~60 segundos.<br>' +
-      '<a href="https://github.com/' + GH_USER + '/' + GH_REPO + '/actions" target="_blank" ' +
+      '<a href="https://github.com/' + GH_USER + '/' + GH_REPO + '/actions" target="_blank" rel="noopener noreferrer" ' +
       'style="color:var(--blue);font-size:12px;font-family:var(--mono)">Ver estado del Action →</a><br>' +
-      '<a href="https://' + GH_USER + '.github.io/' + GH_REPO + '/" target="_blank" ' +
+      '<a href="https://' + GH_USER + '.github.io/' + GH_REPO + '/" target="_blank" rel="noopener noreferrer" ' +
       'style="color:var(--blue);font-size:12px;font-family:var(--mono)">Abrir URL live →</a>';
 
     // Flash deploy button green
@@ -10916,7 +10931,7 @@ function renderInfluencerApiStatus() {
       </div>
       ${hasKey
         ? '<span class="tag tg" style="font-size:10px">✓ Conectada</span>'
-        : '<a href="'+a.link+'" target="_blank" class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px">+ Obtener key</a>'}
+        : '<a href="'+a.link+'" target="_blank" rel="noopener noreferrer" class="btn btn-g btn-sm" style="font-size:10px;padding:2px 8px">+ Obtener key</a>'}
     </div>`;
   }).join('');
 }
@@ -12255,7 +12270,7 @@ async function discoverTopChannels(){
     results.innerHTML=(result.resumen?'<div style="padding:10px 14px;background:var(--bdim);border:1px solid var(--blue);border-radius:var(--r);font-size:12px;color:var(--text2);margin-bottom:14px">💡 '+result.resumen+'</div>':'')+
     canales.map((ch,i)=>{
       const col=(ch.score||0)>=80?'var(--green)':'var(--amber)';
-      return '<div class="card mb8" style="border-left:3px solid '+col+'"><div style="display:flex;align-items:flex-start;gap:12px"><div style="font-size:22px;font-weight:800;font-family:var(--mono);color:'+col+';width:32px">'+(ch.score||'—')+'</div><div style="flex:1"><div style="font-weight:700;font-size:14px;margin-bottom:2px">'+(ch.nombre||'Canal')+'</div><div style="font-size:11px;color:var(--text3);margin-bottom:6px">👥 '+(ch.suscriptores||'—')+' · 👁️ '+(ch.views_mes||'—')+' · 💰 '+(ch.ingresos_mes||'—')+'</div><div style="font-size:12px;color:var(--text2);margin-bottom:8px">'+(ch.por_que_funciona||'')+'</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+(ch.url?'<a href="'+ch.url+'" target="_blank" class="btn btn-g btn-sm" style="font-size:10px;text-decoration:none">↗ Ver</a>':'')+
+      return '<div class="card mb8" style="border-left:3px solid '+col+'"><div style="display:flex;align-items:flex-start;gap:12px"><div style="font-size:22px;font-weight:800;font-family:var(--mono);color:'+col+';width:32px">'+(ch.score||'—')+'</div><div style="flex:1"><div style="font-weight:700;font-size:14px;margin-bottom:2px">'+(ch.nombre||'Canal')+'</div><div style="font-size:11px;color:var(--text3);margin-bottom:6px">👥 '+(ch.suscriptores||'—')+' · 👁️ '+(ch.views_mes||'—')+' · 💰 '+(ch.ingresos_mes||'—')+'</div><div style="font-size:12px;color:var(--text2);margin-bottom:8px">'+(ch.por_que_funciona||'')+'</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+(ch.url?'<a href="'+ch.url+'" target="_blank" rel="noopener noreferrer" class="btn btn-g btn-sm" style="font-size:10px;text-decoration:none">↗ Ver</a>':'')+
       '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="spyQuickAnalyze(\''+( ch.url||'').replace(/'/g,"\\'")+'\')"  >🔍 Analizar</button>'+
       (ch.clonable?'<button class="btn btn-sm" style="font-size:10px;background:var(--bdim);color:var(--blue);border:1px solid var(--green)" onclick="spyQuickClone(\''+( ch.url||'').replace(/'/g,"\\'")+'\')" >🧬 Clonar</button>':'')+
       '</div></div></div></div>';
@@ -12608,7 +12623,7 @@ function renderGlobalResults(data, platFilter) {
 
         // Action buttons
         '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">' +
-          (ch.url ? '<a href="' + ch.url + '" target="_blank" class="btn btn-g btn-sm" style="font-size:10px;text-decoration:none">↗ Ver canal</a>' : '') +
+          (ch.url ? '<a href="' + ch.url + '" target="_blank" rel="noopener noreferrer" class="btn btn-g btn-sm" style="font-size:10px;text-decoration:none">↗ Ver canal</a>' : '') +
           '<button class="btn btn-p btn-sm" style="font-size:10px" onclick="globalSpyAnalyze(\'' + (ch.url||'').replace(/'/g,"\\'") + '\',\'' + (ch.plataforma||'youtube') + '\')">🔍 Analizar</button>' +
           '<button class="btn btn-sm" style="font-size:10px;background:var(--bdim);color:var(--blue);border:1px solid var(--green)44" onclick="globalSpyClone(\'' + (ch.url||'').replace(/'/g,"\\'") + '\',\'' + (ch.idioma||'en') + '\')">🧬 Clonar</button>' +
           '<button class="btn btn-g btn-sm" style="font-size:10px" onclick="globalSpyNiche(\'' + (ch.nicho||'').replace(/'/g,"\\'") + '\')">🎯 Explorar nicho</button>' +
@@ -13847,12 +13862,12 @@ function renderIdeas(ideas) {
   if (!container) return;
   container.innerHTML = ideas.map((idea, i) => `
     <div class="idea ${i===0?'sel':''}" onclick="selectIdeaReal(this, ${i})" data-idx="${i}">
-      <div class="idea-hook">${idea.hook}</div>
+      <div class="idea-hook">${escapeHtml(idea.hook)}</div>
       <div class="flex g6 fw mt8">
-        <span class="ibadge" style="background:var(--bdim);color:var(--blue);border:1px solid #38bdf822">${idea.formato}</span>
-        <span class="ibadge" style="background:var(--bdim);color:var(--blue);border:1px solid var(--gsoft)">Viral ${idea.viralScore}/100</span>
-        <span class="ibadge" style="background:var(--adim);color:var(--amber);border:1px solid #fbbf2422">CPM ${idea.cpm}</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text3);font-family:var(--mono)">${idea.monetizacion}</span>
+        <span class="ibadge" style="background:var(--bdim);color:var(--blue);border:1px solid #38bdf822">${escapeHtml(idea.formato)}</span>
+        <span class="ibadge" style="background:var(--bdim);color:var(--blue);border:1px solid var(--gsoft)">Viral ${escapeHtml(idea.viralScore)}/100</span>
+        <span class="ibadge" style="background:var(--adim);color:var(--amber);border:1px solid #fbbf2422">CPM ${escapeHtml(idea.cpm)}</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text3);font-family:var(--mono)">${escapeHtml(idea.monetizacion)}</span>
       </div>
     </div>`).join('');
   if (ideas.length > 0) selectedIdeaIndex = 0;

@@ -16,24 +16,112 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+import time
+import shutil
+import logging
+from collections import defaultdict
+
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+log = logging.getLogger("facelessai")
+logging.basicConfig(level=logging.INFO)
+
 app = FastAPI(title="FacelessAI Video Generator", version="1.0")
 
-# Allow requests from GitHub Pages and localhost
+# ─────────────────────────────────────────
+# SECURITY (auditoría C2)
+# Antes: CORS "*", sin auth y sin rate limit → cualquiera con la URL podía lanzar
+# renders ilimitados y facturarnos el cómputo. Ahora todo es configurable por entorno.
+# ─────────────────────────────────────────
+
+# Clave de API compartida. Si FAI_API_KEY está definida, los endpoints costosos exigen
+# la cabecera X-API-Key. Si no lo está, el servidor arranca abierto (cómodo en local)
+# pero avisa de forma muy visible para que no ocurra por descuido en producción.
+FAI_API_KEY = os.environ.get("FAI_API_KEY", "").strip()
+
+# CORS restringido a los orígenes reales. Sobrescribible con FAI_ALLOWED_ORIGINS
+# (lista separada por comas). Usa "*" explícitamente sólo si sabes lo que haces.
+_DEFAULT_ORIGINS = "https://clawlabsai.github.io,http://localhost:3000,http://127.0.0.1:3000"
+ALLOWED_ORIGINS = [o.strip() for o in os.environ.get("FAI_ALLOWED_ORIGINS", _DEFAULT_ORIGINS).split(",") if o.strip()]
+
+# Rate limit por IP (en memoria; suficiente para una sola instancia).
+RATE_LIMIT_MAX = int(os.environ.get("FAI_RATE_LIMIT_MAX", "20"))
+RATE_LIMIT_WINDOW = int(os.environ.get("FAI_RATE_LIMIT_WINDOW", "3600"))
+_hits: dict = defaultdict(list)
+
+if not FAI_API_KEY:
+    log.warning(
+        "FAI_API_KEY no está definida: el backend acepta peticiones SIN autenticar. "
+        "Defínela en producción para evitar que terceros consuman tu cómputo."
+    )
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "X-FAI-Key", "X-API-Key", "Authorization"],
 )
+
+
+def _client_ip(request: Request) -> str:
+    fwd = request.headers.get("x-forwarded-for", "")
+    return fwd.split(",")[0].strip() if fwd else (request.client.host if request.client else "unknown")
+
+
+async def require_auth(
+    request: Request,
+    x_api_key: str = Header(default=""),
+    x_fai_key: str = Header(default=""),
+):
+    """Dependencia para endpoints costosos: valida clave y aplica rate limit por IP.
+
+    Acepta X-FAI-Key (la que ya envía el frontend desplegado) y X-API-Key como alias.
+    """
+    if FAI_API_KEY and FAI_API_KEY not in (x_api_key, x_fai_key):
+        raise HTTPException(
+            status_code=401,
+            detail="Clave de API inválida o ausente (cabecera X-FAI-Key)",
+        )
+
+    ip = _client_ip(request)
+    now = time.time()
+    recent = [t for t in _hits[ip] if now - t < RATE_LIMIT_WINDOW]
+    if len(recent) >= RATE_LIMIT_MAX:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Límite alcanzado: {RATE_LIMIT_MAX} peticiones por {RATE_LIMIT_WINDOW}s. Inténtalo más tarde.",
+        )
+    recent.append(now)
+    _hits[ip] = recent
+    return True
+
 
 # Temp directory for generated files
 TEMP_DIR = Path(tempfile.gettempdir()) / "facelessai"
 TEMP_DIR.mkdir(exist_ok=True)
+
+# Retención de ficheros generados (evita llenar el disco: antes no se limpiaba nunca).
+FILE_TTL_SECONDS = int(os.environ.get("FAI_FILE_TTL", str(6 * 3600)))
+
+
+def cleanup_temp_files():
+    """Borra jobs y ficheros más antiguos que FILE_TTL_SECONDS."""
+    now = time.time()
+    try:
+        for entry in TEMP_DIR.iterdir():
+            try:
+                if now - entry.stat().st_mtime < FILE_TTL_SECONDS:
+                    continue
+                shutil.rmtree(entry) if entry.is_dir() else entry.unlink()
+            except Exception as e:
+                log.debug("cleanup: no se pudo borrar %s (%s)", entry, e)
+    except Exception as e:
+        log.debug("cleanup: no se pudo listar TEMP_DIR (%s)", e)
+    for jid in [j for j, v in jobs.items() if now - v.get("created_at", now) > FILE_TTL_SECONDS]:
+        jobs.pop(jid, None)
 
 # ─────────────────────────────────────────
 # REQUEST MODELS
@@ -90,7 +178,7 @@ def check_ffmpeg():
 # ─────────────────────────────────────────
 
 @app.post("/debug")
-async def debug_request(req: VideoRequest):
+async def debug_request(req: VideoRequest, _auth=Depends(require_auth)):
     """Debug endpoint — echoes what it received"""
     return {
         "received": {
@@ -107,9 +195,10 @@ async def debug_request(req: VideoRequest):
 
 
 @app.post("/generate", response_model=StatusResponse)
-async def generate_video(req: VideoRequest, background_tasks: BackgroundTasks):
+async def generate_video(req: VideoRequest, background_tasks: BackgroundTasks, _auth=Depends(require_auth)):
     job_id = str(uuid.uuid4())[:8]
-    jobs[job_id] = {"status": "pending", "progress": 0, "message": "Iniciando...", "download_url": None}
+    jobs[job_id] = {"created_at": time.time(), "status": "pending", "progress": 0, "message": "Iniciando...", "download_url": None}
+    background_tasks.add_task(cleanup_temp_files)   # purga ficheros viejos (C2)
     background_tasks.add_task(process_video, job_id, req)
     return StatusResponse(job_id=job_id, status="pending", progress=0, message="Job creado — procesando...")
 
@@ -151,7 +240,7 @@ async def process_video(job_id: str, req: VideoRequest):
     job_dir.mkdir(exist_ok=True)
 
     def update(status, progress, message):
-        jobs[job_id] = {"status": status, "progress": progress, "message": message, "download_url": jobs[job_id].get("download_url")}
+        jobs[job_id] = {"created_at": jobs[job_id].get("created_at", time.time()), "status": status, "progress": progress, "message": message, "download_url": jobs[job_id].get("download_url")}
 
     try:
         # ── STEP 1: Save audio from base64 ──
@@ -274,9 +363,9 @@ async def process_video(job_id: str, req: VideoRequest):
 
     except subprocess.CalledProcessError as e:
         err = e.stderr.decode() if e.stderr else str(e)
-        jobs[job_id] = {"status": "error", "progress": 0, "message": f"FFmpeg error: {err[-200:]}", "download_url": None}
+        jobs[job_id] = {"created_at": jobs.get(job_id, {}).get("created_at", time.time()), "status": "error", "progress": 0, "message": f"FFmpeg error: {err[-200:]}", "download_url": None}
     except Exception as e:
-        jobs[job_id] = {"status": "error", "progress": 0, "message": f"Error: {str(e)}", "download_url": None}
+        jobs[job_id] = {"created_at": jobs.get(job_id, {}).get("created_at", time.time()), "status": "error", "progress": 0, "message": f"Error: {str(e)}", "download_url": None}
 
 
 # ─────────────────────────────────────────
@@ -362,7 +451,7 @@ def get_subtitle_filter(srt_path: str, style: str) -> str:
 # ─────────────────────────────────────────
 
 @app.get("/yt/channel-stats")
-async def yt_channel_stats(channel_id: str, access_token: str):
+async def yt_channel_stats(channel_id: str, access_token: str, _auth=Depends(require_auth)):
     """Proxy YouTube Data API v3 channel stats (avoids CORS in browser)"""
     async with httpx.AsyncClient(timeout=15) as client:
         r = await client.get(
@@ -412,10 +501,10 @@ transcribe_jobs: dict = {}
 clip_jobs: dict = {}
 
 @app.post("/transcribe")
-async def transcribe_video(req: TranscribeRequest, background_tasks: BackgroundTasks):
+async def transcribe_video(req: TranscribeRequest, background_tasks: BackgroundTasks, _auth=Depends(require_auth)):
     """Download YouTube video and transcribe with Whisper"""
     job_id = str(uuid.uuid4())[:8]
-    transcribe_jobs[job_id] = {"status": "pending", "progress": 0, "message": "Iniciando...", "transcript": None, "duration": 0}
+    transcribe_jobs[job_id] = {"created_at": time.time(), "status": "pending", "progress": 0, "message": "Iniciando...", "transcript": None, "duration": 0}
     background_tasks.add_task(do_transcribe, job_id, req)
     return {"job_id": job_id, "status": "pending"}
 
@@ -426,10 +515,10 @@ async def transcribe_status(job_id: str):
     return transcribe_jobs[job_id]
 
 @app.post("/clip")
-async def create_clip(req: ClipRequest, background_tasks: BackgroundTasks):
+async def create_clip(req: ClipRequest, background_tasks: BackgroundTasks, _auth=Depends(require_auth)):
     """Create vertical clips from YouTube video"""
     job_id = str(uuid.uuid4())[:8]
-    clip_jobs[job_id] = {"status": "pending", "progress": 0, "message": "Iniciando...", "clips": []}
+    clip_jobs[job_id] = {"created_at": time.time(), "status": "pending", "progress": 0, "message": "Iniciando...", "clips": []}
     background_tasks.add_task(do_clip, job_id, req)
     return {"job_id": job_id, "status": "pending"}
 
@@ -451,7 +540,7 @@ async def do_transcribe(job_id: str, req: TranscribeRequest):
     job_dir.mkdir(exist_ok=True)
 
     def update(status, progress, message, **kwargs):
-        transcribe_jobs[job_id] = {"status": status, "progress": progress, "message": message, **kwargs}
+        transcribe_jobs[job_id] = {"created_at": transcribe_jobs.get(job_id, {}).get("created_at", time.time()), "status": status, "progress": progress, "message": message, **kwargs}
 
     try:
         update("processing", 10, "Descargando audio de YouTube...")
@@ -520,7 +609,7 @@ async def do_clip(job_id: str, req: ClipRequest):
     job_dir.mkdir(exist_ok=True)
 
     def update(status, progress, message, **kwargs):
-        clip_jobs[job_id] = {"status": status, "progress": progress, "message": message, "clips": clip_jobs[job_id].get("clips", []), **kwargs}
+        clip_jobs[job_id] = {"created_at": clip_jobs.get(job_id, {}).get("created_at", time.time()), "status": status, "progress": progress, "message": message, "clips": clip_jobs[job_id].get("clips", []), **kwargs}
 
     try:
         update("processing", 5, "Descargando vídeo de YouTube...")

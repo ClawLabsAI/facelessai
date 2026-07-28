@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const file = process.argv[2] ? join(root, process.argv[2]) : join(root, 'dist/index.html');
+const file = process.argv[2] ? join(root, process.argv[2]) : join(root, 'dist/app.html');
 const html = readFileSync(file, 'utf8');
 
 // JS keywords that can legitimately start an inline handler (e.g. onclick="if(...)").

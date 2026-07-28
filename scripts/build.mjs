@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { minify } from 'terser';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const html = readFileSync(join(root, 'index.html'), 'utf8');
+const html = readFileSync(join(root, 'app.html'), 'utf8');
 
 const scriptRe = /(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gi;
 const segs = [];
@@ -47,10 +47,10 @@ for (const seg of segs) {
 out += html.slice(cursor);
 
 mkdirSync(join(root, 'dist'), { recursive: true });
-writeFileSync(join(root, 'dist', 'index.html'), out, 'utf8');
+writeFileSync(join(root, 'dist', 'app.html'), out, 'utf8');
 
 const before = Buffer.byteLength(html, 'utf8');
 const after = Buffer.byteLength(out, 'utf8');
 console.log(`Minified ${blocks} <script> block(s)${kept ? ` (${kept} kept as-is)` : ''}.`);
 console.log(`Size: ${(before / 1024).toFixed(0)} KB -> ${(after / 1024).toFixed(0)} KB  (${(100 * (1 - after / before)).toFixed(1)}% smaller)`);
-console.log('Wrote dist/index.html');
+console.log('Wrote dist/app.html');

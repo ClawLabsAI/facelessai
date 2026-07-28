@@ -11,7 +11,7 @@ import { dirname, join } from 'node:path';
 import vm from 'node:vm';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const file = process.argv[2] ? join(root, process.argv[2]) : join(root, 'index.html');
+const file = process.argv[2] ? join(root, process.argv[2]) : join(root, 'app.html');
 console.log(`Checking ${file.replace(root, '.')}\n`);
 const html = readFileSync(file, 'utf8');
 
@@ -26,12 +26,17 @@ const skip = (msg) => console.log('  – ' + msg + ' (skipped for build artifact
 
 // 1) Inline <script> syntax ----------------------------------------------------
 console.log('JS syntax (inline <script> blocks):');
-const scriptRe = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+const scriptRe = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
 let m, scriptCount = 0, syntaxBad = 0;
 const scripts = [];
 while ((m = scriptRe.exec(html))) {
+  const attrs = m[1] || '';
+  // Sólo validar JavaScript: JSON-LD y plantillas no son JS y romperían el parser.
+  const typeMatch = attrs.match(/type\s*=\s*["']([^"']+)["']/i);
+  const type = typeMatch ? typeMatch[1].toLowerCase() : 'text/javascript';
+  if (!/^(text\/javascript|application\/javascript|module|text\/ecmascript)$/.test(type)) continue;
   scriptCount++;
-  const code = m[1];
+  const code = m[2];
   if (!code.trim()) continue;
   scripts.push(code);
   try { new vm.Script(code); }

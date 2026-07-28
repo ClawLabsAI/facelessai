@@ -4,7 +4,10 @@
     {
       "name": "facelessai",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-s", "."],
+      "runtimeArgs": [
+        "serve",
+        "."
+      ],
       "port": 3000,
       "autoPort": true
     }

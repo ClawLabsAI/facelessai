@@ -1,0 +1,13 @@
+# FacelessAI — robots.txt
+User-agent: *
+Allow: /$
+Allow: /index.html
+
+# La aplicación no es contenido de búsqueda: si se indexa, los usuarios aterrizan
+# en un panel vacío en lugar de en la página de producto.
+Disallow: /app.html
+Disallow: /dist/
+Disallow: /docs/
+Disallow: /keys.html
+
+Sitemap: https://clawlabsai.github.io/facelessai/sitemap.xml

@@ -22,7 +22,7 @@ const isArtifact = /dist[\\/]/.test(file);
 let failures = 0;
 const fail = (msg) => { console.error('  ✗ ' + msg); failures++; };
 const ok   = (msg) => console.log('  ✓ ' + msg);
-const skip = (msg) => console.log('  – ' + msg + ' (skipped for build artifact)');
+const skip = (msg, why) => console.log('  – ' + msg + ' (' + (why || 'skipped for build artifact') + ')');
 
 // 1) Inline <script> syntax ----------------------------------------------------
 console.log('JS syntax (inline <script> blocks):');
@@ -76,8 +76,12 @@ else {
 }
 
 // 5) Single-file invariant -----------------------------------------------------
+// Sólo aplica a la APLICACIÓN: debe seguir siendo un único fichero autocontenido.
+// La landing (index.html) sí puede cargar scripts externos (p. ej. analítica).
 console.log('Deploy invariant:');
-if (/<script\s+[^>]*\bsrc=/i.test(html)) fail('external <script src> found — app must stay a single self-contained file');
+const isApp = /app\.html$/.test(file);
+if (!isApp) skip('single-file invariant', 'sólo aplica a app.html');
+else if (/<script\s+[^>]*\bsrc=/i.test(html)) fail('external <script src> found — app must stay a single self-contained file');
 else ok('no external script dependencies (single-file deploy intact)');
 
 // ─────────────────────────────────────────────────────────────────────────────

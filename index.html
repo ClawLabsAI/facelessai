@@ -375,9 +375,40 @@ footer{border-top:1px solid var(--border);padding:44px 0;color:var(--text3);font
   </div>
 </footer>
 
+<!-- ══════════ ANALÍTICA (Sprint 2 · M3) ══════════
+     Plausible: sin cookies, no recoge datos personales y cumple RGPD SIN banner de
+     consentimiento. Se eligió frente a Google Analytics para no contradecir la promesa
+     de privacidad del producto (y para no tener que meter un cookie banner).
+
+     PENDIENTE (manual): crea la cuenta en plausible.io, añade tu dominio y descomenta la
+     línea de abajo poniendo tu dominio en data-domain. Hasta entonces no se carga nada
+     ni se envía ningún dato: track() simplemente no hace nada.
+-->
+<!-- <script defer data-domain="TU-DOMINIO.com" src="https://plausible.io/js/script.js"></script> -->
+
 <script>
 // Año dinámico
 document.getElementById('year').textContent = new Date().getFullYear();
+
+// Envío de eventos de embudo. Inerte mientras no haya analítica configurada:
+// nunca falla ni envía nada por su cuenta.
+function track(evento, props){
+  try { if (typeof window.plausible === 'function') window.plausible(evento, props ? { props: props } : undefined); }
+  catch(e) { /* la analítica nunca debe romper la página */ }
+}
+
+// Instrumentación del embudo: qué CTA convierte y desde qué sección.
+document.querySelectorAll('a[href="app.html"]').forEach(function(a){
+  a.addEventListener('click', function(){
+    var sec = a.closest('section');
+    track('AbrirApp', { origen: (sec && sec.id) || (a.closest('header') ? 'nav' : 'hero') });
+  });
+});
+document.querySelectorAll('#faq details').forEach(function(d){
+  d.addEventListener('toggle', function(){
+    if (d.open) track('FAQAbierta', { pregunta: (d.querySelector('summary')||{}).textContent || '' });
+  });
+});
 
 // Menú móvil
 (function(){
@@ -398,6 +429,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   var b = document.getElementById('btnComprar');
   if (!b) return;
   b.addEventListener('click', function(e){
+    track('ClicComprar');
     if (b.getAttribute('href') === '#') {
       e.preventDefault();
       alert('El checkout todavía no está configurado.\n\nMientras tanto puedes abrir la app y probarla.');

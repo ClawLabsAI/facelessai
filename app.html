@@ -1812,6 +1812,19 @@ button:focus-visible,a:focus-visible,.ni:focus-visible,input:focus-visible,selec
           </div>
         </div>
 
+        <!-- PLAN VISUAL derivado del guion (filosofía de derivación) -->
+        <div class="card-d mb10" style="padding:14px;border-color:var(--purple)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+            <div>
+              <div class="lbl" style="margin:0">🎥 Plan visual — derivado de tu guion</div>
+              <div style="font-size:10.5px;color:var(--text3);margin-top:2px">Un plano por beat, no una búsqueda genérica del nicho</div>
+            </div>
+            <button class="btn btn-p btn-sm" id="plan-visual-btn" onclick="derivarPlanVisual()">🎬 Derivar plan</button>
+          </div>
+          <div id="plan-visual-out" style="display:none"></div>
+          <div id="plan-visual-empty" style="font-size:11.5px;color:var(--text3)">Genera el guion primero; el plan saldrá de lo que ocurre en cada beat (hook, desarrollo, cierre) y mantendrá la continuidad entre clips.</div>
+        </div>
+
         <!-- Pexels Config -->
         <div class="card-d" style="padding:14px">
           <div class="lbl mb8">🎬 Clips de vídeo — Pexels API (GRATIS)</div>
@@ -5977,6 +5990,189 @@ function checkVidGenKeys() {
 }
 
 // ── PEXELS SEARCH (REAL) ──
+// ══════════════════════════════════════════════════════════════════════════════
+// PLAN VISUAL — derivación desde la función dramática del guion
+//
+// Idea adaptada de Seedance 2.0 Skill OS (github.com/Emily2040/seedance-2.0, MIT):
+// "dirige el modelo, no micro-gestiones el plano". En vez de apilar adjetivos
+// ("cinematográfico, épico, 4K") o buscar una palabra genérica del nicho para todo
+// el vídeo, se DERIVA qué debe verse en cada beat a partir de lo que ese beat hace
+// dramáticamente: el hook golpea, el desarrollo explica, el cierre resuelve.
+//
+// Añade además CONTINUIDAD entre clips (paleta, momento del día y ambiente comunes),
+// que es lo que evita que un vídeo parezca stock aleatorio pegado.
+// ══════════════════════════════════════════════════════════════════════════════
+
+window._planVisual = null;
+
+// Presupuesto de reintentos: cada re-derivación cuesta dinero. Se limita y se muestra.
+window._retakes = { plan: 0, max: 3, coste: 0 };
+
+function _partirGuionEnBeats(texto) {
+  if (!texto) return [];
+  // El guion generado ya viene con marcas [HOOK]/[DESARROLLO]/[CTA]; si no las trae,
+  // se reparte en tres tercios para no dejar la función sin salida.
+  var re = /\[([^\]]+)\]([\s\S]*?)(?=\[[^\]]+\]|$)/g, m, beats = [];
+  while ((m = re.exec(texto))) {
+    var cuerpo = m[2].replace(/\s+/g, ' ').trim();
+    if (cuerpo) beats.push({ nombre: m[1].trim(), texto: cuerpo });
+  }
+  if (!beats.length) {
+    var limpio = texto.replace(/\s+/g, ' ').trim();
+    if (!limpio) return [];
+    var t = Math.ceil(limpio.length / 3);
+    beats = [
+      { nombre: 'HOOK',       texto: limpio.slice(0, t) },
+      { nombre: 'DESARROLLO', texto: limpio.slice(t, t * 2) },
+      { nombre: 'CIERRE',     texto: limpio.slice(t * 2) }
+    ].filter(function(b){ return b.texto.trim(); });
+  }
+  return beats;
+}
+
+async function derivarPlanVisual() {
+  var guion = (typeof currentScript !== 'undefined' && currentScript) ? currentScript : '';
+  if (!guion.trim()) { showToast('⚠ Genera primero el guion (paso 4)'); return; }
+  if (!KEYS.anthropic) { showToast('⚠ Configura tu Anthropic API key'); setTimeout(function(){ nav('settings'); }, 800); return; }
+
+  // Presupuesto de reintentos (punto 3)
+  if (window._retakes.plan >= window._retakes.max) {
+    showToast('🛑 Límite de ' + window._retakes.max + ' derivaciones por vídeo. Edita el guion o reinicia el pipeline.');
+    return;
+  }
+
+  var beats = _partirGuionEnBeats(guion);
+  if (!beats.length) { showToast('⚠ No se pudo leer la estructura del guion'); return; }
+
+  var btn = document.getElementById('plan-visual-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Derivando...'; }
+
+  var listaBeats = beats.map(function(b, i){ return (i+1) + '. [' + b.nombre + '] ' + b.texto.slice(0, 220); }).join('\n');
+  var prompt =
+'Eres director de fotografía. Para un vídeo vertical 9:16 tipo faceless, DERIVA qué debe verse en cada beat\n' +
+'a partir de su función dramática. Reglas estrictas:\n' +
+'- No apiles adjetivos ("cinematográfico, épico, 4K"): eso no dirige nada.\n' +
+'- Cada plano empieza por SUJETO + ACCIÓN concretos; la luz y el encuadre van después.\n' +
+'- Un beat que golpea no se ve igual que uno que explica o que uno que cierra.\n' +
+'- Los clips son de archivo (Pexels): las búsquedas deben ser cosas realmente grabables,\n' +
+'  en INGLÉS, de 2 a 5 palabras, sin nombres propios ni marcas.\n' +
+'- CONTINUIDAD: todos los planos deben compartir paleta, momento del día y ambiente,\n' +
+'  para que el montaje no parezca stock aleatorio.\n\n' +
+'NICHO: ' + (selectedNiche || 'general') + '\n' +
+'BEATS DEL GUION:\n' + listaBeats + '\n\n' +
+'Responde SOLO JSON. OJO: "paleta/momento/ambiente" se muestran al usuario en ESPAÑOL, pero\n' +
+'"terminosEN" son 2-3 palabras EN INGLÉS que se añadirán literalmente a la búsqueda de Pexels\n' +
+'(p.ej. "cool blue tones indoor"), porque el buscador sólo indexa en inglés.\n' +
+'{"continuidad":{"paleta":"p.ej. tonos fríos azulados","momento":"p.ej. tarde interior","ambiente":"p.ej. oficina urbana sobria","terminosEN":"cool blue tones indoor"},' +
+'"planos":[{"beat":"HOOK","funcion":"qué hace este beat en una frase","intencion":"qué debe transmitir la imagen","query":"english search terms"}]}';
+
+  try {
+    var raw = await callClaude(prompt, null, 900);
+    var plan = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    if (!plan || !Array.isArray(plan.planos) || !plan.planos.length) throw new Error('Respuesta sin planos');
+    window._planVisual = plan;
+    window._retakes.plan++;
+    window._retakes.coste += 0.004;
+    renderPlanVisual();
+    if (typeof logAICall === 'function') logAICall('claude', 'plan-visual', 0.004, 500);
+    showToast('🎥 Plan visual derivado — ' + plan.planos.length + ' planos');
+  } catch(e) {
+    showToast('✕ No se pudo derivar el plan: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = window._planVisual ? '↻ Re-derivar' : '🎬 Derivar plan'; }
+  }
+}
+
+function renderPlanVisual() {
+  var plan = window._planVisual;
+  var out = document.getElementById('plan-visual-out');
+  var vacio = document.getElementById('plan-visual-empty');
+  if (!out || !plan) return;
+  if (vacio) vacio.style.display = 'none';
+  out.style.display = 'block';
+
+  var c = plan.continuidad || {};
+  var restantes = window._retakes.max - window._retakes.plan;
+
+  out.innerHTML =
+    '<div style="background:var(--bg2);border-radius:var(--r);padding:9px 12px;margin-bottom:10px;font-size:11.5px;color:var(--text2)">' +
+      '<strong style="color:var(--purple)">Continuidad:</strong> ' +
+      escapeHtml(c.paleta || '—') + ' · ' + escapeHtml(c.momento || '—') + ' · ' + escapeHtml(c.ambiente || '—') +
+    '</div>' +
+    plan.planos.map(function(p, i){
+      return '<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--border)">' +
+        '<span style="width:22px;height:22px;border-radius:50%;background:var(--bdim);color:var(--blue);display:grid;place-items:center;font-size:10px;font-weight:700;font-family:var(--mono);flex-shrink:0">' + (i+1) + '</span>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:11px;font-weight:700;color:var(--amber);font-family:var(--mono)">' + escapeHtml(p.beat || ('PLANO ' + (i+1))) + '</div>' +
+          '<div style="font-size:11.5px;color:var(--text2);margin:2px 0">' + escapeHtml(p.intencion || p.funcion || '') + '</div>' +
+          '<code style="font-size:11px;color:var(--green);font-family:var(--mono)">🔍 ' + escapeHtml(p.query || '') + '</code>' +
+        '</div>' +
+        '<button class="btn btn-g btn-sm" style="font-size:10px;flex-shrink:0" onclick="usarQueryDelPlan(' + i + ')">Usar</button>' +
+      '</div>';
+    }).join('') +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">' +
+      '<button class="btn btn-p btn-sm" onclick="buscarClipsPorPlan()">🎬 Buscar clips de todo el plan</button>' +
+    '</div>' +
+    '<div style="font-size:10.5px;color:var(--text3);margin-top:8px;font-family:var(--mono)">' +
+      'Derivaciones usadas: ' + window._retakes.plan + '/' + window._retakes.max +
+      ' · coste acumulado ~$' + window._retakes.coste.toFixed(3) +
+      (restantes <= 0 ? ' · <span style="color:var(--amber)">límite alcanzado</span>' : '') +
+    '</div>';
+}
+
+// Aplica la continuidad a la búsqueda concreta de un plano.
+function _queryConContinuidad(q) {
+  var c = (window._planVisual && window._planVisual.continuidad) || {};
+  // Sólo se anexan términos EN INGLÉS: Pexels indexa en inglés, así que añadir la
+  // descripción en español (que es la que se muestra al usuario) empeoraría la búsqueda.
+  var extra = (c.terminosEN || '').trim();
+  if (!/^[\x00-\x7F\s]*$/.test(extra)) extra = '';   // descarta acentos: no es inglés
+  return (q + (extra ? ' ' + extra : '')).replace(/\s+/g, ' ').trim();
+}
+
+function usarQueryDelPlan(i) {
+  var p = window._planVisual && window._planVisual.planos[i];
+  if (!p) return;
+  var inp = document.getElementById('pexels-query');
+  if (inp) { inp.value = _queryConContinuidad(p.query || ''); showToast('🔍 Búsqueda cargada: ' + inp.value.slice(0, 42)); }
+}
+
+// Busca en Pexels UNA VEZ POR BEAT y agrega los resultados, en vez de una sola
+// búsqueda genérica para todo el vídeo.
+async function buscarClipsPorPlan() {
+  var plan = window._planVisual;
+  if (!plan) { showToast('Deriva primero el plan visual'); return; }
+  if (!KEYS.pexels) { showToast('⚠ Configura tu Pexels API key'); return; }
+  var preview = document.getElementById('pexels-preview');
+  if (preview) preview.innerHTML = '<div style="font-size:12px;color:var(--text3)">Buscando clips por beat...</div>';
+
+  var todos = [], porBeat = [];
+  for (var i = 0; i < plan.planos.length; i++) {
+    var p = plan.planos[i];
+    var q = _queryConContinuidad(p.query || '');
+    try {
+      var r = await fetch('https://api.pexels.com/videos/search?query=' + encodeURIComponent(q) +
+                          '&per_page=2&orientation=portrait', { headers: { Authorization: KEYS.pexels } });
+      if (!r.ok) throw new Error('Pexels ' + r.status);
+      var d = await r.json();
+      (d.videos || []).forEach(function(v){ v._beat = p.beat; todos.push(v); });
+      porBeat.push((p.beat || ('#' + (i+1))) + ': ' + ((d.videos || []).length));
+    } catch(e) { porBeat.push((p.beat || ('#' + (i+1))) + ': error'); _diag(e); }
+  }
+
+  if (!todos.length) { if (preview) preview.innerHTML = '<div style="color:var(--amber);font-size:12px">Sin resultados — re-deriva el plan</div>'; return; }
+  window._pexelsVideos = todos;
+  if (preview) {
+    preview.innerHTML = todos.map(function(v, i){
+      return '<div style="position:relative;cursor:pointer" onclick="toggleClip(' + i + ')" title="' + escapeHtml(v._beat || '') + '">' +
+        '<img src="' + v.image + '" style="width:56px;height:80px;object-fit:cover;border-radius:4px;border:2px solid var(--border)" id="clip-thumb-' + i + '">' +
+        '<div style="position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:8px;font-family:var(--mono);color:#fff;background:rgba(0,0,0,.68);border-radius:0 0 4px 4px">' + escapeHtml((v._beat || '').slice(0, 7)) + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  showToast('🎬 ' + todos.length + ' clips (' + porBeat.join(' · ') + ')');
+}
+
 async function searchPexels() {
   if (!KEYS.pexels) {
     showToast('⚠ Configura tu Pexels API key en ⚙️ Configuración');
@@ -14180,6 +14376,14 @@ Write naturally in the specified language, optimized for maximum retention. Scri
   try {
     const raw = await callClaude(prompt, null, 1200);
     currentScript = raw;
+    // Guion nuevo = vídeo nuevo: se reinicia el plan visual y su presupuesto de reintentos.
+    window._planVisual = null;
+    window._retakes = { plan: 0, max: 3, coste: 0 };
+    try {
+      var _pv = document.getElementById('plan-visual-out'); if (_pv) { _pv.style.display='none'; _pv.innerHTML=''; }
+      var _pe = document.getElementById('plan-visual-empty'); if (_pe) _pe.style.display='block';
+      var _pb = document.getElementById('plan-visual-btn'); if (_pb) _pb.textContent='🎬 Derivar plan';
+    } catch(e) { _diag(e); }
     area.innerHTML = formatScript(raw);
     if(['finanzas','cripto','tecnologia','legal','salud','negocios'].includes(selectedNiche)) setTimeout(()=>autoSuggestAffiliateLinks(raw,selectedNiche),800);
     const tokens = Math.round(raw.length / 4);
